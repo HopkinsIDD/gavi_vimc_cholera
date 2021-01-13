@@ -63,7 +63,7 @@ allocate_vaccine <- function(datapath, modelpath, country, ...){
   vacc_pop <- lapply(vacc_years, function(yr){
     model_pop_raster <- create_model_pop_raster(datapath, modelpath, country, yr)
     model_pop_admin <- get_admin_population(model_pop_raster, shp)
-    rc <- sf::st_drop_geometry(shp) %>%
+    rc <- shp %>%
       dplyr::mutate(vacc_year = yr,
                     pop_model = model_pop_admin) %>%
       dplyr::select(GID_2, vacc_year, pop_model)
@@ -73,13 +73,70 @@ allocate_vaccine <- function(datapath, modelpath, country, ...){
     data.table::rbindlist()
 
   vacc_coverage <- dplyr::left_join(vacc_targets, vacc_pop, by = c("GID_2", "vacc_year")) %>%
-    dplyr::mutate(actual_prop_vaccinated = actual_fvp/pop_model)
+    dplyr::mutate(actual_prop_vaccinated = actual_fvp/pop_model) %>%
+    sf::st_as_sf()
 
   if(any(vacc_coverage$actual_vacc_prop>1)){
     warning(paste("Number of fully vaccinated persons exceeds population in some admin units of", country))
   }
 
   return(vacc_coverage)
+}
+
+
+#' @name generate_pct_protect_function
+#' @title generate_pct_protect_function
+#' @description Using vaccine efficacy studies in Bi et al. (2017), generate a function that takes the year since vaccination and provides an estimate of the direct ve. Vaccine efficacy declines to 0 after my_trunc_year years
+#' @param my_trun_year  
+#' @param my_ve_scen 
+#' @return dataframe with estimates for unweighted and weighted mean vaccination campaign coverage proportion across coverage surveys in the review
+generate_pct_protect_function <- function(my_trunc_year = 5, my_ve_scen = "base"){
+
+    ve.dat <- readr::read_csv("data/ocv_ve_overtime.csv")
+
+    ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+
+    ve.dat$weights <-  1/(abs(ve.dat$se)^2)
+
+    ve.dat <- ve.dat[ve.dat$TL<48,]
+
+    ##this is our basic trend in vaccine effictiveness.
+    ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+
+    ##create a function that gives the expected percent protected
+    ##by a vaccine during a particular year after vaccination
+
+    pct.protect<-function(year, ci=FALSE,trunc_year=my_trunc_year,ve_scen=my_ve_scen) {
+        if (any(year%%1 !=0)) {warning("function designed to average across years only")}
+        if(!ve_scen %in% c("base","low","high")) {warning("ve_scen not recognized, assuming ve_scen='base'")}
+
+        months <- (year-.5)*12
+
+        if(ve_scen %in% c("high","low")){
+            ci <- TRUE
+        }
+
+        if (ci) {
+            rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+        } else {
+            rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months))),0) %>% unname
+        }
+
+        rc <- as.matrix(rc)
+
+        if(any(year>trunc_year)){
+            rc[which(year>trunc_year),] <- 0
+        }
+
+        if(ve_scen == "high"){
+            rc <- rc[,2]
+        } else if (ve_scen == "low"){
+            rc <- rc[,3]
+        }
+
+        return(rc)
+    }
+    return(pct.protect)
 }
 
 
