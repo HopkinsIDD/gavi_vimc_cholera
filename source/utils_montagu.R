@@ -85,7 +85,76 @@ import_country_population <- function(modelpath, country){
 import_country_population_1yr <- function(modelpath, country, year){
 
   country_pop <- import_country_population(modelpath, country)
+  if (year > max(country_pop$year)){
+    message(paste("Population data not available for", year, "- Using", max(country_pop$year), "data instead"))
+    year <- max(country_pop$year)
+  }
   year_pop <- country_pop[which(country_pop$year == as.numeric(year)),]$pop_model
 
   return(year_pop)
+}
+
+#' @name import_country_agePop
+#' @title import_country_agePop
+#' @description Get age-specific (1-year) country population from standardized source in Montagu. [may be used in future for case-based targeting]
+#' @param modelpath path to montagu files
+#' @param country country code
+#' @importFrom magrittr %>%
+#' @return 
+#' @export 
+import_country_agePop <- function(modelpath, country){
+  pop_fn <- list.files(modelpath, pattern = "int_pop_both.csv$")
+  if (length(pop_fn)>1){
+    stop(paste("More than 1 int_pop_both demographic file was found in", modelpath))
+  }
+  message(paste0("Loading ", modelpath, "/", pop_fn))
+  rc <- readr::read_csv(paste0(modelpath, "/", pop_fn)) %>%
+    dplyr::filter(country_code == !!country) %>%
+    dplyr::rename(GID_0 = country_code, pop_age = value) %>%
+    dplyr::select(GID_0, year, age_from, age_to, pop_age)
+
+  return(rc)
+}
+
+
+#' @name import_country_lifeExpectancy
+#' @title import_country_lifeExpectancy
+#' @description Get total life expectancy at birth from standardized source in Montagu. [may be used in future for case-based targeting]
+#' @param modelpath path to montagu files
+#' @param country country code
+#' @importFrom magrittr %>%
+#' @return 
+#' @export 
+import_country_lifeExpectancy <- function(modelpath, country){
+  lx0_fn <- list.files(modelpath, pattern = "lx0_both.csv$")
+  if (length(lx0_fn)>1){
+    stop(paste("More than 1 lx0_both demographic file was found in", modelpath))
+  }
+  message(paste0("Loading ", modelpath, "/", lx0_fn))
+  rc <- readr::read_csv(paste0(modelpath, "/", lx0_fn)) %>%
+    dplyr::filter(country_code == !!country) %>%
+    dplyr::rename(GID_0 = country_code, lx0 = value) %>%
+    dplyr::select(GID_0, year, lx0)
+
+  return(rc)
+}
+
+#' @name import_country_lifeExpectancy_1yr
+#' @title import_country_lifeExpectancy_1yr
+#' @description Get total country population from standardized source in Montagu for a single year
+#' @param modelpath path to montagu files
+#' @param country country code
+#' @param year population year
+#' @return numeric value
+#' @export
+import_country_lifeExpectancy_1yr <- function(modelpath, country, year){
+
+  country_lx0 <- import_country_lifeExpectancy(modelpath, country)
+  if (year > max(country_lx0$year)){
+    message(paste("Population data not available for", year, "- Using", max(country_lx0$year), "data instead"))
+    year <- max(country_lx0$year)
+  }
+  year_lx0 <- country_lx0[which(country_lx0$year == as.numeric(year)),]$lx0
+
+  return(year_lx0)
 }

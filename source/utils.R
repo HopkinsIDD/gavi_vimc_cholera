@@ -9,13 +9,16 @@
 create_relative_worldpop_weights <- function(datapath, country){
 
   pop <- load_worldpop_by_country(datapath, country)
-  shp <- load_shapefile_by_country(datapath, country)
-  pop_crop <- raster::crop(pop, shp, snap = "out")
+  # shp <- load_shapefile_by_country(datapath, country)
+  # # pop_crop <- raster::crop(pop, raster::extent(shp), snap = "out")
+  # masked <- raster::mask(pop, shp, updatevalue = NA)
+  # pop_crop <- raster::trim(masked)
+  pop_crop <- align_rasters(datapath, country, pop)
   total_pop <- sum(raster::getValues(pop_crop), na.rm = TRUE)
 
   wts <- raster::calc(pop_crop, fun=function(x) x/total_pop)
   
-  if(sum(raster::values(wts), na.rm = TRUE) != 1){
+  if(round(sum(raster::values(wts), na.rm = TRUE),10) != 1){
     warning(paste("Relative population weights do not sum to 1 in", country))
   }
 
@@ -43,44 +46,121 @@ create_model_pop_raster <- function(datapath, modelpath, country, year){
 }
 
 
+#' @name create_incid_raster
+#' @title create_incid_raster
+#' @description Generate a raster with the baseline cholera incidence
+#' @param datapath path to data 
+#' @param country country code
+#' @param rawoutpath path to raw model output files
+#' @param nsamples numeric, number of layers to sample (must be below 1000)
+#' @param clean logical that indicates whether existing vacc_files should be deleted
+#' @return raster of incidence rate, 30 samples
+#' @export
+create_incid_raster <- function(datapath, country, rawoutpath, nsamples, clean){
+
+  incid_out_fn <- paste0(rawoutpath, "/", country, "_incid_", nsamples, ".tif")
+  
+  if(clean & file.exists(incid_out_fn)){
+    message(paste("Clean existing", incid_out_fn))
+    file.remove(incid_out_fn)
+  }
+
+  if(!file.exists(incid_out_fn)){
+    if (country %in% c("COD", "ETH", "KEN", "SOM", "SSD")){
+
+      layer_indexes <- sort(sample(1:1000, nsamples, replace=TRUE))
+      print(layer_indexes)
+
+      ## incidence data ##
+      message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda.grd"))
+      afr <- raster::stack(paste0(datapath, "/incidence/afro_2010-2016_lambda.grd"))
+      afr_sample <- raster::subset(afr, layer_indexes, drop = TRUE)
+
+      lambda <- align_rasters(datapath, country, afr_sample)
+      
+      rm(afr, afr_sample)
+      gc()
+
+      message(paste("Write", incid_out_fn))
+      raster::writeRaster(raster::stack(lambda), filename = incid_out_fn)
+
+    } else {
+      stop(paste(country, "cholera incidence data was not found."))
+    }
+
+  } else {
+    message(paste("Skip creation", incid_out_fn))
+    lambda <- raster::stack(incid_out_fn)
+  }
+  
+  return(lambda)
+}
+
+
 #' @name allocate_vaccine
 #' @title allocate_vaccine
 #' @description Create dataframe of total population vaccination coverage according to the admin-level assignments from assign_vaccine_targets
 #' @param datapath path to input data 
 #' @param modelpath path to montagu files
 #' @param country country code
+#' @param scenario Unique string that identifies the coverage scenario name
 #' @param ... Optional parameters to pass to [`assign_vaccine_targets()`]. See [`assign_vaccine_targets()`] for defaults.
 #' @importFrom magrittr %>%
 #' @return dataframe with proportion of total population allocated with vaccines in admin units in a given country and year
 #' @export
-allocate_vaccine <- function(datapath, modelpath, country, ...){
+allocate_vaccine <- function(datapath, modelpath, country, scenario, ...){
 
-  vacc_targets <- assign_vaccine_targets(datapath, modelpath, country, ...)
+  vacc_targets <- assign_vaccine_targets(datapath, modelpath, country, scenario, ...)
 
-  vacc_years <- sort(unique(vacc_targets$vacc_year))
-  shp <- load_shapefile_by_country(datapath, country)
+  ## skip if no vaccination
+  if (is.null(vacc_targets)){
+    vacc_coverage <- NULL
+  } else{
+    vacc_years <- sort(unique(vacc_targets$vacc_year))
+    shp <- load_shapefile_by_country(datapath, country)
 
-  vacc_pop <- lapply(vacc_years, function(yr){
-    model_pop_raster <- create_model_pop_raster(datapath, modelpath, country, yr)
-    model_pop_admin <- get_admin_population(model_pop_raster, shp)
-    rc <- shp %>%
-      dplyr::mutate(vacc_year = yr,
-                    pop_model = model_pop_admin) %>%
-      dplyr::select(GID_2, vacc_year, pop_model)
-    
-    return(rc)
-  }) %>%
-    data.table::rbindlist()
+    vacc_pop <- lapply(vacc_years, function(yr){
+      model_pop_raster <- create_model_pop_raster(datapath, modelpath, country, yr)
+      model_pop_admin <- get_admin_population(model_pop_raster, shp)
+      rc <- shp %>%
+        dplyr::mutate(vacc_year = yr,
+                      pop_model = model_pop_admin) %>%
+        dplyr::select(GID_2, vacc_year, pop_model)
+      
+      return(rc)
+    }) %>%
+      data.table::rbindlist()
 
-  vacc_coverage <- dplyr::left_join(vacc_targets, vacc_pop, by = c("GID_2", "vacc_year")) %>%
-    dplyr::mutate(actual_prop_vaccinated = actual_fvp/pop_model) %>%
-    sf::st_as_sf()
+    vacc_coverage <- dplyr::left_join(vacc_targets, vacc_pop, by = c("GID_2", "vacc_year")) %>%
+      dplyr::mutate(actual_prop_vaccinated = actual_fvp/pop_model) %>%
+      sf::st_as_sf()
 
-  if(any(vacc_coverage$actual_vacc_prop>1)){
-    warning(paste("Number of fully vaccinated persons exceeds population in some admin units of", country))
+    if(any(vacc_coverage$actual_vacc_prop>1)){
+      warning(paste("Number of fully vaccinated persons exceeds population in some admin units of", country))
+    }
   }
 
   return(vacc_coverage)
+}
+
+
+#' @name get_model_years
+#' @title get_model_years
+#' @description Create list of years where vaccine dynamics will be important
+#' @param modelpath path to montagu files
+#' @param country country code
+#' @param vacc_alloc object returned from [`allocate_vaccine()`]
+#' @return list with model_years, start_year, and real_model_years
+#' @export
+get_model_years <- function(modelpath, country, vacc_alloc){
+  tmp <- import_centralburden_template(mpathname, country)
+  max_output_year <- max(tmp$year)
+  ## assume that vaccine effects could be observed for maximum 8 years after the last campaign
+  myear <- seq(min(as.numeric(vacc_alloc$vacc_year)), min(max(as.numeric(vacc_alloc$vacc_year)+8), max_output_year)) ## CHANGE THIS TO LINK WITH MY_TRUNC_YEAR PARAM IN GENERATE_PCT_PROTECT_FUNCTION
+
+  myears_ls <- list(model_years = myear, output_years = sort(unique(tmp$year)))
+
+  return(myears_ls)
 }
 
 
@@ -92,7 +172,7 @@ allocate_vaccine <- function(datapath, modelpath, country, ...){
 #' @return dataframe with estimates for unweighted and weighted mean vaccination campaign coverage proportion across coverage surveys in the review
 generate_pct_protect_function <- function(my_trunc_year = 5, my_ve_scen = "base"){
 
-    ve.dat <- readr::read_csv("data/ocv_ve_overtime.csv")
+    ve.dat <- readr::read_csv("input_data/ocv_ve_overtime.csv")
 
     ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
 
@@ -170,7 +250,7 @@ generate_indirect_incidence_mult <- function(){
 
     df <- dplyr::group_by(df, loc) %>%
       dplyr::mutate(indirect=pmax(0.001, 1 - (placebo/placebo[1])), effective_cov=coverage) %>% 
-      ungroup
+      dplyr::ungroup()
 
     ##df %>%  ggplot(aes(x=coverage,y=indirect)) + geom_point(aes(color=loc))
 
