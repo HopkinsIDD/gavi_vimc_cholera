@@ -36,7 +36,7 @@ import_coverage_scenario <- function(modelpath, country, scenario, filter0 = FAL
 
 #' @name import_centralburden_template
 #' @title import_centralburden_template
-#' @description Imports a CSV template file for the central burden estimates indicating the burden estimates that need to be generated for each scenario
+#' @description Imports a CSV template file for the central burden estimates static columns indicating the burden estimates that need to be generated for each scenario
 #' @param modelpath Path to montagu files
 #' @param country country code
 #' @return dataframe for central burden template for one country
@@ -46,8 +46,10 @@ import_centralburden_template <- function(modelpath, country){
   if (length(fname)>1){
     stop(paste("More than 1 central burden template was found in", modelpath))
   }
-  readr::read_csv(paste0(modelpath, "/", fname)) %>%
-    dplyr::filter(country == country)
+  rc <- readr::read_csv(paste0(modelpath, "/", fname)) %>%
+    dplyr::filter(country == !!country) %>%
+    dplyr::distinct(disease, country, country_name, year, age)
+  return(rc)
 }
 
 
@@ -108,10 +110,17 @@ import_country_agePop <- function(modelpath, country){
     stop(paste("More than 1 int_pop_both demographic file was found in", modelpath))
   }
   message(paste0("Loading ", modelpath, "/", pop_fn))
-  rc <- readr::read_csv(paste0(modelpath, "/", pop_fn)) %>%
+  agepop <- readr::read_csv(paste0(modelpath, "/", pop_fn)) %>%
     dplyr::filter(country_code == !!country) %>%
     dplyr::rename(GID_0 = country_code, pop_age = value) %>%
     dplyr::select(GID_0, year, age_from, age_to, pop_age)
+
+  totpop <- dplyr::group_by(agepop, GID_0, year) %>%
+    dplyr::summarise(pop_tot = sum(pop_age))
+
+  rc <- dplyr::left_join(agepop, totpop, by = c("GID_0", "year")) %>%
+    dplyr::mutate(prop_age = pop_age/pop_tot) %>%
+    dplyr::rename(country = GID_0)
 
   return(rc)
 }
@@ -128,33 +137,25 @@ import_country_agePop <- function(modelpath, country){
 import_country_lifeExpectancy <- function(modelpath, country){
   lx0_fn <- list.files(modelpath, pattern = "lx0_both.csv$")
   if (length(lx0_fn)>1){
-    stop(paste("More than 1 lx0_both demographic file was found in", modelpath))
+    stop(paste("More than 1 lx0_both (life expectancy) file was found in", modelpath))
   }
   message(paste0("Loading ", modelpath, "/", lx0_fn))
   rc <- readr::read_csv(paste0(modelpath, "/", lx0_fn)) %>%
     dplyr::filter(country_code == !!country) %>%
-    dplyr::rename(GID_0 = country_code, lx0 = value) %>%
-    dplyr::select(GID_0, year, lx0)
+    dplyr::rename(country = country_code, lx0 = value) %>%
+    dplyr::select(country, year, lx0)
 
   return(rc)
 }
 
-#' @name import_country_lifeExpectancy_1yr
-#' @title import_country_lifeExpectancy_1yr
-#' @description Get total country population from standardized source in Montagu for a single year
-#' @param modelpath path to montagu files
-#' @param country country code
-#' @param year population year
-#' @return numeric value
-#' @export
-import_country_lifeExpectancy_1yr <- function(modelpath, country, year){
 
-  country_lx0 <- import_country_lifeExpectancy(modelpath, country)
-  if (year > max(country_lx0$year)){
-    message(paste("Population data not available for", year, "- Using", max(country_lx0$year), "data instead"))
-    year <- max(country_lx0$year)
-  }
-  year_lx0 <- country_lx0[which(country_lx0$year == as.numeric(year)),]$lx0
-
-  return(year_lx0)
+#' @name import_disability_weight
+#' @title import_disability_weight
+#' @description Returns mean disability weight for severe diarrheal disease from IHME Global Burden of Disease 2016 and 2019 (same estimate)
+#' @return numeric value for disability weight
+#' @export 
+import_disability_weight <- function(){
+  ## 95% CI 0.164 to 0.348 
+  ## See input_data/IHME_GBD_2019_DISABILITY_WEIGHTS_Y2020M010D15
+  return(0.247)
 }
