@@ -342,7 +342,7 @@ generate_aoi <- function(country){
     ## summarize(mean_age_inf=weighted.mean(mean_age,w=1/var_log)) %>% unlist
 
 
-    aoi <- case_when(
+    aoi <- dplyr::case_when(
       country %in% c("BGD","IND","NPL") ~ 22.42,
       !country %in% c("BGD","IND","NPL") ~ 25.75
     )
