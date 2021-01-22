@@ -7,7 +7,6 @@
 #' @param scenario Unique string that identifies the coverage scenario name
 #' @param rawoutpath path to raw model output files
 #' @param vacc_alloc object returned from [`allocate_vaccine()`]
-#' @param pop_rasterStack rasterStack object with total population
 #' @param ve_direct vaccine effect function (default: generate_pct_protect_function())
 #' @param clean logical that indicates whether existing sus_files should be deleted
 #' @return NULl
@@ -19,7 +18,6 @@ create_sus_modelInputs <- function(
   scenario,
   rawoutpath,
   vacc_alloc,
-  pop_rasterStack,
   ve_direct,
   clean){
   
@@ -39,7 +37,9 @@ create_sus_modelInputs <- function(
   dir.create(file.path(rawoutpath, scenario), showWarnings = FALSE)
   sus_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_sus.tif")
   vacc_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_vacc.tif")
+  pop_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_pop.tif")
   vacc_rasterStack <- raster::stack(vacc_out_fn)
+  pop_rasterStack <- raster::stack(pop_out_fn)
 
   if (clean & file.exists(sus_out_fn)){
     message(paste("Clean existing", sus_out_fn))
