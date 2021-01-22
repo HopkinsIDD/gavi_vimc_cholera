@@ -46,7 +46,7 @@ create_expectedCases <- function(
   sus_rasterStack <- raster::brick(sus_out_fn)
   vacc_rasterStack <- raster::brick(vacc_out_fn)
   pop_rasterStack <- raster::brick(pop_out_fn)
-  shp <- load_shapefile_by_country(datapath, country)
+  shp0 <- load_shapefile_by_country(datapath, country, simple = TRUE)
 
   ec_ls <- lapply(output_years, function(oy){
 
@@ -83,9 +83,12 @@ create_expectedCases <- function(
 
     }
 
-    ec_admin_yr <- exactextractr::exact_extract(ec_rasterStack, shp, fun = "sum", stack_apply = TRUE)
-    ec_vec <- as.numeric(apply(ec_admin_yr, 2, sum))
-    rc <- tibble::tibble(country = country, year = oy, run_id = seq_along(ec_vec), ec = ec_vec)
+    ec_yr <- exactextractr::exact_extract(ec_rasterStack, shp0, fun = "sum", stack_apply = TRUE)
+    mean_incid <- exactextractr::exact_extract(lambda, shp0, fun = "weighted_mean", weights = pop_rasterLayer, stack_apply = TRUE)
+
+    ec_vec <- as.numeric(ec_yr)
+    mean_incid_vec <- as.numeric(mean_incid)
+    rc <- tibble::tibble(country = country, year = oy, run_id = seq_along(ec_vec), ec = ec_vec, incid_rate = mean_incid_vec)
 
     return(rc)
 
