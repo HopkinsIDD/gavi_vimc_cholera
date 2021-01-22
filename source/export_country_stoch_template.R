@@ -1,17 +1,19 @@
-#' @name export_scenario_stoch_template
-#' @title export_scenario_stoch_template
-#' @description Save a stochastic burden template file for all countries in a scenario
+#' @name export_country_stoch_template
+#' @title export_country_stoch_template
+#' @description  Export a stochastic burden template file for a single country
 #' @param modelpath path to montagu files
 #' @param country country code
 #' @param scenario Unique string that identifies the coverage scenario name
 #' @param rawoutpath path to raw model output files
+#' @param outpath path to final model output files
 #' @return 
 #' @export
 export_country_stoch_template <- function(
   modelpath,
   country, 
   scenario,
-  rawoutpath
+  rawoutpath,
+  outpath
   ){
 
   ## import templates
@@ -51,5 +53,19 @@ export_country_stoch_template <- function(
     dplyr::select(disease, run_id, year, age, country, country_name, cohort_size, cases, deaths, dalys) %>%
     dplyr::arrange(run_id, age, year)
 
+  out_fn <- paste0(outpath, "/", country, "_", scenario, "_stoch.csv")
+  message(paste("Writing", out_fn))
+  readr::write_csv(stoch, out_fn)
+
+  ## get stochastic parameters
+  params <- dplyr::mutate(expCases, cfr = cfr, infect_dur = infect_dur) %>%
+    dplyr::select(run_id, aoi_cl, incid_rate, cfr, infect_dur)
+  param_names <- c("run_id", paste(country, c("aoi", "incid_rate", "cfr"), sep = ":"), "infect_dur")
+  names(params) <- param_names
+  par_fn <- paste0(outpath, "/", country, "_", scenario, "_pars.csv")
+  message(paste("Writing", par_fn))
+  readr::write_csv(params, par_fn)
+
   return(stoch)
+  
 }
