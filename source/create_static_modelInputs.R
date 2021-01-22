@@ -65,11 +65,11 @@ create_static_modelInputs <- function(
     for (year in output_years){
 
       if (year %in% unique(vacc_alloc$vacc_year)){ 
-        new_vacc_layer <- raster::rasterize(
+        new_vacc_layer <- fasterize::fasterize(
           dplyr::filter(vacc_alloc, vacc_year == year),
           raster0_template,
           field = "actual_prop_vaccinated",
-          update = TRUE
+          fun = "last"
           )
       } else{
         ## add 0 layer if there was no vaccination that year
@@ -87,27 +87,27 @@ create_static_modelInputs <- function(
     } #endfor model_years
 
     ## drop initial vacc & pop rast layers, which were dummies
-    vacc_rasterStack <- raster::dropLayer(vacc_rasterStack, 1)
-    pop_rasterStack <- raster::dropLayer(pop_rasterStack, 1)
+    vacc_rs <- raster::dropLayer(vacc_rasterStack, 1)
+    pop_rs <- raster::dropLayer(pop_rasterStack, 1)
     
-    if ((dim(vacc_rasterStack)[3] != length(output_years)) &
-        (dim(pop_rasterStack)[3] != length(output_years))){
+    if ((dim(vacc_rs)[3] != length(output_years)) &
+        (dim(pop_rs)[3] != length(output_years))){
       
       stop(paste(
         "The vaccine intervention is implemented in", 
-        dim(vacc_rasterStack)[3], 
+        dim(vacc_rs)[3], 
         "years, the population data is stacked for", 
-        dim(pop_rasterStack)[3], 
+        dim(pop_rs)[3], 
         "years, but the model will run for", 
         length(output_years), 
         "years."))
     }
 
-    vacc_rs <- align_rasters(datapath, country, vacc_rasterStack)
+    # vacc_rs <- align_rasters(datapath, country, vacc_rasterStack) ## may be obsolete 1/21
     message(paste("Write", vacc_out_fn))
     raster::writeRaster(vacc_rs, filename = vacc_out_fn)
 
-    pop_rs <- align_rasters(datapath, country, pop_rasterStack)
+    # pop_rs <- align_rasters(datapath, country, pop_rasterStack) ## may be obsolete 1/21
     message(paste("Write", pop_out_fn))
     raster::writeRaster(pop_rs, filename = pop_out_fn)
   }
