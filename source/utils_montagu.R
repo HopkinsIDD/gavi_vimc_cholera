@@ -159,3 +159,30 @@ import_disability_weight <- function(){
   ## See input_data/IHME_GBD_2019_DISABILITY_WEIGHTS_Y2020M010D15
   return(0.247)
 }
+
+#' @name import_templateFilename_prefix
+#' @title import_templateFilename_prefix
+#' @description Return string from filename template
+#' @param type "stochastic", "central", "parameter"
+#' @param modelpath path to Montagu files
+#' @return template filename prefix
+#' @export 
+import_templateFilename_prefix <- function(type, modelpath){
+
+  if (type == "stochastic"){
+    fn <- list.files(modelpath, pattern = "stochastic-burden-template")[1]
+    rc <- stringr::str_remove(fn, "standard template")
+  } else if (type == "central"){
+    fn <- list.files(modelpath, pattern = "central-burden-template")[1]
+    rc <- stringr::str_remove(fn, "standard template")
+  } else if (type == "parameter"){
+    fn <- list.files(modelpath, pattern = "stochastic-burden-template")[1]
+    rc <- stringr::str_replace(stringr::str_remove(fn, "standard template"), "stochastic-burden", "stochastic-params")
+  } else{
+    warning(paste("This", type, "filename is not supported."))
+    rc <- NULL
+  }
+
+  return(rc)
+
+}
