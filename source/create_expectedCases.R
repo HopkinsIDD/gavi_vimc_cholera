@@ -48,7 +48,7 @@ create_expectedCases <- function(
   pop_rasterStack <- raster::brick(pop_out_fn)
   shp <- load_shapefile_by_country(datapath, country)
 
-  ec_admin_ls <- lapply(output_years, function(oy){
+  ec_ls <- lapply(output_years, function(oy){
 
     yr_index <- which(oy == output_years)
     pop_rasterLayer <- raster::subset(pop_rasterStack, yr_index, drop = FALSE)
@@ -84,20 +84,17 @@ create_expectedCases <- function(
     }
 
     ec_admin_yr <- exactextractr::exact_extract(ec_rasterStack, shp, fun = "sum", stack_apply = TRUE)
-    names(ec_admin_yr) <- paste0("run", 1:(dim(ec_admin_yr)[2]))
-    rc <- sf::st_drop_geometry(shp) %>%
-      dplyr::select(GID_2) %>% 
-      dplyr::mutate(year = oy) %>%
-      dplyr::bind_cols(ec_admin_yr)
+    ec_vec <- as.numeric(apply(ec_admin_yr, 2, sum))
+    rc <- tibble::tibble(country = country, year = oy, run_id = seq_along(ec_vec), ec = ec_vec)
 
     return(rc)
 
   })
 
-  ec_admin <- data.table::rbindlist(ec_admin_ls)
+  ec_final <- data.table::rbindlist(ec_ls)
   
-  rm(lambda, sus_rasterStack, vacc_rasterStack, pop_rasterStack, shp, ec_admin_ls)
+  rm(lambda, sus_rasterStack, vacc_rasterStack, pop_rasterStack, shp, ec_ls)
   gc()
 
-  return(ec_admin)
+  return(ec_final)
 }
