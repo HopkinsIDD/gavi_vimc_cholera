@@ -9,14 +9,9 @@
 create_relative_worldpop_weights <- function(datapath, country){
 
   pop <- load_worldpop_by_country(datapath, country)
-  # shp <- load_shapefile_by_country(datapath, country)
-  # # pop_crop <- raster::crop(pop, raster::extent(shp), snap = "out")
-  # masked <- raster::mask(pop, shp, updatevalue = NA)
-  # pop_crop <- raster::trim(masked)
-  pop_crop <- align_rasters(datapath, country, pop)
-  total_pop <- sum(raster::getValues(pop_crop), na.rm = TRUE)
+  total_pop <- sum(raster::getValues(pop), na.rm = TRUE)
 
-  wts <- raster::calc(pop_crop, fun=function(x) x/total_pop)
+  wts <- raster::calc(pop, fun=function(x) x/total_pop)
   
   if(round(sum(raster::values(wts), na.rm = TRUE),10) != 1){
     warning(paste("Relative population weights do not sum to 1 in", country))
@@ -72,13 +67,14 @@ create_incid_raster <- function(datapath, country, rawoutpath, nsamples, clean){
       print(layer_indexes)
 
       ## incidence data ##
-      message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda.grd"))
-      afr <- raster::stack(paste0(datapath, "/incidence/afro_2010-2016_lambda.grd"))
-      afr_sample <- raster::subset(afr, layer_indexes, drop = TRUE)
+      message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_1k.grd"))
+      afr <- raster::stack(paste0(datapath, "/incidence/afro_2010-2016_lambda_1k.grd"))
+      afr_sample <- raster::subset(afr, layer_indexes, drop = FALSE)
+      rm(afr)
+      gc()
 
       lambda <- align_rasters(datapath, country, afr_sample)
-      
-      rm(afr, afr_sample)
+      rm(afr_sample)
       gc()
 
       message(paste("Write", incid_out_fn))
@@ -155,8 +151,13 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, ...){
 get_model_years <- function(modelpath, country, vacc_alloc){
   tmp <- import_centralburden_template(mpathname, country)
   max_output_year <- max(tmp$year)
-  ## assume that vaccine effects could be observed for maximum 8 years after the last campaign
-  myear <- seq(min(as.numeric(vacc_alloc$vacc_year)), min(max(as.numeric(vacc_alloc$vacc_year)+8), max_output_year)) ## CHANGE THIS TO LINK WITH MY_TRUNC_YEAR PARAM IN GENERATE_PCT_PROTECT_FUNCTION
+
+  if (!is.null(vacc_alloc)){
+    ## assume that vaccine effects could be observed for maximum 8 years after the last campaign
+    myear <- seq(min(as.numeric(vacc_alloc$vacc_year)), min(max(as.numeric(vacc_alloc$vacc_year)+8), max_output_year)) ## CHANGE THIS TO LINK WITH MY_TRUNC_YEAR PARAM IN GENERATE_PCT_PROTECT_FUNCTION
+  } else{
+    myear <- NULL
+  }
 
   myears_ls <- list(model_years = myear, output_years = sort(unique(tmp$year)))
 
@@ -270,11 +271,91 @@ generate_indirect_incidence_mult <- function(){
 
 }
 
+
 #' @name generate_flatline_multiplier
 #' @title generate_flatline_multiplier
 #' @description Generate a function that represents projected secular trends in cholera incidence. This multiplier is used to adjust projected cholera incidence in future years.
 #' @return
+#' @export
 generate_flatline_multiplier <- function(){
   flatline_multiplier <- function(year, base_year = 2016) { return(1) }
   return(flatline_multiplier)
+}
+
+
+#' @name generate_cfr
+#' @title generate_cfr
+#' @description Generate rough estimate of cholera case-fatality ratio based on previous WHO data
+#' @param country
+#' @return numeric value of cfr (deaths/cases)
+#' @export
+generate_cfr <- function(country){
+
+  deaths_summary <- read_csv("input_data/who_cfrs.csv") %>%
+    dplyr::select(-country_name)
+
+  total_cfrs <- deaths_summary %>% 
+    dplyr::filter(!is.na(cases), !is.na(deaths), cases>0) %>%
+    dplyr::filter(cfr <= 0.07)
+
+  if (country %in% deaths_summary$cntry_code){
+    calcs <- dplyr::filter(total_cfrs, cntry_code==country) %>%
+      dplyr::summarise(cases = sum(cases), deaths = sum(deaths)) %>%
+      dplyr::mutate(cfr = deaths/cases)
+
+  } else {
+    calcs <- dplyr::summarise(total_cfrs, cases = sum(cases), deaths = sum(deaths)) %>%
+      dplyr::mutate(cfr = deaths/cases)
+  }
+
+  cfr <- calcs$cfr
+
+  return(cfr)
+
+}
+
+
+#' @name generate_aoi
+#' @title generate_aoi
+#' @description Generate average age of infection
+#' @param country
+#' @return numeric value of cfr (deaths/cases)
+#' @export
+generate_aoi <- function(country){
+
+    ## values for average age derived from this code:
+    ## library(metafor)
+    ## age_cases <- read_xlsx("data/age_cases.xlsx")
+
+    ## ## using relationship between variacne and mean of age to get variance of log(age)
+    ## ## 10.1002/sim.1525
+    ## age_cases %>% filter(!is.na(age_sd)) %>%
+    ## mutate(mean_log=log(mean_age),var_log=log(1+age_sd^2/mean_age^2)) %>%
+    ## summarize(mean_age_inf=weighted.mean(mean_age,w=1/var_log)) %>% unlist
+
+    ## aoi_south_asia <-  age_cases %>% filter(!is.na(age_sd),location %in% c('IND','BGD')) %>%
+    ## mutate(mean_log=log(mean_age),var_log=log(1+age_sd^2/mean_age^2)) %>%
+    ## summarize(mean_age_inf=weighted.mean(mean_age,w=1/var_log)) %>% unlist
+
+    ## aoi_africa_haiti <- age_cases %>% filter(!is.na(age_sd),!location %in% c('IND','BGD')) %>%
+    ## mutate(mean_log=log(mean_age),var_log=log(1+age_sd^2/mean_age^2)) %>%
+    ## summarize(mean_age_inf=weighted.mean(mean_age,w=1/var_log)) %>% unlist
+
+
+    aoi <- case_when(
+      country %in% c("BGD","IND","NPL") ~ 22.42,
+      !country %in% c("BGD","IND","NPL") ~ 25.75
+    )
+
+    return(aoi)
+}
+
+
+#' @name generate_infectionDuration
+#' @title generate_infectionDuration
+#' @description Generate infection duration in years
+#' @return numeric value of infection duration
+#' @export
+generate_infectionDuration <- function(){
+  return(4/365)
 }
