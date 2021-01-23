@@ -11,7 +11,7 @@
 #' @export
 create_incid_raster <- function(datapath, country, rawoutpath, nsamples, clean){
 
-  incid_out_fn <- paste0(rawoutpath, "/", country, "_incid_", nsamples, ".tif")
+  incid_out_fn <- paste0(rawoutpath, "/", country, "_incid_5k_", nsamples, ".tif")
   
   if(clean & file.exists(incid_out_fn)){
     message(paste("Clean existing", incid_out_fn))
