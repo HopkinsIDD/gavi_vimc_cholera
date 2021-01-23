@@ -53,7 +53,7 @@ config <- yaml::read_yaml(opt$config)
 runname <- config$runname
 country <- config$country
 scenario <- config$scenario
-nsamples <- config$nsamples
+nsamples <- config$num_samples
 targeting <- config$vacc$targeting_strategy
 nskipyears <- config$vacc$num_skip_years
 
