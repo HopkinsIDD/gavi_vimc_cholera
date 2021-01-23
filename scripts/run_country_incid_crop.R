@@ -6,10 +6,10 @@ if (Sys.getenv("INTERACTIVE_RUN", FALSE)) {
   options(warn = 1, error = recover)
 } else {
   options(
-    warn = 1,
-    error = function(...) {
-      quit(..., status = 2)
-    }
+    warn = 1
+  #  error = function(...) {
+  #    quit(..., status = 2)
+  #  }
   )
 }
 
