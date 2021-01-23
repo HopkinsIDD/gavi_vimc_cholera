@@ -6,6 +6,7 @@
 #' @param scenario Unique string that identifies the coverage scenario name
 #' @param rawoutpath path to raw model output files
 #' @param outpath path to final model output files
+#' @importFrom magrittr %>%
 #' @return 
 #' @export
 export_country_stoch_template <- function(

@@ -170,6 +170,7 @@ get_model_years <- function(modelpath, country, vacc_alloc){
 #' @description Using vaccine efficacy studies in Bi et al. (2017), generate a function that takes the year since vaccination and provides an estimate of the direct ve. Vaccine efficacy declines to 0 after my_trunc_year years
 #' @param my_trun_year  
 #' @param my_ve_scen 
+#' @importFrom magrittr %>%
 #' @return dataframe with estimates for unweighted and weighted mean vaccination campaign coverage proportion across coverage surveys in the review
 generate_pct_protect_function <- function(my_trunc_year = 5, my_ve_scen = "base"){
 
@@ -224,6 +225,7 @@ generate_pct_protect_function <- function(my_trunc_year = 5, my_ve_scen = "base"
 #' @name generate_indirect_incidence_mult
 #' @title generate_indirect_incidence_mult
 #' @description Using studies on indirect vaccine protection from Kolkota and Matlab, generate a function that takes the level of vaccination coverage and returns a multiplier indicating the percentage reduction in incidence due to indirect vaccine protection. These represent the baseline parameters for indirect vaccine protection. 
+#' @importFrom magrittr %>%
 #' @return 
 generate_indirect_incidence_mult <- function(){
 
@@ -287,6 +289,7 @@ generate_flatline_multiplier <- function(){
 #' @title generate_cfr
 #' @description Generate rough estimate of cholera case-fatality ratio based on previous WHO data
 #' @param country country code
+#' @importFrom magrittr %>%
 #' @return numeric value of cfr (deaths/cases)
 #' @export
 generate_cfr <- function(country){
