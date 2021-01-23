@@ -1,7 +1,7 @@
 #' @name export_central_template
 #' @title export_central_template
 #' @description Export a central burden template file (mean) using any stochastic template file output
-#' @param stoch_output
+#' @param stoch_output stochastic outputs, as from `[export_country_stoch_template()]`
 #' @return 
 #' @export
 export_central_template <- function(stoch_output){

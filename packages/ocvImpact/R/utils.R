@@ -286,7 +286,7 @@ generate_flatline_multiplier <- function(){
 #' @name generate_cfr
 #' @title generate_cfr
 #' @description Generate rough estimate of cholera case-fatality ratio based on previous WHO data
-#' @param country
+#' @param country country code
 #' @return numeric value of cfr (deaths/cases)
 #' @export
 generate_cfr <- function(country){
@@ -318,7 +318,7 @@ generate_cfr <- function(country){
 #' @name generate_aoi
 #' @title generate_aoi
 #' @description Generate average age of infection
-#' @param country
+#' @param country country code
 #' @return numeric value of cfr (deaths/cases)
 #' @export
 generate_aoi <- function(country){
