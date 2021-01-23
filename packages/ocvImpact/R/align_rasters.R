@@ -8,17 +8,11 @@
 #' @export
 align_rasters <- function(datapath, country, orig_raster){
   
-  # shp <- load_shapefile_by_country(datapath, country)
-  # masked <- raster::mask(orig_raster, shp, updatevalue = NA)
-  # trimmed <- raster::trim(masked)
-  shp <- load_shapefile_by_country(datapath, country)
-  shp_raster <- raster::rasterize(shp, orig_raster, get_cover = TRUE)
-  shp_raster[shp_raster==0] <- NA
-  masked <- raster::mask(orig_raster, shp_raster, updatevalue = NA)
-  trimmed <- raster::trim(masked)
+  shp <- load_shapefile_by_country(datapath, country, simple=TRUE)
+  cropped <- raster::crop(orig_raster, shp, snap = "out")
 
-  rm(orig_raster, masked, shp, shp_raster)
+  rm(orig_raster, shp)
   gc()
 
-  return(trimmed)
+  return(cropped)
 }
