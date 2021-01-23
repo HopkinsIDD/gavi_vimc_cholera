@@ -14,11 +14,6 @@ if (Sys.getenv("INTERACTIVE_RUN", FALSE)) {
 }
 
 #### Libraries
-if (!require(taxdat)) {
-  install.packages("packages/ocvImpact", type = "source", repos = NULL)
-} else {
-  detach("package:ocvImpact")
-}
 package_list <- c(
   "data.table",
   "dplyr",
