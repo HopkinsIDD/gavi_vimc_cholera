@@ -45,7 +45,7 @@ option_list <- list(
     help = "Model run configuration file"
   )
 )
-opt <- optparse::OptionParser(option_list = option_list) %>% optparse::parse_args()
+opt <- optparse::parse_args(optparse::OptionParser(option_list = option_list))
 
 ### Read config file parameters
 config <- yaml::read_yaml(opt$config)
