@@ -41,12 +41,12 @@ load_shapefile_by_country <- function(datapath, country, simple = FALSE){
 load_worldpop_by_country <- function(datapath, country){
 
   ## WorldPop population data ##
-  pop_fn <- list.files(path = paste0(datapath, "/worldpop"), pattern = "ppp_2020_1km", ignore.case = TRUE)
+  pop_fn <- list.files(path = paste0(datapath, "/worldpop"), pattern = "ppp_2020_5km", ignore.case = TRUE)
 
   if (length(pop_fn)>1){
-    stop(paste("There is more than one worldpop file with ppp_2020_1km in the filename"))
+    stop(paste("There is more than one worldpop file with ppp_2020_5km in the filename"))
   } else if (length(pop_fn)==0){
-    stop(paste("There is no worldpop file with  ppp_2020_1km in the filename"))
+    stop(paste("There is no worldpop file with  ppp_2020_5km in the filename"))
   } else{
     message(paste0("Loading ", datapath, "/worldpop/", pop_fn))
     pop_world <- raster::raster(paste0(datapath, "/worldpop/", pop_fn))
