@@ -16,4 +16,4 @@
 ## finally decided we needed 1x1km raster stack to ensure best alignment
 afr <- raster::stack("input_data/incidence/afro_2010-2016_lambda.grd")
 
-afr1k <- raster::disaggregate(afr, 20, filename = "input_data/incidence/afro_2010-2016_lambda_1k.tif")
+afr5k <- raster::disaggregate(afr, 4, filename = "input_data/incidence/afro_2010-2016_lambda_5k.tif")
