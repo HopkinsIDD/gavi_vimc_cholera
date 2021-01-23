@@ -1,0 +1,7 @@
+runname: '201910gavi-5'
+country: 'SSD'
+scenario: 'campaign-default'
+num_samples: 30
+vacc:
+  targeting_strategy: affected_pop
+  num_skip_years: 3
