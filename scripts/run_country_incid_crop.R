@@ -42,6 +42,7 @@ option_list <- list(
   optparse::make_option(
     c("-c", "--config"),
     action = "store",
+    default = Sys.getenv("CHOLERA_CONFIG", "config.yml"),
     type = "character",
     help = "Model run configuration file"
   )
@@ -54,8 +55,7 @@ config <- yaml::read_yaml(opt$config)
 runname <- config$runname
 country <- config$country
 scenario <- config$scenario
-nsamples <- config$nsamples
-
+nsamples <- config$numsamples
 
 #### Create paths
 mpathname <- file.path("montagu", runname)
