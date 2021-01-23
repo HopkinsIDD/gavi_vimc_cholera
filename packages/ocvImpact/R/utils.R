@@ -67,8 +67,8 @@ create_incid_raster <- function(datapath, country, rawoutpath, nsamples, clean){
       print(layer_indexes)
 
       ## incidence data ##
-      message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_1k.grd"))
-      afr <- raster::stack(paste0(datapath, "/incidence/afro_2010-2016_lambda_1k.grd"))
+      message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_1k.tif"))
+      afr <- raster::stack(paste0(datapath, "/incidence/afro_2010-2016_lambda_1k.tif"))
       afr_sample <- raster::subset(afr, layer_indexes, drop = FALSE)
       rm(afr)
       gc()
