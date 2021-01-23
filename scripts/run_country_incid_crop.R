@@ -55,7 +55,7 @@ config <- yaml::read_yaml(opt$config)
 runname <- config$runname
 country <- config$country
 scenario <- config$scenario
-nsamples <- config$numsamples
+nsamples <- config$num_samples
 
 #### Create paths
 mpathname <- file.path("montagu", runname)
