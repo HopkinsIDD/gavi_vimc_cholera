@@ -4,14 +4,12 @@
 \alias{create_incid_raster}
 \title{create_incid_raster}
 \usage{
-create_incid_raster(datapath, country, rawoutpath, nsamples, clean)
+create_incid_raster(datapath, country, nsamples, clean)
 }
 \arguments{
 \item{datapath}{path to data}
 
 \item{country}{country code}
-
-\item{rawoutpath}{path to raw model output files}
 
 \item{nsamples}{numeric, number of layers to sample (must be below 1000)}
 

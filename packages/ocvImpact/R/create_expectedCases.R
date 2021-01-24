@@ -42,7 +42,7 @@ create_expectedCases <- function(
   pop_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_pop.tif")
 
   ## write to file and import cholera incidence estimates
-  lambda <- create_incid_raster(datapath, country, rawoutpath, nsamples, clean)
+  lambda <- create_incid_raster(datapath, country, nsamples, clean)
   sus_rasterStack <- raster::brick(sus_out_fn)
   vacc_rasterStack <- raster::brick(vacc_out_fn)
   pop_rasterStack <- raster::brick(pop_out_fn)

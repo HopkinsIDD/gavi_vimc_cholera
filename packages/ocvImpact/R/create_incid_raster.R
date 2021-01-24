@@ -4,14 +4,13 @@
 #' @description Generate a raster with the baseline cholera incidence
 #' @param datapath path to data 
 #' @param country country code
-#' @param rawoutpath path to raw model output files
 #' @param nsamples numeric, number of layers to sample (must be below 1000)
 #' @param clean logical that indicates whether existing vacc_files should be deleted
 #' @return raster of incidence rate, 30 samples
 #' @export
-create_incid_raster <- function(datapath, country, rawoutpath, nsamples, clean){
+create_incid_raster <- function(datapath, country, nsamples, clean){
 
-  incid_out_fn <- paste0(rawoutpath, "/", country, "_incid_5k_", nsamples, ".tif")
+  incid_out_fn <- paste0(datapath, "/", country, "_incid_5k_", nsamples, ".tif")
   
   if(clean & file.exists(incid_out_fn)){
     message(paste("Clean existing", incid_out_fn))
