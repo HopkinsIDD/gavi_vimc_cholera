@@ -17,3 +17,5 @@
 afr <- raster::stack("input_data/incidence/afro_2010-2016_lambda.grd")
 
 afr5k <- raster::disaggregate(afr, 4, filename = "input_data/incidence/afro_2010-2016_lambda_5k.tif")
+
+afr5k_mean <- raster::calc(afr5k, fun = mean, na.rm = TRUE, filename = "input_data/incidence/afro_2010-2016_lambda_5k_mean.tif")

@@ -26,8 +26,8 @@ load_targets_by_country <- function(datapath, country){
   if (country %in% c("COD", "ETH", "KEN", "SOM", "SSD")){
 
     ## incidence data ##
-    message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_mean.grd"))
-    afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_mean.grd"))
+    message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
+    afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
 
     ## WorldPop population data ##
     pop <- load_worldpop_by_country(datapath, country)
