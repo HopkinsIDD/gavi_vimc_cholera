@@ -60,11 +60,9 @@ nsamples <- config$num_samples
 #### Create paths
 mpathname <- file.path("montagu", runname)
 dpathname <- file.path("input_data")
-ropathname <- file.path("output_raw", runname)
 opathname <- file.path("output_final", runname)
 dir.create(mpathname, showWarnings = FALSE)
 dir.create(dpathname, showWarnings = FALSE)
-dir.create(ropathname, showWarnings = FALSE)
 dir.create(opathname, showWarnings = FALSE)
 
 #### Crop incid raster by country
@@ -72,7 +70,6 @@ message(paste("Cropping incidence raster:", runname, country, scenario, nsamples
 incid <- ocvImpact::create_incid_raster(
   dpathname,
   country,
-  ropathname,
   nsamples,
   clean = TRUE
   )
