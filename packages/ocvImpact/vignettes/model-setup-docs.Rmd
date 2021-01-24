@@ -1,0 +1,78 @@
+---
+title: "Model Setup Documentation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Model Setup Documentation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+The `ocvImpact` package is designed to run a model that estimates the impact of oral cholera vaccination campaigns using model inputs and outputs from the [Vaccine Impact Modeling Consortium](https://www.vaccineimpact.org/) (VIMC). This document will explain how to set up your directory and generate the necessary model input files to run the model.
+
+
+## Setup
+Your project directory should have the following folders:
+
+* `configs/`
+* `input_data/`
+* `input_data/incidence`
+* `input_data/shapefiles`
+* `input_data/worldpop`
+* `montagu/`
+* `output_raw/`
+* `output_final/`
+
+If you have forked the [HopkinsIDD/gavi_vimc_cholera repository](https://github.com/HopkinsIDD/gavi_vimc_cholera), some of these folders may already exist. You may place all of the remaining folders in the top-level directory. In the future, we may develop a template GitHub repository to make the directory setup more straightforward. Stay tuned.
+
+
+## Model Input Files: standard demographic data
+Each set of model runs from the VIMC will have a run name (e.g., `201910gavi-5`) and a set of standard demographic files associated with that run. These demographic files may be downloaded from the Modellers contribution portal on the VIMC Montagu [website](https://montagu.vaccineimpact.org/). 
+
+Files for both genders (combined) and in long format should be downloaded and saved in `montagu/<enter-run-name-here>/` . The files required for this model are:
+
+* Population: Interpolated, 1-year
+* Population: Total
+* Mortality: Life Expectancy at Birth
+
+Each run will also have a set of coverage templates (one per scenario), burden templates (central and stochastic), and a stochastic parameters template. These should be acquired from the same Modellers contribution portal described above and place in `montagu/<enter-run-name-here>/`.
+
+
+## Model Input Files: shapefiles and gridded population data
+Files from external sources are also required. 
+
+Country level and admin2 level shapefiles for each modeled country should be acquired from [GADM](https://gadm.org/) and saved in `input_data/shapefiles/<enter-run-name-here>`. These files should be `sf` objects in RDS file format, with names with the following structure:
+
+* Country-level: `gadm*_<3 letter country ISO code>_0_sf.rds`
+* Admin 2level: `gadm*_<3 letter country ISO code>_2_sf.rds`
+
+Raster-level population data (1km) for the whole world should be acquired from [WorldPop](https://www.worldpop.org/project/categories?id=3). We recommend the ``Unconstrained global mosaic'' at 1 km resolution from 2020. This file should be saved in `input_data/worldpop`.
+
+
+## Model Initiation: processing gridded baseline cholera incidence rate
+TO DO
+Depends on the location being modeled...
+
+
+## Model Settings
+Put a table that defines model configuration file definitions
+
+
+## Routine Model Runs
+
+To run the model, the `ocvImpact` package in `HopkinsIDD/gavi_vimc_cholera/packages/` must be installed in R. Then, the model may be run using the R scripts in `HopkinsIDD/gavi_vimc_cholera/scripts`. 
+
+1. First we modify `scripts/set_all_parameters.R` to export variables named: `runname`, `scenarios`, `countries`, `targeting_strategy`, `num_samples`, and `num_skip_years`. See the model settings table for definitions of these parameters.
+1. Next we run `scripts/write_configs.R` to generate all of the model configuration files.
+1. Next we run `Rscript scripts/run_country_incid_crop.R -c configs/<run-name>/<config-name>` to save country-level cropped cholera incidence rasters to the `input_data/incidence` directory. If you have previously run models with this setup, it is possible you may already have generated all of the necessary files. It will do no harm to rerun this script anyways to be sure. This step may be parallelized for multiple configuration files.
+1. Next we run `Rscript scripts/run_model.R -c configs/<run-name>/<config-name>` to produce primary model outputs. This step may be parallelized for multiple configuration files.
+1. Finally, we process all of the model outputs and generate the stochastic parameter and burden template files by running `scripts/write_final_outputs.R`.
+
+
