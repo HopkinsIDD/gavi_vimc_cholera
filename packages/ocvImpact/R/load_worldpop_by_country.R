@@ -20,7 +20,7 @@ load_worldpop_by_country <- function(datapath, country){
     pop_world <- raster::raster(paste0(datapath, "/worldpop/", pop_fn))
     pop <- align_rasters(datapath, country, pop_world)
     
-    rm(pop_world, shp)
+    rm(pop_world)
     gc()
   }
 
