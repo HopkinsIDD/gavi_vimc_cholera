@@ -148,6 +148,24 @@ import_country_lifeExpectancy <- function(modelpath, country){
   return(rc)
 }
 
+#' @name import_country_lifeExpectancy_1yr
+#' @title import_country_lifeExpectancy_1yr
+#' @description Get total life expectancy at birth for a single year from standardized source in Montagu. [may be used in future for case-based targeting]
+#' @param modelpath path to montagu files
+#' @param country country code
+#' @param year year for which life expectancy should be returned
+#' @importFrom magrittr %>%
+#' @return
+#' @export
+import_country_lifeExpectancy_1yr <- function(modelpath, country, year){
+  lx0_df <- import_country_lifeExpectancy(modelpath, country)
+  rc <- dplyr::filter(lx0_df, year == !!year) %>%
+    dplyr::select(lx0) %>%
+    unlist %>% unname
+
+  return(rc)
+}
+
 
 #' @name import_disability_weight
 #' @title import_disability_weight
