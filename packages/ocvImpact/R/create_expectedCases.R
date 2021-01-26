@@ -92,7 +92,14 @@ create_expectedCases <- function(
     }
 
     ec_yr <- exactextractr::exact_extract(ec_rasterStack, shp0, fun = "sum", stack_apply = TRUE)
-    mean_incid <- exactextractr::exact_extract(lambda, shp0, fun = "weighted_mean", weights = pop_rasterLayer, stack_apply = TRUE)
+    mean_incid <- exactextractr::exact_extract(
+      lambda, 
+      shp0, 
+      function(values, coverage_frac, weights){
+        weighted.mean(values, ifelse(is.na(coverage_frac*weights), 0, coverage_frac*weights), na.rm = TRUE)
+      },
+      weights = pop_rasterLayer, 
+      stack_apply = TRUE)
 
     ec_vec <- as.numeric(ec_yr)
     mean_incid_vec <- as.numeric(mean_incid)
