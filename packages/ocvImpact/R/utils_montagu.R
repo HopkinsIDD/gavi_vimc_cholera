@@ -142,8 +142,8 @@ import_country_lifeExpectancy <- function(modelpath, country){
   message(paste0("Loading ", modelpath, "/", lx0_fn))
   rc <- readr::read_csv(paste0(modelpath, "/", lx0_fn)) %>%
     dplyr::filter(country_code == !!country) %>%
-    dplyr::rename(country = country_code, lx0 = value) %>%
-    dplyr::select(country, year, lx0)
+    dplyr::select(country_code, year, value) %>%
+    dplyr::rename(country = country_code, lx0 = value)
 
   return(rc)
 }
