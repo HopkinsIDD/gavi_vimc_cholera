@@ -242,7 +242,7 @@ generate_flatline_multiplier <- function(){
 #' @export
 generate_cfr <- function(country){
 
-  deaths_summary <- read_csv("input_data/who_cfrs.csv") %>%
+  deaths_summary <- readr::read_csv("input_data/who_cfrs.csv") %>%
     dplyr::select(-country_name)
 
   total_cfrs <- deaths_summary %>% 

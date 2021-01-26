@@ -55,6 +55,14 @@ create_expectedCases <- function(
     vacc_rasterLayer <- raster::subset(vacc_rasterStack, yr_index, drop = FALSE)
     sus_rasterLayer <- raster::subset(sus_rasterStack, yr_index, drop = FALSE)
 
+    if(raster::extent(lambda) != raster::extent(pop_rasterLayer)) {
+      print("lambda")
+      print(raster::extent(lambda))
+      print("pop")
+      print(raster::extent(pop_rasterLayer))
+      stop("Lambda and pop raster extents do not match.")
+    }
+
     if (oy %in% model_years){ ## consecutive years where vaccine dynamics are in play
 
       ## make new indirect effects template
@@ -96,7 +104,7 @@ create_expectedCases <- function(
 
   ec_final <- data.table::rbindlist(ec_ls)
   
-  rm(lambda, sus_rasterStack, vacc_rasterStack, pop_rasterStack, shp, ec_ls)
+  rm(lambda, sus_rasterStack, vacc_rasterStack, pop_rasterStack, ec_ls)
   gc()
 
   return(ec_final)
