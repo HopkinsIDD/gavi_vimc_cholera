@@ -55,39 +55,44 @@ create_expectedCases <- function(
     vacc_rasterLayer <- raster::subset(vacc_rasterStack, yr_index, drop = FALSE)
     sus_rasterLayer <- raster::subset(sus_rasterStack, yr_index, drop = FALSE)
 
-    if(raster::extent(lambda) != raster::extent(pop_rasterLayer)) {
-      print("lambda")
-      print(raster::extent(lambda))
-      print("pop")
-      print(raster::extent(pop_rasterLayer))
-      stop("Lambda and pop raster extents do not match.")
-    }
-
     if (oy %in% model_years){ ## consecutive years where vaccine dynamics are in play
 
       ## make new indirect effects template
       indirect_rasterLayer <- pop_rasterLayer
       raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer)))
 
-      ec_rasterStack <- raster::overlay(
-        sus_rasterLayer,
-        pop_rasterLayer,
-        lambda,
-        indirect_rasterLayer,
-        fun = function(x, y, z, a){
-          x*y*z*a*secular_trend_mult(year = oy)
-        },
-        recycle = TRUE)
+      ec_rasterStack <- tryCatch(
+        raster::overlay(
+          sus_rasterLayer,
+          pop_rasterLayer,
+          lambda,
+          indirect_rasterLayer,
+          fun = function(x, y, z, a){
+            x*y*z*a*secular_trend_mult(year = oy)
+          },
+          recycle = TRUE),
+        error = function(e){
+          print(list(lambda = raster::extent(lambda),
+                     sus = raster::extent(sus_rasterLayer),
+                     pop = raster::extent(pop_rasterLayer)))
+        }
+      )
 
     } else{
       
-      ec_rasterStack <- raster::overlay(
-        pop_rasterLayer,
-        lambda,
-        fun = function(x, y){
-          return(x*y*secular_trend_mult(year = oy))
-        },
-        recycle = TRUE, unstack = TRUE)
+      ec_rasterStack <- tryCatch(
+        raster::overlay(
+          pop_rasterLayer,
+          lambda,
+          fun = function(x, y){
+            return(x*y*secular_trend_mult(year = oy))
+          },
+          recycle = TRUE, unstack = TRUE),
+        error = function(e){
+          print(list(lambda = raster::extent(lambda),
+                     pop = raster::extent(pop_rasterLayer)))
+        }
+      )
 
     }
 
