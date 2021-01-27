@@ -27,7 +27,7 @@ create_static_modelInputs(
 
 \item{vacc_alloc}{object returned from [`allocate_vaccine()`]}
 
-\item{clean}{logical that indicates whether existing vacc_files should be deleted}
+\item{clean}{logical that indicates whether existing model output files (vacc & pop) should be deleted}
 }
 \value{
 rasterStack of total population for model years

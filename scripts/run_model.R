@@ -53,9 +53,11 @@ config <- yaml::read_yaml(opt$config)
 runname <- config$runname
 country <- config$country
 scenario <- config$scenario
-nsamples <- config$num_samples
+nsamples <- config$incid$num_samples
+redrawIncid <- config$incid$redraw
 targeting <- config$vacc$targeting_strategy
 nskipyears <- config$vacc$num_skip_years
+cln <- config$clean
 
 #### Create paths
 mpathname <- file.path("montagu", runname)
@@ -76,7 +78,8 @@ expected_cases <- ocvImpact::run_country_scenario(
   scenario,
   ropathname,
   nsamples,
-  clean = TRUE,
+  clean = cln,
+  redraw = redrawIncid,
   targeting_strat = targeting,
   num_skip_years = nskipyears
   )

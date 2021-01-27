@@ -15,7 +15,7 @@ create_expectedCases(
   secular_trend_mult,
   nsamples,
   is_cf,
-  clean
+  redraw
 )
 }
 \arguments{
@@ -39,7 +39,7 @@ create_expectedCases(
 
 \item{is_cf}{logical indicating whether to run counterfactual model}
 
-\item{clean}{logical indicating whether to delete existing files; pass to [`create_incid_raster()`]}
+\item{redraw}{logical indicate whether to redraw incidence raster samples; pass to [`create_incid_raster()`]}
 }
 \value{
 dataframe with

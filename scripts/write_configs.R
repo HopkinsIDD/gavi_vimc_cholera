@@ -10,7 +10,7 @@ for(scn in scenarios){
 
   scnpathname <- file.path(cpathname, scn)
   dir.create(scnpathname, showWarnings = FALSE)
-  pars <- tidyr::expand_grid(runname = runname, scenario = scn, country = countries, targeting = targeting_strategy, nsamples = num_samples, nskipyear = num_skip_years)
+  pars <- tidyr::expand_grid(runname = runname, scenario = scn, country = countries, targeting = targeting_strategy, nsamples = num_samples, nskipyear = num_skip_years, clean = clean_outputs, redrawIncid = clean_incid)
 
   lapply(1:nrow(pars), function(i){
     par_row <- pars[i,]

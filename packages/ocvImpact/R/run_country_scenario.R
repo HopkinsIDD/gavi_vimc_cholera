@@ -11,7 +11,8 @@
 #' @param secular_trend_mult function that returns a multiplier for secular incidence trends over time (default: generate_flatline_multiplier())
 #' @param rawoutpath path to raw model output files
 #' @param nsamples number of stochastic samples to use
-#' @param clean logical that indicates whether existing vacc_files should be deleted (default = TRUE)
+#' @param clean logical that indicates whether existing targeting and model outputs (sus, pop, vacc) should be deleted (default = TRUE)
+#' @param redraw logical that indicates whether existing incidence raster samples should be redrawn (default = FALSE)
 #' @param ... Optional parameters to pass to [`assign_vaccine_targets()`]. See [`assign_vaccine_targets()`] for defaults.
 #' @return 
 #' @export
@@ -26,6 +27,7 @@ run_country_scenario <- function(
   indirect_mult = generate_indirect_incidence_mult(),
   secular_trend_mult = generate_flatline_multiplier(),
   clean = TRUE,
+  redraw = FALSE,
   ...){
 
   vacc_alloc <- allocate_vaccine(datapath, modelpath, country, scenario, ...)
@@ -41,10 +43,10 @@ run_country_scenario <- function(
 
     if (is.null(vacc_alloc)){
       message("Calculate expected cases: with vaccination")
-      expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, is_cf = TRUE, clean)
+      expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, is_cf = TRUE, redraw)
     } else{
       message("Calculate expected cases: no vaccination")
-      expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, is_cf = FALSE, clean)
+      expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, is_cf = FALSE, redraw)
     } 
 
       ## Write to file 

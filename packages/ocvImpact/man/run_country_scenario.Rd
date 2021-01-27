@@ -15,6 +15,7 @@ run_country_scenario(
   indirect_mult = generate_indirect_incidence_mult(),
   secular_trend_mult = generate_flatline_multiplier(),
   clean = TRUE,
+  redraw = FALSE,
   ...
 )
 }
@@ -37,7 +38,9 @@ run_country_scenario(
 
 \item{secular_trend_mult}{function that returns a multiplier for secular incidence trends over time (default: generate_flatline_multiplier())}
 
-\item{clean}{logical that indicates whether existing vacc_files should be deleted (default = TRUE)}
+\item{clean}{logical that indicates whether existing targeting and model outputs (sus, pop, vacc) should be deleted (default = TRUE)}
+
+\item{redraw}{logical that indicates whether existing incidence raster samples should be redrawn (default = FALSE)}
 
 \item{...}{Optional parameters to pass to [`assign_vaccine_targets()`]. See [`assign_vaccine_targets()`] for defaults.}
 

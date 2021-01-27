@@ -11,7 +11,7 @@
 #' @param secular_trend_mult function for calculating secular trends in mean annual incidence
 #' @param nsamples number of stochastic samples to use
 #' @param is_cf logical indicating whether to run counterfactual model
-#' @param clean logical indicating whether to delete existing files; pass to [`create_incid_raster()`]
+#' @param redraw logical indicate whether to redraw incidence raster samples; pass to [`create_incid_raster()`]
 #' @return dataframe with 
 #' @export
 create_expectedCases <- function(
@@ -25,7 +25,7 @@ create_expectedCases <- function(
   secular_trend_mult,
   nsamples,
   is_cf,
-  clean
+  redraw
   ){
 
   ## create template and inputs
@@ -42,7 +42,7 @@ create_expectedCases <- function(
   pop_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_pop.tif")
 
   ## write to file and import cholera incidence estimates
-  lambda <- create_incid_raster(datapath, country, nsamples, clean)
+  lambda <- create_incid_raster(datapath, country, nsamples, redraw)
   sus_rasterStack <- raster::brick(sus_out_fn)
   vacc_rasterStack <- raster::brick(vacc_out_fn)
   pop_rasterStack <- raster::brick(pop_out_fn)

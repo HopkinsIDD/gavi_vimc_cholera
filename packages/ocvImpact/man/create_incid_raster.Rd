@@ -4,7 +4,7 @@
 \alias{create_incid_raster}
 \title{create_incid_raster}
 \usage{
-create_incid_raster(datapath, country, nsamples, clean)
+create_incid_raster(datapath, country, nsamples, redraw)
 }
 \arguments{
 \item{datapath}{path to data}
@@ -13,7 +13,7 @@ create_incid_raster(datapath, country, nsamples, clean)
 
 \item{nsamples}{numeric, number of layers to sample (must be below 1000)}
 
-\item{clean}{logical that indicates whether existing vacc_files should be deleted}
+\item{redraw}{logical that indicates whether existing incid samples should be drawn again}
 }
 \value{
 raster of incidence rate, 30 samples

@@ -5,19 +5,19 @@
 #' @param datapath path to data 
 #' @param country country code
 #' @param nsamples numeric, number of layers to sample (must be below 1000)
-#' @param clean logical that indicates whether existing vacc_files should be deleted
+#' @param redraw logical that indicates whether existing incid samples should be drawn again
 #' @return raster of incidence rate, 30 samples
 #' @export
-create_incid_raster <- function(datapath, country, nsamples, clean){
+create_incid_raster <- function(datapath, country, nsamples, redraw){
 
   incid_out_fn <- paste0(datapath, "/incidence/", country, "_incid_5k_", nsamples, ".tif")
   
-  if(clean & file.exists(incid_out_fn)){
+  if(redraw & file.exists(incid_out_fn)){
     message(paste("Clean existing", incid_out_fn))
     file.remove(incid_out_fn)
-  }
-
-  if(!file.exists(incid_out_fn)){
+  
+  } else if(!file.exists(incid_out_fn)){
+    
     if (country %in% c("COD", "ETH", "KEN", "SOM", "SSD")){
 
       layer_indexes <- sort(sample(1:1000, nsamples, replace=TRUE))

@@ -7,7 +7,7 @@
 #' @param scenario Unique string that identifies the coverage scenario name
 #' @param rawoutpath path to raw model output files
 #' @param vacc_alloc object returned from [`allocate_vaccine()`]
-#' @param clean logical that indicates whether existing vacc_files should be deleted 
+#' @param clean logical that indicates whether existing model output files (vacc & pop) should be deleted 
 #' @return rasterStack of total population for model years
 #' @export
 create_static_modelInputs <- function(

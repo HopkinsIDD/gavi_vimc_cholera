@@ -16,7 +16,10 @@ prepare_config <- function(p, configpath){
     "runname: '", p$runname, "'\n",
     "country: '", p$country, "'\n",
     "scenario: '", p$scenario, "'\n",
-    "num_samples: ", p$nsamples, "\n",
+    "clean: ", p$clean, "\n",
+    "incid:\n",
+    "  num_samples: ", p$nsamples, "\n",
+    "  redraw: ", p$redrawIncid, "\n",
     "vacc:\n",
     "  targeting_strategy: ", p$targeting, "\n",
     "  num_skip_years: ", p$nskipyear, "\n"
