@@ -36,19 +36,28 @@ run_country_scenario <- function(
   ## write susceptible population proportion raster 
   dummy2 <- create_sus_modelInputs(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, ve_direct, clean)
 
-  if (is.null(vacc_alloc)){
-    message("Calculate expected cases: with vaccination")
-    expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, is_cf = TRUE, clean)
-  } else{
-    message("Calculate expected cases: no vaccination")
-    expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, is_cf = FALSE, clean)
+  ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_ec.csv")  
+  if(clean | !file.exists(ec_out_fn)){ ## rerun
+
+    if (is.null(vacc_alloc)){
+      message("Calculate expected cases: with vaccination")
+      expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, is_cf = TRUE, clean)
+    } else{
+      message("Calculate expected cases: no vaccination")
+      expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, is_cf = FALSE, clean)
+    } 
+
+      ## Write to file 
+      message(paste("Write expected cases:", country, scenario, "\n", ec_out_fn))
+      readr::write_csv(expCases, ec_out_fn)
+
+  } else{ ## read existing
+    message(paste("Reading expected cases:", country, scenario, "\n", ec_out_fn))
+    expCases <- readr::read_csv(ec_out_fn)
   }
   
 
-  ## Write to file
-  ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_ec.csv")
-  message(paste("Write expected cases:", country, scenario, "\n", ec_out_fn))
-  readr::write_csv(expCases, ec_out_fn)
+
 
   return(expCases)
 
