@@ -36,7 +36,7 @@ export_country_stoch_template <- function(
       aoi_cl = min(c(aoi, lx0)), ## set aoi to lower value between life expectancy and aoi table
       yll_tot = ed*(lx0-aoi_cl),
       yld_tot = ec*infect_dur*disab_wt,
-      daly_tot = yll+yld
+      daly_tot = yll_tot+yld_tot
       ) %>%
     dplyr::rename(cases_tot = ec, deaths_tot = ed)
   
