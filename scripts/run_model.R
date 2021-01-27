@@ -28,13 +28,13 @@ package_list <- c(
   "tidyr",
   "yaml"
   )
-for (package in package_list) {
-  if (!require(package = package, character.only = T)) {
-    install.packages(pkgs = package)
-    library(package = package, character.only = T)
-  }
-  detach(pos = which(grepl(package, search())))
-}
+# for (package in package_list) {
+#   if (!require(package = package, character.only = T)) {
+#     install.packages(pkgs = package)
+#     library(package = package, character.only = T)
+#   }
+#   detach(pos = which(grepl(package, search())))
+# }
 
 ### Run options
 option_list <- list(
