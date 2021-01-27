@@ -48,7 +48,7 @@ export_country_stoch_template <- function(
       deaths = round(deaths_tot*prop_age, 0),
       yll = round(yll_tot*prop_age, 0),
       yld = round(yld_tot*prop_age, 0),
-      daly = round(daly_tot*prop_age, 0)
+      dalys = round(daly_tot*prop_age, 0)
       ) %>%
     dplyr::rename(age = age_from, cohort_size = pop_age) %>%
     dplyr::full_join(cb_template, by = c("year", "country", "age")) %>%
