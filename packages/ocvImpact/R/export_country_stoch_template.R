@@ -41,8 +41,8 @@ export_country_stoch_template <- function(
     dplyr::rename(cases_tot = ec, deaths_tot = ed)
   
   ## distribute model outputs by proportion of the population
-  pop_age <- import_country_agePop(modelpath, country)
-  stoch <- dplyr::left_join(pop_age, expCases, by = c("country", "year")) %>%
+  pop_age_df <- import_country_agePop(modelpath, country)
+  stoch <- dplyr::left_join(pop_age_df, expCases, by = c("country", "year")) %>%
     dplyr::mutate(
       cases = round(cases_tot*prop_age, 0),
       deaths = round(deaths_tot*prop_age, 0),
@@ -50,7 +50,7 @@ export_country_stoch_template <- function(
       yld = round(yld_tot*prop_age, 0),
       daly = round(daly_tot*prop_age, 0)
       ) %>%
-    dplyr::rename(age = age_from, cohort_size = agepop) %>%
+    dplyr::rename(age = age_from, cohort_size = pop_age) %>%
     dplyr::select(disease, run_id, year, age, country, country_name, cohort_size, cases, deaths, dalys) %>%
     dplyr::arrange(run_id, age, year)
 
