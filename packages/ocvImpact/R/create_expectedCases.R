@@ -34,7 +34,7 @@ create_expectedCases <- function(
   if (is_cf){
     model_years <- NULL
   }
-  tmp <- import_centralburden_template(mpathname, country)
+  tmp <- import_centralburden_template(modelpath, country)
   output_years <- sort(unique(tmp$year))
 
   sus_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_sus.tif")
