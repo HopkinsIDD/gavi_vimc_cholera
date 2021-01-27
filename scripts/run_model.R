@@ -87,7 +87,8 @@ stoch_template <- ocvImpact::export_country_stoch_template(
   mpathname,
   country,
   scenario,
-  ropathname
+  ropathname,
+  opathname
   )
 
 
