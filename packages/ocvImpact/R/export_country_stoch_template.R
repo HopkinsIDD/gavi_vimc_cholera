@@ -32,13 +32,13 @@ export_country_stoch_template <- function(
   expCases <- readr::read_csv(ec_out_fn) %>%
     dplyr::left_join(lifeExpect_df, by = c("country", "year")) %>%
     dplyr::mutate(
-      deaths_tot = cfr*ec,
+      ed = cfr*ec,
       aoi_cl = min(c(aoi, lx0)), ## set aoi to lower value between life expectancy and aoi table
       yll_tot = ed*(lx0-aoi_cl),
       yld_tot = ec*infect_dur*disab_wt,
       daly_tot = yll+yld
       ) %>%
-    dplyr::rename(cases_tot = ec)
+    dplyr::rename(cases_tot = ec, deaths_tot = ed)
   
   ## distribute model outputs by proportion of the population
   pop_age <- import_country_agePop(modelpath, country)
