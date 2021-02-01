@@ -120,6 +120,7 @@ get_model_years <- function(modelpath, country, vacc_alloc){
 #' @param my_ve_scen 
 #' @importFrom magrittr %>%
 #' @return dataframe with estimates for unweighted and weighted mean vaccination campaign coverage proportion across coverage surveys in the review
+#' @export
 generate_pct_protect_function <- function(my_trunc_year = 5, my_ve_scen = "base"){
 
     ve.dat <- readr::read_csv("input_data/ocv_ve_overtime.csv")
@@ -175,6 +176,7 @@ generate_pct_protect_function <- function(my_trunc_year = 5, my_ve_scen = "base"
 #' @description Using studies on indirect vaccine protection from Kolkota and Matlab, generate a function that takes the level of vaccination coverage and returns a multiplier indicating the percentage reduction in incidence due to indirect vaccine protection. These represent the baseline parameters for indirect vaccine protection. 
 #' @importFrom magrittr %>%
 #' @return 
+#' @export
 generate_indirect_incidence_mult <- function(){
 
     ## data from Kolkata trial
