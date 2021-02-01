@@ -14,13 +14,13 @@ for (i in 1:length(scenarios)){
   stoch_out <- purrr::map_dfr(1:length(stoch_fns), function(j){
     return(readr::read_csv(file.path(opathname, stoch_fns[j])))
   })
-  stoch_final_fn <- paste0(opathname, "/", ocvImpact::import_templateFilename_prefix("stochastic", mpathname), scenario, ".csv")
+  stoch_final_fn <- paste0(opathname, "/", ocvImpact::import_templateFilename_prefix("stochastic", mpathname), scn, ".csv")
   message(paste("Write stochastic final output:", stoch_final_fn))
   readr::write_csv(stoch_out, stoch_final_fn)
 
   ## Central outputs
   central_out <- ocvImpact::export_central_template(stoch_out)
-  central_final_fn <- paste0(opathname, "/", ocvImpact::import_templateFilename_prefix("central", mpathname), scenario, ".csv")
+  central_final_fn <- paste0(opathname, "/", ocvImpact::import_templateFilename_prefix("central", mpathname), scn, ".csv")
   message(paste("Write central final output:", stoch_final_fn))
   readr::write_csv(central_out, central_final_fn)
 
