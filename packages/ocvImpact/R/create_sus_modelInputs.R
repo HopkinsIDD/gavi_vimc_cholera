@@ -77,8 +77,9 @@ create_sus_modelInputs <- function(
           pkj <- raster::overlay(popk, popj,
             fun = function(x, y){x*(1-((j-k)*mu))/y}
             ) ## population retention (measures turnover rate due to death) from years k into year j
+          ve_j_k <- as.numeric(ve_direct(j-k+1)) ## couldn't put the ve_direct function in raster::overlay even though it just returns a scalar
           prob_still_protected <- raster::overlay(vacck, pkj, 
-            fun = function(x, y){return(x*y*as.numeric(ve_direct(j-k+1)))} 
+            fun = function(x, y){return(x*y*ve_j_k)} 
             ) 
           tmp <- raster::overlay(tmp, prob_still_protected,
             fun = function(x, y){x*(1-y)}

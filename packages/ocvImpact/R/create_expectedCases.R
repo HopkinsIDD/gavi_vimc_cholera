@@ -60,6 +60,7 @@ create_expectedCases <- function(
       ## make new indirect effects template
       indirect_rasterLayer <- pop_rasterLayer
       raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer)))
+      incid_trend <- secular_trend_mult(year = oy)
 
       ec_rasterStack <- tryCatch(
         raster::overlay(
@@ -68,7 +69,7 @@ create_expectedCases <- function(
           lambda,
           indirect_rasterLayer,
           fun = function(x, y, z, a){
-            x*y*z*a*secular_trend_mult(year = oy)
+            x*y*z*a*incid_trend
           },
           recycle = TRUE),
         error = function(e){
@@ -80,12 +81,13 @@ create_expectedCases <- function(
 
     } else{
       
+      incid_trend <- secular_trend_mult(year = oy)
       ec_rasterStack <- tryCatch(
         raster::overlay(
           pop_rasterLayer,
           lambda,
           fun = function(x, y){
-            return(x*y*secular_trend_mult(year = oy))
+            return(x*y*incid_trend)
           },
           recycle = TRUE, unstack = TRUE),
         error = function(e){

@@ -19,7 +19,8 @@ load_worldpop_by_country <- function(datapath, country){
     message(paste0("Loading ", datapath, "/worldpop/", pop_fn))
     pop_world <- raster::raster(paste0(datapath, "/worldpop/", pop_fn))
     shp <- load_shapefile_by_country(datapath, country, simple=TRUE)
-    pop <- raster::crop(pop_world, shp, snap = "out")
+    cropped <- raster::crop(pop_world, shp, snap = "out")
+    pop <- raster::mask(cropped, shp, updatevalue = NA)
     
     rm(pop_world)
     gc()

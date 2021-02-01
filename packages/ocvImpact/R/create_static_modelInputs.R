@@ -65,12 +65,14 @@ create_static_modelInputs <- function(
     for (year in output_years){
 
       if (year %in% unique(vacc_alloc$vacc_year)){ 
-        new_vacc_layer <- fasterize::fasterize(
+        new_layer <- fasterize::fasterize(
           dplyr::filter(vacc_alloc, vacc_year == year),
           raster0_template,
           field = "actual_prop_vaccinated",
-          fun = "last"
+          fun = "last",
+          background = 0
           )
+        new_vacc_layer <- raster::mask(new_layer, raster0_template, updatevalue = NA)
       } else{
         ## add 0 layer if there was no vaccination that year
         new_vacc_layer <- raster0_template
