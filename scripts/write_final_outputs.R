@@ -29,7 +29,7 @@ for (i in 1:length(scenarios)){
   par_out <- purrr::map_dfr(1:length(par_fns), function(k){
     return(readr::read_csv(file.path(opathname, par_fns[k])))
   })
-  par_final_fn <- paste0(opathname, "/", ocvImpact::import_templateFilename_prefix("parameter", mpathname), scenario, ".csv")
+  par_final_fn <- paste0(opathname, "/", ocvImpact::import_templateFilename_prefix("parameter", mpathname), scn, ".csv")
   message(paste("Write parameter final output:", par_final_fn))
   readr::write_csv(par_out, par_final_fn)
 }
