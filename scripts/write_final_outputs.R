@@ -21,7 +21,7 @@ for (i in 1:length(scenarios)){
   ## Central outputs
   central_out <- ocvImpact::export_central_template(stoch_out)
   central_final_fn <- paste0(opathname, "/", ocvImpact::import_templateFilename_prefix("central", mpathname), scn, ".csv")
-  message(paste("Write central final output:", stoch_final_fn))
+  message(paste("Write central final output:", central_final_fn))
   readr::write_csv(central_out, central_final_fn)
 
   ## Parameter outputs

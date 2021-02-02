@@ -189,13 +189,13 @@ import_templateFilename_prefix <- function(type, modelpath){
 
   if (type == "stochastic"){
     fn <- list.files(modelpath, pattern = "stochastic-burden-template")[1]
-    rc <- stringr::str_remove(fn, "standard template")
+    rc <- stringr::str_remove(fn, " standard template")
   } else if (type == "central"){
     fn <- list.files(modelpath, pattern = "central-burden-template")[1]
-    rc <- stringr::str_remove(fn, "standard template")
+    rc <- stringr::str_remove(fn, " standard template")
   } else if (type == "parameter"){
     fn <- list.files(modelpath, pattern = "stochastic-burden-template")[1]
-    rc <- stringr::str_replace(stringr::str_remove(fn, "standard template"), "stochastic-burden", "stochastic-params")
+    rc <- stringr::str_replace(stringr::str_remove(fn, " standard template"), "stochastic-burden", "stochastic-params")
   } else{
     warning(paste("This", type, "filename is not supported."))
     rc <- NULL
