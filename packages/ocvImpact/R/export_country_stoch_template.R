@@ -27,22 +27,31 @@ export_country_stoch_template <- function(
   aoi <- generate_aoi(country) ## average age of infection
   lifeExpect_df <- import_country_lifeExpectancy(modelpath, country)
 
+  if(!all(unique(cb_template$year) %in% lifeExpect_df$year)){
+    missing_yrs <- unique(cb_template$year)[which(!unique(cb_template$year) %in% lifeExpect_df$year)]
+    adhoc_row <- dplyr::filter(lifeExpect_df, year == missing_yrs-1)
+    adhoc_row$year <- missing_yrs
+    lifeExpect_df <- dplyr::bind_rows(lifeExpect_df, adhoc_row) %>%
+      dplyr::arrange(country, year)
+    warning(paste("Replacing missing life expectancy data from", missing_yrs, "with", missing_yrs-1, "data, respectively."))
+  }
+
   ## import already-generated model outputs
   ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_ec.csv")
   expCases <- readr::read_csv(ec_out_fn) %>%
     dplyr::left_join(lifeExpect_df, by = c("country", "year")) %>%
     dplyr::mutate(
       ed = cfr*ec,
-      aoi_cl = min(c(aoi, lx0)), ## set aoi to lower value between life expectancy and aoi table
+      aoi_cl = pmin(aoi, lx0), ## set aoi to lower value between life expectancy and aoi table
       yll_tot = ed*(lx0-aoi_cl),
       yld_tot = ec*infect_dur*disab_wt,
       daly_tot = yll_tot+yld_tot
       ) %>%
     dplyr::rename(cases_tot = ec, deaths_tot = ed)
-  
+
   ## distribute model outputs by proportion of the population
   pop_age_df <- import_country_agePop(modelpath, country)
-  stoch <- dplyr::left_join(pop_age_df, expCases, by = c("country", "year")) %>%
+  stoch <- dplyr::left_join(expCases, pop_age_df, by = c("country", "year")) %>%
     dplyr::mutate(
       cases = round(cases_tot*prop_age, 0),
       deaths = round(deaths_tot*prop_age, 0),
