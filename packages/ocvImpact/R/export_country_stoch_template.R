@@ -70,9 +70,8 @@ export_country_stoch_template <- function(
 
   ## get stochastic parameters
   params <- dplyr::mutate(expCases, cfr = cfr, infect_dur = infect_dur) %>%
-    dplyr::select(run_id, aoi_cl, incid_rate, cfr, infect_dur)
-  param_names <- c("run_id", paste(country, c("aoi", "incid_rate", "cfr"), sep = ":"), "infect_dur")
-  names(params) <- param_names
+    dplyr::select(run_id, country, aoi_cl, incid_rate, cfr, infect_dur) %>%
+    dplyr::rename(aoi = aoi_cl)
   par_fn <- paste0(outpath, "/", country, "_", scenario, "_pars.csv")
   message(paste("Writing", par_fn))
   readr::write_csv(params, par_fn)
