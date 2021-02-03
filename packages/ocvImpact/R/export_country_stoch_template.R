@@ -38,8 +38,8 @@ export_country_stoch_template <- function(
 
   ## import already-generated model outputs
   ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_ec.csv")
-  expCases <- readr::read_csv(ec_out_fn) %>%
-    dplyr::left_join(lifeExpect_df, by = c("country", "year")) %>%
+  expCases <- readr::read_csv(ec_out_fn) 
+  expCases_age <- dplyr::left_join(expCases, lifeExpect_df, by = c("country", "year")) %>%
     dplyr::mutate(
       ed = cfr*ec,
       aoi_cl = pmin(aoi, lx0), ## set aoi to lower value between life expectancy and aoi table
@@ -51,7 +51,7 @@ export_country_stoch_template <- function(
 
   ## distribute model outputs by proportion of the population
   pop_age_df <- import_country_agePop(modelpath, country)
-  stoch <- dplyr::left_join(expCases, pop_age_df, by = c("country", "year")) %>%
+  stoch <- dplyr::left_join(expCases_age, pop_age_df, by = c("country", "year")) %>%
     dplyr::mutate(
       cases = round(cases_tot*prop_age, 0),
       deaths = round(deaths_tot*prop_age, 0),
@@ -69,9 +69,11 @@ export_country_stoch_template <- function(
   readr::write_csv(stoch, out_fn)
 
   ## get stochastic parameters
-  params <- dplyr::mutate(expCases, cfr = cfr, infect_dur = infect_dur) %>%
-    dplyr::select(run_id, country, aoi_cl, incid_rate, cfr, infect_dur) %>%
-    dplyr::rename(aoi = aoi_cl)
+  params <- dplyr::mutate(expCases, 
+    aoi = aoi,
+    cfr = cfr, 
+    infect_dur = infect_dur) %>%
+    dplyr::select(run_id, country, aoi, incid_rate, cfr, infect_dur) 
   par_fn <- paste0(outpath, "/", country, "_", scenario, "_pars.csv")
   message(paste("Writing", par_fn))
   readr::write_csv(params, par_fn)

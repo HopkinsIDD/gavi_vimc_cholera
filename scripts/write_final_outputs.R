@@ -1,6 +1,6 @@
 # roxygen2::roxygenise("packages/ocvImpact")
 # install.packages("packages/ocvImpact", type = "source", repos = NULL)
-
+library(magrittr)
 source("scripts/set_all_parameters.R") ## read in parameters
 opathname <- file.path("output_final", runname)
 mpathname <- file.path("montagu", runname)
@@ -26,10 +26,11 @@ for (i in 1:length(scenarios)){
 
   ## Parameter outputs
   par_fns <- list.files(opathname, pattern = paste0(scn, "_pars.csv"))
+
   par_out <- purrr::map_dfr(1:length(par_fns), function(k){
     return(readr::read_csv(file.path(opathname, par_fns[k])))
   }) %>%
-    tidyr::pivot_wider(names_from = country, names_sep = ":", values_from = c(aoi, incid_rate, cfr))
+    tidyr::pivot_wider(par_out, names_from = country, names_sep = ":", values_from = c(aoi, incid_rate, cfr))
   par_final_fn <- paste0(opathname, "/", ocvImpact::import_templateFilename_prefix("parameter", mpathname), scn, ".csv")
   message(paste("Write parameter final output:", par_final_fn))
   readr::write_csv(par_out, par_final_fn)
