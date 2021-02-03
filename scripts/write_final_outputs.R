@@ -26,11 +26,13 @@ for (i in 1:length(scenarios)){
 
   ## Parameter outputs
   par_fns <- list.files(opathname, pattern = paste0(scn, "_pars.csv"))
-
   par_out <- purrr::map_dfr(1:length(par_fns), function(k){
     return(readr::read_csv(file.path(opathname, par_fns[k])))
   }) %>%
-    tidyr::pivot_wider(par_out, names_from = country, names_sep = ":", values_from = c(aoi, incid_rate, cfr))
+    tidyr::pivot_wider(names_from = country, names_sep = ":", values_from = c(aoi, incid_rate, cfr))
+  colnames <- stringr::str_split(names(par_out), ":", simplify=TRUE)
+  names(par_out) <- stringr::str_remove(paste(colnames[,2], colnames[,1], sep = ":"), pattern = "^:")
+  
   par_final_fn <- paste0(opathname, "/", ocvImpact::import_templateFilename_prefix("parameter", mpathname), scn, ".csv")
   message(paste("Write parameter final output:", par_final_fn))
   readr::write_csv(par_out, par_final_fn)
