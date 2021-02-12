@@ -17,5 +17,5 @@ load_shapefile_by_country(datapath, country, simple = FALSE)
 shapefile in sf format
 }
 \description{
-Load admin2 level shapefile for a country
+Download admin2 or admin0 (simple) level shapefile for a country from GADM, if not already in shapefiles folder, and return sf object
 }

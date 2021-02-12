@@ -1,7 +1,7 @@
 
 #' @name load_shapefile_by_country
 #' @title load_shapefile_by_country
-#' @description Load admin2 level shapefile for a country
+#' @description Download admin2 or admin0 (simple) level shapefile for a country from GADM, if not already in shapefiles folder, and return sf object
 #' @param datapath path to data 
 #' @param country country code
 #' @param simple logical indicating whether simple (full country) shapefile should be used (default: FALSE)
@@ -9,23 +9,22 @@
 #' @export 
 load_shapefile_by_country <- function(datapath, country, simple = FALSE){
 
-  if (country %in% c("COD", "ETH", "KEN", "SOM", "SSD")){
-    if (simple){
-      country_pattern <- paste(country, "0", sep = "_")
-    } else{
-      country_pattern <- paste(country, "2", sep = "_")
-    }
-
-    shp_fn <- list.files(path = paste0(datapath, "/shapefiles"), pattern = country_pattern)
-    if (length(shp_fn) > 1){
-      stop(paste("There is more than one shapefile with", country_pattern, "in the filename"))
-    }
-    message(paste0("Loading ", datapath, "/shapefiles/", shp_fn))
-    shp <- readRDS(paste0(datapath, "/shapefiles/", shp_fn))
   
-  } else{
-    stop(paste(country, "is not yet supported."))
-  }
+  tryCatch(
+    {
+      if (simple){
+          country_pattern <- paste(country, "0", sep = "_")
+          shp <- GADMTools::gadm_sf_loadCountries(c(country), level = 0, basefile = file.path(datapath, "shapefiles/"))$sf
+      } else{
+          country_pattern <- paste(country, "2", sep = "_")
+          shp <- GADMTools::gadm_sf_loadCountries(c(country), level = 2, basefile = file.path(datapath, "shapefiles/"))$sf
+      }
+      message(paste0("Loading ", datapath, "/shapefiles/", country_pattern, "_sf.rds"))
+    },
+    error = function(e) {
+      print(paste("Unable to get shapefile for", country, ".", e))
+    }
+  )
 
   return(shp)
 }
