@@ -48,12 +48,9 @@ Each run will also have a set of coverage templates (one per scenario), burden t
 ## Model Input Files: shapefiles and gridded population data
 Files from external sources are also required. 
 
-Country level and admin2 level shapefiles for each modeled country should be acquired from [GADM](https://gadm.org/) and saved in `input_data/shapefiles/<enter-run-name-here>`. These files should be `sf` objects in RDS file format, with names with the following structure:
+Country level and admin2 level shapefiles for each modeled country will be downloaded from [GADM.org](https://gadm.org) to `input_data/shapefiles` as `sf` objects in RDS file format when `load_shapefile_by_country` is called for the first time. Subsequent calls to use the same shapefile will then load an already existing file. If you want to refresh the shapefiles you are using, you should manually delete the relevant files from `input_data/shapefiles` and use the `load_shapefile_by_country` function again.
 
-* Country-level: `gadm*_<3 letter country ISO code>_0_sf.rds`
-* Admin 2level: `gadm*_<3 letter country ISO code>_2_sf.rds`
-
-Raster-level population data (1km) for the whole world should be acquired from [WorldPop](https://www.worldpop.org/project/categories?id=3). We recommend the ``Unconstrained global mosaic'' at 1 km resolution from 2020. This file should be saved in `input_data/worldpop`.
+Raster-level population data (1km) for the whole world should be acquired from [WorldPop](https://www.worldpop.org/project/categories?id=3). We recommend the ``Unconstrained global mosaic'' at 1 km resolution from 2020. This file should be saved and manually placed in `input_data/worldpop`.
 
 
 ## Model Initiation: processing gridded baseline cholera incidence rate
