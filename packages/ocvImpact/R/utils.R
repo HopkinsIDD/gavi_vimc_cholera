@@ -30,6 +30,7 @@ create_relative_worldpop_weights <- function(datapath, country){
 #' @param year population year
 #' @return raster of model population
 #' @export
+#' @include utils_montagu.R
 create_model_pop_raster <- function(datapath, modelpath, country, year){
 
   wts <- create_relative_worldpop_weights(datapath, country)
@@ -52,6 +53,7 @@ create_model_pop_raster <- function(datapath, modelpath, country, year){
 #' @importFrom magrittr %>%
 #' @return dataframe with proportion of total population allocated with vaccines in admin units in a given country and year
 #' @export
+#' @include utils_targeting.R load_shapefile_by_country.R utils.R
 allocate_vaccine <- function(datapath, modelpath, country, scenario, ...){
 
   vacc_targets <- assign_vaccine_targets(datapath, modelpath, country, scenario, ...)
@@ -96,6 +98,7 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, ...){
 #' @param vacc_alloc object returned from [`allocate_vaccine()`]
 #' @return list with model_years, start_year, and real_model_years
 #' @export
+#' @include utils_montagu.R
 get_model_years <- function(modelpath, country, vacc_alloc){
   tmp <- import_centralburden_template(mpathname, country)
   max_output_year <- max(tmp$year)

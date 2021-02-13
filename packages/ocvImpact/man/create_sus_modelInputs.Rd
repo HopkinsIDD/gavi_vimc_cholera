@@ -32,9 +32,6 @@ create_sus_modelInputs(
 
 \item{clean}{logical that indicates whether existing sus_files should be deleted}
 }
-\value{
-NULl
-}
 \description{
 Create raster for proportion of population susceptible in each year, after accounting for vaccination
 }

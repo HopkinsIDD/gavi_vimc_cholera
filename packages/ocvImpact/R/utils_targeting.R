@@ -21,6 +21,7 @@ get_admin_population <- function(pop, shp){
 #' @importFrom magrittr %>%
 #' @return dataframe with incidence and population by admin unit for a single country
 #' @export 
+#' @include load_worldpop_by_country.R load_shapefile_by_country.R utils_targeting.R
 load_targets_by_country <- function(datapath, country){
 
   if (country %in% c("COD", "ETH", "KEN", "SOM", "SSD")){
@@ -76,6 +77,7 @@ load_targets_by_country <- function(datapath, country){
 #' @importFrom magrittr %>%
 #' @return 
 #' @export
+#' @include utils_targeting.R utils_montagu.R
 assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targeting_strat = "incidence", campaign_cov = 0.8, num_skip_years = 0){
 
   message(paste("Now assigning vaccine by incidence:", country, scenario))

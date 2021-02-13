@@ -10,6 +10,7 @@
 #' @param clean logical that indicates whether existing model output files (vacc & pop) should be deleted 
 #' @return rasterStack of total population for model years
 #' @export
+#' @include utils.R 
 create_static_modelInputs <- function(
   datapath, 
   modelpath, 

@@ -14,3 +14,18 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Collate: 
+    'load_shapefile_by_country.R'
+    'load_worldpop_by_country.R'
+    'align_rasters.R'
+    'create_incid_raster.R'
+    'utils_montagu.R'
+    'utils_targeting.R'
+    'utils.R'
+    'create_expectedCases.R'
+    'create_static_modelInputs.R'
+    'create_sus_modelInputs.R'
+    'export_central_template.R'
+    'export_country_stoch_template.R'
+    'run_country_scenario.R'
+    'utils_config.R'

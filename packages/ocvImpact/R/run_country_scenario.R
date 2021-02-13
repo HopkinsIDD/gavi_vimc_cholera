@@ -16,6 +16,7 @@
 #' @param ... Optional parameters to pass to [`assign_vaccine_targets()`]. See [`assign_vaccine_targets()`] for defaults.
 #' @return 
 #' @export
+#' @include utils.R create_static_modelInputs.R create_sus_modelInputs.R create_expectedCases.R
 run_country_scenario <- function(
   datapath, 
   modelpath, 

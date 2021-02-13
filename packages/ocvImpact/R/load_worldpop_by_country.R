@@ -6,6 +6,7 @@
 #' @param country country code
 #' @return population raster 
 #' @export
+#' @include load_shapefile_by_country.R
 load_worldpop_by_country <- function(datapath, country){
 
   ## WorldPop population data ##

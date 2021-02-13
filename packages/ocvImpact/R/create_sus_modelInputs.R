@@ -9,8 +9,9 @@
 #' @param vacc_alloc object returned from [`allocate_vaccine()`]
 #' @param ve_direct vaccine effect function (default: generate_pct_protect_function())
 #' @param clean logical that indicates whether existing sus_files should be deleted
-#' @return NULl
+#' @return NULL
 #' @export
+#' @include utils.R utils_montagu.R align_rasters.R
 create_sus_modelInputs <- function(
   datapath, 
   modelpath, 

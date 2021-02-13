@@ -9,6 +9,7 @@
 #' @importFrom magrittr %>%
 #' @return 
 #' @export
+#' @include utils.R utils_montagu.R 
 export_country_stoch_template <- function(
   modelpath,
   country, 

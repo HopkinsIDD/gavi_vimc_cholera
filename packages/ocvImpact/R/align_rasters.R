@@ -6,6 +6,7 @@
 #' @param orig_raster Raster* object that should be aligned to that in WorldPop and GADM
 #' @return Raster* object with aligned extent and resolution at country level
 #' @export
+#' @include load_shapefile_by_country.R load_worldpop_by_country.R
 align_rasters <- function(datapath, country, orig_raster){
   
   shp <- load_shapefile_by_country(datapath, country, simple=TRUE)

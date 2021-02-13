@@ -1,5 +1,5 @@
 #' @name create_expectedCases
-#'@title create_expectedCases
+#' @title create_expectedCases
 #' @description Create proportion of population vaccinated and total population rasterStacks. Write vaccination raster to file and export population raster
 #' @param datapath path to input data 
 #' @param modelpath path to montagu files
@@ -14,6 +14,7 @@
 #' @param redraw logical indicate whether to redraw incidence raster samples; pass to [`create_incid_raster()`]
 #' @return dataframe with 
 #' @export
+#' @include utils.R utils_montagu.R create_incid_raster.R load_shapefile_by_country.R 
 create_expectedCases <- function(
   datapath,
   modelpath,

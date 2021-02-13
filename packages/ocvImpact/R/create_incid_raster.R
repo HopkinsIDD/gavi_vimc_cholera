@@ -8,6 +8,7 @@
 #' @param redraw logical that indicates whether existing incid samples should be drawn again
 #' @return raster of incidence rate, 30 samples
 #' @export
+#' @include align_rasters.R
 create_incid_raster <- function(datapath, country, nsamples, redraw){
 
   incid_out_fn <- paste0(datapath, "/incidence/", country, "_incid_5k_", nsamples, ".tif")
