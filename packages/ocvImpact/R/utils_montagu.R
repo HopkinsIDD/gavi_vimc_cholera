@@ -8,7 +8,11 @@
 #' @importFrom magrittr %>%
 #' @return Dataframe with vaccination coverage for a single scenario and country. Years without vaccination are excluded from the returned dataframe. Countries without vaccination in any year return a null dataframe.
 #' @export
+#' @include retrieve_montagu_coverage.R
 import_coverage_scenario <- function(modelpath, country, scenario, filter0 = FALSE){
+  
+  retrieve_montagu_coverage(modelpath, runname) #assume runname is global, check if the data exists, if not, get the data from Montagu API
+  
   cov_fnames <- list.files(modelpath, pattern = "^coverage_")
   scn_fname <- paste0(modelpath, "/", grep(scenario, cov_fnames, ignore.case = TRUE, value = TRUE))
 
@@ -41,7 +45,11 @@ import_coverage_scenario <- function(modelpath, country, scenario, filter0 = FAL
 #' @param country country code
 #' @return dataframe for central burden template for one country
 #' @export 
+#' @include retrieve_montagu_centralburden_template.R
 import_centralburden_template <- function(modelpath, country){
+  
+  retrieve_montagu_centralburden_template(modelpath, runname) #assume runname is global, check if the data exists, if not, get the data from Montagu API
+  
   fname <- list.files(modelpath, pattern = "^central-burden")
   if (length(fname)>1){
     stop(paste("More than 1 central burden template was found in", modelpath))
@@ -61,7 +69,11 @@ import_centralburden_template <- function(modelpath, country){
 #' @importFrom magrittr %>%
 #' @return 
 #' @export 
+#' @include retrieve_montagu_population.R
 import_country_population <- function(modelpath, country){
+  
+  retrieve_montagu_population(modelpath, runname) #assume runname is global, check if the data exists, if not, get the data from Montagu API
+  
   pop_fn <- list.files(modelpath, pattern = "tot_pop_both.csv$")
   if (length(pop_fn)>1){
     stop(paste("More than 1 tot_pop_both demographic file was found in", modelpath))
@@ -104,7 +116,11 @@ import_country_population_1yr <- function(modelpath, country, year){
 #' @importFrom magrittr %>%
 #' @return 
 #' @export 
+#' @include retrieve_montagu_agePop.R
 import_country_agePop <- function(modelpath, country){
+  
+  retrieve_montagu_agePop(modelpath, runname) #assume runname is global, check if the data exists, if not, get the data from Montagu API
+  
   pop_fn <- list.files(modelpath, pattern = "int_pop_both.csv$")
   if (length(pop_fn)>1){
     stop(paste("More than 1 int_pop_both demographic file was found in", modelpath))
@@ -134,7 +150,11 @@ import_country_agePop <- function(modelpath, country){
 #' @importFrom magrittr %>%
 #' @return 
 #' @export 
+#' @include retrieve_montagu_lifeExpectancy.R
 import_country_lifeExpectancy <- function(modelpath, country){
+  
+  retrieve_montagu_lifeExpectancy(modelpath, runname) #assume runname is global, check if the data exists, if not, get the data from Montagu API
+  
   lx0_fn <- list.files(modelpath, pattern = "lx0_both.csv$")
   if (length(lx0_fn)>1){
     stop(paste("More than 1 lx0_both (life expectancy) file was found in", modelpath))
