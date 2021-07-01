@@ -2,24 +2,20 @@
 #' @title retrieve_montagu_population
 #' @description Get total country population from standardized source in Montagu.
 #' @param modelpath path to Mongatu files
-#' @param touchstone the unique id of the simulation
 #' @param group_id the id of our modeling group (default = 'JHU-Lee')
 #' @param expectations_all the expectations that VIMC wants for us (default = TRUE)
 #' @param countries_all the countries that we want the total population data from (default = TRUE)
 #' @return single or multiple CSV data files
 #' @export 
-retrieve_montagu_population = function(modelpath, touchstone, group_id = 'JHU-Lee', expectations_all = TRUE, countries_all = TRUE){
+retrieve_montagu_population = function(modelpath, group_id = 'JHU-Lee', expectations_all = TRUE, countries_all = TRUE){
   
   
-  ### Check if the Files already Exist
-  TotPopFiles <- list.files(modelpath, pattern = "tot_pop_both.csv$")
-  if (length(TotPopFiles) >= 1){ #there should be 1 file
-    
-    return(message(paste0("The total population files have been under the directory: ", modelpath, '. No new download was made. ')))
-  }
+  ### Get the Touchstone from the Modelpath
+  SplittedString = strsplit(modelpath, '/')[[1]]
+  touchstone = SplittedString[length(SplittedString)]
   
   
-  ### Setup Montagu API
+  ### Setup Montagu API (won't prompt anything if already logged in)
   drat:::add("vimc")
   montagu::montagu_server_global_default_set(
     montagu::montagu_server("production", "montagu.vaccineimpact.org"))

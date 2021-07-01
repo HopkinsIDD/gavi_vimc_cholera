@@ -2,24 +2,20 @@
 #' @title retrieve_montagu_agePop
 #' @description Get age-specific country population from standardized source in Montagu.
 #' @param modelpath path to Mongatu files
-#' @param touchstone the unique id of the simulation
 #' @param group_id the id of our modeling group (default = 'JHU-Lee')
 #' @param expectations_all the expectations that VIMC wants for us (default = TRUE)
 #' @param countries_all the countries that we want the total population data from (default = TRUE)
 #' @return single or multiple CSV data files
 #' @export 
-retrieve_montagu_agePop = function(modelpath, touchstone, group_id = 'JHU-Lee', expectations_all = TRUE, countries_all = TRUE){
+retrieve_montagu_agePop = function(modelpath, group_id = 'JHU-Lee', expectations_all = TRUE, countries_all = TRUE){
   
   
-  ### Check if the Files already Exist
-  AgePopFiles <- list.files(modelpath, pattern = "int_pop_both.csv$")
-  if (length(AgePopFiles) >= 1){ #there should be 1 file
-    
-    return(message(paste0("The age-specific population files have been under the directory: ", modelpath, '. No new download was made. ')))
-  }
+  ### Get the Touchstone from the Modelpath
+  SplittedString = strsplit(modelpath, '/')[[1]]
+  touchstone = SplittedString[length(SplittedString)]
+
   
-  
-  ### Setup Montagu API
+  ### Setup Montagu API (won't prompt anything if already logged in)
   drat:::add("vimc")
   montagu::montagu_server_global_default_set(
     montagu::montagu_server("production", "montagu.vaccineimpact.org"))

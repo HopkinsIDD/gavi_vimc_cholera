@@ -2,20 +2,16 @@
 #' @title retrieve_montagu_centralburden_template
 #' @description Retrieves the CSV file(s) with central burden estimates template from the Montagu API.
 #' @param modelpath path to Mongatu files
-#' @param touchstone the unique id of the simulation
 #' @param group_id the id of our modeling group (default = 'JHU-Lee')
 #' @param expectations_all the expectations that VIMC wants for us (default = TRUE)
 #' @return single or multiple CSV data files
 #' @export 
-retrieve_montagu_centralburden_template = function(modelpath, touchstone, group_id = 'JHU-Lee', expectations_all = TRUE){
+retrieve_montagu_centralburden_template = function(modelpath, group_id = 'JHU-Lee', expectations_all = TRUE){
   
   
-  ### Check if the Files already Exist
-  CentralBurdenTempFiles <- list.files(modelpath, pattern = "^central-burden")
-  if (length(CentralBurdenTempFiles) > 0){
-    
-    return(message(paste0("The central burden template files have been under the directory: ", modelpath, '. No new download was made. ')))
-  }
+  ### Get the Touchstone from the Modelpath
+  SplittedString = strsplit(modelpath, '/')[[1]]
+  touchstone = SplittedString[length(SplittedString)]
   
   
   ### Setup Montagu API (won't prompt anything if already logged in)

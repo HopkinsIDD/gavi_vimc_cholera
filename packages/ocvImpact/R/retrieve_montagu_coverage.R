@@ -2,23 +2,19 @@
 #' @title retrieve_montagu_coverage
 #' @description Retrieves the CSV file(s) with vaccination coverage values for the scenario from the Montagu API.
 #' @param modelpath path to Mongatu files
-#' @param touchstone the unique id of the simulation
 #' @param group_id the id of our modeling group (default = 'JHU-Lee')
 #' @param scenarios_all the scenario that we want the coverage data from (default = TRUE)
 #' @return single or multiple CSV data files
 #' @export 
-retrieve_montagu_coverage = function(modelpath, touchstone, group_id = 'JHU-Lee', scenarios_all = TRUE){
+retrieve_montagu_coverage = function(modelpath, group_id = 'JHU-Lee', scenarios_all = TRUE){
   
   
-  ### Check if the Files already Exist
-  CoverageFiles <- list.files(modelpath, pattern = "^coverage_")
-  if (length(CoverageFiles) >= 2){ #there should be 2 coverage data files, so the default should be 2
-    
-    return(message(paste0("The coverage data files have been under the directory: ", modelpath, '. No new download was made. ')))
-  }
+  ### Get the Touchstone from the Modelpath
+  SplittedString = strsplit(modelpath, '/')[[1]]
+  touchstone = SplittedString[length(SplittedString)]
   
   
-  ### Setup Montagu API
+  ### Setup Montagu API (won't prompt anything if already logged in)
   drat:::add("vimc")
   montagu::montagu_server_global_default_set(
     montagu::montagu_server("production", "montagu.vaccineimpact.org"))
