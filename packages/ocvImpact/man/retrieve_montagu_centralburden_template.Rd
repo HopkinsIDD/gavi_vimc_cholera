@@ -6,15 +6,12 @@
 \usage{
 retrieve_montagu_centralburden_template(
   modelpath,
-  touchstone,
   group_id = "JHU-Lee",
   expectations_all = TRUE
 )
 }
 \arguments{
 \item{modelpath}{path to Mongatu files}
-
-\item{touchstone}{the unique id of the simulation}
 
 \item{group_id}{the id of our modeling group (default = 'JHU-Lee')}
 

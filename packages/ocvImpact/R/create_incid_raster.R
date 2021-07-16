@@ -2,50 +2,119 @@
 #' @name create_incid_raster
 #' @title create_incid_raster
 #' @description Generate a raster with the baseline cholera incidence
+#' @param modelpath path to montagu 
 #' @param datapath path to data 
 #' @param country country code
 #' @param nsamples numeric, number of layers to sample (must be below 1000)
 #' @param redraw logical that indicates whether existing incid samples should be drawn again
 #' @return raster of incidence rate, 30 samples
 #' @export
-#' @include align_rasters.R
-create_incid_raster <- function(datapath, country, nsamples, redraw){
+#' @include get_singular_estimate.R align_rasters.R utils_montagu.R load_worldpop_by_country.R
+#######Kaiyue Added on 7/12/2021#######
+###We also include utils_montagu.R just to get population estimate for a country
+###We also include load_worldpop_by_country.R just to get a proper raster
+###We also need to include modelpath as input
+###########Comment completed###########
 
+create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
+
+  #######Kaiyue Added on 7/15/2021#######
+  ###Use the WHO data source to update the current spreadsheet
+  IncidenceTable <- ocvImpact::get_singular_estimate(datapath, country)
+  RasterCountry <- subset(IncidenceTable, is.na(IncidenceTable$singular_estimate))$country_code
+  NonRasterCountry <- subset(IncidenceTable, !is.na(IncidenceTable$singular_estimate))$country_code
+  ###Calculate and generate
+  if (country %in% NonRasterCountry){
+    NRCountryIndex <- match(country, IncidenceTable$country_code)
+    YearList <- as.numeric(strsplit(IncidenceTable$year_list[NRCountryIndex], '-')[[1]])
+    CountryPopTable <- ocvImpact::import_country_population(modelpath, country)
+    CountryPopMean <- mean(CountryPopTable$pop_model[match(YearList, CountryPopTable$year)], na.rm = TRUE)
+    
+    if (IncidenceTable$is_num_case[NRCountryIndex] == 0){
+      NumCases <- IncidenceTable$singular_estimate[NRCountryIndex] * CountryPopMean
+    } else{
+      NumCases <- IncidenceTable$singular_estimate[NRCountryIndex]
+    }
+    
+    PoisCases <- rpois(nsamples, NumCases)
+    StochasticIR <- PoisCases / CountryPopMean
+    rm(CountryPopTable)
+    rm(PoisCases)
+    gc()
+  }
+  ###########Comment completed###########
+  
   incid_out_fn <- paste0(datapath, "/incidence/", country, "_incid_5k_", nsamples, ".tif")
   
-  if(redraw & file.exists(incid_out_fn)){
-    message(paste("Clean existing", incid_out_fn))
-    file.remove(incid_out_fn)
-  
-  } else if(!file.exists(incid_out_fn)){
+  if (!file.exists(incid_out_fn) | redraw){
     
-    if (country %in% c("COD", "ETH", "KEN", "SOM", "SSD")){
-
+    ###If we want to redraw, first delete
+    if(redraw & file.exists(incid_out_fn)){
+      message(paste("Clean existing", incid_out_fn))
+      file.remove(incid_out_fn)
+    }
+    
+    ###Just generate
+    #######Kaiyue Added on 7/12/2021#######
+    #if (country %in% c("COD", "ETH", "KEN", "SOM", "SSD")){ ----the older code with just the testing countries
+    #the next line is the new code
+    if (country %in% RasterCountry){
+      ###########Comment completed###########
+      rm(IncidenceTable) #we don't need this table for countries already with raster data
       layer_indexes <- sort(sample(1:1000, nsamples, replace=TRUE))
       print(layer_indexes)
-
+      
       ## incidence data ##
       message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
       afr <- raster::stack(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
       afr_sample <- raster::subset(afr, layer_indexes, drop = FALSE)
       rm(afr)
       gc()
-
+      
       lambda <- align_rasters(datapath, country, afr_sample)
       rm(afr_sample)
       gc()
-
+      
       message(paste("Write", incid_out_fn))
       raster::writeRaster(raster::stack(lambda), filename = incid_out_fn)
-
-    } else {
+      
+      #######Kaiyue Added on 7/12/2021####### -- this is to use singular incidence to represent the whole country incidence
+   }else if(country %in% NonRasterCountry){
+      ###Calculate the number of cases for each grid cell and stack
+      CountryPopRaster <- ocvImpact::load_worldpop_by_country(datapath, country)
+      StochasticLayers <- list()
+      for (i in 1:length(StochasticIR)){
+        CountryCaseRaster <- CountryPopRaster
+        IncidenceRate <- StochasticIR[i]
+        raster::values(CountryCaseRaster) <- raster::values(CountryCaseRaster)*IncidenceRate
+        StochasticLayers[[i]] <- CountryCaseRaster
+      }
+      rm(CountryPopRaster)
+      rm(CountryCaseRaster)
+      
+      nrc <- raster::stack(StochasticLayers)
+      nrc_sample <- nrc #we already have "nsample" samples 
+      #raster::plot(nrc_sample) ###################just for testing
+      
+      rm(StochasticLayers)
+      rm(nrc)
+      gc()
+      lambda <- align_rasters(datapath, country, nrc_sample)
+      #raster::plot(lambda) ###################just for testing
+      rm(nrc_sample)
+      gc()
+      message(paste("Write", incid_out_fn))
+      raster::writeRaster(raster::stack(lambda), filename = incid_out_fn)
+      ###########Comment completed###########
+      
+   }else {
       stop(paste(country, "cholera incidence data was not found."))
     }
-
-  } else {
+    
+ }else {
     message(paste("Skip creation", incid_out_fn))
     lambda <- raster::stack(incid_out_fn)
-  }
+ }
   
   return(lambda)
 }

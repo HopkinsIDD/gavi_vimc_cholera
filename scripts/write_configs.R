@@ -1,6 +1,40 @@
 # roxygen2::roxygenise("packages/ocvImpact")
 # install.packages("packages/ocvImpact", type = "source", repos = NULL)
 
+#######Kaiyue Added on -7/8/2021#######
+#======Use other packages needed======#
+package_list <- c(
+                  "roxygen2", 
+                  "data.table",
+                  "dplyr",
+                  "exactextractr",
+                  "fasterize",
+                  "optparse",
+                  "purrr",
+                  "raster",
+                  "readr",
+                  "sf",
+                  "stringr",
+                  "tibble",
+                  "tidyr",
+                  "yaml"
+                  )
+
+for (package in package_list) {
+  if (!require(package = package, character.only = T)) {
+    install.packages(pkgs = package)
+    library(package = package, character.only = T)
+  }
+  detach(pos = which(grepl(package, search())))
+}
+
+#======Use the ocvImpact package======#
+roxygen2::roxygenise("packages/ocvImpact")
+install.packages("packages/ocvImpact", type = "source", repos = NULL)
+###########Comment completed###########
+
+
+
 source("scripts/set_all_parameters.R")
 
 cpathname <- file.path("configs", runname)

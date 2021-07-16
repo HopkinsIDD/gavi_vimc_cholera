@@ -6,7 +6,6 @@
 \usage{
 retrieve_montagu_agePop(
   modelpath,
-  touchstone,
   group_id = "JHU-Lee",
   expectations_all = TRUE,
   countries_all = TRUE
@@ -14,8 +13,6 @@ retrieve_montagu_agePop(
 }
 \arguments{
 \item{modelpath}{path to Mongatu files}
-
-\item{touchstone}{the unique id of the simulation}
 
 \item{group_id}{the id of our modeling group (default = 'JHU-Lee')}
 

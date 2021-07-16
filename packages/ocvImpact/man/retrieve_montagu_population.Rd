@@ -6,7 +6,6 @@
 \usage{
 retrieve_montagu_population(
   modelpath,
-  touchstone,
   group_id = "JHU-Lee",
   expectations_all = TRUE,
   countries_all = TRUE
@@ -14,8 +13,6 @@ retrieve_montagu_population(
 }
 \arguments{
 \item{modelpath}{path to Mongatu files}
-
-\item{touchstone}{the unique id of the simulation}
 
 \item{group_id}{the id of our modeling group (default = 'JHU-Lee')}
 

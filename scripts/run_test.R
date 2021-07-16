@@ -18,7 +18,7 @@ roxygen2::roxygenise("packages/ocvImpact")
 install.packages("packages/ocvImpact", type = "source", repos = NULL)
 
 ### Try to use the function in the package (coverage data)
-modelpath = 'C:/Users/ZOU/Desktop/only local ocvImpact/montagu/201910gavi-5' #does extra / make a difference? No. 
+modelpath = 'C:/Users/ZOU/Desktop/gavi_vimc_cholera/montagu/201910gavi-5' #does extra / make a difference? No. 
 ocvImpact::retrieve_montagu_coverage(modelpath)
 ocvImpact::retrieve_montagu_coverage(modelpath, scenarios_all = FALSE)
 
@@ -43,9 +43,12 @@ country = 'COD'
 scenario = 'cholera-campaign-default-test'
 ocvImpact::import_coverage_scenario(modelpath, country, scenario)
 
+### Try to get population data for a country
+ReturnedPop = ocvImpact::import_country_population(modelpath, country)
 
-
-
-
-
+### Before run
+datapath = "C:/Users/ZOU/Desktop/VIMC/Our_own_input_data_incidence/"
+nsamples = 30
+modelpath = 'C:/Users/ZOU/Desktop/gavi_vimc_cholera/montagu/201910gavi-5'
+country = "AFG"
 

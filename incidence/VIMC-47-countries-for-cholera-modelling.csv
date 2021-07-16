@@ -1,0 +1,48 @@
+"country","country_code","singular_estimate","year_list","is_num_case"
+"Afghanistan","AFG",11755.2,"2019-2018-2017-2016-2015",1
+"Angola","AGO",NA,NA,NA
+"Burundi","BDI",NA,NA,NA
+"Benin","BEN",NA,NA,NA
+"Burkina Faso","BFA",NA,NA,NA
+"Bangladesh","BGD",NA,NA,NA
+"Central African Republic","CAF",NA,NA,NA
+"Cote d'Ivoire","CIV",NA,NA,NA
+"Cameroon","CMR",NA,NA,NA
+"Congo, DR","COD",NA,NA,NA
+"Congo, Rep.","COG",NA,NA,NA
+"Algeria","DZA",NA,NA,NA
+"Ethiopia","ETH",NA,NA,NA
+"Ghana","GHA",NA,NA,NA
+"Guinea","GIN",NA,NA,NA
+"Guinea-Bissau","GNB",NA,NA,NA
+"Haiti","HTI",21943.2,"2019-2018-2016-2015-2014",1
+"India","IND",2493.2,"2018-2016-2015-2014-2013",1
+"Iran, Islamic Rep.","IRN",1,NA,1
+"Iraq","IRQ",1,NA,1
+"Kenya","KEN",NA,NA,NA
+"Liberia","LBR",NA,NA,NA
+"Madagascar","MDG",NA,NA,NA
+"Mali","MLI",NA,NA,NA
+"Mozambique","MOZ",NA,NA,NA
+"Mauritania","MRT",NA,NA,NA
+"Malawi","MWI",NA,NA,NA
+"Namibia","NAM",NA,NA,NA
+"Niger","NER",NA,NA,NA
+"Nigeria","NGA",NA,NA,NA
+"Nepal","NPL",1,NA,1
+"Pakistan","PAK",1,NA,1
+"Philippines","PHL",1,NA,1
+"Rwanda","RWA",NA,NA,NA
+"Senegal","SEN",NA,NA,NA
+"Sierra Leone","SLE",NA,NA,NA
+"Somalia","SOM",NA,NA,NA
+"Sudan: South","SSD",NA,NA,NA
+"Chad","TCD",NA,NA,NA
+"Togo","TGO",NA,NA,NA
+"Thailand","THA",1,NA,0
+"Tanzania","TZA",NA,NA,NA
+"Uganda","UGA",NA,NA,NA
+"Yemen","YEM",1,NA,0
+"South Africa","ZAF",NA,NA,NA
+"Zambia","ZMB",NA,NA,NA
+"Zimbabwe","ZWE",NA,NA,NA

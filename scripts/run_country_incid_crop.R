@@ -66,12 +66,14 @@ dir.create(dpathname, showWarnings = FALSE)
 dir.create(opathname, showWarnings = FALSE)
 
 #### Crop incid raster by country
+#######Kaiyue Added on 7/14/2021####### --- add mpathname as input
 message(paste("Cropping incidence raster:", runname, country, scenario, nsamples))
 incid <- ocvImpact::create_incid_raster(
+  mpathname, 
   dpathname,
   country,
   nsamples,
-  clean = TRUE
+  clean <- TRUE #updated from "=" to "<-"
   )
 
 rm(incid)
