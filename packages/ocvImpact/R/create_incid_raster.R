@@ -84,13 +84,12 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
       CountryPopRaster <- ocvImpact::load_worldpop_by_country(datapath, country)
       StochasticLayers <- list()
       for (i in 1:length(StochasticIR)){
-        CountryCaseRaster <- CountryPopRaster
-        IncidenceRate <- StochasticIR[i]
-        raster::values(CountryCaseRaster) <- raster::values(CountryCaseRaster)*IncidenceRate
-        StochasticLayers[[i]] <- CountryCaseRaster
+        CountryIRRaster <- CountryPopRaster
+        CountryIRRaster[!is.na(CountryIRRaster)] <- StochasticIR[i]
+        StochasticLayers[[i]] <- CountryIRRaster
       }
       rm(CountryPopRaster)
-      rm(CountryCaseRaster)
+      rm(CountryIRRaster)
       
       nrc <- raster::stack(StochasticLayers)
       nrc_sample <- nrc #we already have "nsample" samples 

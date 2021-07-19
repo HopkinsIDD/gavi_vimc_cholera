@@ -11,7 +11,7 @@ get_singular_estimate(datapath, country, nyears = 5)
 
 \item{country}{country code}
 
-\item{nyears}{numeric, number of years we want to calculate average annual #cases from (default = 5 and always most recent)}
+\item{nyears}{numeric, number of years we want to calculate average annual #cases from (default = 5 and always most recent available)}
 }
 \value{
 an updated .csv file

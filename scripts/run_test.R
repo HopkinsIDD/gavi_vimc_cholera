@@ -47,8 +47,10 @@ ocvImpact::import_coverage_scenario(modelpath, country, scenario)
 ReturnedPop = ocvImpact::import_country_population(modelpath, country)
 
 ### Before run
-datapath = "C:/Users/ZOU/Desktop/VIMC/Our_own_input_data_incidence/"
+datapath = "C:/Users/ZOU/Desktop/gavi_vimc_cholera"
 nsamples = 30
 modelpath = 'C:/Users/ZOU/Desktop/gavi_vimc_cholera/montagu/201910gavi-5'
 country = "AFG"
+mpathname = modelpath
+dpathname = datapath
 
