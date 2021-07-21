@@ -1,8 +1,10 @@
 # roxygen2::roxygenise("packages/ocvImpact")
 # install.packages("packages/ocvImpact", type = "source", repos = NULL)
 
-#######Kaiyue Added on -7/8/2021#######
+#######Kaiyue Added on 7/21/2021#######
 #======Use other packages needed======#
+chooseCRANmirror(ind = 77) #specify the mirror so that the packages can be successfully installed in the non-interactive way
+
 package_list <- c(
                   "roxygen2", 
                   "data.table",

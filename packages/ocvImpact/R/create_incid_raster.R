@@ -13,12 +13,13 @@
 #######Kaiyue Added on 7/12/2021#######
 ###We also include utils_montagu.R just to get population estimate for a country
 ###We also include load_worldpop_by_country.R just to get a proper raster
-###We also need to include modelpath as input
+###We also include modelpath as input
 ###########Comment completed###########
 
 create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
 
   #######Kaiyue Added on 7/15/2021#######
+  ######Kaiyue editted on 7/21/2021######
   ###Use the WHO data source to update the current spreadsheet
   IncidenceTable <- ocvImpact::get_singular_estimate(datapath, country)
   RasterCountry <- subset(IncidenceTable, is.na(IncidenceTable$singular_estimate))$country_code
@@ -38,6 +39,7 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
     
     PoisCases <- rpois(nsamples, NumCases)
     StochasticIR <- PoisCases / CountryPopMean
+    rm(IncidenceTable)
     rm(CountryPopTable)
     rm(PoisCases)
     gc()
@@ -60,7 +62,6 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
     #the next line is the new code
     if (country %in% RasterCountry){
       ###########Comment completed###########
-      rm(IncidenceTable) #we don't need this table for countries already with raster data
       layer_indexes <- sort(sample(1:1000, nsamples, replace=TRUE))
       print(layer_indexes)
       

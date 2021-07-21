@@ -75,6 +75,7 @@ incid <- ocvImpact::create_incid_raster(
   nsamples,
   clean <- TRUE #updated from "=" to "<-"
   )
+###########Comment completed###########
 
 rm(incid)
 gc()
