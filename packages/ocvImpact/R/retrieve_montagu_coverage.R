@@ -31,7 +31,7 @@ retrieve_montagu_coverage = function(modelpath, group_id = 'JHU-Lee', scenarios_
     for (Scenarios in ScenariosList) {
       cov <- montagu::montagu_coverage_data(group_id, touchstone, Scenarios)
       FileName <- paste0('coverage_', touchstone, '_', Scenarios, '.csv')
-      DirectoryFileName <- paste0(modelpath, '\\', FileName)
+      DirectoryFileName <- paste0(modelpath, '//', FileName)
       write.csv(cov, DirectoryFileName, row.names = TRUE)
     }
     message(paste0("The coverage data has been downloaded under ", modelpath))
@@ -61,7 +61,7 @@ retrieve_montagu_coverage = function(modelpath, group_id = 'JHU-Lee', scenarios_
       Scenarios <- SelectedScenariosList[i]
       cov <- montagu::montagu_coverage_data(group_id, touchstone, Scenarios)
       FileName <- paste0('coverage_', touchstone, '_', Scenarios, '.csv')
-      DirectoryFileName <- paste0(modelpath, '\\', FileName)
+      DirectoryFileName <- paste0(modelpath, '//', FileName)
       write.csv(cov, DirectoryFileName, row.names = TRUE)
     }
     message(paste0("The coverage data has been downloaded under ", modelpath))

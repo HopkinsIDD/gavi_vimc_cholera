@@ -36,14 +36,14 @@ retrieve_montagu_population = function(modelpath, group_id = 'JHU-Lee', expectat
       if (countries_all == TRUE){
         tot_pop <- montagu::montagu_demographic_data("tot_pop", touchstone)
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'all-countries', '_', 'tot_pop_both.csv')
-        DirectoryFileName <- paste0(modelpath, '\\', FileName)
+        DirectoryFileName <- paste0(modelpath, '//', FileName)
         write.csv(tot_pop, DirectoryFileName, row.names = TRUE)
         rm(tot_pop) #to save the memory
       } else{
         tot_pop <- montagu::montagu_demographic_data("tot_pop", touchstone)
         tot_pop_subset <- subset(tot_pop, country_code %in% CountriesList)
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'only-countries-needed', '_', 'tot_pop_both.csv')
-        DirectoryFileName <- paste0(modelpath, '\\', FileName)
+        DirectoryFileName <- paste0(modelpath, '//', FileName)
         write.csv(tot_pop_subset, DirectoryFileName, row.names = TRUE)
         rm(tot_pop) #to save the memory
         rm(tot_pop_subset) #to save the memory
@@ -80,14 +80,14 @@ retrieve_montagu_population = function(modelpath, group_id = 'JHU-Lee', expectat
       if (countries_all == TRUE){
         tot_pop <- montagu::montagu_demographic_data("tot_pop", touchstone)
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'all-countries', '_', 'tot_pop_both.csv')
-        DirectoryFileName <- paste0(modelpath, '\\', FileName)
+        DirectoryFileName <- paste0(modelpath, '//', FileName)
         write.csv(tot_pop, DirectoryFileName, row.names = TRUE)
         rm(tot_pop) #to save the memory
       } else{
         tot_pop <- montagu::montagu_demographic_data("tot_pop", touchstone)
         tot_pop_subset <- subset(tot_pop, country_code %in% CountriesList)
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'only-countries-needed', '_', 'tot_pop_both.csv')
-        DirectoryFileName <- paste0(modelpath, '\\', FileName)
+        DirectoryFileName <- paste0(modelpath, '//', FileName)
         write.csv(tot_pop_subset, DirectoryFileName, row.names = TRUE)
         rm(tot_pop) #to save the memory
         rm(tot_pop_subset) #to save the memory

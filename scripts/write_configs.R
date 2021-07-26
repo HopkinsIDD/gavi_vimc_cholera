@@ -37,12 +37,10 @@ if (!require('montagu', character.only = T)) {
   install.packages('montagu')
   library('montagu', character.only = T)
 }
-montagu::montagu_server_global_default_set(
-  montagu::montagu_server("production", "montagu.vaccineimpact.org"))
+source("scripts/montagu_handle.R")
 
 #======Use the ocvImpact package======#
 if (!require('ocvImpact', character.only = T)) {
-  
   roxygen2::roxygenise("packages/ocvImpact")
   install.packages("packages/ocvImpact", type = "source", repos = NULL)
   library('ocvImpact', character.only = T)

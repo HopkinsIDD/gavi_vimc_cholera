@@ -4,6 +4,11 @@
 # Purpose: Test Run             #
 #################################
 
+### montagu server handle
+setwd('C:/Users/ZOU/Desktop')
+source("montagu_handle.R")
+montagu::montagu_diseases()
+
 ### Setup
 
 ##new rtools package
@@ -53,4 +58,5 @@ modelpath = 'C:/Users/ZOU/Desktop/gavi_vimc_cholera/montagu/201910gavi-5'
 country = "AFG"
 mpathname = modelpath
 dpathname = datapath
+
 

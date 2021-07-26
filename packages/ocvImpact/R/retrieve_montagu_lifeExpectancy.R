@@ -37,13 +37,13 @@ retrieve_montagu_lifeExpectancy = function(modelpath, group_id = 'JHU-Lee', expe
       
       if (countries_all == TRUE){
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'all-countries', '_', 'lx0_both.csv')
-        DirectoryFileName <- paste0(modelpath, '\\', FileName)
+        DirectoryFileName <- paste0(modelpath, '//', FileName)
         write.csv(life_ex, DirectoryFileName, row.names = TRUE)
         rm(life_ex) #to save the memory
       } else{
         life_ex_subset <- subset(life_ex, country_code %in% CountriesList)
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'only-countries-needed', '_', 'lx0_both.csv')
-        DirectoryFileName <- paste0(modelpath, '\\', FileName)
+        DirectoryFileName <- paste0(modelpath, '//', FileName)
         write.csv(life_ex_subset, DirectoryFileName, row.names = TRUE)
         rm(life_ex) #to save the memory
         rm(life_ex_subset) #to save the memory
@@ -81,13 +81,13 @@ retrieve_montagu_lifeExpectancy = function(modelpath, group_id = 'JHU-Lee', expe
       
       if (countries_all == TRUE){
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'all-countries', '_', 'lx0_both.csv')
-        DirectoryFileName <- paste0(modelpath, '\\', FileName)
+        DirectoryFileName <- paste0(modelpath, '//', FileName)
         write.csv(life_ex, DirectoryFileName, row.names = TRUE)
         rm(life_ex) #to save the memory
       } else{
         life_ex_subset <- subset(life_ex, country_code %in% CountriesList)
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'only-countries-needed', '_', 'lx0_both.csv')
-        DirectoryFileName <- paste0(modelpath, '\\', FileName)
+        DirectoryFileName <- paste0(modelpath, '//', FileName)
         write.csv(life_ex_subset, DirectoryFileName, row.names = TRUE)
         rm(life_ex) #to save the memory
         rm(life_ex_subset) #to save the memory
