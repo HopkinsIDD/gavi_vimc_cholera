@@ -6,6 +6,7 @@
 chooseCRANmirror(ind = 77) #specify the mirror so that the packages can be successfully installed in the non-interactive way
 
 package_list <- c(
+                  "drat", 
                   "roxygen2", 
                   "data.table",
                   "dplyr",
@@ -30,9 +31,23 @@ for (package in package_list) {
   detach(pos = which(grepl(package, search())))
 }
 
+#======Initialize Montagu package======#
+if (!require('montagu', character.only = T)) {
+  drat:::add("vimc")
+  install.packages('montagu')
+  library('montagu', character.only = T)
+}
+montagu::montagu_server_global_default_set(
+  montagu::montagu_server("production", "montagu.vaccineimpact.org"))
+
 #======Use the ocvImpact package======#
-roxygen2::roxygenise("packages/ocvImpact")
-install.packages("packages/ocvImpact", type = "source", repos = NULL)
+if (!require('ocvImpact', character.only = T)) {
+  
+  roxygen2::roxygenise("packages/ocvImpact")
+  install.packages("packages/ocvImpact", type = "source", repos = NULL)
+  library('ocvImpact', character.only = T)
+}
+
 ###########Comment completed###########
 
 

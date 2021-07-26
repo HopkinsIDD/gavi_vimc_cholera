@@ -30,8 +30,8 @@ retrieve_montagu_centralburden_template = function(modelpath, group_id = 'JHU-Le
     
     for (ExpectationsID in ExpectationsIDList) {
       CentralBurdenTemplate <- montagu::montagu_central_burden_estimate_template(group_id, touchstone, ExpectationsID)
-      #'central-burden-template.201910gavi-5.Cholera_ standard template.csv'
-      FileName <- paste0('central-burden-template.', touchstone, '.Cholera_ standard template.', ExpectationsID, '.csv')
+      #'central-burden-template.201910gavi-5.Cholera-standard-template.csv'
+      FileName <- paste0("central-burden-template.", touchstone, '.Cholera-standard-template.', ExpectationsID, ".csv")
       DirectoryFileName <- paste0(modelpath, '\\', FileName)
       write.csv(CentralBurdenTemplate, DirectoryFileName, row.names = TRUE)
     }
@@ -63,7 +63,7 @@ retrieve_montagu_centralburden_template = function(modelpath, group_id = 'JHU-Le
     for (i in 1:length(SelectedExpectationsIDList)) {
       ExpectationsID <- SelectedExpectationsIDList[i]
       CentralBurdenTemplate <- montagu::montagu_central_burden_estimate_template(group_id, touchstone, ExpectationsID)
-      FileName <- paste0('central-burden-template.', touchstone, '.Cholera_ standard template.', ExpectationsID, '.csv')
+      FileName <- paste0("central-burden-template.", touchstone, '.Cholera-standard-template.', ExpectationsID, ".csv")
       DirectoryFileName <- paste0(modelpath, '\\', FileName)
       write.csv(CentralBurdenTemplate, DirectoryFileName, row.names = TRUE)
     }
