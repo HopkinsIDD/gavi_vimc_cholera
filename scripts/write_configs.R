@@ -6,6 +6,8 @@
 chooseCRANmirror(ind = 77) #specify the mirror so that the packages can be successfully installed in the non-interactive way
 
 package_list <- c(
+                  "GADMTools", 
+                  "rgdal", 
                   "drat", 
                   "roxygen2", 
                   "data.table",

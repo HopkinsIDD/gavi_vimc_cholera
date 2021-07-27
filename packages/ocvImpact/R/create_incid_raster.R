@@ -67,7 +67,9 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
       
       ## incidence data ##
       message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
-      afr <- raster::stack(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
+      #afr <- raster::stack(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
+      ###########this is following line is just for temp use before we figure out how to transfer raster files without corruptions###########
+      afr <- raster::stack(paste0("/home/kaiyuezou/montagu_try_7_5/gavi_vimc_cholera/input_data/incidence/afro_2010-2016_lambda_5k.tif"))
       afr_sample <- raster::subset(afr, layer_indexes, drop = FALSE)
       rm(afr)
       gc()
