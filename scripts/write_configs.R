@@ -48,6 +48,13 @@ if (!require('ocvImpact', character.only = T)) {
   library('ocvImpact', character.only = T)
 }
 
+#======For the convenience of debugging======#
+###These a few lines can be deleted safely after the model can run smoothly on the server. 
+library(raster)
+roxygen2::roxygenise("packages/ocvImpact")
+install.packages("packages/ocvImpact", type = "source", repos = NULL)
+library('ocvImpact', character.only = T)
+
 ###########Comment completed###########
 
 
