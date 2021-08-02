@@ -9,11 +9,11 @@
 #' @return Dataframe with vaccination coverage for a single scenario and country. Years without vaccination are excluded from the returned dataframe. Countries without vaccination in any year return a null dataframe.
 #' @export
 #' @include retrieve_montagu_coverage.R
-import_coverage_scenario <- function(modelpath, country, scenario, filter0 = FALSE){
+import_coverage_scenario <- function(modelpath, country, scenario, filter0 = FALSE, redownload = TRUE){
   
   #First check, then retrieve
   CoverageFiles <- list.files(modelpath, pattern = "^coverage_")
-  if (length(CoverageFiles) >= 2){ #there should be 2 coverage data files, so the default should be 2
+  if (length(CoverageFiles) >= 2 & redownload == FALSE){ #there should be 2 coverage data files, so the default should be 2
     message(paste0("The coverage data files have been under the directory: ", modelpath, '. No new download was made. '))
   } else{
     retrieve_montagu_coverage(modelpath)
@@ -53,11 +53,11 @@ import_coverage_scenario <- function(modelpath, country, scenario, filter0 = FAL
 #' @return dataframe for central burden template for one country
 #' @export 
 #' @include retrieve_montagu_centralburden_template.R
-import_centralburden_template <- function(modelpath, country){
+import_centralburden_template <- function(modelpath, country, redownload = TRUE){
   
   #First check, then retrieve
   CentralBurdenTempFiles <- list.files(modelpath, pattern = "^central-burden")
-  if (length(CentralBurdenTempFiles) > 0){
+  if (length(CentralBurdenTempFiles) > 0 & redownload == FALSE){
     message(paste0("The central burden template files have been under the directory: ", modelpath, '. No new download was made. '))
   } else{
     retrieve_montagu_centralburden_template(modelpath)
@@ -84,11 +84,11 @@ import_centralburden_template <- function(modelpath, country){
 #' @return 
 #' @export 
 #' @include retrieve_montagu_population.R
-import_country_population <- function(modelpath, country){
+import_country_population <- function(modelpath, country, redownload = TRUE){
   
   #First check, then retrieve
   TotPopFiles <- list.files(modelpath, pattern = "tot_pop_both.csv$")
-  if (length(TotPopFiles) >= 1){ #there should be 1 file
+  if (length(TotPopFiles) >= 1 & redownload == FALSE){ #there should be 1 file
     message(paste0("The total population files have been under the directory: ", modelpath, '. No new download was made. '))
   } else{
     retrieve_montagu_population(modelpath)
@@ -138,11 +138,11 @@ import_country_population_1yr <- function(modelpath, country, year){
 #' @return 
 #' @export 
 #' @include retrieve_montagu_agePop.R
-import_country_agePop <- function(modelpath, country){
+import_country_agePop <- function(modelpath, country, redownload = TRUE){
   
   #First check, then retrieve
   AgePopFiles <- list.files(modelpath, pattern = "int_pop_both.csv$")
-  if (length(AgePopFiles) >= 1){ #there should be 1 file
+  if (length(AgePopFiles) >= 1 & redownload == FALSE){ #there should be 1 file
     message(paste0("The age-specific population files have been under the directory: ", modelpath, '. No new download was made. '))
   } else{
     retrieve_montagu_agePop(modelpath) 
@@ -179,11 +179,11 @@ import_country_agePop <- function(modelpath, country){
 #' @return 
 #' @export 
 #' @include retrieve_montagu_lifeExpectancy.R
-import_country_lifeExpectancy <- function(modelpath, country){
+import_country_lifeExpectancy <- function(modelpath, country, redownload = TRUE){
   
   #First check, then retrieve
   LifeExpFiles <- list.files(modelpath, pattern = "lx0_both.csv$")
-  if (length(LifeExpFiles) >= 1){ #there should be 1 file
+  if (length(LifeExpFiles) >= 1 & redownload == FALSE){ #there should be 1 file
     message(paste0("The life expectancy data files have been under the directory: ", modelpath, '. No new download was made. '))
   } else{
     retrieve_montagu_lifeExpectancy(modelpath)

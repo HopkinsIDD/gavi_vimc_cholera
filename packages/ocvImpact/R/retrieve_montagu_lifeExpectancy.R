@@ -15,15 +15,21 @@ retrieve_montagu_lifeExpectancy = function(modelpath, group_id = 'JHU-Lee', expe
   touchstone = SplittedString[length(SplittedString)]
 
   
+  ### Commented out in 7/2021 since we have the montagu handle now
   ### Setup Montagu API (won't prompt anything if already logged in)
-  drat:::add("vimc")
-  montagu::montagu_server_global_default_set(
-    montagu::montagu_server("production", "montagu.vaccineimpact.org"))
-  invisible(montagu::montagu_scenarios(group_id, touchstone)) #this prompt is going to ask for username and password
+  #drat:::add("vimc")
+  #montagu::montagu_server_global_default_set(
+    #montagu::montagu_server("production", "montagu.vaccineimpact.org"))
+  #invisible(montagu::montagu_scenarios(group_id, touchstone)) #this prompt is going to ask for username and password
   
   
-  ##### Check the Expectations from Montagu
-  ExpectationsIDList <- montagu::montagu_expectations(group_id, touchstone)$id
+  ##### Check the Expectations from Montagu and only keep the ones necessary -- modified in 7/2021
+  ExpectationsIDList <- c()
+  for (teams in montagu::montagu_expectations(group_id, touchstone)$description){
+    if (group_id %in% strsplit(teams, ":")[[1]]){
+      ExpectationsIDList <- c(ExpectationsIDList, montagu::montagu_expectations(group_id, touchstone)$id[match(teams, montagu::montagu_expectations(group_id, touchstone)$description)])
+    }
+  }
   
   
   ### Download the Life Expectancy Data
@@ -33,20 +39,20 @@ retrieve_montagu_lifeExpectancy = function(modelpath, group_id = 'JHU-Lee', expe
     for (ExpectationsID in ExpectationsIDList) {
       ### Check the Countries Needed for Our Simulation
       CountriesList <- montagu::montagu_expectation_countries(group_id, touchstone, ExpectationsID)$id
-      life_ex <- montagu::montagu_demographic_data("life_ex", touchstone)
+      lx0 <- montagu::montagu_demographic_data("lx0", touchstone)
       
       if (countries_all == TRUE){
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'all-countries', '_', 'lx0_both.csv')
         DirectoryFileName <- paste0(modelpath, '//', FileName)
-        write.csv(life_ex, DirectoryFileName, row.names = TRUE)
-        rm(life_ex) #to save the memory
+        write.csv(lx0, DirectoryFileName, row.names = TRUE)
+        rm(lx0) #to save the memory
       } else{
-        life_ex_subset <- subset(life_ex, country_code %in% CountriesList)
+        lx0_subset <- subset(lx0, country_code %in% CountriesList)
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'only-countries-needed', '_', 'lx0_both.csv')
         DirectoryFileName <- paste0(modelpath, '//', FileName)
-        write.csv(life_ex_subset, DirectoryFileName, row.names = TRUE)
-        rm(life_ex) #to save the memory
-        rm(life_ex_subset) #to save the memory
+        write.csv(lx0_subset, DirectoryFileName, row.names = TRUE)
+        rm(lx0) #to save the memory
+        rm(lx0_subset) #to save the memory
       }
       
     }
@@ -77,20 +83,20 @@ retrieve_montagu_lifeExpectancy = function(modelpath, group_id = 'JHU-Lee', expe
       ExpectationsID <- SelectedExpectationsIDList[i]
       ### Check the Countries Needed for Our Simulation
       CountriesList <- montagu::montagu_expectation_countries(group_id, touchstone, ExpectationsID)$id
-      life_ex <- montagu::montagu_demographic_data("life_ex", touchstone)
+      lx0 <- montagu::montagu_demographic_data("lx0", touchstone)
       
       if (countries_all == TRUE){
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'all-countries', '_', 'lx0_both.csv')
         DirectoryFileName <- paste0(modelpath, '//', FileName)
-        write.csv(life_ex, DirectoryFileName, row.names = TRUE)
-        rm(life_ex) #to save the memory
+        write.csv(lx0, DirectoryFileName, row.names = TRUE)
+        rm(lx0) #to save the memory
       } else{
-        life_ex_subset <- subset(life_ex, country_code %in% CountriesList)
+        lx0_subset <- subset(lx0, country_code %in% CountriesList)
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'only-countries-needed', '_', 'lx0_both.csv')
         DirectoryFileName <- paste0(modelpath, '//', FileName)
-        write.csv(life_ex_subset, DirectoryFileName, row.names = TRUE)
-        rm(life_ex) #to save the memory
-        rm(life_ex_subset) #to save the memory
+        write.csv(lx0_subset, DirectoryFileName, row.names = TRUE)
+        rm(lx0) #to save the memory
+        rm(lx0_subset) #to save the memory
       }
       
     }

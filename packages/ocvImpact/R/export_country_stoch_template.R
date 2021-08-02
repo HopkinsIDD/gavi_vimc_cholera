@@ -19,14 +19,14 @@ export_country_stoch_template <- function(
   ){
 
   ## import templates
-  cb_template <- import_centralburden_template(modelpath, country)
+  cb_template <- import_centralburden_template(modelpath, country, redownload = FALSE)
 
   ## calculation inputs
   disab_wt <- import_disability_weight()
   infect_dur <- generate_infectionDuration()
   cfr <- generate_cfr(country)
   aoi <- generate_aoi(country) ## average age of infection
-  lifeExpect_df <- import_country_lifeExpectancy(modelpath, country)
+  lifeExpect_df <- import_country_lifeExpectancy(modelpath, country, redownload = FALSE)
 
   if(!all(unique(cb_template$year) %in% lifeExpect_df$year)){
     missing_yrs <- unique(cb_template$year)[which(!unique(cb_template$year) %in% lifeExpect_df$year)]
@@ -51,7 +51,7 @@ export_country_stoch_template <- function(
     dplyr::rename(cases_tot = ec, deaths_tot = ed)
 
   ## distribute model outputs by proportion of the population
-  pop_age_df <- import_country_agePop(modelpath, country)
+  pop_age_df <- import_country_agePop(modelpath, country, redownload = FALSE)
   stoch <- dplyr::left_join(expCases_age, pop_age_df, by = c("country", "year")) %>%
     dplyr::mutate(
       cases = round(cases_tot*prop_age, 0),

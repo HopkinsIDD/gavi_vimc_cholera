@@ -14,15 +14,21 @@ retrieve_montagu_centralburden_template = function(modelpath, group_id = 'JHU-Le
   touchstone = SplittedString[length(SplittedString)]
   
   
+  ### Commented out in 7/2021 since we have the montagu handle now
   ### Setup Montagu API (won't prompt anything if already logged in)
-  drat:::add("vimc")
-  montagu::montagu_server_global_default_set(
-    montagu::montagu_server("production", "montagu.vaccineimpact.org"))
-  invisible(montagu::montagu_scenarios(group_id, touchstone)) #this prompt is going to ask for username and password
+  #drat:::add("vimc")
+  #montagu::montagu_server_global_default_set(
+    #montagu::montagu_server("production", "montagu.vaccineimpact.org"))
+  #invisible(montagu::montagu_scenarios(group_id, touchstone)) #this prompt is going to ask for username and password
   
   
-  ### Check the Expectations from Montagu
-  ExpectationsIDList <- montagu::montagu_expectations(group_id, touchstone)$id
+  ##### Check the Expectations from Montagu and only keep the ones necessary -- modified in 7/2021
+  ExpectationsIDList <- c()
+  for (teams in montagu::montagu_expectations(group_id, touchstone)$description){
+    if (group_id %in% strsplit(teams, ":")[[1]]){
+      ExpectationsIDList <- c(ExpectationsIDList, montagu::montagu_expectations(group_id, touchstone)$id[match(teams, montagu::montagu_expectations(group_id, touchstone)$description)])
+    }
+  }
   
   
   ### Download the Template

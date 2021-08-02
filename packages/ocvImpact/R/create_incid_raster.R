@@ -28,7 +28,7 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
   if (country %in% NonRasterCountry){
     NRCountryIndex <- match(country, IncidenceTable$country_code)
     YearList <- as.numeric(strsplit(IncidenceTable$year_list[NRCountryIndex], '-')[[1]])
-    CountryPopTable <- ocvImpact::import_country_population(modelpath, country)
+    CountryPopTable <- ocvImpact::import_country_population(modelpath, country, redownload = FALSE)
     CountryPopMean <- mean(CountryPopTable$pop_model[match(YearList, CountryPopTable$year)], na.rm = TRUE)
     
     if (IncidenceTable$is_num_case[NRCountryIndex] == 0){

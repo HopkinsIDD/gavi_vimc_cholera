@@ -40,6 +40,13 @@ load_targets_by_country <- function(datapath, country){
     pop2 <- get_admin_population(pop, shp)
     total_pop <- sum(pop2)
 
+    ### do a little thing to the dataframe -- 7/2021
+    shp <- shp %>%
+      dplyr::mutate(genID = paste0(NAME_0, '-', NAME_1, '-', NAME_2))
+    shp_sp <- GADMTools::gadm_sp_loadCountries(c(country), level = 2, basefile = file.path(datapath, "shapefiles/"))$spdf
+    shp_sp$genID <- paste0(shp_sp$NAME_0, '-', shp_sp$NAME_1, '-', shp_sp$NAME_2)
+    shp <- merge(shp, shp_sp, id = 'genID')
+    
     rc <- dplyr::mutate(shp, 
                         incidence = incid2,
                         pop_wp = pop2,
@@ -82,7 +89,7 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
 
   message(paste("Now assigning vaccine by incidence:", country, scenario))
   ptargets <- load_targets_by_country(datapath, country)
-  coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = TRUE) 
+  coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = TRUE, redownload = FALSE) 
 
   if (is.null(coverage)){
 
