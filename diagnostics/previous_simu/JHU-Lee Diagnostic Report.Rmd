@@ -1,0 +1,413 @@
+---
+title: "Diagnostic Report -- 201910gavi-5"
+author: "JHU-Lee"
+date: "`r Sys.time()`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+
+
+```{r include=FALSE}
+### Setup
+library(tidyverse)
+library(knitr)
+
+setwd('C:/Users/ZOU/Desktop/Diagnostics Report')
+cen_camp  <- read_csv('central-burden-template.201910gavi-5.Cholera_campaign-default.csv')
+cen_novax <- read_csv('central-burden-template.201910gavi-5.Cholera_no-vaccination.csv')
+```
+
+
+
+## The Model Specs
+Specific characteristics of this model are shown in this table. 
+```{r include=FALSE}
+glimpse(cen_camp)
+names(cen_camp)
+```
+
+
+```{r echo=FALSE}
+
+model_spec <- cen_camp %>% 
+  mutate(Disease = disease) %>%
+  mutate(ModelingGroup = 'JHU-Lee') %>%
+  mutate(YearRange = paste0(min(year), '-', max(year))) %>% 
+  mutate(AgeRange = paste0(min(age), '-', max(age))) %>% 
+  mutate(CountryList = paste(unique(cen_camp$country), collapse = '  ')) %>% 
+  mutate(SimulatedOutcomes = paste(names(cen_camp)[(ncol(cen_camp)-3):ncol(cen_camp)], collapse='  ') ) %>% 
+  select(Disease, ModelingGroup, YearRange, AgeRange, CountryList, SimulatedOutcomes) %>% 
+  slice(1)
+
+kable(data.frame(Item = names(model_spec), Details = unlist(unname(model_spec[1,]))))
+
+```
+
+
+
+## Coverage Trajectories
+The trends of the specific coverage sets for the campaign scenario can be observed in this figure. 
+```{r include=FALSE}
+### get the coverage data from local
+cov_novax <- read_csv("cov_novax.csv")
+cov_camp <- read_csv("cov_camp.csv")
+  
+```
+
+
+```{r fig.width=10, fig.height=8, echo=FALSE}
+### plotting
+cov_camp %>% 
+  ggplot(aes(x=year, y=coverage)) + 
+  geom_bar(stat="identity", fill="skyblue", alpha=1.0) + 
+  theme_minimal() +
+  facet_grid(country_code~.)
+
+```
+
+&nbsp;
+Age ranges of the different coverage sets include either standard age ranges (as it is the case of Measles) but sometimes it differs by year and country so that several combinations can be possible (See table below).
+```{r echo=FALSE}
+### little table
+cov_age_df <- cov_camp %>% 
+  mutate(coverage_set_name = scenario) %>% 
+  mutate(age_from = min(age_first)) %>% 
+  mutate(age_to = max(age_last)) %>% 
+  mutate(freq = n()) %>% 
+  select(coverage_set_name, age_from, age_to, freq) %>% 
+  slice(1)
+
+kable(cov_age_df)
+
+```
+
+
+
+## Fully vaccinated persons (FVPs)
+The estimates of fully vaccinated persons (FVPs) are obtained by multiplying coverage from each coverage set and the target population.
+The following picture shows the Fully Vaccinated Persons (FVPs) at global level by scenario for Cholera. 
+```{r include=FALSE}
+### calculate FVPs
+fvps_camp <- cov_camp %>% 
+  group_by(year) %>% 
+  mutate(GlobalFVPs = sum(target*coverage)) %>% 
+  filter(country_code == country_code[1]) %>% 
+  select(year, GlobalFVPs) %>% 
+  mutate(scenarios = 'Campaign')
+
+fvps_camp <- data.frame(sapply(fvps_camp, rep.int, times=2))
+NumRow <- nrow(fvps_camp)
+
+fvps_camp$scenarios[1:NumRow/2] <- 'No Vaccination'
+fvps_camp$GlobalFVPs[1:NumRow/2] <- 0
+fvps_camp$year <- as.numeric(fvps_camp$year)
+fvps_camp$GlobalFVPs <- as.numeric(fvps_camp$GlobalFVPs)
+
+```
+
+
+```{r echo=FALSE, fig.height=5, fig.width=10}
+### Plotting
+fvps_camp %>% 
+  ggplot(aes(x=year, y=GlobalFVPs/1000000)) + 
+  geom_bar(stat="identity", fill="skyblue", alpha=1.0) + 
+  theme_minimal() +
+  facet_grid(.~scenarios) +
+  labs(y = "Fully Vaccinated Persons (in millions)")
+
+```
+
+
+
+## Check the general info
+Expected number of rows.
+```{r echo=FALSE}
+outcome_code = rep(names(cen_camp)[(ncol(cen_camp)-3):ncol(cen_camp)], 2)
+
+kable(data.frame(scenario_description = c(rep('Campaign, Default', 4), rep('No vaccination', 4)),
+                 outcome_code = outcome_code,
+                 number_of_non_na_rows =  c(colSums(!is.na(cen_camp[outcome_code[1:4]])),
+                                            colSums(!is.na(cen_novax[outcome_code[5:8]])) )    ))
+rm(outcome_code)
+
+```
+
+
+```{r include=FALSE}
+### first merge/join two datasets
+stack_camp <- cen_camp
+stack_camp$id <- 1:nrow(stack_camp)
+stack_camp$source <- 'Campaign, Default'
+stack_novax <- cen_novax
+stack_novax$id <- 1:nrow(stack_novax)
+stack_novax$source <- 'No vaccination'
+
+stacked <- rbind(stack_novax, stack_camp)
+rm(stack_novax)
+rm(stack_camp)
+
+### create new variables
+stacked <- stacked %>% 
+  #mutate(cases1, cases2, cohort_size1, cohort_size2, dalys1, dalys2, deaths1, deaths2) %>% 
+  group_by(year, age, source) %>% 
+  mutate( cases1 = case_when(sum(!is.na(cases))<5 ~ 0,
+                             sum(!is.na(cases))==5 ~ 1) ) %>% 
+  mutate( cases2 = sum(cases > 0) ) %>% 
+  mutate( cohort_size1 = case_when(sum(!is.na(cohort_size))<5 ~ 0,
+                             sum(!is.na(cohort_size))==5 ~ 1) ) %>% 
+  mutate( cohort_size2 = sum(cohort_size > 0) ) %>%
+  mutate( dalys1 = case_when(sum(!is.na(dalys))<5 ~ 0,
+                             sum(!is.na(dalys))==5 ~ 1) ) %>% 
+  mutate( dalys2 = sum(dalys > 0) ) %>%
+  mutate( deaths1 = case_when(sum(!is.na(deaths))<5 ~ 0,
+                             sum(!is.na(deaths))==5 ~ 1) ) %>% 
+  mutate( deaths2 = sum(deaths > 0) )
+
+### gather
+stacked1 <- stacked %>% 
+  gather(new_outcomes, values, c(cases1,cohort_size1,dalys1,deaths1)) 
+stacked2 <- stacked %>% 
+  gather(new_outcomes, values, c(cases2,cohort_size2,dalys2,deaths2))
+rm(stacked)
+
+```
+
+
+This figure shows the shape of the upload by scenarios and outcomes (whether there are missing values)
+```{r echo=FALSE, fig.width=10, fig.height=8}
+### plotting
+stacked1 %>% 
+  ggplot(aes(year, age, fill = values)) + 
+  geom_tile() +
+  facet_grid(new_outcomes ~ source) +
+  scale_fill_gradient(low="steelblue4", high="skyblue") +
+  theme_minimal()
+rm(stacked1)
+
+```
+
+
+This figure shows the pattern of positive values (number of positive values across all five countries)
+```{r echo=FALSE, fig.width=10, fig.height=8}
+### another similar plot
+stacked2 %>% 
+  ggplot(aes(year, age, fill = values)) + 
+  geom_tile() +
+  facet_grid(new_outcomes ~ source) +
+  scale_fill_gradient(low="steelblue4", high="skyblue") +
+  theme_minimal()
+rm(stacked2)
+
+```
+
+
+
+## Check the cohort size
+### Notion: the interpolated population dataset doesn't have info for age 100, we will leave that out to keep the consistency. 
+```{r include=FALSE}
+### prepare the datasets
+#write.csv(int_pop,"C:/Users/ZOU/Desktop/Diagnostics Report\\montagu_interpolated_pop.csv", row.names = FALSE)
+int_pop <- read_csv('C:/Users/ZOU/Desktop/Diagnostics Report/montagu_interpolated_pop.csv')
+int_pop <- int_pop %>% 
+  filter(year >= 2000 & age_to <= 100 & country_code%in%unique(cen_camp$country)) %>% 
+  mutate(id = paste0(country_code, as.character(year), as.character(age_to))) %>% 
+  select(id, value)
+cen_cohort <- cen_camp %>% 
+  filter(age < 100) %>% 
+  mutate(id = paste0(country, as.character(year), as.character(age)))
+pop_plot = full_join(cen_cohort, int_pop, by = 'id')
+
+pop_plot_no_country_class <- pop_plot %>% 
+  group_by(age, year) %>% 
+  mutate(int_population = sum(value)) %>% 
+  mutate(simu_population = sum(cohort_size)) %>% 
+  mutate(diff_population = int_population - simu_population) %>% 
+  filter(country == unique(cen_camp$country)[1]) %>% 
+  gather(population_source, population_value, c(int_population, simu_population, diff_population)) %>% 
+  select(-value, -cohort_size, -country)
+pop_plot_all_countries <- pop_plot %>% 
+  mutate(int_population = value) %>% 
+  mutate(simu_population = cohort_size) %>% 
+  mutate(diff_population = int_population - simu_population) %>% 
+  gather(population_source, population_value, c(int_population, simu_population, diff_population)) %>% 
+  select(-value, -cohort_size)
+rm(int_pop)
+rm(cen_cohort)
+rm(pop_plot)
+
+### check if there is NA
+sum(is.na(pop_plot_no_country_class[names(pop_plot_no_country_class)[1:ncol(pop_plot_no_country_class)]]))
+sum(is.na(pop_plot_all_countries[names(pop_plot_all_countries)[1:ncol(pop_plot_all_countries)]]))
+
+```
+
+
+This figure shows the comparison of cohort size against interpolated population in all countries. 
+```{r echo=FALSE, fig.width=10, fig.height=5}
+### plotting
+pop_plot_no_country_class %>% 
+  ggplot(aes(fill = age, y = population_value/1000000, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(~factor(population_source, levels=c('int_population','simu_population','diff_population'))) + 
+  labs(x = 'calendar year', y = 'people (in millions)')
+#rm(pop_plot_no_country_class)
+
+```
+
+
+This figure shows the comparison of cohort size against interpolated population in the five countries. 
+```{r echo=FALSE, fig.width=10, fig.height=5}
+### plotting
+pop_plot_all_countries %>% 
+  ggplot(aes(fill = age, y = population_value/1000000, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(population_source, levels=c('int_population','simu_population','diff_population'))) + 
+  labs(x = 'calendar year', y = 'people (in millions)')
+#rm(pop_plot_all_countries)
+
+```
+
+
+These two tables provide us with more insights into the difference between interpolated population and cohort size. 
+```{r echo=FALSE}
+no_class <- pop_plot_no_country_class %>% 
+  filter(population_source == 'diff_population') %>% 
+  group_by(population_value) %>% 
+  summarise(freq = n()) %>% 
+  mutate(Countries = "All", PopulationDifference = population_value, Frequency = freq, Proportion = freq/(nrow(pop_plot_no_country_class)/3)) %>% 
+  select(-population_value, -freq)
+kable(no_class)
+
+all_countries <- pop_plot_all_countries %>% 
+  filter(population_source == 'diff_population') %>% 
+  group_by(country, population_value) %>% 
+  summarise(freq = n()) %>% 
+  mutate(Countries = country, PopulationDifference = population_value, Frequency = freq, Proportion = freq/(nrow(pop_plot_all_countries)/15)) %>% 
+  select(-population_value, -freq, -country)
+kable(all_countries)
+
+rm(pop_plot_no_country_class)
+rm(pop_plot_all_countries)
+
+```
+
+
+
+## Checking patterns of the specific estimates
+```{r include=FALSE}
+### prepare and merge the datasets
+cen_camp_merge <- cen_camp %>% 
+  mutate(id = paste0(country, as.character(year), as.character(age))) %>% 
+  mutate(cohort_size_camp = cohort_size, cases_camp = cases, deaths_camp = deaths, dalys_camp = dalys) %>% 
+  select(id, cohort_size_camp, cases_camp, deaths_camp, dalys_camp)
+cen_novax_merge <- cen_novax %>% 
+  mutate(id = paste0(country, as.character(year), as.character(age)))
+merged = full_join(cen_novax_merge, cen_camp_merge, by = "id")
+rm(cen_camp_merge)
+rm(cen_novax_merge)
+
+merged <- merged %>% 
+  gather(cohort_size_source, cohort_size_value, c(cohort_size, cohort_size_camp)) %>% 
+  gather(cases_source, cases_value, c(cases, cases_camp)) %>%
+  gather(deaths_source, deaths_value, c(deaths, deaths_camp)) %>%
+  gather(dalys_source, dalys_value, c(dalys, dalys_camp)) %>%
+  filter((cohort_size_source == 'cohort_size' & 
+          cases_source == 'cases' & 
+          deaths_source ==  'deaths' & 
+          dalys_source == 'dalys' ) | 
+          (cohort_size_source == 'cohort_size_camp' & 
+          cases_source == 'cases_camp' & 
+          deaths_source ==  'deaths_camp' & 
+          dalys_source == 'dalys_camp' ) ) %>% 
+  mutate(source = case_when(cohort_size_source == 'cohort_size' ~ 'No vaccination',
+                            cohort_size_source == 'cohort_size_camp' ~ 'Campaign, Default')) %>% 
+  select(-cohort_size_source, -cases_source, -deaths_source, -dalys_source)
+  
+### combine the countries
+merged_no_country_class <- merged %>% 
+  group_by(source, year, age) %>% 
+  mutate(cohort_size_value = sum(cohort_size_value)) %>% 
+  mutate(cases_value = sum(cases_value)) %>%
+  mutate(deaths_value = sum(deaths_value)) %>%
+  mutate(dalys_value = sum(dalys_value)) %>%
+  filter(country == unique(merged$country)[1]) %>%
+  select(-country)
+  
+```
+
+
+This figure shows the aggregated (for all countries) age distribution patterns by outcome.
+```{r echo=FALSE, fig.width=10, fig.height=6}
+### prepare the dataset and plot
+merged_no_country_year <- merged_no_country_class %>% 
+  group_by(source, age) %>% 
+  mutate(cohort_size_value = sum(cohort_size_value)) %>% 
+  mutate(cases_value = sum(cases_value)) %>%
+  mutate(deaths_value = sum(deaths_value)) %>%
+  mutate(dalys_value = sum(dalys_value)) %>%
+  filter(year == unique(merged_no_country_class$year)[1]) %>%
+  select(-year) %>% 
+  gather(outcome, outcome_values, cases_value:dalys_value)
+
+merged_no_country_year %>% 
+  ggplot(aes(x=age, y=outcome_values/1000000)) + 
+  geom_bar(stat="identity", fill="skyblue", alpha=1.0) + 
+  theme_minimal() +
+  facet_grid(outcome~source, scales = 'free') + 
+  labs(y='people (in millions)')
+rm(merged_no_country_year)
+
+```
+
+
+This figure shows the global burden values by decades 2000-2030. 
+```{r echo=FALSE, fig.width=10, fig.height=10}
+### prepare the dataset and plot
+merged_no_country_2030 <- merged_no_country_class %>% 
+  filter(year >= 2000 & year <= 2030) %>% 
+  mutate(year_class = case_when(year >= 2000 & year <= 2010 ~ '2000 - 2010',
+                                year >= 2011 & year <= 2020 ~ '2011 - 2020',
+                                year >= 2021 & year <= 2030 ~ '2021 - 2030',)) %>% 
+  group_by(source, year_class) %>% 
+  mutate(cases = sum(cases_value), dalys = sum(dalys_value), deaths = sum(deaths_value)) %>% 
+  filter(age == 0) %>% 
+  select(year_class, source, cases, dalys, deaths) %>% 
+  gather(outcome, outcome_values, cases:deaths)
+
+merged_no_country_2030 %>% 
+  ggplot(aes(fill=source, y=outcome_values/1000000, x=source)) + 
+  geom_bar(position="dodge", stat="identity") + 
+  theme_minimal() + 
+  facet_grid(outcome~year_class, scales = 'free') + 
+  labs(y='people (in millions)')
+rm(merged_no_country_2030)
+
+```
+
+
+This figure shows the global burden disease values 2000-2100. 
+```{r echo=FALSE, fig.width=10, fig.height=10}
+### prepare the dataset and plot
+merged_no_country_gathered <- merged_no_country_class %>% 
+  mutate(cases = cases_value, deaths = deaths_value, dalys = dalys_value) %>% 
+  select(year, age, source, cases:dalys) %>% 
+  gather(outcome, outcome_values, cases:dalys)
+
+merged_no_country_gathered %>% 
+  ggplot(aes(fill = age, y = outcome_values/1000000, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(outcome~factor(source, levels = c('No vaccination', 'Campaign, Default')), scales = 'free') + 
+  labs(x = 'calendar year', y = 'people (in millions)')
+rm(merged_no_country_gathered)
+
+```
+
+

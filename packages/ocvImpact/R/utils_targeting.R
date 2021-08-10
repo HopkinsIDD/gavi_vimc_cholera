@@ -22,9 +22,26 @@ get_admin_population <- function(pop, shp){
 #' @return dataframe with incidence and population by admin unit for a single country
 #' @export 
 #' @include load_worldpop_by_country.R load_shapefile_by_country.R utils_targeting.R
-load_targets_by_country <- function(datapath, country){
-
-  if (country %in% c("COD", "ETH", "KEN", "SOM", "SSD")){
+load_targets_by_country <- function(datapath, modelpath, country){
+  ### prepare for the full model run
+  group_id <- 'JHU-Lee'
+  SplittedString = strsplit(modelpath, '/')[[1]]
+  touchstone = SplittedString[length(SplittedString)] #generated from the modelpath
+  
+  ExpectationsIDList <- c()
+  for (teams in montagu::montagu_expectations(group_id, touchstone)$description){
+    if (group_id %in% strsplit(teams, ":")[[1]]){
+      ExpectationsIDList <- c(ExpectationsIDList, montagu::montagu_expectations(group_id, touchstone)$id[match(teams, montagu::montagu_expectations(group_id, touchstone)$description)])
+    }
+  }
+  if (length(ExpectationsIDList) == 1){
+    CountriesForSim <- montagu::montagu_expectation_countries(group_id, touchstone, ExpectationsIDList)
+  }else{
+    message('There are multiple expectations for the current touchstone and gourp id being used, the Montagu API cannot return a single country list. ')
+    message('The error is within load_targets_by_country function. ')
+  }
+  
+  if (country %in% CountriesForSim$id){
 
     ## incidence data ##
     message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
@@ -88,7 +105,7 @@ load_targets_by_country <- function(datapath, country){
 assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targeting_strat = "incidence", campaign_cov = 0.8, num_skip_years = 0){
 
   message(paste("Now assigning vaccine by incidence:", country, scenario))
-  ptargets <- load_targets_by_country(datapath, country)
+  ptargets <- load_targets_by_country(datapath, modelpath, country)
   coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = TRUE, redownload = FALSE) 
 
   if (is.null(coverage)){

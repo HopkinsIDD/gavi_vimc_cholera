@@ -1,6 +1,6 @@
 runname <- "201910gavi-5"
 scenarios <- c("campaign-default", "no-vaccination")
-countries <- c("COD", "ETH", "KEN", "SOM", "SSD")
+countries <- c("COD", "ETH", "KEN", "SOM", "SSD", "HTI")
 clean_outputs <- TRUE
 targeting_strategy <- "affected_pop"
 clean_incid <- FALSE
