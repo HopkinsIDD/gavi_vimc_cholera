@@ -66,7 +66,7 @@ Put a table that defines model configuration file definitions
 
 To run the model, the `ocvImpact` package in `HopkinsIDD/gavi_vimc_cholera/packages/` must be installed in R. Then, the model may be run using the R scripts in `HopkinsIDD/gavi_vimc_cholera/scripts`. 
 
-1. First we unzip a file needed for the model using `unzip input_data/incidence/afro_2010-2016_lambda_5k.zip`. The reason why we need to do it is that GitHub has a limit for the file size, we had to zip it before uploading it. 
+1. First we unzip a file needed for the model using `cd input_data/incidence/` and `unzip afro_2010-2016_lambda_5k.zip`, and don't forget to get back to the main directory afterwards. The reason why we need to do it is that GitHub has a limit for the file size, we had to zip it before uploading it. 
 1. Next we modify `scripts/montagu_handle.R` to input our own credentials for VIMC Montagu API. 
 1. Next we modify `scripts/set_all_parameters.R` to export variables named: `runname`, `scenarios`, `countries`, `targeting_strategy`, `num_samples`, and `num_skip_years`. See the model settings table for definitions of these parameters.
 1. Next we run `scripts/write_configs.R` to generate all of the model configuration files.
