@@ -4,7 +4,7 @@
 \alias{import_country_agePop}
 \title{import_country_agePop}
 \usage{
-import_country_agePop(modelpath, country)
+import_country_agePop(modelpath, country, redownload = TRUE)
 }
 \arguments{
 \item{modelpath}{path to montagu files}

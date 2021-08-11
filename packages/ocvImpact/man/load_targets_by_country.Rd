@@ -4,7 +4,7 @@
 \alias{load_targets_by_country}
 \title{load_targets_by_country}
 \usage{
-load_targets_by_country(datapath, country)
+load_targets_by_country(datapath, modelpath, country)
 }
 \arguments{
 \item{datapath}{path to data}

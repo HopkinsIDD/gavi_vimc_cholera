@@ -4,7 +4,7 @@
 \alias{import_country_lifeExpectancy}
 \title{import_country_lifeExpectancy}
 \usage{
-import_country_lifeExpectancy(modelpath, country)
+import_country_lifeExpectancy(modelpath, country, redownload = TRUE)
 }
 \arguments{
 \item{modelpath}{path to montagu files}

@@ -18,6 +18,7 @@ Collate:
     'load_shapefile_by_country.R'
     'load_worldpop_by_country.R'
     'align_rasters.R'
+    'retrieve_montagu_stochasticburden_template.R'
     'retrieve_montagu_lifeExpectancy.R'
     'retrieve_montagu_agePop.R'
     'retrieve_montagu_population.R'

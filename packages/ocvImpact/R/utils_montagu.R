@@ -240,8 +240,18 @@ import_disability_weight <- function(){
 #' @param modelpath path to Montagu files
 #' @return template filename prefix
 #' @export 
-import_templateFilename_prefix <- function(type, modelpath){
-
+#' @include retrieve_montagu_stochasticburden_template.R
+import_templateFilename_prefix <- function(type, modelpath, redownload = FALSE){
+  
+  #First check, then retrieve
+  StocBurdenTempFiles <- list.files(modelpath, pattern = "stochastic-burden-template")
+  if (length(StocBurdenTempFiles) > 0 & redownload == FALSE){
+    message(paste0("The stochastic burden template file has been under the directory: ", modelpath, '. No new download was made. '))
+  } else{
+    retrieve_montagu_stochasticburden_template(modelpath)
+  }
+  
+  #The file is already available
   if (type == "stochastic"){
     fn <- list.files(modelpath, pattern = "stochastic-burden-template")[1]
     rc <- stringr::str_remove(fn, " standard template.csv")

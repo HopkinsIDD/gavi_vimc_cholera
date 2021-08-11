@@ -4,7 +4,7 @@
 \alias{import_centralburden_template}
 \title{import_centralburden_template}
 \usage{
-import_centralburden_template(modelpath, country)
+import_centralburden_template(modelpath, country, redownload = TRUE)
 }
 \arguments{
 \item{modelpath}{Path to montagu files}
