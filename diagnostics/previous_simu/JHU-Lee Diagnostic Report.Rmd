@@ -1,6 +1,7 @@
 ---
-title: "Diagnostic Report -- 201910gavi-5"
-author: "JHU-Lee"
+title: "Diagnostic Report -- based on previous model outputs (5-country fixed outputs)"
+subtitle: "201910gavi-5 -- central burden estimates"
+author: "JHU-Lee Modeling Group"
 date: "`r Sys.time()`"
 output:
   html_document: default
@@ -11,12 +12,25 @@ output:
 
 ```{r include=FALSE}
 ### Setup
-library(tidyverse)
-library(knitr)
+chooseCRANmirror(ind = 77) #specify the mirror so that the packages can be successfully installed in the non-interactive way
+package_list <- c("tidyverse",
+                  "knitr",
+                  "rstudioapi")
+for (package in package_list) {
+  if (!require(package = package, character.only = T)) {
+    install.packages(pkgs = package, dependencies = TRUE)
+    library(package = package, character.only = T)
+  }
+  library(package = package, character.only = T)
+}
 
-setwd('C:/Users/ZOU/Desktop/Diagnostics Report')
-cen_camp  <- read_csv('central-burden-template.201910gavi-5.Cholera_campaign-default.csv')
-cen_novax <- read_csv('central-burden-template.201910gavi-5.Cholera_no-vaccination.csv')
+
+
+current_working_dir <- dirname(rstudioapi::getActiveDocumentContext()$path)
+setwd(current_working_dir)
+cen_camp  <- read_csv('previous_outputs/central-burden-template.201910gavi-5.Cholera_campaign-default.csv')
+cen_novax <- read_csv('previous_outputs/central-burden-template.201910gavi-5.Cholera_no-vaccination.csv')
+
 ```
 
 
@@ -36,8 +50,8 @@ model_spec <- cen_camp %>%
   mutate(ModelingGroup = 'JHU-Lee') %>%
   mutate(YearRange = paste0(min(year), '-', max(year))) %>% 
   mutate(AgeRange = paste0(min(age), '-', max(age))) %>% 
-  mutate(CountryList = paste(unique(cen_camp$country), collapse = '  ')) %>% 
-  mutate(SimulatedOutcomes = paste(names(cen_camp)[(ncol(cen_camp)-3):ncol(cen_camp)], collapse='  ') ) %>% 
+  mutate(CountryList = paste(unique(cen_camp$country), collapse = '  -  ')) %>% 
+  mutate(SimulatedOutcomes = paste(names(cen_camp)[6:ncol(cen_camp)], collapse='  -  ') ) %>% 
   select(Disease, ModelingGroup, YearRange, AgeRange, CountryList, SimulatedOutcomes) %>% 
   slice(1)
 
@@ -51,8 +65,8 @@ kable(data.frame(Item = names(model_spec), Details = unlist(unname(model_spec[1,
 The trends of the specific coverage sets for the campaign scenario can be observed in this figure. 
 ```{r include=FALSE}
 ### get the coverage data from local
-cov_novax <- read_csv("cov_novax.csv")
-cov_camp <- read_csv("cov_camp.csv")
+cov_novax <- read_csv("data_from_montagu/cov_novax.csv")
+cov_camp <- read_csv("data_from_montagu/cov_camp.csv")
   
 ```
 
@@ -78,7 +92,6 @@ cov_age_df <- cov_camp %>%
   mutate(freq = n()) %>% 
   select(coverage_set_name, age_from, age_to, freq) %>% 
   slice(1)
-
 kable(cov_age_df)
 
 ```
@@ -124,12 +137,13 @@ fvps_camp %>%
 ## Check the general info
 Expected number of rows.
 ```{r echo=FALSE}
-outcome_code = rep(names(cen_camp)[(ncol(cen_camp)-3):ncol(cen_camp)], 2)
+outcome_code = rep(names(cen_camp)[6:ncol(cen_camp)], 2)
+outcome_num = length(names(cen_camp)[6:ncol(cen_camp)])
 
-kable(data.frame(scenario_description = c(rep('Campaign, Default', 4), rep('No vaccination', 4)),
+kable(data.frame(scenario_description = c(rep('Campaign, Default', outcome_num), rep('No vaccination', outcome_num)),
                  outcome_code = outcome_code,
-                 number_of_non_na_rows =  c(colSums(!is.na(cen_camp[outcome_code[1:4]])),
-                                            colSums(!is.na(cen_novax[outcome_code[5:8]])) )    ))
+                 number_of_non_na_rows =  c(colSums(!is.na(cen_camp[outcome_code[1:outcome_num]])),
+                                            colSums(!is.na(cen_novax[outcome_code[(outcome_num + 1):(outcome_num*2)]])) )    ))
 rm(outcome_code)
 
 ```
@@ -137,11 +151,9 @@ rm(outcome_code)
 
 ```{r include=FALSE}
 ### first merge/join two datasets
-stack_camp <- cen_camp
-stack_camp$id <- 1:nrow(stack_camp)
+stack_camp <- cen_camp %>% mutate(id = paste0(country, as.character(year), as.character(age)))
 stack_camp$source <- 'Campaign, Default'
-stack_novax <- cen_novax
-stack_novax$id <- 1:nrow(stack_novax)
+stack_novax <- cen_novax %>% mutate(id = paste0(country, as.character(year), as.character(age)))
 stack_novax$source <- 'No vaccination'
 
 stacked <- rbind(stack_novax, stack_camp)
@@ -149,20 +161,21 @@ rm(stack_novax)
 rm(stack_camp)
 
 ### create new variables
-stacked <- stacked %>% 
-  #mutate(cases1, cases2, cohort_size1, cohort_size2, dalys1, dalys2, deaths1, deaths2) %>% 
+num_country <- length(unique(cen_camp$country))
+
+stacked <- stacked %>%
   group_by(year, age, source) %>% 
-  mutate( cases1 = case_when(sum(!is.na(cases))<5 ~ 0,
-                             sum(!is.na(cases))==5 ~ 1) ) %>% 
+  mutate( cases1 = case_when(sum(!is.na(cases))< num_country ~ 0,
+                             sum(!is.na(cases))==num_country ~ 1) ) %>% 
   mutate( cases2 = sum(cases > 0) ) %>% 
-  mutate( cohort_size1 = case_when(sum(!is.na(cohort_size))<5 ~ 0,
-                             sum(!is.na(cohort_size))==5 ~ 1) ) %>% 
+  mutate( cohort_size1 = case_when(sum(!is.na(cohort_size))<num_country ~ 0,
+                             sum(!is.na(cohort_size))==num_country ~ 1) ) %>% 
   mutate( cohort_size2 = sum(cohort_size > 0) ) %>%
-  mutate( dalys1 = case_when(sum(!is.na(dalys))<5 ~ 0,
-                             sum(!is.na(dalys))==5 ~ 1) ) %>% 
+  mutate( dalys1 = case_when(sum(!is.na(dalys))<num_country ~ 0,
+                             sum(!is.na(dalys))==num_country ~ 1) ) %>% 
   mutate( dalys2 = sum(dalys > 0) ) %>%
-  mutate( deaths1 = case_when(sum(!is.na(deaths))<5 ~ 0,
-                             sum(!is.na(deaths))==5 ~ 1) ) %>% 
+  mutate( deaths1 = case_when(sum(!is.na(deaths))<num_country ~ 0,
+                             sum(!is.na(deaths))==num_country ~ 1) ) %>% 
   mutate( deaths2 = sum(deaths > 0) )
 
 ### gather
@@ -175,7 +188,7 @@ rm(stacked)
 ```
 
 
-This figure shows the shape of the upload by scenarios and outcomes (whether there are missing values)
+This figure shows the shape of the upload by scenarios and outcomes (whether there are missing values, 1 means no missing value)
 ```{r echo=FALSE, fig.width=10, fig.height=8}
 ### plotting
 stacked1 %>% 
@@ -205,11 +218,10 @@ rm(stacked2)
 
 
 ## Check the cohort size
-### Notion: the interpolated population dataset doesn't have info for age 100, we will leave that out to keep the consistency. 
+### Notion: the interpolated population dataset doesn't have info for age 100 but has the above, we will leave that out to keep the consistency.
 ```{r include=FALSE}
 ### prepare the datasets
-#write.csv(int_pop,"C:/Users/ZOU/Desktop/Diagnostics Report\\montagu_interpolated_pop.csv", row.names = FALSE)
-int_pop <- read_csv('C:/Users/ZOU/Desktop/Diagnostics Report/montagu_interpolated_pop.csv')
+int_pop <- read_csv('data_from_montagu/montagu_interpolated_pop.csv')
 int_pop <- int_pop %>% 
   filter(year >= 2000 & age_to <= 100 & country_code%in%unique(cen_camp$country)) %>% 
   mutate(id = paste0(country_code, as.character(year), as.character(age_to))) %>% 
@@ -280,7 +292,7 @@ no_class <- pop_plot_no_country_class %>%
   filter(population_source == 'diff_population') %>% 
   group_by(population_value) %>% 
   summarise(freq = n()) %>% 
-  mutate(Countries = "All", PopulationDifference = population_value, Frequency = freq, Proportion = freq/(nrow(pop_plot_no_country_class)/3)) %>% 
+  mutate(Countries = "All", PopulationDifference = population_value, Frequency = freq, Proportion = freq/(nrow(pop_plot_no_country_class)/length(unique(pop_plot_no_country_class$population_source)))) %>% 
   select(-population_value, -freq)
 kable(no_class)
 
@@ -288,7 +300,7 @@ all_countries <- pop_plot_all_countries %>%
   filter(population_source == 'diff_population') %>% 
   group_by(country, population_value) %>% 
   summarise(freq = n()) %>% 
-  mutate(Countries = country, PopulationDifference = population_value, Frequency = freq, Proportion = freq/(nrow(pop_plot_all_countries)/15)) %>% 
+  mutate(Countries = country, PopulationDifference = population_value, Frequency = freq, Proportion = freq/(nrow(pop_plot_no_country_class)/length(unique(pop_plot_no_country_class$population_source))/length(unique(pop_plot_no_country_class$country_name)) )) %>% 
   select(-population_value, -freq, -country)
 kable(all_countries)
 
@@ -366,7 +378,7 @@ rm(merged_no_country_year)
 ```
 
 
-This figure shows the global burden values by decades 2000-2030. 
+This figure shows the global (simulated countries) burden values by decades 2000-2030. 
 ```{r echo=FALSE, fig.width=10, fig.height=10}
 ### prepare the dataset and plot
 merged_no_country_2030 <- merged_no_country_class %>% 
@@ -376,7 +388,7 @@ merged_no_country_2030 <- merged_no_country_class %>%
                                 year >= 2021 & year <= 2030 ~ '2021 - 2030',)) %>% 
   group_by(source, year_class) %>% 
   mutate(cases = sum(cases_value), dalys = sum(dalys_value), deaths = sum(deaths_value)) %>% 
-  filter(age == 0) %>% 
+  filter(age == unique(age)[1] & (year == 2000 | year == 2011 | year == 2021)) %>% 
   select(year_class, source, cases, dalys, deaths) %>% 
   gather(outcome, outcome_values, cases:deaths)
 
@@ -391,7 +403,7 @@ rm(merged_no_country_2030)
 ```
 
 
-This figure shows the global burden disease values 2000-2100. 
+This figure shows the global (simulated countries) burden disease values 2000-2100. 
 ```{r echo=FALSE, fig.width=10, fig.height=10}
 ### prepare the dataset and plot
 merged_no_country_gathered <- merged_no_country_class %>% 

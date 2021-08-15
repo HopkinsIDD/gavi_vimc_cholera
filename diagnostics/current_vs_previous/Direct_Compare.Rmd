@@ -1,6 +1,7 @@
 ---
-title: "Direct Comparison"
-author: "JHU-Lee Group"
+title: "Direct comparison between previous and current outputs (COD & KEN) -- direct demonstration (HTI)"
+subtitle: "201910gavi-5 -- central burden estimates"
+author: "JHU-Lee Modeling Group"
 date: "`r Sys.time()`"
 output:
   html_document: default
@@ -10,15 +11,38 @@ output:
 
 
 ```{r include=FALSE}
-###Setup
-library(tidyverse)
-library(knitr)
+### Setup
+chooseCRANmirror(ind = 77) #specify the mirror so that the packages can be successfully installed in the non-interactive way
+package_list <- c("tidyverse",
+                  "knitr",
+                  "rstudioapi")
+for (package in package_list) {
+  if (!require(package = package, character.only = T)) {
+    install.packages(pkgs = package, dependencies = TRUE)
+    library(package = package, character.only = T)
+  }
+  library(package = package, character.only = T)
+}
 
-setwd('C:/Users/ZOU/Desktop/data_to_verify/Comparison')
-cen_camp1  <- read_csv('central-burden-template.201910gavi-5.Cholera_campaign-default.csv')
-cen_novax1 <- read_csv('central-burden-template.201910gavi-5.Cholera_no-vaccination.csv')
-cen_camp2  <- read_csv('central-burden-template.201910gavi-5.Cholera-standard-template.306.csvcampaign-default.csv')
-cen_novax2 <- read_csv('central-burden-template.201910gavi-5.Cholera-standard-template.306.csvno-vaccination.csv')
+
+
+current_working_dir <- dirname(rstudioapi::getActiveDocumentContext()$path)
+setwd(current_working_dir)
+previous_campaign_default_output <- list.files(pattern = "^previous.*campaign-default.csv$")
+previous_no_vaccination_output <- list.files(pattern = "^previous.*no-vaccination.csv$")
+current_campaign_default_output <- list.files(pattern = "campaign-default.csv$")
+current_campaign_default_output <- current_campaign_default_output[current_campaign_default_output!=previous_campaign_default_output]
+current_no_vaccination_output <- list.files(pattern = "no-vaccination.csv$")
+current_no_vaccination_output <- current_no_vaccination_output[current_no_vaccination_output!=previous_no_vaccination_output]
+
+if (length(current_campaign_default_output) == 1 & length(current_no_vaccination_output) == 1) {
+  cen_camp1  <- read_csv(paste0(previous_campaign_default_output[1]))
+  cen_novax1 <- read_csv(paste0(previous_no_vaccination_output[1]))
+  cen_camp2  <- read_csv(paste0(current_campaign_default_output[1]))
+  cen_novax2 <- read_csv(paste0(current_no_vaccination_output[1]))
+}else{
+  message('There are multiple output files for the scenarios, please delete the duplicates and keep one for each scenario. ')
+}
 
 ```
 
