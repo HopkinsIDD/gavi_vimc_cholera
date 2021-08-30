@@ -261,7 +261,7 @@ generate_cfr <- function(country){
     dplyr::filter(!is.na(cases), !is.na(deaths), cases>0) %>%
     dplyr::filter(cfr <= 0.07)
 
-  if (country %in% deaths_summary$cntry_code){
+  if (country %in% total_cfrs$cntry_code){
     calcs <- dplyr::filter(total_cfrs, cntry_code==country) %>%
       dplyr::summarise(cases = sum(cases), deaths = sum(deaths)) %>%
       dplyr::mutate(cfr = deaths/cases)

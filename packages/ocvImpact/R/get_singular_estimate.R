@@ -36,7 +36,8 @@ get_singular_estimate <- function(datapath, country, nyears = 5){
     IncidenceTable$year_list[NRCountryIndex] <- YearList[nyears]
     IncidenceTable$singular_estimate[NRCountryIndex] <- AverageAnnualCases
     IncidenceTable$is_num_case[NRCountryIndex] <- 1
-    write.csv(IncidenceTable, file = paste0(datapath, '/incidence/VIMC-47-countries-for-cholera-modelling.csv'), row.names=FALSE)
+    IncidenceTable$data_source[NRCountryIndex] <- 'WHO'
+    #write.csv(IncidenceTable, file = paste0(datapath, '/incidence/VIMC-47-countries-for-cholera-modelling.csv'), row.names=FALSE)
   }
   
   #return IncidenceTable

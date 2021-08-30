@@ -33,12 +33,20 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
     
     if (IncidenceTable$is_num_case[NRCountryIndex] == 0){
       NumCases <- IncidenceTable$singular_estimate[NRCountryIndex] * CountryPopMean
-    } else{
+      IncidenceTable$num_case[NRCountryIndex] <- NumCases
+      IncidenceTable$incid_rate_100k[NRCountryIndex] <- 100000*NumCases/CountryPopMean
+    } else if (IncidenceTable$is_num_case[NRCountryIndex] == 1){
       NumCases <- IncidenceTable$singular_estimate[NRCountryIndex]
+      IncidenceTable$num_case[NRCountryIndex] <- NumCases
+      IncidenceTable$incid_rate_100k[NRCountryIndex] <- 100000*NumCases/CountryPopMean
+    } else{
+      message('The "is_num_case" variable has an invalid value. ')
     }
+    
     
     PoisCases <- rpois(nsamples, NumCases)
     StochasticIR <- PoisCases / CountryPopMean
+    write.csv(IncidenceTable, file = paste0(datapath, '/incidence/VIMC-47-countries-for-cholera-modelling.csv'), row.names=FALSE)
     rm(IncidenceTable)
     rm(CountryPopTable)
     rm(PoisCases)

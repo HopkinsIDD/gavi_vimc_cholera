@@ -44,13 +44,13 @@ retrieve_montagu_agePop = function(modelpath, group_id = 'JHU-Lee', expectations
       if (countries_all == TRUE){
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'all-countries', '_', 'int_pop_both.csv')
         DirectoryFileName <- paste0(modelpath, '//', FileName)
-        write.csv(int_pop, DirectoryFileName, row.names = TRUE)
+        write.csv(int_pop, DirectoryFileName, row.names = FALSE)
         rm(int_pop) #to save the memory
       } else{
         int_pop_subset <- subset(int_pop, country_code %in% CountriesList)
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'only-countries-needed', '_', 'int_pop_both.csv')
         DirectoryFileName <- paste0(modelpath, '//', FileName)
-        write.csv(int_pop_subset, DirectoryFileName, row.names = TRUE)
+        write.csv(int_pop_subset, DirectoryFileName, row.names = FALSE)
         rm(int_pop) #to save the memory
         rm(int_pop_subset) #to save the memory
       }
@@ -88,13 +88,13 @@ retrieve_montagu_agePop = function(modelpath, group_id = 'JHU-Lee', expectations
       if (countries_all == TRUE){
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'all-countries', '_', 'int_pop_both.csv')
         DirectoryFileName <- paste0(modelpath, '//', FileName)
-        write.csv(int_pop, DirectoryFileName, row.names = TRUE)
+        write.csv(int_pop, DirectoryFileName, row.names = FALSE)
         rm(int_pop) #to save the memory
       } else{
         int_pop_subset <- subset(int_pop, country_code %in% CountriesList)
         FileName <- paste0(touchstone, '_', ExpectationsID, '_', 'only-countries-needed', '_', 'int_pop_both.csv')
         DirectoryFileName <- paste0(modelpath, '//', FileName)
-        write.csv(int_pop_subset, DirectoryFileName, row.names = TRUE)
+        write.csv(int_pop_subset, DirectoryFileName, row.names = FALSE)
         rm(int_pop) #to save the memory
         rm(int_pop_subset) #to save the memory
       }

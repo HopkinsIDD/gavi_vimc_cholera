@@ -39,7 +39,7 @@ retrieve_montagu_stochasticburden_template = function(modelpath, group_id = 'JHU
       ###stochastic-burden-template.201910gavi-5.Cholera_ standard template.csv
       FileName <- paste0("stochastic-burden-template.", touchstone, '.Cholera_ standard template.', ExpectationsID, ".csv")
       DirectoryFileName <- paste0(modelpath, '//', FileName)
-      write.csv(StochasticBurdenTemplate, DirectoryFileName, row.names = TRUE)
+      write.csv(StochasticBurdenTemplate, DirectoryFileName, row.names = FALSE)
     }
     rm(StochasticBurdenTemplate) #to save memory
     message(paste0("The stochastic burden template has been downloaded under ", modelpath))
@@ -71,7 +71,7 @@ retrieve_montagu_stochasticburden_template = function(modelpath, group_id = 'JHU
       StochasticBurdenTemplate <- montagu::montagu_stochastic_burden_estimate_template(group_id, touchstone, ExpectationsID)
       FileName <- paste0("stochastic-burden-template.", touchstone, '.Cholera_ standard template.', ExpectationsID, ".csv")
       DirectoryFileName <- paste0(modelpath, '//', FileName)
-      write.csv(StochasticBurdenTemplate, DirectoryFileName, row.names = TRUE)
+      write.csv(StochasticBurdenTemplate, DirectoryFileName, row.names = FALSE)
     }
     rm(StochasticBurdenTemplate) #to save memory
     message(paste0("The stochastic burden template has been downloaded under ", modelpath))

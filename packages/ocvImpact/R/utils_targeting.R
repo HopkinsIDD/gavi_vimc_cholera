@@ -106,7 +106,12 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
 
   message(paste("Now assigning vaccine by incidence:", country, scenario))
   ptargets <- load_targets_by_country(datapath, modelpath, country)
-  coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = TRUE, redownload = FALSE) 
+  ###########add a little check point for the situation when the coverage data exists but is just 0
+  coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE, redownload = FALSE)
+  coverage_as_all_0_for_campaign <- (sum(coverage$coverage) == 0)
+  if (!coverage_as_all_0_for_campaign){
+    coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = TRUE, redownload = FALSE)
+  }
 
   if (is.null(coverage)){
 
@@ -174,7 +179,13 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
       
       ptargets_avail[which(ptargets_avail$id == partialDistrict_id),]$actual_fvp <- partialDistrict_vaccinated_people
 
-      ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_fvp>0)
+      if(coverage_as_all_0_for_campaign){
+        ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_fvp>=0)
+      } else if (coverage_as_all_0_for_campaign == FALSE){
+        ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_fvp>0)
+      } else{
+        stop(message('You did not pass the coverage_as_all_0_for_campaign checkpoint, please go back to the assign_vaccine_targets and check. '))
+      }
       names(ftargets)[i] <- as.character(cov_year$year)
 
     } #endfor

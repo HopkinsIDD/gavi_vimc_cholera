@@ -39,7 +39,7 @@ retrieve_montagu_centralburden_template = function(modelpath, group_id = 'JHU-Le
       ###central-burden-template.201910gavi-5.Cholera-standard-template.csv
       FileName <- paste0("central-burden-template.", touchstone, '.Cholera-standard-template.', ExpectationsID, ".csv")
       DirectoryFileName <- paste0(modelpath, '//', FileName)
-      write.csv(CentralBurdenTemplate, DirectoryFileName, row.names = TRUE)
+      write.csv(CentralBurdenTemplate, DirectoryFileName, row.names = FALSE)
     }
     rm(CentralBurdenTemplate) #to save memory
     message(paste0("The central burden template has been downloaded under ", modelpath))
@@ -71,7 +71,7 @@ retrieve_montagu_centralburden_template = function(modelpath, group_id = 'JHU-Le
       CentralBurdenTemplate <- montagu::montagu_central_burden_estimate_template(group_id, touchstone, ExpectationsID)
       FileName <- paste0("central-burden-template.", touchstone, '.Cholera-standard-template.', ExpectationsID, ".csv")
       DirectoryFileName <- paste0(modelpath, '//', FileName)
-      write.csv(CentralBurdenTemplate, DirectoryFileName, row.names = TRUE)
+      write.csv(CentralBurdenTemplate, DirectoryFileName, row.names = FALSE)
     }
     rm(CentralBurdenTemplate) #to save memory
     message(paste0("The central burden template has been downloaded under ", modelpath))
