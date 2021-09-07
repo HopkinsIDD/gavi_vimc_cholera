@@ -35,7 +35,7 @@ create_expectedCases <- function(
   if (is_cf){
     model_years <- NULL
   }
-  tmp <- import_centralburden_template(modelpath, country)
+  tmp <- import_centralburden_template(modelpath, country, redownload = FALSE)
   output_years <- sort(unique(tmp$year))
 
   sus_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_sus.tif")
@@ -43,7 +43,7 @@ create_expectedCases <- function(
   pop_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_pop.tif")
 
   ## write to file and import cholera incidence estimates
-  lambda <- create_incid_raster(datapath, country, nsamples, redraw)
+  lambda <- create_incid_raster(modelpath, datapath, country, nsamples, redraw)
   sus_rasterStack <- raster::brick(sus_out_fn)
   vacc_rasterStack <- raster::brick(vacc_out_fn)
   pop_rasterStack <- raster::brick(pop_out_fn)

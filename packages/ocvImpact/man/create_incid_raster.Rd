@@ -4,9 +4,11 @@
 \alias{create_incid_raster}
 \title{create_incid_raster}
 \usage{
-create_incid_raster(datapath, country, nsamples, redraw)
+create_incid_raster(modelpath, datapath, country, nsamples, redraw)
 }
 \arguments{
+\item{modelpath}{path to montagu}
+
 \item{datapath}{path to data}
 
 \item{country}{country code}

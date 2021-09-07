@@ -4,7 +4,13 @@
 \alias{import_coverage_scenario}
 \title{import_coverage_scenario}
 \usage{
-import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE)
+import_coverage_scenario(
+  modelpath,
+  country,
+  scenario,
+  filter0 = FALSE,
+  redownload = TRUE
+)
 }
 \arguments{
 \item{modelpath}{Path to montagu files}

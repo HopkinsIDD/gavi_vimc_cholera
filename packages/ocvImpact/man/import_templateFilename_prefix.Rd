@@ -4,7 +4,7 @@
 \alias{import_templateFilename_prefix}
 \title{import_templateFilename_prefix}
 \usage{
-import_templateFilename_prefix(type, modelpath)
+import_templateFilename_prefix(type, modelpath, redownload = FALSE)
 }
 \arguments{
 \item{type}{"stochastic", "central", "parameter"}

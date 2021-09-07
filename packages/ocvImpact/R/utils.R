@@ -65,6 +65,13 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, ...){
     vacc_years <- sort(unique(vacc_targets$vacc_year))
     shp <- load_shapefile_by_country(datapath, country)
 
+    ### a little play on the dataframe -- 7/2021
+    shp <- shp %>%
+      dplyr::mutate(genID = paste0(NAME_0, '-', NAME_1, '-', NAME_2))
+    shp_sp <- GADMTools::gadm_sp_loadCountries(c(country), level = 2, basefile = file.path(datapath, "shapefiles/"))$spdf
+    shp_sp$genID <- paste0(shp_sp$NAME_0, '-', shp_sp$NAME_1, '-', shp_sp$NAME_2)
+    shp <- merge(shp, shp_sp, id = 'genID')
+    
     vacc_pop <- lapply(vacc_years, function(yr){
       model_pop_raster <- create_model_pop_raster(datapath, modelpath, country, yr)
       model_pop_admin <- get_admin_population(model_pop_raster, shp)
@@ -100,7 +107,7 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, ...){
 #' @export
 #' @include utils_montagu.R
 get_model_years <- function(modelpath, country, vacc_alloc){
-  tmp <- import_centralburden_template(mpathname, country)
+  tmp <- import_centralburden_template(mpathname, country, redownload = FALSE)
   max_output_year <- max(tmp$year)
 
   if (!is.null(vacc_alloc)){
@@ -254,7 +261,7 @@ generate_cfr <- function(country){
     dplyr::filter(!is.na(cases), !is.na(deaths), cases>0) %>%
     dplyr::filter(cfr <= 0.07)
 
-  if (country %in% deaths_summary$cntry_code){
+  if (country %in% total_cfrs$cntry_code){
     calcs <- dplyr::filter(total_cfrs, cntry_code==country) %>%
       dplyr::summarise(cases = sum(cases), deaths = sum(deaths)) %>%
       dplyr::mutate(cfr = deaths/cases)

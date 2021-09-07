@@ -1,0 +1,2702 @@
+ISO3,Country,Continent,Region1,TL,TR,year,sCh,deaths
+AFG,Afghanistan,Asia,Southern Asia,1/1/60,12/31/60,1960,887,199
+AFG,Afghanistan,Asia,Southern Asia,1/1/65,12/31/65,1965,218,55
+AFG,Afghanistan,Asia,Southern Asia,1/1/93,12/31/93,1993,37046,931
+AFG,Afghanistan,Asia,Southern Asia,1/1/94,12/31/94,1994,38735,118
+AFG,Afghanistan,Asia,Southern Asia,1/1/95,12/31/95,1995,19903,624
+AFG,Afghanistan,Asia,Southern Asia,1/1/97,12/31/97,1997,4170,125
+AFG,Afghanistan,Asia,Southern Asia,1/1/98,12/31/98,1998,10000,0
+AFG,Afghanistan,Asia,Southern Asia,1/1/99,12/31/99,1999,24639,152
+AFG,Afghanistan,Asia,Southern Asia,1/1/00,12/31/00,2000,4330,198
+AFG,Afghanistan,Asia,Southern Asia,1/1/01,12/31/01,2001,4499,114
+AFG,Afghanistan,Asia,Southern Asia,1/1/02,12/31/02,2002,3,
+AFG,Afghanistan,Asia,Southern Asia,1/1/03,12/31/03,2003,41,7
+AFG,Afghanistan,Asia,Southern Asia,1/1/05,12/31/05,2005,33,0
+AFG,Afghanistan,Asia,Southern Asia,1/1/08,12/31/08,2008,4384,22
+AFG,Afghanistan,Asia,Southern Asia,1/1/09,12/31/09,2009,662,11
+AFG,Afghanistan,Asia,Southern Asia,1/1/10,12/31/10,2010,2369,10
+AFG,Afghanistan,Asia,Southern Asia,1/1/11,12/31/11,2011,3733,44
+AFG,Afghanistan,Asia,Southern Asia,1/1/12,12/31/12,2012,12,0
+AFG,Afghanistan,Asia,Southern Asia,1/1/13,12/31/13,2013,3957,14
+AFG,Afghanistan,Asia,Southern Asia,1/1/14,12/31/14,2014,45481,4
+AFG,Afghanistan,Asia,Southern Asia,1/1/15,12/31/15,2015,58064,8
+AFG,Afghanistan,Asia,Southern Asia,1/1/16,12/31/16,2016,677,5
+AFG,Afghanistan,Asia,Southern Asia,1/1/17,12/31/17,2017,33,1
+AFG,Afghanistan,Asia,Southern Asia,1/1/18,12/31/18,2018,0,0
+AFG,Afghanistan,Asia,Southern Asia,1/1/19,12/31/19,2019,2,0
+ALB,Albania,Europe,Southern Europe,1/1/94,12/31/94,1994,626,25
+DZA,Algeria,Africa,Northern Africa,1/1/71,12/31/71,1971,1332,110
+DZA,Algeria,Africa,Northern Africa,1/1/72,12/31/72,1972,646,71
+DZA,Algeria,Africa,Northern Africa,1/1/73,12/31/73,1973,605,74
+DZA,Algeria,Africa,Northern Africa,1/1/74,12/31/74,1974,738,50
+DZA,Algeria,Africa,Northern Africa,1/1/75,12/31/75,1975,1165,118
+DZA,Algeria,Africa,Northern Africa,1/1/76,12/31/76,1976,286,30
+DZA,Algeria,Africa,Northern Africa,1/1/77,12/31/77,1977,262,9
+DZA,Algeria,Africa,Northern Africa,1/1/78,12/31/78,1978,220,13
+DZA,Algeria,Africa,Northern Africa,1/1/79,12/31/79,1979,2513,94
+DZA,Algeria,Africa,Northern Africa,1/1/80,12/31/80,1980,614,18
+DZA,Algeria,Africa,Northern Africa,1/1/83,12/31/83,1983,218,9
+DZA,Algeria,Africa,Northern Africa,1/1/84,12/31/84,1984,45,0
+DZA,Algeria,Africa,Northern Africa,1/1/87,12/31/87,1987,1507,0
+DZA,Algeria,Africa,Northern Africa,1/1/88,12/31/88,1988,699,30
+DZA,Algeria,Africa,Northern Africa,1/1/89,12/31/89,1989,393,0
+DZA,Algeria,Africa,Northern Africa,1/1/90,12/31/90,1990,1299,20
+DZA,Algeria,Africa,Northern Africa,1/1/92,12/31/92,1992,69,0
+DZA,Algeria,Africa,Northern Africa,1/1/94,12/31/94,1994,118,4
+DZA,Algeria,Africa,Northern Africa,1/1/05,12/31/05,2005,0,0
+DZA,Algeria,Africa,Northern Africa,1/1/06,12/31/06,2006,0,0
+DZA,Algeria,Africa,Northern Africa,8/7/18,9/6/18,2018,217,
+DZA,Algeria,Africa,Northern Africa,1/1/19,12/31/19,2019,0,0
+AND,Andorra,Europe,Southern Europe,1/1/93,12/31/93,1993,,0
+AGO,Angola,Africa,Middle Africa,1/1/71,12/31/71,1971,1,
+AGO,Angola,Africa,Middle Africa,1/1/72,12/31/72,1972,268,24
+AGO,Angola,Africa,Middle Africa,1/1/73,12/31/73,1973,263,9
+AGO,Angola,Africa,Middle Africa,1/1/74,12/31/74,1974,934,34
+AGO,Angola,Africa,Middle Africa,1/1/75,12/31/75,1975,88,4
+AGO,Angola,Africa,Middle Africa,1/1/77,12/31/77,1977,726,31
+AGO,Angola,Africa,Middle Africa,1/1/87,12/31/87,1987,16222,1403
+AGO,Angola,Africa,Middle Africa,1/1/88,12/31/88,1988,15500,1542
+AGO,Angola,Africa,Middle Africa,1/1/89,12/31/89,1989,17601,925
+AGO,Angola,Africa,Middle Africa,1/1/90,12/31/90,1990,9527,809
+AGO,Angola,Africa,Middle Africa,1/1/91,12/31/91,1991,8590,582
+AGO,Angola,Africa,Middle Africa,1/1/92,12/31/92,1992,3608,184
+AGO,Angola,Africa,Middle Africa,1/1/94,12/31/94,1994,3443,187
+AGO,Angola,Africa,Middle Africa,1/1/95,12/31/95,1995,3295,248
+AGO,Angola,Africa,Middle Africa,1/1/96,12/31/96,1996,1306,42
+AGO,Angola,Africa,Middle Africa,1/1/05,12/31/05,2005,0,0
+AGO,Angola,Africa,Middle Africa,1/1/06,12/31/06,2006,67257,2722
+AGO,Angola,Africa,Middle Africa,1/1/07,12/31/07,2007,18422,513
+AGO,Angola,Africa,Middle Africa,1/1/08,12/31/08,2008,10511,243
+AGO,Angola,Africa,Middle Africa,1/1/09,12/31/09,2009,2019,88
+AGO,Angola,Africa,Middle Africa,1/1/10,12/31/10,2010,1484,30
+AGO,Angola,Africa,Middle Africa,1/1/11,12/31/11,2011,1810,110
+AGO,Angola,Africa,Middle Africa,1/1/12,12/31/12,2012,1215,98
+AGO,Angola,Africa,Middle Africa,1/1/13,12/31/13,2013,6655,86
+AGO,Angola,Africa,Middle Africa,1/1/14,12/31/14,2014,213,3
+AGO,Angola,Africa,Middle Africa,1/1/16,12/31/16,2016,78,3
+AGO,Angola,Africa,Middle Africa,1/1/17,12/31/17,2017,828,43
+AGO,Angola,Africa,Middle Africa,1/1/18,12/31/18,2018,1546,25
+ARG,Argentina,South America,South America,1/1/92,12/31/92,1992,,15
+ARG,Argentina,South America,South America,1/1/93,12/31/93,1993,2350,34
+ARG,Argentina,South America,South America,1/1/94,12/31/94,1994,889,15
+ARG,Argentina,South America,South America,1/1/95,12/31/95,1995,188,1
+ARG,Argentina,South America,South America,1/1/96,12/31/96,1996,474,5
+ARG,Argentina,South America,South America,1/1/97,12/31/97,1997,637,12
+ARG,Argentina,South America,South America,1/1/98,12/31/98,1998,12,0
+ARM,Armenia,Asia,Western Asia,1/1/98,12/31/98,1998,25,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/69,12/31/69,1969,,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/72,12/31/72,1972,40,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/77,12/31/77,1977,2,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/78,12/31/78,1978,1,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/79,12/31/79,1979,1,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/80,12/31/80,1980,2,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/81,12/31/81,1981,2,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/82,12/31/82,1982,1,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/83,12/31/83,1983,4,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/84,12/31/84,1984,1,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/85,12/31/85,1985,2,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/87,12/31/87,1987,1,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/88,12/31/88,1988,1,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/90,12/31/90,1990,,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/92,12/31/92,1992,3,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/93,12/31/93,1993,5,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/94,12/31/94,1994,3,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/95,12/31/95,1995,5,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/96,12/31/96,1996,2,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/97,12/31/97,1997,2,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/98,12/31/98,1998,5,
+AUS,Australia,Oceania,Australia and New Zealand,1/1/99,12/31/99,1999,4,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/00,12/31/00,2000,1,
+AUS,Australia,Oceania,Australia and New Zealand,1/1/01,12/31/01,2001,2,
+AUS,Australia,Oceania,Australia and New Zealand,1/1/02,12/31/02,2002,5,
+AUS,Australia,Oceania,Australia and New Zealand,1/1/04,12/31/04,2004,2,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/05,12/31/05,2005,2,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/06,12/31/06,2006,3,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/07,12/31/07,2007,3,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/10,12/31/10,2010,3,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/11,12/31/11,2011,6,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/12,12/31/12,2012,5,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/13,12/31/13,2013,3,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/14,12/31/14,2014,2,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/15,12/31/15,2015,2,
+AUS,Australia,Oceania,Australia and New Zealand,1/1/16,12/31/16,2016,1,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/17,12/31/17,2017,3,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/18,12/31/18,2018,0,0
+AUS,Australia,Oceania,Australia and New Zealand,1/1/19,12/31/19,2019,2,0
+AUT,Austria,Europe,Western Europe,1/1/82,12/31/82,1982,,0
+AUT,Austria,Europe,Western Europe,1/1/90,12/31/90,1990,2,0
+AUT,Austria,Europe,Western Europe,1/1/93,12/31/93,1993,1,0
+AUT,Austria,Europe,Western Europe,1/1/94,12/31/94,1994,1,0
+AUT,Austria,Europe,Western Europe,1/1/96,12/31/96,1996,1,0
+AUT,Austria,Europe,Western Europe,1/1/98,12/31/98,1998,1,
+AUT,Austria,Europe,Western Europe,1/1/99,12/31/99,1999,1,0
+AUT,Austria,Europe,Western Europe,1/1/01,12/31/01,2001,0,
+AUT,Austria,Europe,Western Europe,1/1/02,12/31/02,2002,1,
+AUT,Austria,Europe,Western Europe,1/1/05,12/31/05,2005,1,0
+AZE,Azerbaijan,Asia,Western Asia,1/1/94,12/31/94,1994,18,0
+BHS,Bahamas,North America,Caribbean,1/1/11,12/31/11,2011,1,
+BHS,Bahamas,North America,Caribbean,1/1/12,12/31/12,2012,1,0
+BHR,Bahrain,Asia,Western Asia,1/1/65,12/31/65,1965,1,0
+BHR,Bahrain,Asia,Western Asia,1/1/72,12/31/72,1972,74,4
+BHR,Bahrain,Asia,Western Asia,1/1/73,12/31/73,1973,37,0
+BHR,Bahrain,Asia,Western Asia,1/1/78,12/31/78,1978,906,2
+BHR,Bahrain,Asia,Western Asia,1/1/79,12/31/79,1979,39,0
+BHR,Bahrain,Asia,Western Asia,1/1/15,12/31/15,2015,8,0
+BHR,Bahrain,Asia,Western Asia,1/1/17,12/31/17,2017,0,0
+BHR,Bahrain,Asia,Western Asia,1/1/18,12/31/18,2018,0,0
+BHR,Bahrain,Asia,Western Asia,1/1/19,12/31/19,2019,0,0
+BGD,Bangladesh,Asia,Southern Asia,1/1/50,12/31/50,1950,29809,12947
+BGD,Bangladesh,Asia,Southern Asia,1/1/51,12/31/51,1951,20894,12372
+BGD,Bangladesh,Asia,Southern Asia,1/1/52,12/31/52,1952,21154,12884
+BGD,Bangladesh,Asia,Southern Asia,1/1/53,12/31/53,1953,27631,16904
+BGD,Bangladesh,Asia,Southern Asia,1/1/54,12/31/54,1954,15617,9443
+BGD,Bangladesh,Asia,Southern Asia,1/1/55,12/31/55,1955,16642,9802
+BGD,Bangladesh,Asia,Southern Asia,1/1/56,12/31/56,1956,23699,15310
+BGD,Bangladesh,Asia,Southern Asia,1/1/57,12/31/57,1957,8054,5134
+BGD,Bangladesh,Asia,Southern Asia,1/1/58,12/31/58,1958,15631,10119
+BGD,Bangladesh,Asia,Southern Asia,1/1/59,12/31/59,1959,16915,11056
+BGD,Bangladesh,Asia,Southern Asia,1/1/60,12/31/60,1960,15618,6272
+BGD,Bangladesh,Asia,Southern Asia,1/1/61,12/31/61,1961,2663,1703
+BGD,Bangladesh,Asia,Southern Asia,1/1/62,12/31/62,1962,2524,1304
+BGD,Bangladesh,Asia,Southern Asia,1/1/63,12/31/63,1963,3975,1248
+BGD,Bangladesh,Asia,Southern Asia,1/1/64,12/31/64,1964,3333,2419
+BGD,Bangladesh,Asia,Southern Asia,1/1/65,12/31/65,1965,1123,683
+BGD,Bangladesh,Asia,Southern Asia,1/1/66,12/31/66,1966,3154,1234
+BGD,Bangladesh,Asia,Southern Asia,1/1/67,12/31/67,1967,664,369
+BGD,Bangladesh,Asia,Southern Asia,1/1/68,12/31/68,1968,3156,614
+BGD,Bangladesh,Asia,Southern Asia,1/1/69,12/31/69,1969,7411,1556
+BGD,Bangladesh,Asia,Southern Asia,1/1/70,12/31/70,1970,7419,1889
+BGD,Bangladesh,Asia,Southern Asia,1/1/71,12/31/71,1971,2342,386
+BGD,Bangladesh,Asia,Southern Asia,1/1/72,12/31/72,1972,1059,201
+BGD,Bangladesh,Asia,Southern Asia,1/1/73,12/31/73,1973,1969,369
+BGD,Bangladesh,Asia,Southern Asia,1/1/74,12/31/74,1974,5614,173
+BGD,Bangladesh,Asia,Southern Asia,1/1/75,12/31/75,1975,4888,117
+BGD,Bangladesh,Asia,Southern Asia,1/1/76,12/31/76,1976,957,62
+BGD,Bangladesh,Asia,Southern Asia,1/1/77,12/31/77,1977,10403,354
+BGD,Bangladesh,Asia,Southern Asia,1/1/78,12/31/78,1978,5576,81
+BGD,Bangladesh,Asia,Southern Asia,1/1/79,12/31/79,1979,2154,21
+BGD,Bangladesh,Asia,Southern Asia,1/1/87,12/31/87,1987,523,23
+BGD,Bangladesh,Asia,Southern Asia,1/1/88,12/31/88,1988,571,43
+BGD,Bangladesh,Asia,Southern Asia,1/1/89,12/31/89,1989,94,2
+BGD,Bangladesh,Asia,Southern Asia,1/1/90,12/31/90,1990,82,4
+BGD,Bangladesh,Asia,Southern Asia,1/1/91,12/31/91,1991,8,0
+BGD,Bangladesh,Asia,Southern Asia,1/1/92,12/31/92,1992,479,29
+BGD,Bangladesh,Asia,Southern Asia,1/1/93,12/31/93,1993,78,0
+BGD,Bangladesh,Asia,Southern Asia,1/1/94,12/31/94,1994,562,41
+BGD,Bangladesh,Asia,Southern Asia,1/1/95,12/31/95,1995,2297,61
+BGD,Bangladesh,Asia,Southern Asia,1/1/96,12/31/96,1996,418,0
+BGD,Bangladesh,Asia,Southern Asia,1/1/97,12/31/97,1997,1959,95
+BGD,Bangladesh,Asia,Southern Asia,1/1/98,12/31/98,1998,1067,26
+BGD,Bangladesh,Asia,Southern Asia,1/1/99,12/31/99,1999,3440,63
+BGD,Bangladesh,Asia,Southern Asia,1/1/00,12/31/00,2000,1021,16
+BGD,Bangladesh,Asia,Southern Asia,1/1/18,12/31/18,2018,566,0
+BGD,Bangladesh,Asia,Southern Asia,1/1/19,12/31/19,2019,503,
+BLR,Belarus,Europe,Eastern Europe,1/1/94,12/31/94,1994,3,0
+BLR,Belarus,Europe,Eastern Europe,1/1/95,12/31/95,1995,3,0
+BEL,Belgium,Europe,Western Europe,1/1/80,12/31/80,1980,1,0
+BEL,Belgium,Europe,Western Europe,1/1/81,12/31/81,1981,,0
+BEL,Belgium,Europe,Western Europe,1/1/83,12/31/83,1983,1,0
+BEL,Belgium,Europe,Western Europe,1/1/84,12/31/84,1984,1,0
+BEL,Belgium,Europe,Western Europe,1/1/85,12/31/85,1985,1,0
+BEL,Belgium,Europe,Western Europe,1/1/92,12/31/92,1992,1,
+BEL,Belgium,Europe,Western Europe,1/1/93,12/31/93,1993,1,0
+BEL,Belgium,Europe,Western Europe,1/1/94,12/31/94,1994,1,0
+BEL,Belgium,Europe,Western Europe,1/1/04,12/31/04,2004,1,0
+BEL,Belgium,Europe,Western Europe,1/1/05,12/31/05,2005,2,0
+BLZ,Belize,North America,Central America,1/1/92,12/31/92,1992,159,4
+BLZ,Belize,North America,Central America,1/1/93,12/31/93,1993,135,3
+BLZ,Belize,North America,Central America,1/1/94,12/31/94,1994,6,1
+BLZ,Belize,North America,Central America,1/1/95,12/31/95,1995,19,1
+BLZ,Belize,North America,Central America,1/1/96,12/31/96,1996,26,0
+BLZ,Belize,North America,Central America,1/1/97,12/31/97,1997,2,0
+BLZ,Belize,North America,Central America,1/1/98,12/31/98,1998,28,1
+BLZ,Belize,North America,Central America,1/1/99,12/31/99,1999,12,0
+BEN,Benin,Africa,Western Africa,1/1/70,12/31/70,1970,175,37
+BEN,Benin,Africa,Western Africa,1/1/71,12/31/71,1971,2133,274
+BEN,Benin,Africa,Western Africa,1/1/72,12/31/72,1972,250,29
+BEN,Benin,Africa,Western Africa,1/1/73,12/31/73,1973,3,2
+BEN,Benin,Africa,Western Africa,1/1/74,12/31/74,1974,73,4
+BEN,Benin,Africa,Western Africa,1/1/75,12/31/75,1975,45,1
+BEN,Benin,Africa,Western Africa,1/1/76,12/31/76,1976,146,14
+BEN,Benin,Africa,Western Africa,1/1/77,12/31/77,1977,2,0
+BEN,Benin,Africa,Western Africa,1/1/78,12/31/78,1978,27,0
+BEN,Benin,Africa,Western Africa,1/1/80,12/31/80,1980,3,0
+BEN,Benin,Africa,Western Africa,1/1/81,12/31/81,1981,2,0
+BEN,Benin,Africa,Western Africa,1/1/82,12/31/82,1982,3,0
+BEN,Benin,Africa,Western Africa,1/1/83,12/31/83,1983,1,0
+BEN,Benin,Africa,Western Africa,1/1/84,12/31/84,1984,1,0
+BEN,Benin,Africa,Western Africa,1/1/86,12/31/86,1986,243,13
+BEN,Benin,Africa,Western Africa,1/1/91,12/31/91,1991,7474,259
+BEN,Benin,Africa,Western Africa,1/1/92,12/31/92,1992,413,17
+BEN,Benin,Africa,Western Africa,1/1/93,12/31/93,1993,10,2
+BEN,Benin,Africa,Western Africa,1/1/94,12/31/94,1994,187,20
+BEN,Benin,Africa,Western Africa,1/1/95,12/31/95,1995,203,12
+BEN,Benin,Africa,Western Africa,1/1/96,12/31/96,1996,6190,203
+BEN,Benin,Africa,Western Africa,1/1/97,12/31/97,1997,796,16
+BEN,Benin,Africa,Western Africa,1/1/98,12/31/98,1998,206,1
+BEN,Benin,Africa,Western Africa,1/1/99,12/31/99,1999,855,25
+BEN,Benin,Africa,Western Africa,1/1/00,12/31/00,2000,468,11
+BEN,Benin,Africa,Western Africa,1/1/01,12/31/01,2001,3943,71
+BEN,Benin,Africa,Western Africa,1/1/02,12/31/02,2002,270,13
+BEN,Benin,Africa,Western Africa,1/1/03,12/31/03,2003,434,11
+BEN,Benin,Africa,Western Africa,1/1/04,12/31/04,2004,642,9
+BEN,Benin,Africa,Western Africa,1/1/05,12/31/05,2005,749,11
+BEN,Benin,Africa,Western Africa,1/1/06,12/31/06,2006,91,1
+BEN,Benin,Africa,Western Africa,1/1/08,12/31/08,2008,985,5
+BEN,Benin,Africa,Western Africa,1/1/09,12/31/09,2009,74,1
+BEN,Benin,Africa,Western Africa,1/1/10,12/31/10,2010,983,8
+BEN,Benin,Africa,Western Africa,1/1/11,12/31/11,2011,755,4
+BEN,Benin,Africa,Western Africa,1/1/12,12/31/12,2012,625,3
+BEN,Benin,Africa,Western Africa,1/1/13,12/31/13,2013,528,6
+BEN,Benin,Africa,Western Africa,1/1/14,12/31/14,2014,832,12
+BEN,Benin,Africa,Western Africa,1/1/16,12/31/16,2016,761,13
+BEN,Benin,Africa,Western Africa,1/1/17,12/31/17,2017,11,0
+BEN,Benin,Africa,Western Africa,1/1/18,12/31/18,2018,0,0
+BEN,Benin,Africa,Western Africa,1/1/19,12/31/19,2019,50,0
+BTN,Bhutan,Asia,Southern Asia,1/1/58,12/31/58,1958,,0
+BTN,Bhutan,Asia,Southern Asia,1/1/91,12/31/91,1991,422,19
+BTN,Bhutan,Asia,Southern Asia,1/1/92,12/31/92,1992,494,6
+BTN,Bhutan,Asia,Southern Asia,1/1/95,12/31/95,1995,25,0
+BTN,Bhutan,Asia,Southern Asia,1/1/98,12/31/98,1998,19,0
+BTN,Bhutan,Asia,Southern Asia,1/1/18,12/31/18,2018,0,0
+BTN,Bhutan,Asia,Southern Asia,1/1/19,12/31/19,2019,0,0
+BOL,Bolivia (Plurinational State of),South America,South America,1/1/91,12/31/91,1991,206,12
+BOL,Bolivia (Plurinational State of),South America,South America,1/1/92,12/31/92,1992,22260,395
+BOL,Bolivia (Plurinational State of),South America,South America,1/1/93,12/31/93,1993,10134,254
+BOL,Bolivia (Plurinational State of),South America,South America,1/1/94,12/31/94,1994,2710,46
+BOL,Bolivia (Plurinational State of),South America,South America,1/1/95,12/31/95,1995,2293,54
+BOL,Bolivia (Plurinational State of),South America,South America,1/1/96,12/31/96,1996,2847,68
+BOL,Bolivia (Plurinational State of),South America,South America,1/1/97,12/31/97,1997,1632,18
+BOL,Bolivia (Plurinational State of),South America,South America,1/1/98,12/31/98,1998,466,7
+BWA,Botswana,Africa,Southern Africa,1/1/05,12/31/05,2005,0,0
+BWA,Botswana,Africa,Southern Africa,1/1/06,12/31/06,2006,0,0
+BWA,Botswana,Africa,Southern Africa,1/1/08,12/31/08,2008,8,1
+BWA,Botswana,Africa,Southern Africa,1/1/09,12/31/09,2009,15,2
+BWA,Botswana,Africa,Southern Africa,1/1/19,12/31/19,2019,0,0
+BRA,Brazil,South America,South America,1/1/91,12/31/91,1991,2103,33
+BRA,Brazil,South America,South America,1/1/92,12/31/92,1992,30317,363
+BRA,Brazil,South America,South America,1/1/93,12/31/93,1993,59212,644
+BRA,Brazil,South America,South America,1/1/94,12/31/94,1994,49455,452
+BRA,Brazil,South America,South America,1/1/95,12/31/95,1995,15915,85
+BRA,Brazil,South America,South America,1/1/96,12/31/96,1996,5522,33
+BRA,Brazil,South America,South America,1/1/97,12/31/97,1997,2881,37
+BRA,Brazil,South America,South America,1/1/98,12/31/98,1998,2571,27
+BRA,Brazil,South America,South America,1/1/99,12/31/99,1999,4495,83
+BRA,Brazil,South America,South America,1/1/00,12/31/00,2000,715,17
+BRA,Brazil,South America,South America,1/1/01,12/31/01,2001,7,0
+BRA,Brazil,South America,South America,1/1/04,12/31/04,2004,21,0
+BRA,Brazil,South America,South America,1/1/05,12/31/05,2005,5,0
+BRA,Brazil,South America,South America,1/1/11,12/31/11,2011,1,0
+BRN,Brunei Darussalam,Asia,South-eastern Asia,1/1/55,12/31/55,1955,1,0
+BRN,Brunei Darussalam,Asia,South-eastern Asia,1/1/65,12/31/65,1965,198,6
+BRN,Brunei Darussalam,Asia,South-eastern Asia,1/1/70,12/31/70,1970,24,0
+BRN,Brunei Darussalam,Asia,South-eastern Asia,1/1/82,12/31/82,1982,6,0
+BRN,Brunei Darussalam,Asia,South-eastern Asia,1/1/99,12/31/99,1999,93,0
+BRN,Brunei Darussalam,Asia,South-eastern Asia,1/1/11,12/31/11,2011,3,
+BRN,Brunei Darussalam,Asia,South-eastern Asia,1/1/17,12/31/17,2017,0,0
+BFA,Burkina Faso,Africa,Western Africa,1/1/70,12/31/70,1970,1,1
+BFA,Burkina Faso,Africa,Western Africa,1/1/71,12/31/71,1971,1761,495
+BFA,Burkina Faso,Africa,Western Africa,1/1/72,12/31/72,1972,1,0
+BFA,Burkina Faso,Africa,Western Africa,1/1/73,12/31/73,1973,1118,249
+BFA,Burkina Faso,Africa,Western Africa,1/1/74,12/31/74,1974,632,66
+BFA,Burkina Faso,Africa,Western Africa,1/1/75,12/31/75,1975,3,3
+BFA,Burkina Faso,Africa,Western Africa,1/1/78,12/31/78,1978,1,0
+BFA,Burkina Faso,Africa,Western Africa,1/1/84,12/31/84,1984,2191,117
+BFA,Burkina Faso,Africa,Western Africa,1/1/85,12/31/85,1985,1149,156
+BFA,Burkina Faso,Africa,Western Africa,1/1/91,12/31/91,1991,537,61
+BFA,Burkina Faso,Africa,Western Africa,1/1/95,12/31/95,1995,1451,113
+BFA,Burkina Faso,Africa,Western Africa,1/1/96,12/31/96,1996,425,58
+BFA,Burkina Faso,Africa,Western Africa,1/1/98,12/31/98,1998,1036,52
+BFA,Burkina Faso,Africa,Western Africa,1/1/99,12/31/99,1999,93,7
+BFA,Burkina Faso,Africa,Western Africa,1/1/00,12/31/00,2000,617,14
+BFA,Burkina Faso,Africa,Western Africa,1/1/01,12/31/01,2001,477,7
+BFA,Burkina Faso,Africa,Western Africa,1/1/03,12/31/03,2003,1,
+BFA,Burkina Faso,Africa,Western Africa,1/1/05,12/31/05,2005,1050,16
+BFA,Burkina Faso,Africa,Western Africa,1/1/06,12/31/06,2006,0,0
+BFA,Burkina Faso,Africa,Western Africa,1/1/08,12/31/08,2008,0,0
+BFA,Burkina Faso,Africa,Western Africa,1/1/11,12/31/11,2011,20,2
+BFA,Burkina Faso,Africa,Western Africa,1/1/12,12/31/12,2012,143,7
+BFA,Burkina Faso,Africa,Western Africa,1/1/18,12/31/18,2018,0,0
+BFA,Burkina Faso,Africa,Western Africa,1/1/19,12/31/19,2019,0,0
+BDI,Burundi,Africa,Eastern Africa,1/1/78,12/31/78,1978,8297,248
+BDI,Burundi,Africa,Eastern Africa,1/1/79,12/31/79,1979,915,31
+BDI,Burundi,Africa,Eastern Africa,1/1/80,12/31/80,1980,2039,28
+BDI,Burundi,Africa,Eastern Africa,1/1/81,12/31/81,1981,582,11
+BDI,Burundi,Africa,Eastern Africa,1/1/82,12/31/82,1982,415,9
+BDI,Burundi,Africa,Eastern Africa,1/1/83,12/31/83,1983,512,35
+BDI,Burundi,Africa,Eastern Africa,1/1/84,12/31/84,1984,180,10
+BDI,Burundi,Africa,Eastern Africa,1/1/85,12/31/85,1985,259,15
+BDI,Burundi,Africa,Eastern Africa,1/1/90,12/31/90,1990,82,
+BDI,Burundi,Africa,Eastern Africa,1/1/91,12/31/91,1991,3,
+BDI,Burundi,Africa,Eastern Africa,1/1/92,12/31/92,1992,479,29
+BDI,Burundi,Africa,Eastern Africa,1/1/93,12/31/93,1993,78,0
+BDI,Burundi,Africa,Eastern Africa,1/1/94,12/31/94,1994,562,41
+BDI,Burundi,Africa,Eastern Africa,1/1/95,12/31/95,1995,2297,
+BDI,Burundi,Africa,Eastern Africa,1/1/96,12/31/96,1996,418,
+BDI,Burundi,Africa,Eastern Africa,1/1/97,12/31/97,1997,1959,95
+BDI,Burundi,Africa,Eastern Africa,1/1/98,12/31/98,1998,1067,26
+BDI,Burundi,Africa,Eastern Africa,1/1/99,12/31/99,1999,3440,63
+BDI,Burundi,Africa,Eastern Africa,1/1/00,12/31/00,2000,1021,16
+BDI,Burundi,Africa,Eastern Africa,1/1/01,12/31/01,2001,1003,20
+BDI,Burundi,Africa,Eastern Africa,1/1/02,12/31/02,2002,577,8
+BDI,Burundi,Africa,Eastern Africa,1/1/03,12/31/03,2003,432,18
+BDI,Burundi,Africa,Eastern Africa,1/1/04,12/31/04,2004,819,14
+BDI,Burundi,Africa,Eastern Africa,1/1/05,12/31/05,2005,1309,18
+BDI,Burundi,Africa,Eastern Africa,1/1/06,12/31/06,2006,886,7
+BDI,Burundi,Africa,Eastern Africa,1/1/07,12/31/07,2007,365,2
+BDI,Burundi,Africa,Eastern Africa,1/1/08,12/31/08,2008,234,4
+BDI,Burundi,Africa,Eastern Africa,1/1/09,12/31/09,2009,355,0
+BDI,Burundi,Africa,Eastern Africa,1/1/10,12/31/10,2010,333,1
+BDI,Burundi,Africa,Eastern Africa,1/1/11,12/31/11,2011,1072,1
+BDI,Burundi,Africa,Eastern Africa,1/1/12,12/31/12,2012,214,1
+BDI,Burundi,Africa,Eastern Africa,1/1/13,12/31/13,2013,1557,17
+BDI,Burundi,Africa,Eastern Africa,1/1/14,12/31/14,2014,582,9
+BDI,Burundi,Africa,Eastern Africa,1/1/15,12/31/15,2015,442,0
+BDI,Burundi,Africa,Eastern Africa,1/1/16,12/31/16,2016,434,5
+BDI,Burundi,Africa,Eastern Africa,1/1/17,12/31/17,2017,399,0
+BDI,Burundi,Africa,Eastern Africa,1/1/18,12/31/18,2018,92,1
+BDI,Burundi,Africa,Eastern Africa,1/1/19,12/31/19,2019,1145,9
+CPV,Cabo Verde,Africa,Western Africa,1/1/74,12/31/74,1974,303,8
+CPV,Cabo Verde,Africa,Western Africa,1/1/75,12/31/75,1975,20,3
+CPV,Cabo Verde,Africa,Western Africa,1/1/76,12/31/76,1976,219,17
+CPV,Cabo Verde,Africa,Western Africa,1/1/94,12/31/94,1994,128,12
+CPV,Cabo Verde,Africa,Western Africa,1/1/95,12/31/95,1995,12913,240
+CPV,Cabo Verde,Africa,Western Africa,1/1/96,12/31/96,1996,428,3
+CPV,Cabo Verde,Africa,Western Africa,1/1/98,12/31/98,1998,133,1
+CPV,Cabo Verde,Africa,Western Africa,1/1/05,12/31/05,2005,0,0
+CPV,Cabo Verde,Africa,Western Africa,1/1/06,12/31/06,2006,0,0
+CPV,Cabo Verde,Africa,Western Africa,1/1/18,12/31/18,2018,0,0
+KHM,Cambodia,Asia,South-eastern Asia,1/1/50,12/31/50,1950,10,1
+KHM,Cambodia,Asia,South-eastern Asia,1/1/51,12/31/51,1951,57,40
+KHM,Cambodia,Asia,South-eastern Asia,1/1/52,12/31/52,1952,24,10
+KHM,Cambodia,Asia,South-eastern Asia,1/1/53,12/31/53,1953,11,8
+KHM,Cambodia,Asia,South-eastern Asia,1/1/54,12/31/54,1954,2,2
+KHM,Cambodia,Asia,South-eastern Asia,1/1/56,12/31/56,1956,1,1
+KHM,Cambodia,Asia,South-eastern Asia,1/1/57,12/31/57,1957,6,1
+KHM,Cambodia,Asia,South-eastern Asia,1/1/58,12/31/58,1958,3,0
+KHM,Cambodia,Asia,South-eastern Asia,1/1/63,12/31/63,1963,52,13
+KHM,Cambodia,Asia,South-eastern Asia,1/1/64,12/31/64,1964,187,27
+KHM,Cambodia,Asia,South-eastern Asia,1/1/66,12/31/66,1966,62,5
+KHM,Cambodia,Asia,South-eastern Asia,1/1/67,12/31/67,1967,4,0
+KHM,Cambodia,Asia,South-eastern Asia,1/1/68,12/31/68,1968,8,1
+KHM,Cambodia,Asia,South-eastern Asia,1/1/73,12/31/73,1973,159,14
+KHM,Cambodia,Asia,South-eastern Asia,1/1/74,12/31/74,1974,145,1
+KHM,Cambodia,Asia,South-eastern Asia,1/1/75,12/31/75,1975,66,0
+KHM,Cambodia,Asia,South-eastern Asia,1/1/87,12/31/87,1987,474,55
+KHM,Cambodia,Asia,South-eastern Asia,1/1/88,12/31/88,1988,56,0
+KHM,Cambodia,Asia,South-eastern Asia,1/1/89,12/31/89,1989,47,2
+KHM,Cambodia,Asia,South-eastern Asia,1/1/90,12/31/90,1990,5,0
+KHM,Cambodia,Asia,South-eastern Asia,1/1/91,12/31/91,1991,770,97
+KHM,Cambodia,Asia,South-eastern Asia,1/1/92,12/31/92,1992,1229,120
+KHM,Cambodia,Asia,South-eastern Asia,1/1/93,12/31/93,1993,2252,104
+KHM,Cambodia,Asia,South-eastern Asia,1/1/94,12/31/94,1994,3085,211
+KHM,Cambodia,Asia,South-eastern Asia,1/1/95,12/31/95,1995,4190,123
+KHM,Cambodia,Asia,South-eastern Asia,1/1/96,12/31/96,1996,740,20
+KHM,Cambodia,Asia,South-eastern Asia,1/1/97,12/31/97,1997,155,0
+KHM,Cambodia,Asia,South-eastern Asia,1/1/98,12/31/98,1998,1197,66
+KHM,Cambodia,Asia,South-eastern Asia,1/1/99,12/31/99,1999,1711,130
+KHM,Cambodia,Asia,South-eastern Asia,1/1/04,12/31/04,2004,57,1
+KHM,Cambodia,Asia,South-eastern Asia,1/1/09,12/31/09,2009,39,0
+KHM,Cambodia,Asia,South-eastern Asia,1/1/10,12/31/10,2010,588,1
+KHM,Cambodia,Asia,South-eastern Asia,1/1/17,12/31/17,2017,0,0
+CMR,Cameroon,Africa,Middle Africa,1/1/71,12/31/71,1971,2167,336
+CMR,Cameroon,Africa,Middle Africa,1/1/72,12/31/72,1972,362,27
+CMR,Cameroon,Africa,Middle Africa,1/1/73,12/31/73,1973,206,16
+CMR,Cameroon,Africa,Middle Africa,1/1/74,12/31/74,1974,83,16
+CMR,Cameroon,Africa,Middle Africa,1/1/75,12/31/75,1975,3,0
+CMR,Cameroon,Africa,Middle Africa,1/1/76,12/31/76,1976,135,27
+CMR,Cameroon,Africa,Middle Africa,1/1/78,12/31/78,1978,3,0
+CMR,Cameroon,Africa,Middle Africa,1/1/79,12/31/79,1979,16,4
+CMR,Cameroon,Africa,Middle Africa,1/1/80,12/31/80,1980,229,23
+CMR,Cameroon,Africa,Middle Africa,1/1/81,12/31/81,1981,243,17
+CMR,Cameroon,Africa,Middle Africa,1/1/82,12/31/82,1982,5,3
+CMR,Cameroon,Africa,Middle Africa,1/1/83,12/31/83,1983,55,18
+CMR,Cameroon,Africa,Middle Africa,1/1/84,12/31/84,1984,392,60
+CMR,Cameroon,Africa,Middle Africa,1/1/85,12/31/85,1985,1158,103
+CMR,Cameroon,Africa,Middle Africa,1/1/86,12/31/86,1986,165,12
+CMR,Cameroon,Africa,Middle Africa,1/1/87,12/31/87,1987,94,6
+CMR,Cameroon,Africa,Middle Africa,1/1/88,12/31/88,1988,4,0
+CMR,Cameroon,Africa,Middle Africa,1/1/89,12/31/89,1989,4,2
+CMR,Cameroon,Africa,Middle Africa,1/1/90,12/31/90,1990,16,0
+CMR,Cameroon,Africa,Middle Africa,1/1/91,12/31/91,1991,4026,491
+CMR,Cameroon,Africa,Middle Africa,1/1/92,12/31/92,1992,1268,66
+CMR,Cameroon,Africa,Middle Africa,1/1/93,12/31/93,1993,648,19
+CMR,Cameroon,Africa,Middle Africa,1/1/94,12/31/94,1994,527,61
+CMR,Cameroon,Africa,Middle Africa,1/1/95,12/31/95,1995,615,21
+CMR,Cameroon,Africa,Middle Africa,1/1/96,12/31/96,1996,5796,485
+CMR,Cameroon,Africa,Middle Africa,1/1/97,12/31/97,1997,1709,180
+CMR,Cameroon,Africa,Middle Africa,1/1/98,12/31/98,1998,4603,316
+CMR,Cameroon,Africa,Middle Africa,1/1/99,12/31/99,1999,1584,35
+CMR,Cameroon,Africa,Middle Africa,1/1/00,12/31/00,2000,123,29
+CMR,Cameroon,Africa,Middle Africa,1/1/01,12/31/01,2001,259,7
+CMR,Cameroon,Africa,Middle Africa,1/1/02,12/31/02,2002,66,8
+CMR,Cameroon,Africa,Middle Africa,1/1/03,12/31/03,2003,207,36
+CMR,Cameroon,Africa,Middle Africa,1/1/04,12/31/04,2004,8005,137
+CMR,Cameroon,Africa,Middle Africa,1/1/05,12/31/05,2005,2847,110
+CMR,Cameroon,Africa,Middle Africa,1/1/06,12/31/06,2006,922,35
+CMR,Cameroon,Africa,Middle Africa,1/1/07,12/31/07,2007,10,1
+CMR,Cameroon,Africa,Middle Africa,1/1/08,12/31/08,2008,0,0
+CMR,Cameroon,Africa,Middle Africa,1/1/09,12/31/09,2009,804,89
+CMR,Cameroon,Africa,Middle Africa,1/1/10,12/31/10,2010,10759,657
+CMR,Cameroon,Africa,Middle Africa,1/1/11,12/31/11,2011,22433,783
+CMR,Cameroon,Africa,Middle Africa,1/1/12,12/31/12,2012,363,5
+CMR,Cameroon,Africa,Middle Africa,1/1/13,12/31/13,2013,29,0
+CMR,Cameroon,Africa,Middle Africa,1/1/14,12/31/14,2014,3355,184
+CMR,Cameroon,Africa,Middle Africa,1/1/15,12/31/15,2015,124,6
+CMR,Cameroon,Africa,Middle Africa,1/1/17,12/31/17,2017,22,0
+CMR,Cameroon,Africa,Middle Africa,1/1/18,12/31/18,2018,1052,58
+CMR,Cameroon,Africa,Middle Africa,1/1/19,12/31/19,2019,1840,93
+CAN,Canada,North America,Northern America,1/1/88,12/31/88,1988,,0
+CAN,Canada,North America,Northern America,1/1/89,12/31/89,1989,1,0
+CAN,Canada,North America,Northern America,1/1/91,12/31/91,1991,2,0
+CAN,Canada,North America,Northern America,1/1/92,12/31/92,1992,5,0
+CAN,Canada,North America,Northern America,1/1/93,12/31/93,1993,6,1
+CAN,Canada,North America,Northern America,1/1/94,12/31/94,1994,2,0
+CAN,Canada,North America,Northern America,1/1/95,12/31/95,1995,7,0
+CAN,Canada,North America,Northern America,1/1/96,12/31/96,1996,2,0
+CAN,Canada,North America,Northern America,1/1/98,12/31/98,1998,2,0
+CAN,Canada,North America,Northern America,1/1/00,12/31/00,2000,5,0
+CAN,Canada,North America,Northern America,1/1/01,12/31/01,2001,6,
+CAN,Canada,North America,Northern America,1/1/02,12/31/02,2002,4,0
+CAN,Canada,North America,Northern America,1/1/03,12/31/03,2003,5,
+CAN,Canada,North America,Northern America,1/1/04,12/31/04,2004,3,0
+CAN,Canada,North America,Northern America,1/1/05,12/31/05,2005,7,0
+CAN,Canada,North America,Northern America,1/1/06,12/31/06,2006,2,0
+CAN,Canada,North America,Northern America,1/1/07,12/31/07,2007,1,0
+CAN,Canada,North America,Northern America,1/1/08,12/31/08,2008,1,0
+CAN,Canada,North America,Northern America,1/1/09,12/31/09,2009,2,0
+CAN,Canada,North America,Northern America,1/1/10,12/31/10,2010,2,0
+CAN,Canada,North America,Northern America,1/1/11,12/31/11,2011,9,
+CAN,Canada,North America,Northern America,1/1/13,12/31/13,2013,1,0
+CAN,Canada,North America,Northern America,1/1/14,12/31/14,2014,2,0
+CAN,Canada,North America,Northern America,1/1/15,12/31/15,2015,3,0
+CAN,Canada,North America,Northern America,1/1/16,12/31/16,2016,1,0
+CAF,Central African Republic,Africa,Middle Africa,1/1/97,12/31/97,1997,443,75
+CAF,Central African Republic,Africa,Middle Africa,1/1/98,12/31/98,1998,22,3
+CAF,Central African Republic,Africa,Middle Africa,1/1/04,12/31/04,2004,320,48
+CAF,Central African Republic,Africa,Middle Africa,1/1/05,12/31/05,2005,0,0
+CAF,Central African Republic,Africa,Middle Africa,1/1/06,12/31/06,2006,0,0
+CAF,Central African Republic,Africa,Middle Africa,1/1/11,12/31/11,2011,117,15
+CAF,Central African Republic,Africa,Middle Africa,1/1/12,12/31/12,2012,21,0
+CAF,Central African Republic,Africa,Middle Africa,1/1/17,12/31/17,2017,0,0
+CAF,Central African Republic,Africa,Middle Africa,1/1/18,12/31/18,2018,0,0
+TCD,Chad,Africa,Middle Africa,1/1/71,12/31/71,1971,8230,2411
+TCD,Chad,Africa,Middle Africa,1/1/72,12/31/72,1972,9,3
+TCD,Chad,Africa,Middle Africa,1/1/74,12/31/74,1974,338,87
+TCD,Chad,Africa,Middle Africa,1/1/91,12/31/91,1991,13915,1344
+TCD,Chad,Africa,Middle Africa,1/1/94,12/31/94,1994,1094,43
+TCD,Chad,Africa,Middle Africa,1/1/96,12/31/96,1996,7830,448
+TCD,Chad,Africa,Middle Africa,1/1/97,12/31/97,1997,8801,443
+TCD,Chad,Africa,Middle Africa,1/1/98,12/31/98,1998,4095,144
+TCD,Chad,Africa,Middle Africa,1/1/99,12/31/99,1999,217,18
+TCD,Chad,Africa,Middle Africa,1/1/01,12/31/01,2001,5244,226
+TCD,Chad,Africa,Middle Africa,1/1/03,12/31/03,2003,55,7
+TCD,Chad,Africa,Middle Africa,1/1/04,12/31/04,2004,5531,272
+TCD,Chad,Africa,Middle Africa,1/1/05,12/31/05,2005,90,14
+TCD,Chad,Africa,Middle Africa,1/1/06,12/31/06,2006,1668,71
+TCD,Chad,Africa,Middle Africa,1/1/07,12/31/07,2007,0,0
+TCD,Chad,Africa,Middle Africa,1/1/09,12/31/09,2009,67,6
+TCD,Chad,Africa,Middle Africa,1/1/10,12/31/10,2010,6395,175
+TCD,Chad,Africa,Middle Africa,1/1/11,12/31/11,2011,17267,458
+TCD,Chad,Africa,Middle Africa,1/1/17,12/31/17,2017,1266,86
+TCD,Chad,Africa,Middle Africa,1/1/18,12/31/18,2018,0,0
+TCD,Chad,Africa,Middle Africa,1/1/19,12/31/19,2019,93,4
+CHL,Chile,South America,South America,1/1/91,12/31/91,1991,41,2
+CHL,Chile,South America,South America,1/1/92,12/31/92,1992,73,1
+CHL,Chile,South America,South America,1/1/93,12/31/93,1993,32,0
+CHL,Chile,South America,South America,1/1/94,12/31/94,1994,1,0
+CHL,Chile,South America,South America,1/1/96,12/31/96,1996,1,0
+CHL,Chile,South America,South America,1/1/97,12/31/97,1997,4,0
+CHL,Chile,South America,South America,1/1/98,12/31/98,1998,24,2
+CHL,Chile,South America,South America,1/1/11,12/31/11,2011,1,0
+CHL,Chile,South America,South America,1/1/13,12/31/13,2013,2,0
+CHL,Chile,South America,South America,1/1/14,12/31/14,2014,1,0
+CHN,China,Asia,Eastern Asia,1/1/49,12/31/49,1949,1,1
+CHN,China,Asia,Eastern Asia,1/1/62,12/31/62,1962,384,24
+CHN,China,Asia,Eastern Asia,1/1/63,12/31/63,1963,1,0
+CHN,China,Asia,Eastern Asia,1/1/67,12/31/67,1967,1,0
+CHN,China,Asia,Eastern Asia,1/1/79,12/31/79,1979,85,2
+CHN,China,Asia,Eastern Asia,1/1/80,12/31/80,1980,88,0
+CHN,China,Asia,Eastern Asia,1/1/87,12/31/87,1987,4,0
+CHN,China,Asia,Eastern Asia,1/1/88,12/31/88,1988,7267,89
+CHN,China,Asia,Eastern Asia,1/1/89,12/31/89,1989,5628,59
+CHN,China,Asia,Eastern Asia,1/1/90,12/31/90,1990,644,5
+CHN,China,Asia,Eastern Asia,1/1/91,12/31/91,1991,210,0
+CHN,China,Asia,Eastern Asia,1/1/92,12/31/92,1992,583,1
+CHN,China,Asia,Eastern Asia,1/1/93,12/31/93,1993,11673,94
+CHN,China,Asia,Eastern Asia,1/1/94,12/31/94,1994,34877,319
+CHN,China,Asia,Eastern Asia,1/1/95,12/31/95,1995,10337,88
+CHN,China,Asia,Eastern Asia,1/1/96,12/31/96,1996,316,4
+CHN,China,Asia,Eastern Asia,1/1/97,12/31/97,1997,1177,29
+CHN,China,Asia,Eastern Asia,1/1/98,12/31/98,1998,4642,0
+CHN,China,Asia,Eastern Asia,1/1/99,12/31/99,1999,4589,0
+CHN,China,Asia,Eastern Asia,1/1/00,12/31/00,2000,1846,3
+CHN,China,Asia,Eastern Asia,1/1/01,12/31/01,2001,140,0
+CHN,China,Asia,Eastern Asia,1/1/03,12/31/03,2003,223,1
+CHN,China,Asia,Eastern Asia,1/1/04,12/31/04,2004,244,1
+CHN,China,Asia,Eastern Asia,1/1/05,12/31/05,2005,980,4
+CHN,China,Asia,Eastern Asia,1/1/06,12/31/06,2006,161,2
+CHN,China,Asia,Eastern Asia,1/1/07,12/31/07,2007,168,0
+CHN,China,Asia,Eastern Asia,1/1/08,12/31/08,2008,174,0
+CHN,China,Asia,Eastern Asia,1/1/09,12/31/09,2009,85,0
+CHN,China,Asia,Eastern Asia,1/1/10,12/31/10,2010,157,0
+CHN,China,Asia,Eastern Asia,1/1/11,12/31/11,2011,26,
+CHN,China,Asia,Eastern Asia,1/1/12,12/31/12,2012,77,0
+CHN,China,Asia,Eastern Asia,1/1/13,12/31/13,2013,53,1
+CHN,China,Asia,Eastern Asia,1/1/14,12/31/14,2014,24,0
+CHN,China,Asia,Eastern Asia,1/1/15,12/31/15,2015,13,0
+CHN,China,Asia,Eastern Asia,1/1/16,12/31/16,2016,27,0
+CHN,China,Asia,Eastern Asia,1/1/17,12/31/17,2017,14,0
+CHN,China,Asia,Eastern Asia,1/1/19,12/31/19,2019,16,0
+COL,Colombia,South America,South America,1/1/91,12/31/91,1991,11979,207
+COL,Colombia,South America,South America,1/1/92,12/31/92,1992,15129,158
+COL,Colombia,South America,South America,1/1/93,12/31/93,1993,230,0
+COL,Colombia,South America,South America,1/1/94,12/31/94,1994,996,14
+COL,Colombia,South America,South America,1/1/95,12/31/95,1995,1922,35
+COL,Colombia,South America,South America,1/1/96,12/31/96,1996,4428,70
+COL,Colombia,South America,South America,1/1/97,12/31/97,1997,1508,32
+COL,Colombia,South America,South America,1/1/98,12/31/98,1998,442,7
+COL,Colombia,South America,South America,1/1/99,12/31/99,1999,42,0
+COL,Colombia,South America,South America,1/1/04,12/31/04,2004,2,0
+COM,Comoros,Africa,Eastern Africa,1/1/75,12/31/75,1975,2675,238
+COM,Comoros,Africa,Eastern Africa,1/1/76,12/31/76,1976,5,1
+COM,Comoros,Africa,Eastern Africa,1/1/98,12/31/98,1998,7300,68
+COM,Comoros,Africa,Eastern Africa,1/1/99,12/31/99,1999,1180,42
+COM,Comoros,Africa,Eastern Africa,1/1/00,12/31/00,2000,3297,91
+COM,Comoros,Africa,Eastern Africa,1/1/01,12/31/01,2001,226,4
+COM,Comoros,Africa,Eastern Africa,1/1/02,12/31/02,2002,1567,46
+COM,Comoros,Africa,Eastern Africa,1/1/03,12/31/03,2003,56,0
+COM,Comoros,Africa,Eastern Africa,1/1/04,12/31/04,2004,1,0
+COM,Comoros,Africa,Eastern Africa,1/1/05,12/31/05,2005,0,0
+COM,Comoros,Africa,Eastern Africa,1/1/06,12/31/06,2006,0,0
+COM,Comoros,Africa,Eastern Africa,1/1/07,12/31/07,2007,1555,29
+COM,Comoros,Africa,Eastern Africa,1/1/08,12/31/08,2008,4,0
+COM,Comoros,Africa,Eastern Africa,1/1/19,12/31/19,2019,0,0
+COG,Congo,Africa,Middle Africa,1/1/78,12/31/78,1978,51,14
+COG,Congo,Africa,Middle Africa,1/1/79,12/31/79,1979,5,0
+COG,Congo,Africa,Middle Africa,1/1/97,12/31/97,1997,275,60
+COG,Congo,Africa,Middle Africa,1/1/98,12/31/98,1998,3222,22
+COG,Congo,Africa,Middle Africa,1/1/99,12/31/99,1999,4813,20
+COG,Congo,Africa,Middle Africa,1/1/00,12/31/00,2000,9,2
+COG,Congo,Africa,Middle Africa,1/1/05,12/31/05,2005,0,0
+COG,Congo,Africa,Middle Africa,1/1/06,12/31/06,2006,175,10
+COG,Congo,Africa,Middle Africa,1/1/07,12/31/07,2007,7785,133
+COG,Congo,Africa,Middle Africa,1/1/08,12/31/08,2008,156,4
+COG,Congo,Africa,Middle Africa,1/1/09,12/31/09,2009,93,0
+COG,Congo,Africa,Middle Africa,1/1/11,12/31/11,2011,762,
+COG,Congo,Africa,Middle Africa,1/1/12,12/31/12,2012,1181,37
+COG,Congo,Africa,Middle Africa,1/1/13,12/31/13,2013,1624,221
+COG,Congo,Africa,Middle Africa,1/1/16,12/31/16,2016,15,2
+COG,Congo,Africa,Middle Africa,1/1/18,12/31/18,2018,60,3
+COK,Cook Islands,Oceania,Polynesia,1/1/18,12/31/18,2018,0,0
+CRI,Costa Rica,North America,Central America,1/1/92,12/31/92,1992,12,0
+CRI,Costa Rica,North America,Central America,1/1/93,12/31/93,1993,14,0
+CRI,Costa Rica,North America,Central America,1/1/94,12/31/94,1994,38,0
+CRI,Costa Rica,North America,Central America,1/1/95,12/31/95,1995,24,0
+CRI,Costa Rica,North America,Central America,1/1/96,12/31/96,1996,19,1
+CRI,Costa Rica,North America,Central America,1/1/97,12/31/97,1997,1,0
+CUB,Cuba,North America,Caribbean,1/1/12,12/31/12,2012,417,3
+CUB,Cuba,North America,Caribbean,1/1/13,12/31/13,2013,181,0
+CUB,Cuba,North America,Caribbean,1/1/14,12/31/14,2014,76,0
+CUB,Cuba,North America,Caribbean,1/1/15,12/31/15,2015,65,0
+CZE,Czechia,Europe,Eastern Europe,1/1/70,12/31/70,1970,4,1
+CZE,Czechia,Europe,Eastern Europe,1/1/02,12/31/02,2002,2,
+PRK,Democratic People's Republic of Korea,Asia,Eastern Asia,1/1/80,12/31/80,1980,170,0
+PRK,Democratic People's Republic of Korea,Asia,Eastern Asia,1/1/96,12/31/96,1996,7,
+PRK,Democratic People's Republic of Korea,Asia,Eastern Asia,1/1/17,12/31/17,2017,0,0
+PRK,Democratic People's Republic of Korea,Asia,Eastern Asia,1/1/18,12/31/18,2018,0,0
+PRK,Democratic People's Republic of Korea,Asia,Eastern Asia,1/1/19,12/31/19,2019,0,0
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/78,12/31/78,1978,3481,183
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/79,12/31/79,1979,5515,511
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/80,12/31/80,1980,1051,81
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/81,12/31/81,1981,2379,800
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/82,12/31/82,1982,10328,693
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/83,12/31/83,1983,2977,245
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/84,12/31/84,1984,162,3
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/85,12/31/85,1985,740,30
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/86,12/31/86,1986,1059,125
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/87,12/31/87,1987,1150,218
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/88,12/31/88,1988,295,32
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/89,12/31/89,1989,99,6
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/90,12/31/90,1990,468,61
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/91,12/31/91,1991,4066,294
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/92,12/31/92,1992,1949,59
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/93,12/31/93,1993,986,175
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/94,12/31/94,1994,58057,4181
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/95,12/31/95,1995,553,22
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/96,12/31/96,1996,7886,638
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/97,12/31/97,1997,2421,326
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/98,12/31/98,1998,34899,2926
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/99,12/31/99,1999,12711,783
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/00,12/31/00,2000,14995,941
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/01,12/31/01,2001,5728,390
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/02,12/31/02,2002,31658,1979
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/03,12/31/03,2003,27272,989
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/04,12/31/04,2004,7665,228
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/05,12/31/05,2005,13430,244
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/06,12/31/06,2006,20642,426
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/07,12/31/07,2007,28269,600
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/08,12/31/08,2008,30150,548
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/09,12/31/09,2009,22899,237
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/10,12/31/10,2010,13884,182
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/11,12/31/11,2011,21700,584
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/12,12/31/12,2012,33661,819
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/13,12/31/13,2013,26944,491
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/14,12/31/14,2014,22203,372
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/15,12/31/15,2015,19182,276
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/16,12/31/16,2016,28093,759
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/17,12/31/17,2017,56190,1190
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/18,12/31/18,2018,30768,972
+COD,Democratic Republic of the Congo,Africa,Middle Africa,1/1/19,12/31/19,2019,30304,514
+DNK,Denmark,Europe,Northern Europe,1/1/90,12/31/90,1990,1,0
+DNK,Denmark,Europe,Northern Europe,1/1/93,12/31/93,1993,2,0
+DNK,Denmark,Europe,Northern Europe,1/1/94,12/31/94,1994,2,0
+DNK,Denmark,Europe,Northern Europe,1/1/95,12/31/95,1995,3,0
+DNK,Denmark,Europe,Northern Europe,1/1/04,12/31/04,2004,1,0
+DNK,Denmark,Europe,Northern Europe,1/1/08,12/31/08,2008,1,0
+DNK,Denmark,Europe,Northern Europe,1/1/16,12/31/16,2016,1,0
+DJI,Djibouti,Africa,Eastern Africa,1/1/70,12/31/70,1970,6,3
+DJI,Djibouti,Africa,Eastern Africa,1/1/71,12/31/71,1971,440,81
+DJI,Djibouti,Africa,Eastern Africa,1/1/72,12/31/72,1972,8,3
+DJI,Djibouti,Africa,Eastern Africa,1/1/76,12/31/76,1976,2,0
+DJI,Djibouti,Africa,Eastern Africa,1/1/77,12/31/77,1977,2,0
+DJI,Djibouti,Africa,Eastern Africa,1/1/78,12/31/78,1978,3,2
+DJI,Djibouti,Africa,Eastern Africa,1/1/85,12/31/85,1985,115,7
+DJI,Djibouti,Africa,Eastern Africa,1/1/93,12/31/93,1993,10055,99
+DJI,Djibouti,Africa,Eastern Africa,1/1/94,12/31/94,1994,1122,15
+DJI,Djibouti,Africa,Eastern Africa,1/1/97,12/31/97,1997,2424,50
+DJI,Djibouti,Africa,Eastern Africa,1/1/98,12/31/98,1998,164,3
+DJI,Djibouti,Africa,Eastern Africa,1/1/00,12/31/00,2000,1828,32
+DJI,Djibouti,Africa,Eastern Africa,1/1/07,12/31/07,2007,1087,27
+DJI,Djibouti,Africa,Eastern Africa,1/1/10,12/31/10,2010,2047,19
+DJI,Djibouti,Africa,Eastern Africa,1/1/11,12/31/11,2011,127,1
+DJI,Djibouti,Africa,Eastern Africa,1/1/19,12/31/19,2019,0,0
+DOM,Dominican Republic,North America,Caribbean,1/1/10,12/31/10,2010,191,0
+DOM,Dominican Republic,North America,Caribbean,1/1/11,12/31/11,2011,20851,336
+DOM,Dominican Republic,North America,Caribbean,1/1/12,12/31/12,2012,7919,68
+DOM,Dominican Republic,North America,Caribbean,1/1/13,12/31/13,2013,1954,42
+DOM,Dominican Republic,North America,Caribbean,1/1/14,12/31/14,2014,603,11
+DOM,Dominican Republic,North America,Caribbean,1/1/15,12/31/15,2015,546,15
+DOM,Dominican Republic,North America,Caribbean,1/1/16,12/31/16,2016,1159,27
+DOM,Dominican Republic,North America,Caribbean,1/1/18,12/31/18,2018,118,1
+DOM,Dominican Republic,North America,Caribbean,1/1/19,12/31/19,2019,13,0
+ECU,Ecuador,South America,South America,1/1/91,12/31/91,1991,46320,697
+ECU,Ecuador,South America,South America,1/1/92,12/31/92,1992,31870,208
+ECU,Ecuador,South America,South America,1/1/93,12/31/93,1993,6833,72
+ECU,Ecuador,South America,South America,1/1/94,12/31/94,1994,1785,16
+ECU,Ecuador,South America,South America,1/1/95,12/31/95,1995,2160,23
+ECU,Ecuador,South America,South America,1/1/96,12/31/96,1996,1059,12
+ECU,Ecuador,South America,South America,1/1/97,12/31/97,1997,65,3
+ECU,Ecuador,South America,South America,1/1/98,12/31/98,1998,3724,37
+ECU,Ecuador,South America,South America,1/1/99,12/31/99,1999,90,0
+ECU,Ecuador,South America,South America,1/1/00,12/31/00,2000,27,1
+ECU,Ecuador,South America,South America,1/1/01,12/31/01,2001,9,0
+ECU,Ecuador,South America,South America,1/1/03,12/31/03,2003,25,
+ECU,Ecuador,South America,South America,1/1/04,12/31/04,2004,5,0
+EGY,Egypt,Africa,Northern Africa,1/1/17,12/31/17,2017,0,0
+SLV,El Salvador,North America,Central America,1/1/91,12/31/91,1991,947,34
+SLV,El Salvador,North America,Central America,1/1/92,12/31/92,1992,8717,45
+SLV,El Salvador,North America,Central America,1/1/93,12/31/93,1993,6573,14
+SLV,El Salvador,North America,Central America,1/1/94,12/31/94,1994,11745,38
+SLV,El Salvador,North America,Central America,1/1/95,12/31/95,1995,2923,2
+SLV,El Salvador,North America,Central America,1/1/96,12/31/96,1996,182,2
+SLV,El Salvador,North America,Central America,1/1/98,12/31/98,1998,8,0
+SLV,El Salvador,North America,Central America,1/1/99,12/31/99,1999,134,0
+SLV,El Salvador,North America,Central America,1/1/00,12/31/00,2000,631,2
+GNQ,Equatorial Guinea,Africa,Middle Africa,1/1/84,12/31/84,1984,404,31
+GNQ,Equatorial Guinea,Africa,Middle Africa,1/1/85,12/31/85,1985,108,1
+GNQ,Equatorial Guinea,Africa,Middle Africa,1/1/04,12/31/04,2004,59,1
+GNQ,Equatorial Guinea,Africa,Middle Africa,1/1/05,12/31/05,2005,6391,33
+GNQ,Equatorial Guinea,Africa,Middle Africa,1/1/06,12/31/06,2006,0,0
+ERI,Eritrea,Africa,Eastern Africa,1/1/05,12/31/05,2005,0,0
+ERI,Eritrea,Africa,Eastern Africa,1/1/06,12/31/06,2006,0,0
+ERI,Eritrea,Africa,Eastern Africa,1/1/07,12/31/07,2007,119,9
+ERI,Eritrea,Africa,Eastern Africa,1/1/08,12/31/08,2008,1,0
+EST,Estonia,Europe,Northern Europe,1/1/93,12/31/93,1993,2,0
+SWZ,Eswatini,Africa,Southern Africa,1/1/78,12/31/78,1978,2,
+SWZ,Eswatini,Africa,Southern Africa,1/1/81,12/31/81,1981,238,17
+SWZ,Eswatini,Africa,Southern Africa,1/1/82,12/31/82,1982,538,13
+SWZ,Eswatini,Africa,Southern Africa,1/1/92,12/31/92,1992,2281,30
+SWZ,Eswatini,Africa,Southern Africa,1/1/96,12/31/96,1996,2,0
+SWZ,Eswatini,Africa,Southern Africa,1/1/98,12/31/98,1998,7,0
+SWZ,Eswatini,Africa,Southern Africa,1/1/99,12/31/99,1999,7,0
+SWZ,Eswatini,Africa,Southern Africa,1/1/00,12/31/00,2000,141,16
+SWZ,Eswatini,Africa,Southern Africa,1/1/01,12/31/01,2001,5612,107
+SWZ,Eswatini,Africa,Southern Africa,1/1/02,12/31/02,2002,134,2
+SWZ,Eswatini,Africa,Southern Africa,1/1/03,12/31/03,2003,32,13
+SWZ,Eswatini,Africa,Southern Africa,1/1/04,12/31/04,2004,1075,16
+SWZ,Eswatini,Africa,Southern Africa,1/1/05,12/31/05,2005,0,0
+SWZ,Eswatini,Africa,Southern Africa,1/1/06,12/31/06,2006,18,0
+SWZ,Eswatini,Africa,Southern Africa,1/1/07,12/31/07,2007,0,0
+SWZ,Eswatini,Africa,Southern Africa,1/1/08,12/31/08,2008,1,0
+SWZ,Eswatini,Africa,Southern Africa,1/1/09,12/31/09,2009,19,0
+SWZ,Eswatini,Africa,Southern Africa,1/1/18,12/31/18,2018,0,0
+ETH,Ethiopia,Africa,Eastern Africa,1/1/70,12/31/70,1970,850,72
+ETH,Ethiopia,Africa,Eastern Africa,1/1/71,12/31/71,1971,2187,124
+ETH,Ethiopia,Africa,Eastern Africa,1/1/79,12/31/79,1979,,0
+ETH,Ethiopia,Africa,Eastern Africa,1/1/82,12/31/82,1982,0,0
+ETH,Ethiopia,Africa,Eastern Africa,1/1/04,12/31/04,2004,16,0
+ETH,Ethiopia,Africa,Eastern Africa,1/1/05,12/31/05,2005,0,0
+ETH,Ethiopia,Africa,Eastern Africa,1/1/06,12/31/06,2006,54070,575
+ETH,Ethiopia,Africa,Eastern Africa,1/1/07,12/31/07,2007,24121,272
+ETH,Ethiopia,Africa,Eastern Africa,1/1/08,12/31/08,2008,3862,23
+ETH,Ethiopia,Africa,Eastern Africa,1/1/09,12/31/09,2009,31509,434
+ETH,Ethiopia,Africa,Eastern Africa,1/1/10,12/31/10,2010,1682,21
+ETH,Ethiopia,Africa,Eastern Africa,1/1/19,12/31/19,2019,2615,36
+FJI,Fiji,Oceania,Melanesia,1/1/17,12/31/17,2017,0,0
+FJI,Fiji,Oceania,Melanesia,1/1/18,12/31/18,2018,0,0
+FIN,Finland,Europe,Northern Europe,1/1/81,12/31/81,1981,1,
+FIN,Finland,Europe,Northern Europe,1/1/94,12/31/94,1994,2,
+FIN,Finland,Europe,Northern Europe,1/1/95,12/31/95,1995,1,0
+FIN,Finland,Europe,Northern Europe,1/1/98,12/31/98,1998,1,
+FIN,Finland,Europe,Northern Europe,1/1/05,12/31/05,2005,1,0
+FIN,Finland,Europe,Northern Europe,1/1/08,12/31/08,2008,1,0
+FRA,France,Europe,Western Europe,1/1/70,12/31/70,1970,1,0
+FRA,France,Europe,Western Europe,1/1/71,12/31/71,1971,3,0
+FRA,France,Europe,Western Europe,1/1/73,12/31/73,1973,4,0
+FRA,France,Europe,Western Europe,1/1/74,12/31/74,1974,5,0
+FRA,France,Europe,Western Europe,1/1/75,12/31/75,1975,9,0
+FRA,France,Europe,Western Europe,1/1/76,12/31/76,1976,5,0
+FRA,France,Europe,Western Europe,1/1/79,12/31/79,1979,8,0
+FRA,France,Europe,Western Europe,1/1/80,12/31/80,1980,1,0
+FRA,France,Europe,Western Europe,1/1/81,12/31/81,1981,20,
+FRA,France,Europe,Western Europe,1/1/82,12/31/82,1982,18,0
+FRA,France,Europe,Western Europe,1/1/83,12/31/83,1983,3,0
+FRA,France,Europe,Western Europe,1/1/84,12/31/84,1984,1,0
+FRA,France,Europe,Western Europe,1/1/86,12/31/86,1986,37,0
+FRA,France,Europe,Western Europe,1/1/87,12/31/87,1987,7,0
+FRA,France,Europe,Western Europe,1/1/89,12/31/89,1989,1,
+FRA,France,Europe,Western Europe,1/1/90,12/31/90,1990,6,1
+FRA,France,Europe,Western Europe,1/1/91,12/31/91,1991,7,0
+FRA,France,Europe,Western Europe,1/1/93,12/31/93,1993,5,0
+FRA,France,Europe,Western Europe,1/1/94,12/31/94,1994,4,0
+FRA,France,Europe,Western Europe,1/1/95,12/31/95,1995,6,0
+FRA,France,Europe,Western Europe,1/1/96,12/31/96,1996,8,0
+FRA,France,Europe,Western Europe,1/1/97,12/31/97,1997,3,0
+FRA,France,Europe,Western Europe,1/1/98,12/31/98,1998,2,0
+FRA,France,Europe,Western Europe,1/1/00,12/31/00,2000,5,0
+FRA,France,Europe,Western Europe,1/1/01,12/31/01,2001,2,
+FRA,France,Europe,Western Europe,1/1/02,12/31/02,2002,1,
+FRA,France,Europe,Western Europe,1/1/06,12/31/06,2006,2,0
+FRA,France,Europe,Western Europe,1/1/07,12/31/07,2007,4,0
+FRA,France,Europe,Western Europe,1/1/08,12/31/08,2008,2,0
+FRA,France,Europe,Western Europe,1/1/09,12/31/09,2009,1,0
+FRA,France,Europe,Western Europe,1/1/11,12/31/11,2011,1,0
+FRA,France,Europe,Western Europe,1/1/14,12/31/14,2014,1,0
+FRA,France,Europe,Western Europe,1/1/15,12/31/15,2015,1,0
+GAB,Gabon,Africa,Middle Africa,1/1/79,12/31/79,1979,5,2
+GAB,Gabon,Africa,Middle Africa,1/1/81,12/31/81,1981,7,0
+GAB,Gabon,Africa,Middle Africa,1/1/02,12/31/02,2002,6,
+GAB,Gabon,Africa,Middle Africa,1/1/03,12/31/03,2003,629,0
+GAB,Gabon,Africa,Middle Africa,1/1/05,12/31/05,2005,0,0
+GAB,Gabon,Africa,Middle Africa,1/1/06,12/31/06,2006,0,0
+GAB,Gabon,Africa,Middle Africa,1/1/08,12/31/08,2008,2,0
+GMB,Gambia,Africa,Western Africa,1/1/85,12/31/85,1985,2,0
+GMB,Gambia,Africa,Western Africa,1/1/94,12/31/94,1994,1,0
+GMB,Gambia,Africa,Western Africa,1/1/95,12/31/95,1995,15,0
+GMB,Gambia,Africa,Western Africa,1/1/96,12/31/96,1996,7,0
+GMB,Gambia,Africa,Western Africa,1/1/05,12/31/05,2005,214,13
+GMB,Gambia,Africa,Western Africa,1/1/06,12/31/06,2006,0,0
+GMB,Gambia,Africa,Western Africa,1/1/07,12/31/07,2007,12,1
+GMB,Gambia,Africa,Western Africa,1/1/08,12/31/08,2008,1,0
+GEO,Georgia,Asia,Western Asia,1/1/93,12/31/93,1993,8,0
+DEU,Germany,Europe,Western Europe,1/1/71,12/31/71,1971,1,0
+DEU,Germany,Europe,Western Europe,1/1/72,12/31/72,1972,2,0
+DEU,Germany,Europe,Western Europe,1/1/73,12/31/73,1973,6,0
+DEU,Germany,Europe,Western Europe,1/1/74,12/31/74,1974,3,0
+DEU,Germany,Europe,Western Europe,1/1/75,12/31/75,1975,1,
+DEU,Germany,Europe,Western Europe,1/1/76,12/31/76,1976,2,0
+DEU,Germany,Europe,Western Europe,1/1/77,12/31/77,1977,1,0
+DEU,Germany,Europe,Western Europe,1/1/80,12/31/80,1980,4,0
+DEU,Germany,Europe,Western Europe,1/1/81,12/31/81,1981,4,0
+DEU,Germany,Europe,Western Europe,1/1/82,12/31/82,1982,1,0
+DEU,Germany,Europe,Western Europe,1/1/86,12/31/86,1986,2,0
+DEU,Germany,Europe,Western Europe,1/1/88,12/31/88,1988,2,0
+DEU,Germany,Europe,Western Europe,1/1/89,12/31/89,1989,1,0
+DEU,Germany,Europe,Western Europe,1/1/90,12/31/90,1990,1,0
+DEU,Germany,Europe,Western Europe,1/1/92,12/31/92,1992,1,0
+DEU,Germany,Europe,Western Europe,1/1/93,12/31/93,1993,1,0
+DEU,Germany,Europe,Western Europe,1/1/94,12/31/94,1994,5,0
+DEU,Germany,Europe,Western Europe,1/1/95,12/31/95,1995,1,0
+DEU,Germany,Europe,Western Europe,1/1/97,12/31/97,1997,2,0
+DEU,Germany,Europe,Western Europe,1/1/98,12/31/98,1998,5,
+DEU,Germany,Europe,Western Europe,1/1/99,12/31/99,1999,3,0
+DEU,Germany,Europe,Western Europe,1/1/00,12/31/00,2000,2,
+DEU,Germany,Europe,Western Europe,1/1/01,12/31/01,2001,1,
+DEU,Germany,Europe,Western Europe,1/1/02,12/31/02,2002,1,
+DEU,Germany,Europe,Western Europe,1/1/03,12/31/03,2003,1,
+DEU,Germany,Europe,Western Europe,1/1/04,12/31/04,2004,3,0
+DEU,Germany,Europe,Western Europe,1/1/06,12/31/06,2006,1,0
+DEU,Germany,Europe,Western Europe,1/1/07,12/31/07,2007,2,0
+DEU,Germany,Europe,Western Europe,1/1/10,12/31/10,2010,4,1
+DEU,Germany,Europe,Western Europe,1/1/11,12/31/11,2011,4,0
+DEU,Germany,Europe,Western Europe,1/1/14,12/31/14,2014,1,0
+DEU,Germany,Europe,Western Europe,1/1/16,12/31/16,2016,1,
+GHA,Ghana,Africa,Western Africa,1/1/70,12/31/70,1970,2733,180
+GHA,Ghana,Africa,Western Africa,1/1/71,12/31/71,1971,13048,641
+GHA,Ghana,Africa,Western Africa,1/1/72,12/31/72,1972,625,32
+GHA,Ghana,Africa,Western Africa,1/1/73,12/31/73,1973,677,39
+GHA,Ghana,Africa,Western Africa,1/1/74,12/31/74,1974,483,37
+GHA,Ghana,Africa,Western Africa,1/1/75,12/31/75,1975,187,10
+GHA,Ghana,Africa,Western Africa,1/1/76,12/31/76,1976,102,0
+GHA,Ghana,Africa,Western Africa,1/1/77,12/31/77,1977,6565,353
+GHA,Ghana,Africa,Western Africa,1/1/78,12/31/78,1978,1853,120
+GHA,Ghana,Africa,Western Africa,1/1/79,12/31/79,1979,1783,113
+GHA,Ghana,Africa,Western Africa,1/1/80,12/31/80,1980,260,21
+GHA,Ghana,Africa,Western Africa,1/1/81,12/31/81,1981,943,62
+GHA,Ghana,Africa,Western Africa,1/1/82,12/31/82,1982,11051,1225
+GHA,Ghana,Africa,Western Africa,1/1/83,12/31/83,1983,14160,819
+GHA,Ghana,Africa,Western Africa,1/1/84,12/31/84,1984,1015,92
+GHA,Ghana,Africa,Western Africa,1/1/85,12/31/85,1985,60,0
+GHA,Ghana,Africa,Western Africa,1/1/90,12/31/90,1990,2937,60
+GHA,Ghana,Africa,Western Africa,1/1/91,12/31/91,1991,13172,409
+GHA,Ghana,Africa,Western Africa,1/1/92,12/31/92,1992,228,23
+GHA,Ghana,Africa,Western Africa,1/1/93,12/31/93,1993,1448,38
+GHA,Ghana,Africa,Western Africa,1/1/94,12/31/94,1994,2267,54
+GHA,Ghana,Africa,Western Africa,1/1/95,12/31/95,1995,4698,93
+GHA,Ghana,Africa,Western Africa,1/1/96,12/31/96,1996,1665,70
+GHA,Ghana,Africa,Western Africa,1/1/97,12/31/97,1997,379,12
+GHA,Ghana,Africa,Western Africa,1/1/98,12/31/98,1998,3426,108
+GHA,Ghana,Africa,Western Africa,1/1/99,12/31/99,1999,9432,260
+GHA,Ghana,Africa,Western Africa,1/1/00,12/31/00,2000,3331,74
+GHA,Ghana,Africa,Western Africa,1/1/01,12/31/01,2001,5487,160
+GHA,Ghana,Africa,Western Africa,1/1/02,12/31/02,2002,3614,65
+GHA,Ghana,Africa,Western Africa,1/1/03,12/31/03,2003,204,4
+GHA,Ghana,Africa,Western Africa,1/1/04,12/31/04,2004,407,6
+GHA,Ghana,Africa,Western Africa,1/1/05,12/31/05,2005,3166,51
+GHA,Ghana,Africa,Western Africa,1/1/06,12/31/06,2006,3357,107
+GHA,Ghana,Africa,Western Africa,1/1/07,12/31/07,2007,179,18
+GHA,Ghana,Africa,Western Africa,1/1/08,12/31/08,2008,1223,25
+GHA,Ghana,Africa,Western Africa,1/1/09,12/31/09,2009,1294,9
+GHA,Ghana,Africa,Western Africa,1/1/10,12/31/10,2010,438,3
+GHA,Ghana,Africa,Western Africa,1/1/11,12/31/11,2011,10628,105
+GHA,Ghana,Africa,Western Africa,1/1/12,12/31/12,2012,9548,100
+GHA,Ghana,Africa,Western Africa,1/1/13,12/31/13,2013,50,0
+GHA,Ghana,Africa,Western Africa,1/1/14,12/31/14,2014,28944,243
+GHA,Ghana,Africa,Western Africa,1/1/15,12/31/15,2015,692,8
+GHA,Ghana,Africa,Western Africa,1/1/16,12/31/16,2016,175,0
+GHA,Ghana,Africa,Western Africa,1/1/17,12/31/17,2017,0,0
+GHA,Ghana,Africa,Western Africa,1/1/19,12/31/19,2019,1,0
+GRC,Greece,Europe,Southern Europe,1/1/81,12/31/81,1981,,0
+GRC,Greece,Europe,Southern Europe,1/1/86,12/31/86,1986,1,0
+GRC,Greece,Europe,Southern Europe,1/1/93,12/31/93,1993,1,0
+GTM,Guatemala,North America,Central America,1/1/91,12/31/91,1991,3674,50
+GTM,Guatemala,North America,Central America,1/1/92,12/31/92,1992,15395,207
+GTM,Guatemala,North America,Central America,1/1/93,12/31/93,1993,30604,306
+GTM,Guatemala,North America,Central America,1/1/94,12/31/94,1994,5282,36
+GTM,Guatemala,North America,Central America,1/1/95,12/31/95,1995,7970,95
+GTM,Guatemala,North America,Central America,1/1/96,12/31/96,1996,1568,14
+GTM,Guatemala,North America,Central America,1/1/97,12/31/97,1997,1263,0
+GTM,Guatemala,North America,Central America,1/1/98,12/31/98,1998,5970,57
+GTM,Guatemala,North America,Central America,1/1/99,12/31/99,1999,2077,0
+GTM,Guatemala,North America,Central America,1/1/00,12/31/00,2000,612,6
+GTM,Guatemala,North America,Central America,1/1/01,12/31/01,2001,13,0
+GTM,Guatemala,North America,Central America,1/1/02,12/31/02,2002,1,0
+GTM,Guatemala,North America,Central America,1/1/03,12/31/03,2003,1,
+GIN,Guinea,Africa,Western Africa,1/1/70,12/31/70,1970,2000,60
+GIN,Guinea,Africa,Western Africa,1/1/86,12/31/86,1986,286,58
+GIN,Guinea,Africa,Western Africa,1/1/94,12/31/94,1994,31415,671
+GIN,Guinea,Africa,Western Africa,1/1/95,12/31/95,1995,6506,565
+GIN,Guinea,Africa,Western Africa,1/1/96,12/31/96,1996,287,17
+GIN,Guinea,Africa,Western Africa,1/1/98,12/31/98,1998,881,53
+GIN,Guinea,Africa,Western Africa,1/1/99,12/31/99,1999,599,28
+GIN,Guinea,Africa,Western Africa,1/1/00,12/31/00,2000,519,32
+GIN,Guinea,Africa,Western Africa,1/1/01,12/31/01,2001,392,22
+GIN,Guinea,Africa,Western Africa,1/1/02,12/31/02,2002,61,11
+GIN,Guinea,Africa,Western Africa,1/1/03,12/31/03,2003,6,1
+GIN,Guinea,Africa,Western Africa,1/1/04,12/31/04,2004,1516,117
+GIN,Guinea,Africa,Western Africa,1/1/05,12/31/05,2005,3821,107
+GIN,Guinea,Africa,Western Africa,1/1/06,12/31/06,2006,3242,219
+GIN,Guinea,Africa,Western Africa,1/1/07,12/31/07,2007,8546,311
+GIN,Guinea,Africa,Western Africa,1/1/08,12/31/08,2008,513,32
+GIN,Guinea,Africa,Western Africa,1/1/09,12/31/09,2009,42,0
+GIN,Guinea,Africa,Western Africa,1/1/11,12/31/11,2011,3,0
+GIN,Guinea,Africa,Western Africa,1/1/12,12/31/12,2012,7350,133
+GIN,Guinea,Africa,Western Africa,1/1/13,12/31/13,2013,319,32
+GIN,Guinea,Africa,Western Africa,1/1/14,12/31/14,2014,1,0
+GIN,Guinea,Africa,Western Africa,1/1/19,12/31/19,2019,0,0
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/86,12/31/86,1986,200,50
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/87,12/31/87,1987,6000,68
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/94,12/31/94,1994,15296,285
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/95,12/31/95,1995,119,0
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/96,12/31/96,1996,8397,84
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/97,12/31/97,1997,20555,905
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/98,12/31/98,1998,126,2
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/02,12/31/02,2002,842,6
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/03,12/31/03,2003,290,2
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/04,12/31/04,2004,155,3
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/05,12/31/05,2005,25111,399
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/06,12/31/06,2006,37,0
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/07,12/31/07,2007,153,8
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/08,12/31/08,2008,14323,225
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/09,12/31/09,2009,5,0
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/12,12/31/12,2012,3068,22
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/13,12/31/13,2013,969,28
+GNB,Guinea-Bissau,Africa,Western Africa,1/1/14,12/31/14,2014,11,2
+GUY,Guyana,South America,South America,1/1/92,12/31/92,1992,576,8
+GUY,Guyana,South America,South America,1/1/93,12/31/93,1993,66,2
+HTI,Haiti,North America,Caribbean,1/1/10,12/31/10,2010,179379,3990
+HTI,Haiti,North America,Caribbean,1/1/11,12/31/11,2011,340311,2869
+HTI,Haiti,North America,Caribbean,1/1/12,12/31/12,2012,112076,894
+HTI,Haiti,North America,Caribbean,1/1/13,12/31/13,2013,58809,593
+HTI,Haiti,North America,Caribbean,1/1/14,12/31/14,2014,27753,296
+HTI,Haiti,North America,Caribbean,1/1/15,12/31/15,2015,36045,322
+HTI,Haiti,North America,Caribbean,1/1/16,12/31/16,2016,41421,447
+HTI,Haiti,North America,Caribbean,1/1/17,12/31/17,2017,13681,
+HTI,Haiti,North America,Caribbean,1/1/18,12/31/18,2018,3777,41
+HTI,Haiti,North America,Caribbean,1/1/19,12/31/19,2019,720,3
+HTI,Haiti,North America,Caribbean,1/1/20,12/31/20,2020,0,
+HND,Honduras,North America,Central America,1/1/91,12/31/91,1991,17,0
+HND,Honduras,North America,Central America,1/1/92,12/31/92,1992,407,17
+HND,Honduras,North America,Central America,1/1/93,12/31/93,1993,4013,102
+HND,Honduras,North America,Central America,1/1/94,12/31/94,1994,5049,102
+HND,Honduras,North America,Central America,1/1/95,12/31/95,1995,4717,77
+HND,Honduras,North America,Central America,1/1/96,12/31/96,1996,708,14
+HND,Honduras,North America,Central America,1/1/97,12/31/97,1997,100,1
+HND,Honduras,North America,Central America,1/1/98,12/31/98,1998,306,13
+HND,Honduras,North America,Central America,1/1/99,12/31/99,1999,56,3
+HND,Honduras,North America,Central America,1/1/00,12/31/00,2000,8,0
+HND,Honduras,North America,Central America,1/1/01,12/31/01,2001,1,0
+HUN,Hungary,Europe,Eastern Europe,1/1/97,12/31/97,1997,1,0
+IND,India,Asia,Southern Asia,1/1/50,12/31/50,1950,625,396
+IND,India,Asia,Southern Asia,1/1/51,12/31/51,1951,86787,41543
+IND,India,Asia,Southern Asia,1/1/52,12/31/52,1952,101493,58252
+IND,India,Asia,Southern Asia,1/1/53,12/31/53,1953,213225,124227
+IND,India,Asia,Southern Asia,1/1/54,12/31/54,1954,22146,19368
+IND,India,Asia,Southern Asia,1/1/55,12/31/55,1955,23533,7662
+IND,India,Asia,Southern Asia,1/1/56,12/31/56,1956,39829,17206
+IND,India,Asia,Southern Asia,1/1/57,12/31/57,1957,54961,49715
+IND,India,Asia,Southern Asia,1/1/58,12/31/58,1958,66849,49818
+IND,India,Asia,Southern Asia,1/1/59,12/31/59,1959,14852,7696
+IND,India,Asia,Southern Asia,1/1/60,12/31/60,1960,14621,
+IND,India,Asia,Southern Asia,1/1/61,12/31/61,1961,47637,26946
+IND,India,Asia,Southern Asia,1/1/62,12/31/62,1962,51082,27141
+IND,India,Asia,Southern Asia,1/1/63,12/31/63,1963,44839,16357
+IND,India,Asia,Southern Asia,1/1/64,12/31/64,1964,53011,17035
+IND,India,Asia,Southern Asia,1/1/65,12/31/65,1965,42677,12664
+IND,India,Asia,Southern Asia,1/1/66,12/31/66,1966,13052,2799
+IND,India,Asia,Southern Asia,1/1/67,12/31/67,1967,13708,
+IND,India,Asia,Southern Asia,1/1/68,12/31/68,1968,22587,
+IND,India,Asia,Southern Asia,1/1/69,12/31/69,1969,19280,
+IND,India,Asia,Southern Asia,1/1/70,12/31/70,1970,15067,3420
+IND,India,Asia,Southern Asia,1/1/71,12/31/71,1971,71386,10478
+IND,India,Asia,Southern Asia,1/1/72,12/31/72,1972,20435,2845
+IND,India,Asia,Southern Asia,1/1/73,12/31/73,1973,41611,5406
+IND,India,Asia,Southern Asia,1/1/74,12/31/74,1974,30903,2289
+IND,India,Asia,Southern Asia,1/1/75,12/31/75,1975,22049,2330
+IND,India,Asia,Southern Asia,1/1/76,12/31/76,1976,14946,662
+IND,India,Asia,Southern Asia,1/1/77,12/31/77,1977,8376,289
+IND,India,Asia,Southern Asia,1/1/78,12/31/78,1978,10585,246
+IND,India,Asia,Southern Asia,1/1/79,12/31/79,1979,5073,113
+IND,India,Asia,Southern Asia,1/1/80,12/31/80,1980,8344,307
+IND,India,Asia,Southern Asia,1/1/81,12/31/81,1981,4681,150
+IND,India,Asia,Southern Asia,1/1/82,12/31/82,1982,4656,213
+IND,India,Asia,Southern Asia,1/1/83,12/31/83,1983,8542,309
+IND,India,Asia,Southern Asia,1/1/84,12/31/84,1984,2527,27
+IND,India,Asia,Southern Asia,1/1/85,12/31/85,1985,5808,155
+IND,India,Asia,Southern Asia,1/1/86,12/31/86,1986,4208,70
+IND,India,Asia,Southern Asia,1/1/87,12/31/87,1987,11934,240
+IND,India,Asia,Southern Asia,1/1/88,12/31/88,1988,17162,380
+IND,India,Asia,Southern Asia,1/1/89,12/31/89,1989,5640,93
+IND,India,Asia,Southern Asia,1/1/90,12/31/90,1990,3583,83
+IND,India,Asia,Southern Asia,1/1/91,12/31/91,1991,6993,149
+IND,India,Asia,Southern Asia,1/1/92,12/31/92,1992,6911,55
+IND,India,Asia,Southern Asia,1/1/93,12/31/93,1993,12084,51
+IND,India,Asia,Southern Asia,1/1/94,12/31/94,1994,4973,32
+IND,India,Asia,Southern Asia,1/1/95,12/31/95,1995,3315,5
+IND,India,Asia,Southern Asia,1/1/96,12/31/96,1996,4396,34
+IND,India,Asia,Southern Asia,1/1/97,12/31/97,1997,2768,16
+IND,India,Asia,Southern Asia,1/1/98,12/31/98,1998,7151,11
+IND,India,Asia,Southern Asia,1/1/99,12/31/99,1999,3839,6
+IND,India,Asia,Southern Asia,1/1/00,12/31/00,2000,4053,20
+IND,India,Asia,Southern Asia,1/1/01,12/31/01,2001,4081,6
+IND,India,Asia,Southern Asia,1/1/02,12/31/02,2002,3455,10
+IND,India,Asia,Southern Asia,1/1/03,12/31/03,2003,2893,2
+IND,India,Asia,Southern Asia,1/1/04,12/31/04,2004,4695,7
+IND,India,Asia,Southern Asia,1/1/05,12/31/05,2005,3155,6
+IND,India,Asia,Southern Asia,1/1/06,12/31/06,2006,1939,3
+IND,India,Asia,Southern Asia,1/1/07,12/31/07,2007,2635,3
+IND,India,Asia,Southern Asia,1/1/08,12/31/08,2008,2680,1
+IND,India,Asia,Southern Asia,1/1/10,12/31/10,2010,5155,9
+IND,India,Asia,Southern Asia,1/1/13,12/31/13,2013,6008,54
+IND,India,Asia,Southern Asia,1/1/14,12/31/14,2014,4031,21
+IND,India,Asia,Southern Asia,1/1/15,12/31/15,2015,889,4
+IND,India,Asia,Southern Asia,1/1/16,12/31/16,2016,841,3
+IND,India,Asia,Southern Asia,1/1/17,12/31/17,2017,385,
+IND,India,Asia,Southern Asia,1/1/18,12/31/18,2018,697,
+IDN,Indonesia,Asia,South-eastern Asia,1/1/60,12/31/60,1960,41,22
+IDN,Indonesia,Asia,South-eastern Asia,1/1/61,12/31/61,1961,1742,474
+IDN,Indonesia,Asia,South-eastern Asia,1/1/62,12/31/62,1962,428,80
+IDN,Indonesia,Asia,South-eastern Asia,1/1/63,12/31/63,1963,535,83
+IDN,Indonesia,Asia,South-eastern Asia,1/1/64,12/31/64,1964,326,69
+IDN,Indonesia,Asia,South-eastern Asia,1/1/66,12/31/66,1966,204,36
+IDN,Indonesia,Asia,South-eastern Asia,1/1/67,12/31/67,1967,700,139
+IDN,Indonesia,Asia,South-eastern Asia,1/1/68,12/31/68,1968,135,22
+IDN,Indonesia,Asia,South-eastern Asia,1/1/69,12/31/69,1969,627,262
+IDN,Indonesia,Asia,South-eastern Asia,1/1/70,12/31/70,1970,5997,1257
+IDN,Indonesia,Asia,South-eastern Asia,1/1/71,12/31/71,1971,23555,3607
+IDN,Indonesia,Asia,South-eastern Asia,1/1/72,12/31/72,1972,44383,6956
+IDN,Indonesia,Asia,South-eastern Asia,1/1/73,12/31/73,1973,52042,3058
+IDN,Indonesia,Asia,South-eastern Asia,1/1/74,12/31/74,1974,41474,3920
+IDN,Indonesia,Asia,South-eastern Asia,1/1/75,12/31/75,1975,48387,3715
+IDN,Indonesia,Asia,South-eastern Asia,1/1/76,12/31/76,1976,41264,2665
+IDN,Indonesia,Asia,South-eastern Asia,1/1/77,12/31/77,1977,17112,780
+IDN,Indonesia,Asia,South-eastern Asia,1/1/78,12/31/78,1978,10683,507
+IDN,Indonesia,Asia,South-eastern Asia,1/1/79,12/31/79,1979,18817,769
+IDN,Indonesia,Asia,South-eastern Asia,1/1/80,12/31/80,1980,5541,150
+IDN,Indonesia,Asia,South-eastern Asia,1/1/81,12/31/81,1981,18354,463
+IDN,Indonesia,Asia,South-eastern Asia,1/1/82,12/31/82,1982,10391,535
+IDN,Indonesia,Asia,South-eastern Asia,1/1/83,12/31/83,1983,13832,346
+IDN,Indonesia,Asia,South-eastern Asia,1/1/84,12/31/84,1984,7921,59
+IDN,Indonesia,Asia,South-eastern Asia,1/1/85,12/31/85,1985,4732,85
+IDN,Indonesia,Asia,South-eastern Asia,1/1/86,12/31/86,1986,11915,391
+IDN,Indonesia,Asia,South-eastern Asia,1/1/87,12/31/87,1987,659,18
+IDN,Indonesia,Asia,South-eastern Asia,1/1/88,12/31/88,1988,50,0
+IDN,Indonesia,Asia,South-eastern Asia,1/1/89,12/31/89,1989,67,0
+IDN,Indonesia,Asia,South-eastern Asia,1/1/90,12/31/90,1990,155,0
+IDN,Indonesia,Asia,South-eastern Asia,1/1/91,12/31/91,1991,6202,55
+IDN,Indonesia,Asia,South-eastern Asia,1/1/92,12/31/92,1992,25,0
+IDN,Indonesia,Asia,South-eastern Asia,1/1/93,12/31/93,1993,3564,25
+IDN,Indonesia,Asia,South-eastern Asia,1/1/94,12/31/94,1994,47,0
+IDN,Indonesia,Asia,South-eastern Asia,1/1/96,12/31/96,1996,66,0
+IDN,Indonesia,Asia,South-eastern Asia,1/1/97,12/31/97,1997,66,0
+IDN,Indonesia,Asia,South-eastern Asia,1/1/01,12/31/01,2001,561,6
+IDN,Indonesia,Asia,South-eastern Asia,1/1/05,12/31/05,2005,1338,19
+IDN,Indonesia,Asia,South-eastern Asia,1/1/08,12/31/08,2008,1007,27
+IDN,Indonesia,Asia,South-eastern Asia,1/1/17,12/31/17,2017,0,0
+IDN,Indonesia,Asia,South-eastern Asia,1/1/18,12/31/18,2018,0,0
+IDN,Indonesia,Asia,South-eastern Asia,1/1/19,12/31/19,2019,0,0
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/65,12/31/65,1965,5037,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/66,12/31/66,1966,162,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/67,12/31/67,1967,221,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/69,12/31/69,1969,557,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/70,12/31/70,1970,19663,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/71,12/31/71,1971,344,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/72,12/31/72,1972,322,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/73,12/31/73,1973,55,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/74,12/31/74,1974,304,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/75,12/31/75,1975,2966,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/76,12/31/76,1976,2100,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/77,12/31/77,1977,10836,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/78,12/31/78,1978,264,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/79,12/31/79,1979,1856,56
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/80,12/31/80,1980,1599,32
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/81,12/31/81,1981,6034,108
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/82,12/31/82,1982,427,0
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/83,12/31/83,1983,270,0
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/84,12/31/84,1984,531,5
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/85,12/31/85,1985,1208,9
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/86,12/31/86,1986,20,1
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/87,12/31/87,1987,295,4
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/88,12/31/88,1988,486,15
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/89,12/31/89,1989,5222,85
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/90,12/31/90,1990,178,3
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/91,12/31/91,1991,1892,32
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/92,12/31/92,1992,97,4
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/93,12/31/93,1993,1347,5
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/94,12/31/94,1994,15,0
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/95,12/31/95,1995,2177,59
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/97,12/31/97,1997,1106,9
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/98,12/31/98,1998,270,1
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/99,12/31/99,1999,1369,21
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/00,12/31/00,2000,345,3
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/01,12/31/01,2001,105,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/02,12/31/02,2002,118,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/03,12/31/03,2003,96,0
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/04,12/31/04,2004,94,1
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/05,12/31/05,2005,1133,11
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/07,12/31/07,2007,19,0
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/08,12/31/08,2008,72,4
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/11,12/31/11,2011,1187,12
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/12,12/31/12,2012,53,0
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/13,12/31/13,2013,256,7
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/15,12/31/15,2015,86,1
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/16,12/31/16,2016,5,
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/17,12/31/17,2017,634,4
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/18,12/31/18,2018,7,0
+IRN,Iran (Islamic Republic of),Asia,Southern Asia,1/1/19,12/31/19,2019,2,0
+IRQ,Iraq,Asia,Western Asia,1/1/66,12/31/66,1966,227,20
+IRQ,Iraq,Asia,Western Asia,1/1/77,12/31/77,1977,133,1
+IRQ,Iraq,Asia,Western Asia,1/1/78,12/31/78,1978,96,0
+IRQ,Iraq,Asia,Western Asia,1/1/91,12/31/91,1991,877,6
+IRQ,Iraq,Asia,Western Asia,1/1/92,12/31/92,1992,97,0
+IRQ,Iraq,Asia,Western Asia,1/1/93,12/31/93,1993,280,0
+IRQ,Iraq,Asia,Western Asia,1/1/94,12/31/94,1994,838,0
+IRQ,Iraq,Asia,Western Asia,1/1/95,12/31/95,1995,820,3
+IRQ,Iraq,Asia,Western Asia,1/1/96,12/31/96,1996,1,0
+IRQ,Iraq,Asia,Western Asia,1/1/98,12/31/98,1998,53,1
+IRQ,Iraq,Asia,Western Asia,1/1/99,12/31/99,1999,1985,30
+IRQ,Iraq,Asia,Western Asia,1/1/00,12/31/00,2000,532,4
+IRQ,Iraq,Asia,Western Asia,1/1/01,12/31/01,2001,560,
+IRQ,Iraq,Asia,Western Asia,1/1/02,12/31/02,2002,718,
+IRQ,Iraq,Asia,Western Asia,1/1/03,12/31/03,2003,187,0
+IRQ,Iraq,Asia,Western Asia,1/1/04,12/31/04,2004,35,0
+IRQ,Iraq,Asia,Western Asia,1/1/07,12/31/07,2007,4697,24
+IRQ,Iraq,Asia,Western Asia,1/1/08,12/31/08,2008,925,11
+IRQ,Iraq,Asia,Western Asia,1/1/09,12/31/09,2009,6,0
+IRQ,Iraq,Asia,Western Asia,1/1/10,12/31/10,2010,2,0
+IRQ,Iraq,Asia,Western Asia,1/1/12,12/31/12,2012,4693,4
+IRQ,Iraq,Asia,Western Asia,1/1/13,12/31/13,2013,1,0
+IRQ,Iraq,Asia,Western Asia,1/1/15,12/31/15,2015,4965,2
+IRQ,Iraq,Asia,Western Asia,1/1/16,12/31/16,2016,35,0
+IRQ,Iraq,Asia,Western Asia,1/1/18,12/31/18,2018,3,0
+IRL,Ireland,Europe,Northern Europe,1/1/01,12/31/01,2001,1,
+ISR,Israel,Asia,Western Asia,1/1/70,12/31/70,1970,185,10
+ISR,Israel,Asia,Western Asia,1/1/71,12/31/71,1971,1,0
+ISR,Israel,Asia,Western Asia,1/1/72,12/31/72,1972,11,0
+ISR,Israel,Asia,Western Asia,1/1/82,12/31/82,1982,1,0
+ISR,Israel,Asia,Western Asia,1/1/87,12/31/87,1987,2,0
+ISR,Israel,Asia,Western Asia,1/1/88,12/31/88,1988,1,0
+ISR,Israel,Asia,Western Asia,1/1/13,12/31/13,2013,1,0
+ITA,Italy,Europe,Southern Europe,1/1/73,12/31/73,1973,278,23
+ITA,Italy,Europe,Southern Europe,1/1/75,12/31/75,1975,1,0
+ITA,Italy,Europe,Southern Europe,1/1/77,12/31/77,1977,2,0
+ITA,Italy,Europe,Southern Europe,1/1/79,12/31/79,1979,8,0
+ITA,Italy,Europe,Southern Europe,1/1/94,12/31/94,1994,12,9
+ITA,Italy,Europe,Southern Europe,1/1/95,12/31/95,1995,1,0
+ITA,Italy,Europe,Southern Europe,1/1/98,12/31/98,1998,2,9
+ITA,Italy,Europe,Southern Europe,1/1/06,12/31/06,2006,1,0
+ITA,Italy,Europe,Southern Europe,1/1/07,12/31/07,2007,1,0
+ITA,Italy,Europe,Southern Europe,1/1/13,12/31/13,2013,1,0
+CIV,Ivory Coast,Africa,Western Africa,1/1/70,12/31/70,1970,868,39
+CIV,Ivory Coast,Africa,Western Africa,1/1/71,12/31/71,1971,668,9
+CIV,Ivory Coast,Africa,Western Africa,1/1/79,12/31/79,1979,3,0
+CIV,Ivory Coast,Africa,Western Africa,1/1/82,12/31/82,1982,34,0
+CIV,Ivory Coast,Africa,Western Africa,1/1/91,12/31/91,1991,604,116
+CIV,Ivory Coast,Africa,Western Africa,1/1/92,12/31/92,1992,37,7
+CIV,Ivory Coast,Africa,Western Africa,1/1/93,12/31/93,1993,724,42
+CIV,Ivory Coast,Africa,Western Africa,1/1/94,12/31/94,1994,1108,55
+CIV,Ivory Coast,Africa,Western Africa,1/1/95,12/31/95,1995,4993,184
+CIV,Ivory Coast,Africa,Western Africa,1/1/96,12/31/96,1996,1345,22
+CIV,Ivory Coast,Africa,Western Africa,1/1/01,12/31/01,2001,5912,305
+CIV,Ivory Coast,Africa,Western Africa,1/1/02,12/31/02,2002,4188,143
+CIV,Ivory Coast,Africa,Western Africa,1/1/03,12/31/03,2003,1034,50
+CIV,Ivory Coast,Africa,Western Africa,1/1/04,12/31/04,2004,105,9
+CIV,Ivory Coast,Africa,Western Africa,1/1/05,12/31/05,2005,39,6
+CIV,Ivory Coast,Africa,Western Africa,1/1/06,12/31/06,2006,414,15
+CIV,Ivory Coast,Africa,Western Africa,1/1/07,12/31/07,2007,8,1
+CIV,Ivory Coast,Africa,Western Africa,1/1/08,12/31/08,2008,7,1
+CIV,Ivory Coast,Africa,Western Africa,1/1/09,12/31/09,2009,5,2
+CIV,Ivory Coast,Africa,Western Africa,1/1/10,12/31/10,2010,32,0
+CIV,Ivory Coast,Africa,Western Africa,1/1/11,12/31/11,2011,1261,24
+CIV,Ivory Coast,Africa,Western Africa,1/1/12,12/31/12,2012,424,19
+CIV,Ivory Coast,Africa,Western Africa,1/1/13,12/31/13,2013,56,2
+CIV,Ivory Coast,Africa,Western Africa,1/1/14,12/31/14,2014,235,12
+CIV,Ivory Coast,Africa,Western Africa,1/1/15,12/31/15,2015,199,6
+JPN,Japan,Asia,Eastern Asia,1/1/63,12/31/63,1963,16,0
+JPN,Japan,Asia,Eastern Asia,1/1/64,12/31/64,1964,2,1
+JPN,Japan,Asia,Eastern Asia,1/1/69,12/31/69,1969,8,
+JPN,Japan,Asia,Eastern Asia,1/1/70,12/31/70,1970,5,
+JPN,Japan,Asia,Eastern Asia,1/1/75,12/31/75,1975,3,0
+JPN,Japan,Asia,Eastern Asia,1/1/76,12/31/76,1976,6,0
+JPN,Japan,Asia,Eastern Asia,1/1/77,12/31/77,1977,52,1
+JPN,Japan,Asia,Eastern Asia,1/1/78,12/31/78,1978,34,1
+JPN,Japan,Asia,Eastern Asia,1/1/79,12/31/79,1979,11,0
+JPN,Japan,Asia,Eastern Asia,1/1/80,12/31/80,1980,23,0
+JPN,Japan,Asia,Eastern Asia,1/1/81,12/31/81,1981,19,0
+JPN,Japan,Asia,Eastern Asia,1/1/82,12/31/82,1982,16,0
+JPN,Japan,Asia,Eastern Asia,1/1/83,12/31/83,1983,35,0
+JPN,Japan,Asia,Eastern Asia,1/1/84,12/31/84,1984,55,0
+JPN,Japan,Asia,Eastern Asia,1/1/85,12/31/85,1985,36,0
+JPN,Japan,Asia,Eastern Asia,1/1/86,12/31/86,1986,26,0
+JPN,Japan,Asia,Eastern Asia,1/1/87,12/31/87,1987,34,0
+JPN,Japan,Asia,Eastern Asia,1/1/88,12/31/88,1988,33,0
+JPN,Japan,Asia,Eastern Asia,1/1/89,12/31/89,1989,95,0
+JPN,Japan,Asia,Eastern Asia,1/1/90,12/31/90,1990,73,0
+JPN,Japan,Asia,Eastern Asia,1/1/91,12/31/91,1991,90,1
+JPN,Japan,Asia,Eastern Asia,1/1/92,12/31/92,1992,46,0
+JPN,Japan,Asia,Eastern Asia,1/1/93,12/31/93,1993,89,0
+JPN,Japan,Asia,Eastern Asia,1/1/94,12/31/94,1994,91,0
+JPN,Japan,Asia,Eastern Asia,1/1/95,12/31/95,1995,321,1
+JPN,Japan,Asia,Eastern Asia,1/1/96,12/31/96,1996,39,0
+JPN,Japan,Asia,Eastern Asia,1/1/97,12/31/97,1997,89,0
+JPN,Japan,Asia,Eastern Asia,1/1/98,12/31/98,1998,60,0
+JPN,Japan,Asia,Eastern Asia,1/1/99,12/31/99,1999,40,0
+JPN,Japan,Asia,Eastern Asia,1/1/00,12/31/00,2000,34,0
+JPN,Japan,Asia,Eastern Asia,1/1/01,12/31/01,2001,11,
+JPN,Japan,Asia,Eastern Asia,1/1/02,12/31/02,2002,27,0
+JPN,Japan,Asia,Eastern Asia,1/1/03,12/31/03,2003,16,0
+JPN,Japan,Asia,Eastern Asia,1/1/04,12/31/04,2004,66,0
+JPN,Japan,Asia,Eastern Asia,1/1/05,12/31/05,2005,43,0
+JPN,Japan,Asia,Eastern Asia,1/1/06,12/31/06,2006,34,0
+JPN,Japan,Asia,Eastern Asia,1/1/07,12/31/07,2007,0,0
+JPN,Japan,Asia,Eastern Asia,1/1/11,12/31/11,2011,12,
+JPN,Japan,Asia,Eastern Asia,1/1/12,12/31/12,2012,3,0
+JPN,Japan,Asia,Eastern Asia,1/1/13,12/31/13,2013,8,0
+JPN,Japan,Asia,Eastern Asia,1/1/14,12/31/14,2014,5,0
+JPN,Japan,Asia,Eastern Asia,1/1/15,12/31/15,2015,7,
+JPN,Japan,Asia,Eastern Asia,1/1/16,12/31/16,2016,10,0
+JPN,Japan,Asia,Eastern Asia,1/1/17,12/31/17,2017,7,0
+JPN,Japan,Asia,Eastern Asia,1/1/18,12/31/18,2018,4,0
+JPN,Japan,Asia,Eastern Asia,1/1/19,12/31/19,2019,5,0
+JOR,Jordan,Asia,Western Asia,1/1/70,12/31/70,1970,3,0
+JOR,Jordan,Asia,Western Asia,1/1/76,12/31/76,1976,152,0
+JOR,Jordan,Asia,Western Asia,1/1/77,12/31/77,1977,427,1
+JOR,Jordan,Asia,Western Asia,1/1/79,12/31/79,1979,141,0
+JOR,Jordan,Asia,Western Asia,1/1/81,12/31/81,1981,870,4
+JOR,Jordan,Asia,Western Asia,1/1/90,12/31/90,1990,2,0
+JOR,Jordan,Asia,Western Asia,1/1/17,12/31/17,2017,0,0
+JOR,Jordan,Asia,Western Asia,1/1/18,12/31/18,2018,0,0
+KAZ,Kazakhstan,Asia,Central Asia,1/1/93,12/31/93,1993,74,0
+KAZ,Kazakhstan,Asia,Central Asia,1/1/94,12/31/94,1994,3,0
+KAZ,Kazakhstan,Asia,Central Asia,1/1/95,12/31/95,1995,16,0
+KAZ,Kazakhstan,Asia,Central Asia,1/1/97,12/31/97,1997,4,0
+KAZ,Kazakhstan,Asia,Central Asia,1/1/01,12/31/01,2001,1,
+KAZ,Kazakhstan,Asia,Central Asia,1/1/08,12/31/08,2008,1,0
+KEN,Kenya,Africa,Eastern Africa,1/1/71,12/31/71,1971,239,38
+KEN,Kenya,Africa,Eastern Africa,1/1/72,12/31/72,1972,51,0
+KEN,Kenya,Africa,Eastern Africa,1/1/74,12/31/74,1974,402,20
+KEN,Kenya,Africa,Eastern Africa,1/1/75,12/31/75,1975,1093,74
+KEN,Kenya,Africa,Eastern Africa,1/1/76,12/31/76,1976,1359,59
+KEN,Kenya,Africa,Eastern Africa,1/1/77,12/31/77,1977,21,0
+KEN,Kenya,Africa,Eastern Africa,1/1/78,12/31/78,1978,673,17
+KEN,Kenya,Africa,Eastern Africa,1/1/79,12/31/79,1979,1070,2
+KEN,Kenya,Africa,Eastern Africa,1/1/80,12/31/80,1980,2808,42
+KEN,Kenya,Africa,Eastern Africa,1/1/81,12/31/81,1981,2424,108
+KEN,Kenya,Africa,Eastern Africa,1/1/82,12/31/82,1982,3498,91
+KEN,Kenya,Africa,Eastern Africa,1/1/83,12/31/83,1983,1049,53
+KEN,Kenya,Africa,Eastern Africa,1/1/84,12/31/84,1984,14,0
+KEN,Kenya,Africa,Eastern Africa,1/1/85,12/31/85,1985,1352,102
+KEN,Kenya,Africa,Eastern Africa,1/1/86,12/31/86,1986,839,45
+KEN,Kenya,Africa,Eastern Africa,1/1/87,12/31/87,1987,255,12
+KEN,Kenya,Africa,Eastern Africa,1/1/89,12/31/89,1989,918,32
+KEN,Kenya,Africa,Eastern Africa,1/1/92,12/31/92,1992,3388,100
+KEN,Kenya,Africa,Eastern Africa,1/1/94,12/31/94,1994,880,28
+KEN,Kenya,Africa,Eastern Africa,1/1/95,12/31/95,1995,1547,39
+KEN,Kenya,Africa,Eastern Africa,1/1/96,12/31/96,1996,482,14
+KEN,Kenya,Africa,Eastern Africa,1/1/97,12/31/97,1997,17200,555
+KEN,Kenya,Africa,Eastern Africa,1/1/98,12/31/98,1998,22432,1237
+KEN,Kenya,Africa,Eastern Africa,1/1/99,12/31/99,1999,11039,350
+KEN,Kenya,Africa,Eastern Africa,1/1/00,12/31/00,2000,1157,78
+KEN,Kenya,Africa,Eastern Africa,1/1/01,12/31/01,2001,1001,55
+KEN,Kenya,Africa,Eastern Africa,1/1/02,12/31/02,2002,291,10
+KEN,Kenya,Africa,Eastern Africa,1/1/04,12/31/04,2004,870,15
+KEN,Kenya,Africa,Eastern Africa,1/1/05,12/31/05,2005,816,21
+KEN,Kenya,Africa,Eastern Africa,1/1/06,12/31/06,2006,870,11
+KEN,Kenya,Africa,Eastern Africa,1/1/07,12/31/07,2007,1206,67
+KEN,Kenya,Africa,Eastern Africa,1/1/08,12/31/08,2008,3091,113
+KEN,Kenya,Africa,Eastern Africa,1/1/09,12/31/09,2009,11425,264
+KEN,Kenya,Africa,Eastern Africa,1/1/10,12/31/10,2010,3188,63
+KEN,Kenya,Africa,Eastern Africa,1/1/11,12/31/11,2011,74,2
+KEN,Kenya,Africa,Eastern Africa,1/1/14,12/31/14,2014,35,9
+KEN,Kenya,Africa,Eastern Africa,1/1/15,12/31/15,2015,13291,67
+KEN,Kenya,Africa,Eastern Africa,1/1/16,12/31/16,2016,5866,80
+KEN,Kenya,Africa,Eastern Africa,1/1/17,12/31/17,2017,4288,82
+KEN,Kenya,Africa,Eastern Africa,1/1/18,12/31/18,2018,5719,78
+KEN,Kenya,Africa,Eastern Africa,1/1/19,12/31/19,2019,5208,141
+KIR,Kiribati,Oceania,Micronesia,1/1/77,12/31/77,1977,1307,21
+KIR,Kiribati,Oceania,Micronesia,1/1/78,12/31/78,1978,494,0
+KIR,Kiribati,Oceania,Micronesia,1/1/17,12/31/17,2017,0,0
+KIR,Kiribati,Oceania,Micronesia,1/1/18,12/31/18,2018,0,0
+KWT,Kuwait,Asia,Western Asia,1/1/70,12/31/70,1970,4,0
+KWT,Kuwait,Asia,Western Asia,1/1/75,12/31/75,1975,3,1
+KWT,Kuwait,Asia,Western Asia,1/1/76,12/31/76,1976,2,0
+KWT,Kuwait,Asia,Western Asia,1/1/77,12/31/77,1977,13,0
+KWT,Kuwait,Asia,Western Asia,1/1/78,12/31/78,1978,1,0
+KWT,Kuwait,Asia,Western Asia,1/1/79,12/31/79,1979,3,0
+KWT,Kuwait,Asia,Western Asia,1/1/81,12/31/81,1981,8,0
+KWT,Kuwait,Asia,Western Asia,1/1/85,12/31/85,1985,113,0
+KWT,Kuwait,Asia,Western Asia,1/1/86,12/31/86,1986,38,0
+KWT,Kuwait,Asia,Western Asia,1/1/89,12/31/89,1989,133,0
+KWT,Kuwait,Asia,Western Asia,1/1/93,12/31/93,1993,1,0
+KWT,Kuwait,Asia,Western Asia,1/1/97,12/31/97,1997,1,
+KWT,Kuwait,Asia,Western Asia,1/1/15,12/31/15,2015,5,0
+KWT,Kuwait,Asia,Western Asia,1/1/17,12/31/17,2017,0,0
+KWT,Kuwait,Asia,Western Asia,1/1/18,12/31/18,2018,0,0
+KGZ,Kyrgyzstan,Asia,Central Asia,1/1/94,12/31/94,1994,4,0
+LAO,Lao People's Democratic Republic,Asia,South-eastern Asia,1/1/53,12/31/53,1953,31,18
+LAO,Lao People's Democratic Republic,Asia,South-eastern Asia,1/1/69,12/31/69,1969,448,21
+LAO,Lao People's Democratic Republic,Asia,South-eastern Asia,1/1/93,12/31/93,1993,5521,255
+LAO,Lao People's Democratic Republic,Asia,South-eastern Asia,1/1/94,12/31/94,1994,9660,606
+LAO,Lao People's Democratic Republic,Asia,South-eastern Asia,1/1/95,12/31/95,1995,1365,174
+LAO,Lao People's Democratic Republic,Asia,South-eastern Asia,1/1/96,12/31/96,1996,720,33
+LAO,Lao People's Democratic Republic,Asia,South-eastern Asia,1/1/07,12/31/07,2007,169,3
+LAO,Lao People's Democratic Republic,Asia,South-eastern Asia,1/1/08,12/31/08,2008,201,0
+LAO,Lao People's Democratic Republic,Asia,South-eastern Asia,1/1/10,12/31/10,2010,237,4
+LAO,Lao People's Democratic Republic,Asia,South-eastern Asia,1/1/17,12/31/17,2017,0,0
+LBN,Lebanon,Asia,Western Asia,1/1/70,12/31/70,1970,54,1
+LBN,Lebanon,Asia,Western Asia,1/1/77,12/31/77,1977,30,0
+LBN,Lebanon,Asia,Western Asia,1/1/93,12/31/93,1993,344,23
+LBN,Lebanon,Asia,Western Asia,1/1/94,12/31/94,1994,3,
+LBN,Lebanon,Asia,Western Asia,1/1/05,12/31/05,2005,1,0
+LBN,Lebanon,Asia,Western Asia,1/1/17,12/31/17,2017,0,0
+LBN,Lebanon,Asia,Western Asia,1/1/18,12/31/18,2018,0,0
+LSO,Lesotho,Africa,Southern Africa,1/1/05,12/31/05,2005,0,0
+LSO,Lesotho,Africa,Southern Africa,1/1/06,12/31/06,2006,0,0
+LSO,Lesotho,Africa,Southern Africa,1/1/18,12/31/18,2018,0,0
+LBR,Liberia,Africa,Western Africa,1/1/70,12/31/70,1970,168,27
+LBR,Liberia,Africa,Western Africa,1/1/71,12/31/71,1971,606,106
+LBR,Liberia,Africa,Western Africa,1/1/72,12/31/72,1972,947,28
+LBR,Liberia,Africa,Western Africa,1/1/73,12/31/73,1973,1336,27
+LBR,Liberia,Africa,Western Africa,1/1/74,12/31/74,1974,512,12
+LBR,Liberia,Africa,Western Africa,1/1/75,12/31/75,1975,704,16
+LBR,Liberia,Africa,Western Africa,1/1/76,12/31/76,1976,646,10
+LBR,Liberia,Africa,Western Africa,1/1/77,12/31/77,1977,512,18
+LBR,Liberia,Africa,Western Africa,1/1/78,12/31/78,1978,422,9
+LBR,Liberia,Africa,Western Africa,1/1/79,12/31/79,1979,438,6
+LBR,Liberia,Africa,Western Africa,1/1/80,12/31/80,1980,2690,55
+LBR,Liberia,Africa,Western Africa,1/1/81,12/31/81,1981,1582,33
+LBR,Liberia,Africa,Western Africa,1/1/82,12/31/82,1982,670,8
+LBR,Liberia,Africa,Western Africa,1/1/83,12/31/83,1983,183,12
+LBR,Liberia,Africa,Western Africa,1/1/84,12/31/84,1984,492,8
+LBR,Liberia,Africa,Western Africa,1/1/85,12/31/85,1985,355,3
+LBR,Liberia,Africa,Western Africa,1/1/86,12/31/86,1986,59,0
+LBR,Liberia,Africa,Western Africa,1/1/87,12/31/87,1987,33,1
+LBR,Liberia,Africa,Western Africa,1/1/88,12/31/88,1988,68,1
+LBR,Liberia,Africa,Western Africa,1/1/89,12/31/89,1989,28,0
+LBR,Liberia,Africa,Western Africa,1/1/91,12/31/91,1991,132,40
+LBR,Liberia,Africa,Western Africa,1/1/94,12/31/94,1994,764,17
+LBR,Liberia,Africa,Western Africa,1/1/95,12/31/95,1995,3420,126
+LBR,Liberia,Africa,Western Africa,1/1/96,12/31/96,1996,8922,169
+LBR,Liberia,Africa,Western Africa,1/1/97,12/31/97,1997,91,0
+LBR,Liberia,Africa,Western Africa,1/1/98,12/31/98,1998,2123,17
+LBR,Liberia,Africa,Western Africa,1/1/99,12/31/99,1999,215,0
+LBR,Liberia,Africa,Western Africa,1/1/00,12/31/00,2000,365,10
+LBR,Liberia,Africa,Western Africa,1/1/01,12/31/01,2001,1062,0
+LBR,Liberia,Africa,Western Africa,1/1/02,12/31/02,2002,1115,0
+LBR,Liberia,Africa,Western Africa,1/1/03,12/31/03,2003,34740,38
+LBR,Liberia,Africa,Western Africa,1/1/04,12/31/04,2004,2786,4
+LBR,Liberia,Africa,Western Africa,1/1/05,12/31/05,2005,3823,18
+LBR,Liberia,Africa,Western Africa,1/1/06,12/31/06,2006,4929,17
+LBR,Liberia,Africa,Western Africa,1/1/07,12/31/07,2007,3063,7
+LBR,Liberia,Africa,Western Africa,1/1/08,12/31/08,2008,1236,3
+LBR,Liberia,Africa,Western Africa,1/1/09,12/31/09,2009,1070,2
+LBR,Liberia,Africa,Western Africa,1/1/10,12/31/10,2010,1546,0
+LBR,Liberia,Africa,Western Africa,1/1/11,12/31/11,2011,1146,
+LBR,Liberia,Africa,Western Africa,1/1/12,12/31/12,2012,219,0
+LBR,Liberia,Africa,Western Africa,1/1/13,12/31/13,2013,92,0
+LBR,Liberia,Africa,Western Africa,1/1/14,12/31/14,2014,44,0
+LBR,Liberia,Africa,Western Africa,1/1/17,12/31/17,2017,0,0
+LBR,Liberia,Africa,Western Africa,1/1/18,12/31/18,2018,2,0
+LBY,Libya,Africa,Northern Africa,1/1/70,12/31/70,1970,1151,28
+LBY,Libya,Africa,Northern Africa,1/1/95,12/31/95,1995,22,2
+LBY,Libya,Africa,Northern Africa,1/1/17,12/31/17,2017,0,0
+LBY,Libya,Africa,Northern Africa,1/1/19,12/31/19,2019,0,0
+MDG,Madagascar,Africa,Eastern Africa,1/1/71,12/31/71,1971,2,0
+MDG,Madagascar,Africa,Eastern Africa,1/1/96,12/31/96,1996,0,0
+MDG,Madagascar,Africa,Eastern Africa,1/1/99,12/31/99,1999,9973,549
+MDG,Madagascar,Africa,Eastern Africa,1/1/00,12/31/00,2000,29305,1672
+MDG,Madagascar,Africa,Eastern Africa,1/1/01,12/31/01,2001,7219,413
+MDG,Madagascar,Africa,Eastern Africa,1/1/02,12/31/02,2002,27,0
+MDG,Madagascar,Africa,Eastern Africa,1/1/03,12/31/03,2003,5,0
+MDG,Madagascar,Africa,Eastern Africa,1/1/05,12/31/05,2005,0,0
+MDG,Madagascar,Africa,Eastern Africa,1/1/06,12/31/06,2006,0,0
+MWI,Malawi,Africa,Eastern Africa,1/1/73,12/31/73,1973,371,20
+MWI,Malawi,Africa,Eastern Africa,1/1/76,12/31/76,1976,19,0
+MWI,Malawi,Africa,Eastern Africa,1/1/77,12/31/77,1977,577,0
+MWI,Malawi,Africa,Eastern Africa,1/1/78,12/31/78,1978,263,24
+MWI,Malawi,Africa,Eastern Africa,1/1/81,12/31/81,1981,261,0
+MWI,Malawi,Africa,Eastern Africa,1/1/83,12/31/83,1983,487,49
+MWI,Malawi,Africa,Eastern Africa,1/1/88,12/31/88,1988,6,0
+MWI,Malawi,Africa,Eastern Africa,1/1/89,12/31/89,1989,8351,16
+MWI,Malawi,Africa,Eastern Africa,1/1/90,12/31/90,1990,13457,481
+MWI,Malawi,Africa,Eastern Africa,1/1/91,12/31/91,1991,8088,245
+MWI,Malawi,Africa,Eastern Africa,1/1/92,12/31/92,1992,298,8
+MWI,Malawi,Africa,Eastern Africa,1/1/93,12/31/93,1993,25193,524
+MWI,Malawi,Africa,Eastern Africa,1/1/94,12/31/94,1994,107,11
+MWI,Malawi,Africa,Eastern Africa,1/1/95,12/31/95,1995,1,0
+MWI,Malawi,Africa,Eastern Africa,1/1/96,12/31/96,1996,1,0
+MWI,Malawi,Africa,Eastern Africa,1/1/97,12/31/97,1997,130,15
+MWI,Malawi,Africa,Eastern Africa,1/1/98,12/31/98,1998,1745,74
+MWI,Malawi,Africa,Eastern Africa,1/1/99,12/31/99,1999,26508,648
+MWI,Malawi,Africa,Eastern Africa,1/1/00,12/31/00,2000,2391,56
+MWI,Malawi,Africa,Eastern Africa,1/1/01,12/31/01,2001,2395,42
+MWI,Malawi,Africa,Eastern Africa,1/1/02,12/31/02,2002,32618,911
+MWI,Malawi,Africa,Eastern Africa,1/1/03,12/31/03,2003,2736,34
+MWI,Malawi,Africa,Eastern Africa,1/1/04,12/31/04,2004,675,4
+MWI,Malawi,Africa,Eastern Africa,1/1/05,12/31/05,2005,1105,11
+MWI,Malawi,Africa,Eastern Africa,1/1/06,12/31/06,2006,4148,55
+MWI,Malawi,Africa,Eastern Africa,1/1/07,12/31/07,2007,475,5
+MWI,Malawi,Africa,Eastern Africa,1/1/08,12/31/08,2008,831,26
+MWI,Malawi,Africa,Eastern Africa,1/1/09,12/31/09,2009,5751,125
+MWI,Malawi,Africa,Eastern Africa,1/1/10,12/31/10,2010,1155,17
+MWI,Malawi,Africa,Eastern Africa,1/1/11,12/31/11,2011,120,4
+MWI,Malawi,Africa,Eastern Africa,1/1/12,12/31/12,2012,187,2
+MWI,Malawi,Africa,Eastern Africa,1/1/15,12/31/15,2015,693,11
+MWI,Malawi,Africa,Eastern Africa,1/1/16,12/31/16,2016,1792,46
+MWI,Malawi,Africa,Eastern Africa,1/1/17,12/31/17,2017,344,5
+MWI,Malawi,Africa,Eastern Africa,1/1/18,12/31/18,2018,812,27
+MWI,Malawi,Africa,Eastern Africa,1/1/19,12/31/19,2019,23,0
+MYS,Malaysia,Asia,South-eastern Asia,1/1/54,12/31/54,1954,1,0
+MYS,Malaysia,Asia,South-eastern Asia,1/1/63,12/31/63,1963,349,24
+MYS,Malaysia,Asia,South-eastern Asia,1/1/64,12/31/64,1964,512,143
+MYS,Malaysia,Asia,South-eastern Asia,1/1/65,12/31/65,1965,16,1
+MYS,Malaysia,Asia,South-eastern Asia,1/1/66,12/31/66,1966,5,0
+MYS,Malaysia,Asia,South-eastern Asia,1/1/68,12/31/68,1968,15,3
+MYS,Malaysia,Asia,South-eastern Asia,1/1/69,12/31/69,1969,70,
+MYS,Malaysia,Asia,South-eastern Asia,1/1/70,12/31/70,1970,106,3
+MYS,Malaysia,Asia,South-eastern Asia,1/1/71,12/31/71,1971,53,1
+MYS,Malaysia,Asia,South-eastern Asia,1/1/72,12/31/72,1972,864,11
+MYS,Malaysia,Asia,South-eastern Asia,1/1/73,12/31/73,1973,369,17
+MYS,Malaysia,Asia,South-eastern Asia,1/1/74,12/31/74,1974,349,0
+MYS,Malaysia,Asia,South-eastern Asia,1/1/75,12/31/75,1975,110,8
+MYS,Malaysia,Asia,South-eastern Asia,1/1/76,12/31/76,1976,246,4
+MYS,Malaysia,Asia,South-eastern Asia,1/1/77,12/31/77,1977,444,12
+MYS,Malaysia,Asia,South-eastern Asia,1/1/78,12/31/78,1978,1635,64
+MYS,Malaysia,Asia,South-eastern Asia,1/1/79,12/31/79,1979,502,10
+MYS,Malaysia,Asia,South-eastern Asia,1/1/80,12/31/80,1980,97,7
+MYS,Malaysia,Asia,South-eastern Asia,1/1/81,12/31/81,1981,469,14
+MYS,Malaysia,Asia,South-eastern Asia,1/1/82,12/31/82,1982,516,17
+MYS,Malaysia,Asia,South-eastern Asia,1/1/83,12/31/83,1983,2195,38
+MYS,Malaysia,Asia,South-eastern Asia,1/1/84,12/31/84,1984,67,1
+MYS,Malaysia,Asia,South-eastern Asia,1/1/85,12/31/85,1985,52,2
+MYS,Malaysia,Asia,South-eastern Asia,1/1/86,12/31/86,1986,55,2
+MYS,Malaysia,Asia,South-eastern Asia,1/1/87,12/31/87,1987,1168,18
+MYS,Malaysia,Asia,South-eastern Asia,1/1/88,12/31/88,1988,1324,32
+MYS,Malaysia,Asia,South-eastern Asia,1/1/89,12/31/89,1989,393,14
+MYS,Malaysia,Asia,South-eastern Asia,1/1/90,12/31/90,1990,2071,38
+MYS,Malaysia,Asia,South-eastern Asia,1/1/91,12/31/91,1991,506,6
+MYS,Malaysia,Asia,South-eastern Asia,1/1/92,12/31/92,1992,474,8
+MYS,Malaysia,Asia,South-eastern Asia,1/1/93,12/31/93,1993,995,13
+MYS,Malaysia,Asia,South-eastern Asia,1/1/94,12/31/94,1994,534,0
+MYS,Malaysia,Asia,South-eastern Asia,1/1/95,12/31/95,1995,2209,27
+MYS,Malaysia,Asia,South-eastern Asia,1/1/96,12/31/96,1996,1486,0
+MYS,Malaysia,Asia,South-eastern Asia,1/1/97,12/31/97,1997,389,4
+MYS,Malaysia,Asia,South-eastern Asia,1/1/98,12/31/98,1998,1304,19
+MYS,Malaysia,Asia,South-eastern Asia,1/1/99,12/31/99,1999,535,0
+MYS,Malaysia,Asia,South-eastern Asia,1/1/00,12/31/00,2000,124,1
+MYS,Malaysia,Asia,South-eastern Asia,1/1/01,12/31/01,2001,557,11
+MYS,Malaysia,Asia,South-eastern Asia,1/1/04,12/31/04,2004,16,0
+MYS,Malaysia,Asia,South-eastern Asia,1/1/06,12/31/06,2006,237,2
+MYS,Malaysia,Asia,South-eastern Asia,1/1/07,12/31/07,2007,0,0
+MYS,Malaysia,Asia,South-eastern Asia,1/1/09,12/31/09,2009,187,1
+MYS,Malaysia,Asia,South-eastern Asia,1/1/10,12/31/10,2010,443,6
+MYS,Malaysia,Asia,South-eastern Asia,1/1/11,12/31/11,2011,586,10
+MYS,Malaysia,Asia,South-eastern Asia,1/1/12,12/31/12,2012,282,1
+MYS,Malaysia,Asia,South-eastern Asia,1/1/13,12/31/13,2013,171,1
+MYS,Malaysia,Asia,South-eastern Asia,1/1/14,12/31/14,2014,134,1
+MYS,Malaysia,Asia,South-eastern Asia,1/1/15,12/31/15,2015,244,2
+MYS,Malaysia,Asia,South-eastern Asia,1/1/17,12/31/17,2017,2,0
+MYS,Malaysia,Asia,South-eastern Asia,1/1/18,12/31/18,2018,165,1
+MDV,Maldives,Asia,Southern Asia,1/1/78,12/31/78,1978,11336,220
+MDV,Maldives,Asia,Southern Asia,1/1/17,12/31/17,2017,0,0
+MDV,Maldives,Asia,Southern Asia,1/1/18,12/31/18,2018,0,0
+MDV,Maldives,Asia,Southern Asia,1/1/19,12/31/19,2019,0,0
+MLI,Mali,Africa,Western Africa,1/1/70,12/31/70,1970,2665,201
+MLI,Mali,Africa,Western Africa,1/1/71,12/31/71,1971,4792,1321
+MLI,Mali,Africa,Western Africa,1/1/72,12/31/72,1972,2,0
+MLI,Mali,Africa,Western Africa,1/1/73,12/31/73,1973,219,32
+MLI,Mali,Africa,Western Africa,1/1/74,12/31/74,1974,130,21
+MLI,Mali,Africa,Western Africa,1/1/84,12/31/84,1984,1795,406
+MLI,Mali,Africa,Western Africa,1/1/85,12/31/85,1985,3759,838
+MLI,Mali,Africa,Western Africa,1/1/86,12/31/86,1986,1916,151
+MLI,Mali,Africa,Western Africa,1/1/87,12/31/87,1987,352,84
+MLI,Mali,Africa,Western Africa,1/1/95,12/31/95,1995,2191,231
+MLI,Mali,Africa,Western Africa,1/1/96,12/31/96,1996,5723,761
+MLI,Mali,Africa,Western Africa,1/1/97,12/31/97,1997,6,3
+MLI,Mali,Africa,Western Africa,1/1/99,12/31/99,1999,6,3
+MLI,Mali,Africa,Western Africa,1/1/00,12/31/00,2000,1885,51
+MLI,Mali,Africa,Western Africa,1/1/01,12/31/01,2001,67,9
+MLI,Mali,Africa,Western Africa,1/1/02,12/31/02,2002,18,2
+MLI,Mali,Africa,Western Africa,1/1/03,12/31/03,2003,1455,119
+MLI,Mali,Africa,Western Africa,1/1/04,12/31/04,2004,2839,205
+MLI,Mali,Africa,Western Africa,1/1/05,12/31/05,2005,1178,76
+MLI,Mali,Africa,Western Africa,1/1/06,12/31/06,2006,7,0
+MLI,Mali,Africa,Western Africa,1/1/08,12/31/08,2008,153,5
+MLI,Mali,Africa,Western Africa,1/1/11,12/31/11,2011,2220,95
+MLI,Mali,Africa,Western Africa,1/1/12,12/31/12,2012,219,19
+MLI,Mali,Africa,Western Africa,1/1/13,12/31/13,2013,23,2
+MLI,Mali,Africa,Western Africa,1/1/17,12/31/17,2017,0,0
+MLI,Mali,Africa,Western Africa,1/1/18,12/31/18,2018,0,0
+MLI,Mali,Africa,Western Africa,1/1/19,12/31/19,2019,0,0
+MHL,Marshall Islands,Oceania,Micronesia,1/1/00,12/31/00,2000,300,6
+MHL,Marshall Islands,Oceania,Micronesia,1/1/17,12/31/17,2017,0,0
+MHL,Marshall Islands,Oceania,Micronesia,1/1/18,12/31/18,2018,0,0
+MRT,Mauritania,Africa,Western Africa,1/1/71,12/31/71,1971,1139,53
+MRT,Mauritania,Africa,Western Africa,1/1/72,12/31/72,1972,148,24
+MRT,Mauritania,Africa,Western Africa,1/1/73,12/31/73,1973,150,22
+MRT,Mauritania,Africa,Western Africa,1/1/84,12/31/84,1984,166,15
+MRT,Mauritania,Africa,Western Africa,1/1/85,12/31/85,1985,259,20
+MRT,Mauritania,Africa,Western Africa,1/1/86,12/31/86,1986,3734,113
+MRT,Mauritania,Africa,Western Africa,1/1/87,12/31/87,1987,1578,101
+MRT,Mauritania,Africa,Western Africa,1/1/88,12/31/88,1988,575,38
+MRT,Mauritania,Africa,Western Africa,1/1/89,12/31/89,1989,700,27
+MRT,Mauritania,Africa,Western Africa,1/1/96,12/31/96,1996,4534,148
+MRT,Mauritania,Africa,Western Africa,1/1/97,12/31/97,1997,462,7
+MRT,Mauritania,Africa,Western Africa,1/1/02,12/31/02,2002,80,0
+MRT,Mauritania,Africa,Western Africa,1/1/03,12/31/03,2003,34,8
+MRT,Mauritania,Africa,Western Africa,1/1/05,12/31/05,2005,4132,70
+MRT,Mauritania,Africa,Western Africa,1/1/06,12/31/06,2006,25,0
+MRT,Mauritania,Africa,Western Africa,1/1/07,12/31/07,2007,3,0
+MRT,Mauritania,Africa,Western Africa,1/1/11,12/31/11,2011,46,3
+MRT,Mauritania,Africa,Western Africa,1/1/18,12/31/18,2018,0,0
+MUS,Mauritius,Africa,Eastern Africa,1/1/05,12/31/05,2005,0,0
+MUS,Mauritius,Africa,Eastern Africa,1/1/06,12/31/06,2006,0,0
+MUS,Mauritius,Africa,Eastern Africa,1/1/18,12/31/18,2018,0,0
+MEX,Mexico,North America,Central America,1/1/91,12/31/91,1991,2690,34
+MEX,Mexico,North America,Central America,1/1/92,12/31/92,1992,8162,99
+MEX,Mexico,North America,Central America,1/1/93,12/31/93,1993,10712,193
+MEX,Mexico,North America,Central America,1/1/94,12/31/94,1994,4059,56
+MEX,Mexico,North America,Central America,1/1/95,12/31/95,1995,16430,137
+MEX,Mexico,North America,Central America,1/1/96,12/31/96,1996,1088,5
+MEX,Mexico,North America,Central America,1/1/97,12/31/97,1997,2356,1
+MEX,Mexico,North America,Central America,1/1/98,12/31/98,1998,71,0
+MEX,Mexico,North America,Central America,1/1/00,12/31/00,2000,5,0
+MEX,Mexico,North America,Central America,1/1/01,12/31/01,2001,1,0
+MEX,Mexico,North America,Central America,1/1/08,12/31/08,2008,1,0
+MEX,Mexico,North America,Central America,1/1/10,12/31/10,2010,1,0
+MEX,Mexico,North America,Central America,1/1/11,12/31/11,2011,1,0
+MEX,Mexico,North America,Central America,1/1/12,12/31/12,2012,2,0
+MEX,Mexico,North America,Central America,1/1/13,12/31/13,2013,187,1
+MEX,Mexico,North America,Central America,1/1/14,12/31/14,2014,14,0
+MEX,Mexico,North America,Central America,1/1/15,12/31/15,2015,1,0
+MEX,Mexico,North America,Central America,1/1/18,12/31/18,2018,1,
+FSM,Micronesia (Federated States of),Oceania,Micronesia,1/1/90,12/31/90,1990,34,1
+FSM,Micronesia (Federated States of),Oceania,Micronesia,1/1/96,12/31/96,1996,1,0
+FSM,Micronesia (Federated States of),Oceania,Micronesia,1/1/00,12/31/00,2000,3452,20
+FSM,Micronesia (Federated States of),Oceania,Micronesia,1/1/01,12/31/01,2001,14,0
+FSM,Micronesia (Federated States of),Oceania,Micronesia,1/1/05,12/31/05,2005,0,0
+FSM,Micronesia (Federated States of),Oceania,Micronesia,1/1/17,12/31/17,2017,0,0
+FSM,Micronesia (Federated States of),Oceania,Micronesia,1/1/18,12/31/18,2018,0,0
+MNG,Mongolia,Asia,Eastern Asia,1/1/96,12/31/96,1996,177,12
+MNG,Mongolia,Asia,Eastern Asia,1/1/05,12/31/05,2005,0,0
+MNG,Mongolia,Asia,Eastern Asia,1/1/17,12/31/17,2017,0,0
+MNG,Mongolia,Asia,Eastern Asia,1/1/18,12/31/18,2018,0,0
+MAR,Morocco,Africa,Northern Africa,1/1/71,12/31/71,1971,56,0
+MAR,Morocco,Africa,Northern Africa,1/1/72,12/31/72,1972,7,0
+MAR,Morocco,Africa,Northern Africa,1/1/76,12/31/76,1976,2,0
+MAR,Morocco,Africa,Northern Africa,1/1/90,12/31/90,1990,4573,137
+MAR,Morocco,Africa,Northern Africa,1/1/94,12/31/94,1994,6,0
+MAR,Morocco,Africa,Northern Africa,1/1/17,12/31/17,2017,0,0
+MAR,Morocco,Africa,Northern Africa,1/1/19,12/31/19,2019,0,0
+MOZ,Mozambique,Africa,Eastern Africa,1/1/73,12/31/73,1973,453,87
+MOZ,Mozambique,Africa,Eastern Africa,1/1/74,12/31/74,1974,1018,138
+MOZ,Mozambique,Africa,Eastern Africa,1/1/75,12/31/75,1975,11,3
+MOZ,Mozambique,Africa,Eastern Africa,1/1/76,12/31/76,1976,3,2
+MOZ,Mozambique,Africa,Eastern Africa,1/1/77,12/31/77,1977,18,3
+MOZ,Mozambique,Africa,Eastern Africa,1/1/79,12/31/79,1979,4564,547
+MOZ,Mozambique,Africa,Eastern Africa,1/1/80,12/31/80,1980,1212,85
+MOZ,Mozambique,Africa,Eastern Africa,1/1/81,12/31/81,1981,1753,132
+MOZ,Mozambique,Africa,Eastern Africa,1/1/82,12/31/82,1982,2301,199
+MOZ,Mozambique,Africa,Eastern Africa,1/1/83,12/31/83,1983,10745,447
+MOZ,Mozambique,Africa,Eastern Africa,1/1/84,12/31/84,1984,521,11
+MOZ,Mozambique,Africa,Eastern Africa,1/1/85,12/31/85,1985,3,0
+MOZ,Mozambique,Africa,Eastern Africa,1/1/86,12/31/86,1986,1,0
+MOZ,Mozambique,Africa,Eastern Africa,1/1/89,12/31/89,1989,371,12
+MOZ,Mozambique,Africa,Eastern Africa,1/1/90,12/31/90,1990,4152,194
+MOZ,Mozambique,Africa,Eastern Africa,1/1/91,12/31/91,1991,7847,328
+MOZ,Mozambique,Africa,Eastern Africa,1/1/92,12/31/92,1992,30802,727
+MOZ,Mozambique,Africa,Eastern Africa,1/1/93,12/31/93,1993,19803,507
+MOZ,Mozambique,Africa,Eastern Africa,1/1/94,12/31/94,1994,692,27
+MOZ,Mozambique,Africa,Eastern Africa,1/1/96,12/31/96,1996,0,0
+MOZ,Mozambique,Africa,Eastern Africa,1/1/97,12/31/97,1997,8739,259
+MOZ,Mozambique,Africa,Eastern Africa,1/1/98,12/31/98,1998,42672,1353
+MOZ,Mozambique,Africa,Eastern Africa,1/1/99,12/31/99,1999,44329,1194
+MOZ,Mozambique,Africa,Eastern Africa,1/1/00,12/31/00,2000,17649,238
+MOZ,Mozambique,Africa,Eastern Africa,1/1/01,12/31/01,2001,8794,102
+MOZ,Mozambique,Africa,Eastern Africa,1/1/02,12/31/02,2002,24375,342
+MOZ,Mozambique,Africa,Eastern Africa,1/1/03,12/31/03,2003,13758,102
+MOZ,Mozambique,Africa,Eastern Africa,1/1/04,12/31/04,2004,20080,110
+MOZ,Mozambique,Africa,Eastern Africa,1/1/05,12/31/05,2005,2226,24
+MOZ,Mozambique,Africa,Eastern Africa,1/1/06,12/31/06,2006,6306,29
+MOZ,Mozambique,Africa,Eastern Africa,1/1/07,12/31/07,2007,2622,22
+MOZ,Mozambique,Africa,Eastern Africa,1/1/08,12/31/08,2008,9087,102
+MOZ,Mozambique,Africa,Eastern Africa,1/1/09,12/31/09,2009,19679,155
+MOZ,Mozambique,Africa,Eastern Africa,1/1/10,12/31/10,2010,7430,117
+MOZ,Mozambique,Africa,Eastern Africa,1/1/11,12/31/11,2011,1279,5
+MOZ,Mozambique,Africa,Eastern Africa,1/1/12,12/31/12,2012,647,7
+MOZ,Mozambique,Africa,Eastern Africa,1/1/13,12/31/13,2013,1869,19
+MOZ,Mozambique,Africa,Eastern Africa,1/1/14,12/31/14,2014,480,1
+MOZ,Mozambique,Africa,Eastern Africa,1/1/15,12/31/15,2015,8739,64
+MOZ,Mozambique,Africa,Eastern Africa,1/1/16,12/31/16,2016,883,2
+MOZ,Mozambique,Africa,Eastern Africa,1/1/17,12/31/17,2017,5892,10
+MOZ,Mozambique,Africa,Eastern Africa,1/1/18,12/31/18,2018,910,0
+MOZ,Mozambique,Africa,Eastern Africa,1/1/19,12/31/19,2019,7010,8
+MMR,Myanmar,Asia,South-eastern Asia,1/1/50,12/31/50,1950,4212,2785
+MMR,Myanmar,Asia,South-eastern Asia,1/1/51,12/31/51,1951,6753,4685
+MMR,Myanmar,Asia,South-eastern Asia,1/1/52,12/31/52,1952,347,245
+MMR,Myanmar,Asia,South-eastern Asia,1/1/53,12/31/53,1953,22,9
+MMR,Myanmar,Asia,South-eastern Asia,1/1/54,12/31/54,1954,35,19
+MMR,Myanmar,Asia,South-eastern Asia,1/1/55,12/31/55,1955,42,12
+MMR,Myanmar,Asia,South-eastern Asia,1/1/56,12/31/56,1956,13,6
+MMR,Myanmar,Asia,South-eastern Asia,1/1/57,12/31/57,1957,10,3
+MMR,Myanmar,Asia,South-eastern Asia,1/1/58,12/31/58,1958,7,3
+MMR,Myanmar,Asia,South-eastern Asia,1/1/59,12/31/59,1959,3,2
+MMR,Myanmar,Asia,South-eastern Asia,1/1/60,12/31/60,1960,259,200
+MMR,Myanmar,Asia,South-eastern Asia,1/1/61,12/31/61,1961,1,0
+MMR,Myanmar,Asia,South-eastern Asia,1/1/62,12/31/62,1962,1,0
+MMR,Myanmar,Asia,South-eastern Asia,1/1/63,12/31/63,1963,3019,783
+MMR,Myanmar,Asia,South-eastern Asia,1/1/64,12/31/64,1964,922,171
+MMR,Myanmar,Asia,South-eastern Asia,1/1/65,12/31/65,1965,207,8
+MMR,Myanmar,Asia,South-eastern Asia,1/1/66,12/31/66,1966,263,17
+MMR,Myanmar,Asia,South-eastern Asia,1/1/67,12/31/67,1967,9,0
+MMR,Myanmar,Asia,South-eastern Asia,1/1/68,12/31/68,1968,3,0
+MMR,Myanmar,Asia,South-eastern Asia,1/1/69,12/31/69,1969,205,34
+MMR,Myanmar,Asia,South-eastern Asia,1/1/70,12/31/70,1970,911,76
+MMR,Myanmar,Asia,South-eastern Asia,1/1/71,12/31/71,1971,378,42
+MMR,Myanmar,Asia,South-eastern Asia,1/1/72,12/31/72,1972,180,7
+MMR,Myanmar,Asia,South-eastern Asia,1/1/73,12/31/73,1973,386,24
+MMR,Myanmar,Asia,South-eastern Asia,1/1/74,12/31/74,1974,2363,203
+MMR,Myanmar,Asia,South-eastern Asia,1/1/75,12/31/75,1975,2942,172
+MMR,Myanmar,Asia,South-eastern Asia,1/1/76,12/31/76,1976,1519,173
+MMR,Myanmar,Asia,South-eastern Asia,1/1/78,12/31/78,1978,3551,372
+MMR,Myanmar,Asia,South-eastern Asia,1/1/79,12/31/79,1979,874,75
+MMR,Myanmar,Asia,South-eastern Asia,1/1/80,12/31/80,1980,1018,50
+MMR,Myanmar,Asia,South-eastern Asia,1/1/81,12/31/81,1981,28,3
+MMR,Myanmar,Asia,South-eastern Asia,1/1/83,12/31/83,1983,989,29
+MMR,Myanmar,Asia,South-eastern Asia,1/1/89,12/31/89,1989,597,11
+MMR,Myanmar,Asia,South-eastern Asia,1/1/91,12/31/91,1991,924,39
+MMR,Myanmar,Asia,South-eastern Asia,1/1/92,12/31/92,1992,826,50
+MMR,Myanmar,Asia,South-eastern Asia,1/1/93,12/31/93,1993,1758,52
+MMR,Myanmar,Asia,South-eastern Asia,1/1/94,12/31/94,1994,421,4
+MMR,Myanmar,Asia,South-eastern Asia,1/1/95,12/31/95,1995,1296,6
+MMR,Myanmar,Asia,South-eastern Asia,1/1/08,12/31/08,2008,45,1
+MMR,Myanmar,Asia,South-eastern Asia,1/1/11,12/31/11,2011,16,
+MMR,Myanmar,Asia,South-eastern Asia,1/1/12,12/31/12,2012,174,0
+MMR,Myanmar,Asia,South-eastern Asia,1/1/13,12/31/13,2013,33,0
+MMR,Myanmar,Asia,South-eastern Asia,1/1/14,12/31/14,2014,400,
+MMR,Myanmar,Asia,South-eastern Asia,1/1/15,12/31/15,2015,103,12
+MMR,Myanmar,Asia,South-eastern Asia,1/1/16,12/31/16,2016,782,11
+MMR,Myanmar,Asia,South-eastern Asia,1/1/17,12/31/17,2017,0,0
+MMR,Myanmar,Asia,South-eastern Asia,1/1/18,12/31/18,2018,0,0
+MMR,Myanmar,Asia,South-eastern Asia,1/1/19,12/31/19,2019,0,0
+NAM,Namibia,Africa,Southern Africa,1/1/05,12/31/05,2005,0,0
+NAM,Namibia,Africa,Southern Africa,1/1/06,12/31/06,2006,185,5
+NAM,Namibia,Africa,Southern Africa,1/1/07,12/31/07,2007,14,0
+NAM,Namibia,Africa,Southern Africa,1/1/08,12/31/08,2008,3496,38
+NAM,Namibia,Africa,Southern Africa,1/1/09,12/31/09,2009,159,3
+NAM,Namibia,Africa,Southern Africa,1/1/13,12/31/13,2013,3,0
+NAM,Namibia,Africa,Southern Africa,1/1/14,12/31/14,2014,485,13
+NRU,Nauru,Oceania,Micronesia,1/1/78,12/31/78,1978,38,0
+NRU,Nauru,Oceania,Micronesia,1/1/79,12/31/79,1979,50,0
+NRU,Nauru,Oceania,Micronesia,1/1/17,12/31/17,2017,0,0
+NRU,Nauru,Oceania,Micronesia,1/1/18,12/31/18,2018,0,0
+NPL,Nepal,Asia,Southern Asia,1/1/58,12/31/58,1958,2706,384
+NPL,Nepal,Asia,Southern Asia,1/1/65,12/31/65,1965,727,97
+NPL,Nepal,Asia,Southern Asia,1/1/66,12/31/66,1966,2,0
+NPL,Nepal,Asia,Southern Asia,1/1/68,12/31/68,1968,34,17
+NPL,Nepal,Asia,Southern Asia,1/1/69,12/31/69,1969,226,6
+NPL,Nepal,Asia,Southern Asia,1/1/70,12/31/70,1970,391,1
+NPL,Nepal,Asia,Southern Asia,1/1/71,12/31/71,1971,4,0
+NPL,Nepal,Asia,Southern Asia,1/1/72,12/31/72,1972,1,0
+NPL,Nepal,Asia,Southern Asia,1/1/73,12/31/73,1973,7,0
+NPL,Nepal,Asia,Southern Asia,1/1/74,12/31/74,1974,8,0
+NPL,Nepal,Asia,Southern Asia,1/1/75,12/31/75,1975,260,0
+NPL,Nepal,Asia,Southern Asia,1/1/76,12/31/76,1976,185,1
+NPL,Nepal,Asia,Southern Asia,1/1/77,12/31/77,1977,428,4
+NPL,Nepal,Asia,Southern Asia,1/1/78,12/31/78,1978,1662,10
+NPL,Nepal,Asia,Southern Asia,1/1/79,12/31/79,1979,22,0
+NPL,Nepal,Asia,Southern Asia,1/1/80,12/31/80,1980,1,0
+NPL,Nepal,Asia,Southern Asia,1/1/81,12/31/81,1981,24,0
+NPL,Nepal,Asia,Southern Asia,1/1/89,12/31/89,1989,141,2
+NPL,Nepal,Asia,Southern Asia,1/1/90,12/31/90,1990,23888,495
+NPL,Nepal,Asia,Southern Asia,1/1/91,12/31/91,1991,30648,873
+NPL,Nepal,Asia,Southern Asia,1/1/92,12/31/92,1992,798,15
+NPL,Nepal,Asia,Southern Asia,1/1/93,12/31/93,1993,31,0
+NPL,Nepal,Asia,Southern Asia,1/1/94,12/31/94,1994,32,0
+NPL,Nepal,Asia,Southern Asia,1/1/95,12/31/95,1995,157,0
+NPL,Nepal,Asia,Southern Asia,1/1/96,12/31/96,1996,274,1
+NPL,Nepal,Asia,Southern Asia,1/1/97,12/31/97,1997,245,0
+NPL,Nepal,Asia,Southern Asia,1/1/98,12/31/98,1998,1745,17
+NPL,Nepal,Asia,Southern Asia,1/1/07,12/31/07,2007,264,0
+NPL,Nepal,Asia,Southern Asia,1/1/09,12/31/09,2009,82,0
+NPL,Nepal,Asia,Southern Asia,1/1/10,12/31/10,2010,1790,9
+NPL,Nepal,Asia,Southern Asia,1/1/11,12/31/11,2011,12,
+NPL,Nepal,Asia,Southern Asia,1/1/12,12/31/12,2012,34,0
+NPL,Nepal,Asia,Southern Asia,1/1/14,12/31/14,2014,933,2
+NPL,Nepal,Asia,Southern Asia,1/1/15,12/31/15,2015,80,0
+NPL,Nepal,Asia,Southern Asia,1/1/16,12/31/16,2016,169,0
+NPL,Nepal,Asia,Southern Asia,1/1/17,12/31/17,2017,7,0
+NPL,Nepal,Asia,Southern Asia,1/1/18,12/31/18,2018,7,0
+NLD,Netherlands,Europe,Western Europe,1/1/76,12/31/76,1976,1,1
+NLD,Netherlands,Europe,Western Europe,1/1/77,12/31/77,1977,1,0
+NLD,Netherlands,Europe,Western Europe,1/1/78,12/31/78,1978,4,0
+NLD,Netherlands,Europe,Western Europe,1/1/79,12/31/79,1979,5,0
+NLD,Netherlands,Europe,Western Europe,1/1/81,12/31/81,1981,2,
+NLD,Netherlands,Europe,Western Europe,1/1/83,12/31/83,1983,2,0
+NLD,Netherlands,Europe,Western Europe,1/1/88,12/31/88,1988,1,0
+NLD,Netherlands,Europe,Western Europe,1/1/90,12/31/90,1990,3,0
+NLD,Netherlands,Europe,Western Europe,1/1/93,12/31/93,1993,3,0
+NLD,Netherlands,Europe,Western Europe,1/1/94,12/31/94,1994,1,0
+NLD,Netherlands,Europe,Western Europe,1/1/95,12/31/95,1995,9,0
+NLD,Netherlands,Europe,Western Europe,1/1/96,12/31/96,1996,3,0
+NLD,Netherlands,Europe,Western Europe,1/1/97,12/31/97,1997,2,0
+NLD,Netherlands,Europe,Western Europe,1/1/98,12/31/98,1998,4,0
+NLD,Netherlands,Europe,Western Europe,1/1/99,12/31/99,1999,2,0
+NLD,Netherlands,Europe,Western Europe,1/1/00,12/31/00,2000,1,
+NLD,Netherlands,Europe,Western Europe,1/1/02,12/31/02,2002,1,
+NLD,Netherlands,Europe,Western Europe,1/1/03,12/31/03,2003,1,
+NLD,Netherlands,Europe,Western Europe,1/1/04,12/31/04,2004,1,0
+NLD,Netherlands,Europe,Western Europe,1/1/05,12/31/05,2005,4,0
+NLD,Netherlands,Europe,Western Europe,1/1/06,12/31/06,2006,3,0
+NLD,Netherlands,Europe,Western Europe,1/1/08,12/31/08,2008,5,0
+NLD,Netherlands,Europe,Western Europe,1/1/16,12/31/16,2016,1,0
+NZL,New Zealand,Oceania,Australia and New Zealand,1/1/72,12/31/72,1972,3,1
+NZL,New Zealand,Oceania,Australia and New Zealand,1/1/87,12/31/87,1987,2,0
+NZL,New Zealand,Oceania,Australia and New Zealand,1/1/90,12/31/90,1990,5,0
+NZL,New Zealand,Oceania,Australia and New Zealand,1/1/94,12/31/94,1994,2,0
+NZL,New Zealand,Oceania,Australia and New Zealand,1/1/95,12/31/95,1995,2,0
+NZL,New Zealand,Oceania,Australia and New Zealand,1/1/98,12/31/98,1998,1,0
+NZL,New Zealand,Oceania,Australia and New Zealand,1/1/99,12/31/99,1999,1,0
+NZL,New Zealand,Oceania,Australia and New Zealand,1/1/01,12/31/01,2001,1,
+NZL,New Zealand,Oceania,Australia and New Zealand,1/1/05,12/31/05,2005,1,0
+NZL,New Zealand,Oceania,Australia and New Zealand,1/1/17,12/31/17,2017,0,0
+NZL,New Zealand,Oceania,Australia and New Zealand,1/1/18,12/31/18,2018,1,0
+NZL,New Zealand,Oceania,Australia and New Zealand,1/1/19,12/31/19,2019,0,0
+NIC,Nicaragua,North America,Central America,1/1/91,12/31/91,1991,1,0
+NIC,Nicaragua,North America,Central America,1/1/92,12/31/92,1992,3067,46
+NIC,Nicaragua,North America,Central America,1/1/93,12/31/93,1993,6631,220
+NIC,Nicaragua,North America,Central America,1/1/94,12/31/94,1994,7821,134
+NIC,Nicaragua,North America,Central America,1/1/95,12/31/95,1995,8825,164
+NIC,Nicaragua,North America,Central America,1/1/96,12/31/96,1996,2813,107
+NIC,Nicaragua,North America,Central America,1/1/97,12/31/97,1997,1283,36
+NIC,Nicaragua,North America,Central America,1/1/98,12/31/98,1998,1437,29
+NIC,Nicaragua,North America,Central America,1/1/99,12/31/99,1999,552,7
+NIC,Nicaragua,North America,Central America,1/1/00,12/31/00,2000,12,0
+NER,Niger,Africa,Western Africa,1/1/70,12/31/70,1970,16,8
+NER,Niger,Africa,Western Africa,1/1/71,12/31/71,1971,9265,2344
+NER,Niger,Africa,Western Africa,1/1/72,12/31/72,1972,51,12
+NER,Niger,Africa,Western Africa,1/1/73,12/31/73,1973,121,16
+NER,Niger,Africa,Western Africa,1/1/74,12/31/74,1974,286,75
+NER,Niger,Africa,Western Africa,1/1/81,12/31/81,1981,7,0
+NER,Niger,Africa,Western Africa,1/1/84,12/31/84,1984,3788,308
+NER,Niger,Africa,Western Africa,1/1/89,12/31/89,1989,166,22
+NER,Niger,Africa,Western Africa,1/1/91,12/31/91,1991,3238,367
+NER,Niger,Africa,Western Africa,1/1/94,12/31/94,1994,732,83
+NER,Niger,Africa,Western Africa,1/1/95,12/31/95,1995,264,15
+NER,Niger,Africa,Western Africa,1/1/96,12/31/96,1996,3957,206
+NER,Niger,Africa,Western Africa,1/1/97,12/31/97,1997,259,13
+NER,Niger,Africa,Western Africa,1/1/99,12/31/99,1999,1186,85
+NER,Niger,Africa,Western Africa,1/1/00,12/31/00,2000,225,38
+NER,Niger,Africa,Western Africa,1/1/01,12/31/01,2001,81,1
+NER,Niger,Africa,Western Africa,1/1/02,12/31/02,2002,236,12
+NER,Niger,Africa,Western Africa,1/1/03,12/31/03,2003,292,11
+NER,Niger,Africa,Western Africa,1/1/04,12/31/04,2004,2178,57
+NER,Niger,Africa,Western Africa,1/1/05,12/31/05,2005,553,55
+NER,Niger,Africa,Western Africa,1/1/06,12/31/06,2006,1232,81
+NER,Niger,Africa,Western Africa,1/1/07,12/31/07,2007,24,2
+NER,Niger,Africa,Western Africa,1/1/08,12/31/08,2008,972,70
+NER,Niger,Africa,Western Africa,1/1/10,12/31/10,2010,1154,66
+NER,Niger,Africa,Western Africa,1/1/11,12/31/11,2011,2324,60
+NER,Niger,Africa,Western Africa,1/1/12,12/31/12,2012,5284,110
+NER,Niger,Africa,Western Africa,1/1/13,12/31/13,2013,585,13
+NER,Niger,Africa,Western Africa,1/1/14,12/31/14,2014,2059,80
+NER,Niger,Africa,Western Africa,1/1/15,12/31/15,2015,51,4
+NER,Niger,Africa,Western Africa,1/1/16,12/31/16,2016,38,6
+NER,Niger,Africa,Western Africa,1/1/18,12/31/18,2018,3900,78
+NER,Niger,Africa,Western Africa,1/1/19,12/31/19,2019,0,0
+NGA,Nigeria,Africa,Western Africa,1/1/70,12/31/70,1970,15,4
+NGA,Nigeria,Africa,Western Africa,1/1/71,12/31/71,1971,22931,2945
+NGA,Nigeria,Africa,Western Africa,1/1/72,12/31/72,1972,1363,96
+NGA,Nigeria,Africa,Western Africa,1/1/73,12/31/73,1973,157,27
+NGA,Nigeria,Africa,Western Africa,1/1/75,12/31/75,1975,38,1
+NGA,Nigeria,Africa,Western Africa,1/1/76,12/31/76,1976,112,25
+NGA,Nigeria,Africa,Western Africa,1/1/77,12/31/77,1977,376,10
+NGA,Nigeria,Africa,Western Africa,1/1/78,12/31/78,1978,197,20
+NGA,Nigeria,Africa,Western Africa,1/1/79,12/31/79,1979,293,4
+NGA,Nigeria,Africa,Western Africa,1/1/80,12/31/80,1980,138,25
+NGA,Nigeria,Africa,Western Africa,1/1/81,12/31/81,1981,107,18
+NGA,Nigeria,Africa,Western Africa,1/1/82,12/31/82,1982,248,18
+NGA,Nigeria,Africa,Western Africa,1/1/83,12/31/83,1983,178,2
+NGA,Nigeria,Africa,Western Africa,1/1/84,12/31/84,1984,1667,185
+NGA,Nigeria,Africa,Western Africa,1/1/85,12/31/85,1985,30,0
+NGA,Nigeria,Africa,Western Africa,1/1/86,12/31/86,1986,91,23
+NGA,Nigeria,Africa,Western Africa,1/1/87,12/31/87,1987,1290,111
+NGA,Nigeria,Africa,Western Africa,1/1/88,12/31/88,1988,137,10
+NGA,Nigeria,Africa,Western Africa,1/1/89,12/31/89,1989,1078,61
+NGA,Nigeria,Africa,Western Africa,1/1/91,12/31/91,1991,59478,7654
+NGA,Nigeria,Africa,Western Africa,1/1/92,12/31/92,1992,8687,686
+NGA,Nigeria,Africa,Western Africa,1/1/93,12/31/93,1993,4160,266
+NGA,Nigeria,Africa,Western Africa,1/1/94,12/31/94,1994,2859,313
+NGA,Nigeria,Africa,Western Africa,1/1/95,12/31/95,1995,1059,87
+NGA,Nigeria,Africa,Western Africa,1/1/96,12/31/96,1996,12374,1193
+NGA,Nigeria,Africa,Western Africa,1/1/97,12/31/97,1997,1322,134
+NGA,Nigeria,Africa,Western Africa,1/1/98,12/31/98,1998,3464,187
+NGA,Nigeria,Africa,Western Africa,1/1/99,12/31/99,1999,26358,2085
+NGA,Nigeria,Africa,Western Africa,1/1/00,12/31/00,2000,2799,43
+NGA,Nigeria,Africa,Western Africa,1/1/01,12/31/01,2001,2312,119
+NGA,Nigeria,Africa,Western Africa,1/1/02,12/31/02,2002,5429,154
+NGA,Nigeria,Africa,Western Africa,1/1/03,12/31/03,2003,1933,87
+NGA,Nigeria,Africa,Western Africa,1/1/04,12/31/04,2004,3186,185
+NGA,Nigeria,Africa,Western Africa,1/1/05,12/31/05,2005,4477,174
+NGA,Nigeria,Africa,Western Africa,1/1/06,12/31/06,2006,2028,127
+NGA,Nigeria,Africa,Western Africa,1/1/07,12/31/07,2007,1661,48
+NGA,Nigeria,Africa,Western Africa,1/1/08,12/31/08,2008,5410,247
+NGA,Nigeria,Africa,Western Africa,1/1/09,12/31/09,2009,13691,431
+NGA,Nigeria,Africa,Western Africa,1/1/10,12/31/10,2010,44456,1712
+NGA,Nigeria,Africa,Western Africa,1/1/11,12/31/11,2011,23377,742
+NGA,Nigeria,Africa,Western Africa,1/1/12,12/31/12,2012,597,18
+NGA,Nigeria,Africa,Western Africa,1/1/13,12/31/13,2013,6600,229
+NGA,Nigeria,Africa,Western Africa,1/1/14,12/31/14,2014,35996,755
+NGA,Nigeria,Africa,Western Africa,1/1/15,12/31/15,2015,5290,186
+NGA,Nigeria,Africa,Western Africa,1/1/16,12/31/16,2016,768,32
+NGA,Nigeria,Africa,Western Africa,1/1/17,12/31/17,2017,12174,288
+NGA,Nigeria,Africa,Western Africa,1/1/18,12/31/18,2018,45037,836
+NGA,Nigeria,Africa,Western Africa,1/1/19,12/31/19,2019,2486,43
+NIU,Niue,Oceania,Polynesia,1/1/18,12/31/18,2018,0,0
+NOR,Norway,Europe,Northern Europe,1/1/81,12/31/81,1981,,0
+NOR,Norway,Europe,Northern Europe,1/1/87,12/31/87,1987,1,0
+NOR,Norway,Europe,Northern Europe,1/1/89,12/31/89,1989,1,0
+NOR,Norway,Europe,Northern Europe,1/1/95,12/31/95,1995,1,0
+NOR,Norway,Europe,Northern Europe,1/1/98,12/31/98,1998,2,0
+NOR,Norway,Europe,Northern Europe,1/1/05,12/31/05,2005,1,0
+NOR,Norway,Europe,Northern Europe,1/1/06,12/31/06,2006,1,0
+NOR,Norway,Europe,Northern Europe,1/1/07,12/31/07,2007,1,0
+NOR,Norway,Europe,Northern Europe,1/1/15,12/31/15,2015,1,0
+OMN,Oman,Asia,Western Asia,1/1/71,12/31/71,1971,9,8
+OMN,Oman,Asia,Western Asia,1/1/01,12/31/01,2001,7,
+OMN,Oman,Asia,Western Asia,1/1/02,12/31/02,2002,1,
+OMN,Oman,Asia,Western Asia,1/1/15,12/31/15,2015,1,0
+OMN,Oman,Asia,Western Asia,1/1/17,12/31/17,2017,0,0
+OMN,Oman,Asia,Western Asia,1/1/18,12/31/18,2018,1,0
+OMN,Oman,Asia,Western Asia,1/1/19,12/31/19,2019,4,0
+PAK,Pakistan,Asia,Southern Asia,1/1/58,12/31/58,1958,366,86
+PAK,Pakistan,Asia,Southern Asia,1/1/60,12/31/60,1960,6704,1107
+PAK,Pakistan,Asia,Southern Asia,1/1/65,12/31/65,1965,21,1
+PAK,Pakistan,Asia,Southern Asia,1/1/68,12/31/68,1968,3932,55
+PAK,Pakistan,Asia,Southern Asia,1/1/69,12/31/69,1969,717,17
+PAK,Pakistan,Asia,Southern Asia,1/1/70,12/31/70,1970,2,0
+PAK,Pakistan,Asia,Southern Asia,1/1/71,12/31/71,1971,1185,43
+PAK,Pakistan,Asia,Southern Asia,1/1/76,12/31/76,1976,144,
+PAK,Pakistan,Asia,Southern Asia,1/1/77,12/31/77,1977,12,1
+PAK,Pakistan,Asia,Southern Asia,1/1/81,12/31/81,1981,4,0
+PAK,Pakistan,Asia,Southern Asia,1/1/93,12/31/93,1993,12092,206
+PAK,Pakistan,Asia,Southern Asia,1/1/10,12/31/10,2010,164,0
+PAK,Pakistan,Asia,Southern Asia,1/1/11,12/31/11,2011,527,219
+PAK,Pakistan,Asia,Southern Asia,1/1/12,12/31/12,2012,144,8
+PAK,Pakistan,Asia,Southern Asia,1/1/13,12/31/13,2013,1069,23
+PAK,Pakistan,Asia,Southern Asia,1/1/14,12/31/14,2014,1218,6
+PLW,Palau,Oceania,Micronesia,1/1/17,12/31/17,2017,0,0
+PLW,Palau,Oceania,Micronesia,1/1/18,12/31/18,2018,0,0
+PAN,Panama,North America,Central America,1/1/91,12/31/91,1991,1178,29
+PAN,Panama,North America,Central America,1/1/92,12/31/92,1992,2416,49
+PAN,Panama,North America,Central America,1/1/93,12/31/93,1993,42,4
+PNG,Papua New Guinea,Oceania,Melanesia,1/1/62,12/31/62,1962,1293,464
+PNG,Papua New Guinea,Oceania,Melanesia,1/1/05,12/31/05,2005,0,0
+PNG,Papua New Guinea,Oceania,Melanesia,1/1/09,12/31/09,2009,1957,45
+PNG,Papua New Guinea,Oceania,Melanesia,1/1/10,12/31/10,2010,8997,95
+PNG,Papua New Guinea,Oceania,Melanesia,1/1/11,12/31/11,2011,1535,2
+PNG,Papua New Guinea,Oceania,Melanesia,1/1/17,12/31/17,2017,0,0
+PNG,Papua New Guinea,Oceania,Melanesia,1/1/19,12/31/19,2019,0,0
+PRY,Paraguay,South America,South America,1/1/93,12/31/93,1993,3,0
+PRY,Paraguay,South America,South America,1/1/96,12/31/96,1996,4,0
+PRY,Paraguay,South America,South America,1/1/09,12/31/09,2009,5,0
+PER,Peru,South America,South America,1/1/91,12/31/91,1991,322562,2909
+PER,Peru,South America,South America,1/1/92,12/31/92,1992,242237,801
+PER,Peru,South America,South America,1/1/93,12/31/93,1993,72404,575
+PER,Peru,South America,South America,1/1/94,12/31/94,1994,23887,199
+PER,Peru,South America,South America,1/1/95,12/31/95,1995,22397,171
+PER,Peru,South America,South America,1/1/96,12/31/96,1996,4518,21
+PER,Peru,South America,South America,1/1/97,12/31/97,1997,3483,29
+PER,Peru,South America,South America,1/1/98,12/31/98,1998,41717,568
+PER,Peru,South America,South America,1/1/99,12/31/99,1999,1546,6
+PER,Peru,South America,South America,1/1/00,12/31/00,2000,934,6
+PER,Peru,South America,South America,1/1/01,12/31/01,2001,494,0
+PER,Peru,South America,South America,1/1/02,12/31/02,2002,16,0
+PHL,Philippines,Asia,South-eastern Asia,1/1/61,12/31/61,1961,9923,1405
+PHL,Philippines,Asia,South-eastern Asia,1/1/62,12/31/62,1962,13015,1682
+PHL,Philippines,Asia,South-eastern Asia,1/1/63,12/31/63,1963,3979,433
+PHL,Philippines,Asia,South-eastern Asia,1/1/64,12/31/64,1964,16464,1518
+PHL,Philippines,Asia,South-eastern Asia,1/1/65,12/31/65,1965,4581,448
+PHL,Philippines,Asia,South-eastern Asia,1/1/66,12/31/66,1966,5261,273
+PHL,Philippines,Asia,South-eastern Asia,1/1/67,12/31/67,1967,1629,52
+PHL,Philippines,Asia,South-eastern Asia,1/1/68,12/31/68,1968,2787,89
+PHL,Philippines,Asia,South-eastern Asia,1/1/69,12/31/69,1969,1541,106
+PHL,Philippines,Asia,South-eastern Asia,1/1/70,12/31/70,1970,1095,38
+PHL,Philippines,Asia,South-eastern Asia,1/1/71,12/31/71,1971,3585,109
+PHL,Philippines,Asia,South-eastern Asia,1/1/72,12/31/72,1972,5601,78
+PHL,Philippines,Asia,South-eastern Asia,1/1/73,12/31/73,1973,2840,447
+PHL,Philippines,Asia,South-eastern Asia,1/1/74,12/31/74,1974,1730,33
+PHL,Philippines,Asia,South-eastern Asia,1/1/75,12/31/75,1975,680,15
+PHL,Philippines,Asia,South-eastern Asia,1/1/76,12/31/76,1976,1258,160
+PHL,Philippines,Asia,South-eastern Asia,1/1/77,12/31/77,1977,1363,180
+PHL,Philippines,Asia,South-eastern Asia,1/1/78,12/31/78,1978,1408,122
+PHL,Philippines,Asia,South-eastern Asia,1/1/79,12/31/79,1979,1268,408
+PHL,Philippines,Asia,South-eastern Asia,1/1/80,12/31/80,1980,836,61
+PHL,Philippines,Asia,South-eastern Asia,1/1/81,12/31/81,1981,864,51
+PHL,Philippines,Asia,South-eastern Asia,1/1/82,12/31/82,1982,930,31
+PHL,Philippines,Asia,South-eastern Asia,1/1/85,12/31/85,1985,10,1
+PHL,Philippines,Asia,South-eastern Asia,1/1/92,12/31/92,1992,345,0
+PHL,Philippines,Asia,South-eastern Asia,1/1/93,12/31/93,1993,708,10
+PHL,Philippines,Asia,South-eastern Asia,1/1/94,12/31/94,1994,3340,27
+PHL,Philippines,Asia,South-eastern Asia,1/1/95,12/31/95,1995,847,4
+PHL,Philippines,Asia,South-eastern Asia,1/1/96,12/31/96,1996,1402,14
+PHL,Philippines,Asia,South-eastern Asia,1/1/97,12/31/97,1997,605,0
+PHL,Philippines,Asia,South-eastern Asia,1/1/98,12/31/98,1998,729,17
+PHL,Philippines,Asia,South-eastern Asia,1/1/99,12/31/99,1999,330,0
+PHL,Philippines,Asia,South-eastern Asia,1/1/00,12/31/00,2000,275,6
+PHL,Philippines,Asia,South-eastern Asia,1/1/01,12/31/01,2001,174,
+PHL,Philippines,Asia,South-eastern Asia,1/1/04,12/31/04,2004,533,3
+PHL,Philippines,Asia,South-eastern Asia,1/1/05,12/31/05,2005,139,2
+PHL,Philippines,Asia,South-eastern Asia,1/1/06,12/31/06,2006,66,1
+PHL,Philippines,Asia,South-eastern Asia,1/1/07,12/31/07,2007,0,0
+PHL,Philippines,Asia,South-eastern Asia,1/1/10,12/31/10,2010,33,2
+PHL,Philippines,Asia,South-eastern Asia,1/1/11,12/31/11,2011,120,3
+PHL,Philippines,Asia,South-eastern Asia,1/1/12,12/31/12,2012,1864,14
+PHL,Philippines,Asia,South-eastern Asia,1/1/13,12/31/13,2013,6,0
+PHL,Philippines,Asia,South-eastern Asia,1/1/14,12/31/14,2014,4547,8
+PHL,Philippines,Asia,South-eastern Asia,1/1/16,12/31/16,2016,124,0
+PHL,Philippines,Asia,South-eastern Asia,1/1/17,12/31/17,2017,134,
+PHL,Philippines,Asia,South-eastern Asia,1/1/18,12/31/18,2018,2102,6
+PHL,Philippines,Asia,South-eastern Asia,1/1/19,12/31/19,2019,5491,8
+POL,Poland,Europe,Eastern Europe,1/1/81,12/31/81,1981,1,
+POL,Poland,Europe,Eastern Europe,1/1/91,12/31/91,1991,,0
+POL,Poland,Europe,Eastern Europe,1/1/94,12/31/94,1994,1,0
+POL,Poland,Europe,Eastern Europe,1/1/05,12/31/05,2005,1,0
+PRT,Portugal,Europe,Southern Europe,1/1/71,12/31/71,1971,64,4
+PRT,Portugal,Europe,Southern Europe,1/1/74,12/31/74,1974,2467,48
+PRT,Portugal,Europe,Southern Europe,1/1/75,12/31/75,1975,1066,8
+PRT,Portugal,Europe,Southern Europe,1/1/81,12/31/81,1981,,0
+PRT,Portugal,Europe,Southern Europe,1/1/94,12/31/94,1994,1,0
+PRT,Portugal,Europe,Southern Europe,1/1/95,12/31/95,1995,1,0
+QAT,Qatar,Asia,Western Asia,1/1/02,12/31/02,2002,1,
+QAT,Qatar,Asia,Western Asia,1/1/04,12/31/04,2004,1,0
+QAT,Qatar,Asia,Western Asia,1/1/05,12/31/05,2005,2,0
+QAT,Qatar,Asia,Western Asia,1/1/17,12/31/17,2017,5,0
+QAT,Qatar,Asia,Western Asia,1/1/19,12/31/19,2019,0,0
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/63,12/31/63,1963,415,38
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/64,12/31/64,1964,11,1
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/69,12/31/69,1969,1538,137
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/70,12/31/70,1970,475,23
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/80,12/31/80,1980,145,4
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/91,12/31/91,1991,113,4
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/92,12/31/92,1992,6,0
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/93,12/31/93,1993,5,0
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/94,12/31/94,1994,34,0
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/95,12/31/95,1995,74,0
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/97,12/31/97,1997,10,0
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/01,12/31/01,2001,138,0
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/04,12/31/04,2004,10,0
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/10,12/31/10,2010,1,0
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/11,12/31/11,2011,3,
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/13,12/31/13,2013,3,0
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/16,12/31/16,2016,4,0
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/17,12/31/17,2017,5,0
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/18,12/31/18,2018,2,0
+KOR,Republic of Korea,Asia,Eastern Asia,1/1/19,12/31/19,2019,1,0
+MDA,Republic of Moldova,Europe,Eastern Europe,1/1/93,12/31/93,1993,1,0
+MDA,Republic of Moldova,Europe,Eastern Europe,1/1/94,12/31/94,1994,8,0
+MDA,Republic of Moldova,Europe,Eastern Europe,1/1/95,12/31/95,1995,240,5
+ROU,Romania,Europe,Eastern Europe,1/1/79,12/31/79,1979,,8
+ROU,Romania,Europe,Eastern Europe,1/1/90,12/31/90,1990,270,1
+ROU,Romania,Europe,Eastern Europe,1/1/91,12/31/91,1991,226,9
+ROU,Romania,Europe,Eastern Europe,1/1/92,12/31/92,1992,3,0
+ROU,Romania,Europe,Eastern Europe,1/1/93,12/31/93,1993,15,0
+ROU,Romania,Europe,Eastern Europe,1/1/94,12/31/94,1994,80,4
+ROU,Romania,Europe,Eastern Europe,1/1/95,12/31/95,1995,118,3
+RUS,Russian Federation,Europe,Eastern Europe,1/1/70,12/31/70,1970,720,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/71,12/31/71,1971,,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/76,12/31/76,1976,1,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/77,12/31/77,1977,1,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/80,12/31/80,1980,,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/81,12/31/81,1981,,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/84,12/31/84,1984,,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/86,12/31/86,1986,,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/90,12/31/90,1990,49,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/91,12/31/91,1991,78,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/92,12/31/92,1992,6,
+RUS,Russian Federation,Europe,Eastern Europe,1/1/93,12/31/93,1993,23,2
+RUS,Russian Federation,Europe,Eastern Europe,1/1/94,12/31/94,1994,1048,15
+RUS,Russian Federation,Europe,Eastern Europe,1/1/95,12/31/95,1995,9,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/96,12/31/96,1996,4,1
+RUS,Russian Federation,Europe,Eastern Europe,1/1/97,12/31/97,1997,11,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/98,12/31/98,1998,10,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/99,12/31/99,1999,8,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/01,12/31/01,2001,53,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/04,12/31/04,2004,1,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/06,12/31/06,2006,1,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/07,12/31/07,2007,1,
+RUS,Russian Federation,Europe,Eastern Europe,1/1/10,12/31/10,2010,3,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/12,12/31/12,2012,1,0
+RUS,Russian Federation,Europe,Eastern Europe,1/1/14,12/31/14,2014,1,0
+RWA,Rwanda,Africa,Eastern Africa,1/1/78,12/31/78,1978,838,48
+RWA,Rwanda,Africa,Eastern Africa,1/1/79,12/31/79,1979,5,0
+RWA,Rwanda,Africa,Eastern Africa,1/1/80,12/31/80,1980,30,4
+RWA,Rwanda,Africa,Eastern Africa,1/1/81,12/31/81,1981,24,1
+RWA,Rwanda,Africa,Eastern Africa,1/1/82,12/31/82,1982,201,2
+RWA,Rwanda,Africa,Eastern Africa,1/1/83,12/31/83,1983,54,5
+RWA,Rwanda,Africa,Eastern Africa,1/1/84,12/31/84,1984,161,13
+RWA,Rwanda,Africa,Eastern Africa,1/1/85,12/31/85,1985,21,0
+RWA,Rwanda,Africa,Eastern Africa,1/1/86,12/31/86,1986,226,7
+RWA,Rwanda,Africa,Eastern Africa,1/1/87,12/31/87,1987,101,6
+RWA,Rwanda,Africa,Eastern Africa,1/1/88,12/31/88,1988,70,3
+RWA,Rwanda,Africa,Eastern Africa,1/1/89,12/31/89,1989,1,0
+RWA,Rwanda,Africa,Eastern Africa,1/1/91,12/31/91,1991,679,35
+RWA,Rwanda,Africa,Eastern Africa,1/1/92,12/31/92,1992,503,35
+RWA,Rwanda,Africa,Eastern Africa,1/1/93,12/31/93,1993,568,34
+RWA,Rwanda,Africa,Eastern Africa,1/1/94,12/31/94,1994,10,0
+RWA,Rwanda,Africa,Eastern Africa,1/1/95,12/31/95,1995,3,0
+RWA,Rwanda,Africa,Eastern Africa,1/1/96,12/31/96,1996,106,10
+RWA,Rwanda,Africa,Eastern Africa,1/1/97,12/31/97,1997,274,16
+RWA,Rwanda,Africa,Eastern Africa,1/1/98,12/31/98,1998,3220,74
+RWA,Rwanda,Africa,Eastern Africa,1/1/99,12/31/99,1999,327,49
+RWA,Rwanda,Africa,Eastern Africa,1/1/00,12/31/00,2000,1235,8
+RWA,Rwanda,Africa,Eastern Africa,1/1/01,12/31/01,2001,157,2
+RWA,Rwanda,Africa,Eastern Africa,1/1/03,12/31/03,2003,12,0
+RWA,Rwanda,Africa,Eastern Africa,1/1/04,12/31/04,2004,586,0
+RWA,Rwanda,Africa,Eastern Africa,1/1/05,12/31/05,2005,89,0
+RWA,Rwanda,Africa,Eastern Africa,1/1/06,12/31/06,2006,405,21
+RWA,Rwanda,Africa,Eastern Africa,1/1/07,12/31/07,2007,1453,21
+RWA,Rwanda,Africa,Eastern Africa,1/1/08,12/31/08,2008,23,0
+RWA,Rwanda,Africa,Eastern Africa,1/1/09,12/31/09,2009,67,0
+RWA,Rwanda,Africa,Eastern Africa,1/1/12,12/31/12,2012,9,0
+RWA,Rwanda,Africa,Eastern Africa,1/1/16,12/31/16,2016,355,0
+RWA,Rwanda,Africa,Eastern Africa,1/1/18,12/31/18,2018,0,0
+WSM,Samoa,Oceania,Polynesia,1/1/80,12/31/80,1980,1,0
+WSM,Samoa,Oceania,Polynesia,1/1/17,12/31/17,2017,0,0
+WSM,Samoa,Oceania,Polynesia,1/1/18,12/31/18,2018,0,0
+STP,Sao Tome and Principe,Africa,Middle Africa,1/1/89,12/31/89,1989,3953,64
+STP,Sao Tome and Principe,Africa,Middle Africa,1/1/90,12/31/90,1990,804,9
+STP,Sao Tome and Principe,Africa,Middle Africa,1/1/91,12/31/91,1991,3,1
+STP,Sao Tome and Principe,Africa,Middle Africa,1/1/05,12/31/05,2005,1966,33
+STP,Sao Tome and Principe,Africa,Middle Africa,1/1/06,12/31/06,2006,926,9
+STP,Sao Tome and Principe,Africa,Middle Africa,1/1/07,12/31/07,2007,90,0
+STP,Sao Tome and Principe,Africa,Middle Africa,1/1/08,12/31/08,2008,119,4
+STP,Sao Tome and Principe,Africa,Middle Africa,1/1/18,12/31/18,2018,0,0
+SAU,Saudi Arabia,Asia,Western Asia,1/1/70,12/31/70,1970,266,14
+SAU,Saudi Arabia,Asia,Western Asia,1/1/72,12/31/72,1972,303,0
+SAU,Saudi Arabia,Asia,Western Asia,1/1/75,12/31/75,1975,91,48
+SAU,Saudi Arabia,Asia,Western Asia,1/1/76,12/31/76,1976,50,0
+SAU,Saudi Arabia,Asia,Western Asia,1/1/77,12/31/77,1977,18,0
+SAU,Saudi Arabia,Asia,Western Asia,1/1/78,12/31/78,1978,30,1
+SAU,Saudi Arabia,Asia,Western Asia,1/1/79,12/31/79,1979,23,0
+SAU,Saudi Arabia,Asia,Western Asia,1/1/80,12/31/80,1980,2,0
+SAU,Saudi Arabia,Asia,Western Asia,1/1/81,12/31/81,1981,13,0
+SAU,Saudi Arabia,Asia,Western Asia,1/1/86,12/31/86,1986,74,3
+SAU,Saudi Arabia,Asia,Western Asia,1/1/02,12/31/02,2002,38,
+SAU,Saudi Arabia,Asia,Western Asia,1/1/17,12/31/17,2017,5,0
+SAU,Saudi Arabia,Asia,Western Asia,1/1/18,12/31/18,2018,0,0
+SEN,Senegal,Africa,Western Africa,1/1/71,12/31/71,1971,265,60
+SEN,Senegal,Africa,Western Africa,1/1/72,12/31/72,1972,379,37
+SEN,Senegal,Africa,Western Africa,1/1/78,12/31/78,1978,315,8
+SEN,Senegal,Africa,Western Africa,1/1/79,12/31/79,1979,103,3
+SEN,Senegal,Africa,Western Africa,1/1/81,12/31/81,1981,428,0
+SEN,Senegal,Africa,Western Africa,1/1/84,12/31/84,1984,728,94
+SEN,Senegal,Africa,Western Africa,1/1/85,12/31/85,1985,2988,474
+SEN,Senegal,Africa,Western Africa,1/1/86,12/31/86,1986,476,63
+SEN,Senegal,Africa,Western Africa,1/1/87,12/31/87,1987,3150,288
+SEN,Senegal,Africa,Western Africa,1/1/88,12/31/88,1988,390,1
+SEN,Senegal,Africa,Western Africa,1/1/95,12/31/95,1995,3332,160
+SEN,Senegal,Africa,Western Africa,1/1/96,12/31/96,1996,16107,765
+SEN,Senegal,Africa,Western Africa,1/1/97,12/31/97,1997,371,11
+SEN,Senegal,Africa,Western Africa,1/1/04,12/31/04,2004,1227,10
+SEN,Senegal,Africa,Western Africa,1/1/05,12/31/05,2005,31719,458
+SEN,Senegal,Africa,Western Africa,1/1/06,12/31/06,2006,365,10
+SEN,Senegal,Africa,Western Africa,1/1/07,12/31/07,2007,3984,24
+SEN,Senegal,Africa,Western Africa,1/1/08,12/31/08,2008,1283,20
+SEN,Senegal,Africa,Western Africa,1/1/09,12/31/09,2009,4,0
+SEN,Senegal,Africa,Western Africa,1/1/10,12/31/10,2010,3,0
+SEN,Senegal,Africa,Western Africa,1/1/11,12/31/11,2011,5,
+SEN,Senegal,Africa,Western Africa,1/1/12,12/31/12,2012,1,0
+SCG,Serbia and Montenegro,Europe,,1/1/76,12/31/76,1976,3,1
+SCG,Serbia and Montenegro,Europe,,1/1/81,12/31/81,1981,2,0
+SCG,Serbia and Montenegro,Europe,,1/1/89,12/31/89,1989,4,0
+SCG,Serbia and Montenegro,Europe,,1/1/94,12/31/94,1994,2,0
+SYC,Seychelles,Africa,Eastern Africa,1/1/05,12/31/05,2005,0,0
+SYC,Seychelles,Africa,Eastern Africa,1/1/06,12/31/06,2006,0,0
+SYC,Seychelles,Africa,Eastern Africa,1/1/07,12/31/07,2007,178,1
+SYC,Seychelles,Africa,Eastern Africa,1/1/08,12/31/08,2008,0,0
+SYC,Seychelles,Africa,Eastern Africa,1/1/18,12/31/18,2018,0,0
+SLE,Sierra Leone,Africa,Western Africa,1/1/70,12/31/70,1970,293,74
+SLE,Sierra Leone,Africa,Western Africa,1/1/71,12/31/71,1971,211,13
+SLE,Sierra Leone,Africa,Western Africa,1/1/77,12/31/77,1977,12,0
+SLE,Sierra Leone,Africa,Western Africa,1/1/86,12/31/86,1986,8957,669
+SLE,Sierra Leone,Africa,Western Africa,1/1/87,12/31/87,1987,557,30
+SLE,Sierra Leone,Africa,Western Africa,1/1/94,12/31/94,1994,9709,623
+SLE,Sierra Leone,Africa,Western Africa,1/1/95,12/31/95,1995,10285,447
+SLE,Sierra Leone,Africa,Western Africa,1/1/98,12/31/98,1998,2096,57
+SLE,Sierra Leone,Africa,Western Africa,1/1/99,12/31/99,1999,863,5
+SLE,Sierra Leone,Africa,Western Africa,1/1/04,12/31/04,2004,513,42
+SLE,Sierra Leone,Africa,Western Africa,1/1/05,12/31/05,2005,6,0
+SLE,Sierra Leone,Africa,Western Africa,1/1/06,12/31/06,2006,2560,99
+SLE,Sierra Leone,Africa,Western Africa,1/1/07,12/31/07,2007,2219,84
+SLE,Sierra Leone,Africa,Western Africa,1/1/08,12/31/08,2008,62,1
+SLE,Sierra Leone,Africa,Western Africa,1/1/12,12/31/12,2012,23124,299
+SLE,Sierra Leone,Africa,Western Africa,1/1/13,12/31/13,2013,377,32
+SLE,Sierra Leone,Africa,Western Africa,1/1/17,12/31/17,2017,0,0
+SLE,Sierra Leone,Africa,Western Africa,1/1/19,12/31/19,2019,0,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/53,12/31/53,1953,0,
+SGP,Singapore,Asia,South-eastern Asia,1/1/63,12/31/63,1963,27,2
+SGP,Singapore,Asia,South-eastern Asia,1/1/64,12/31/64,1964,24,3
+SGP,Singapore,Asia,South-eastern Asia,1/1/68,12/31/68,1968,6,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/69,12/31/69,1969,11,4
+SGP,Singapore,Asia,South-eastern Asia,1/1/72,12/31/72,1972,114,3
+SGP,Singapore,Asia,South-eastern Asia,1/1/73,12/31/73,1973,1,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/74,12/31/74,1974,8,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/75,12/31/75,1975,10,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/77,12/31/77,1977,11,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/78,12/31/78,1978,83,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/79,12/31/79,1979,10,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/80,12/31/80,1980,18,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/81,12/31/81,1981,34,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/82,12/31/82,1982,31,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/83,12/31/83,1983,14,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/84,12/31/84,1984,40,8
+SGP,Singapore,Asia,South-eastern Asia,1/1/85,12/31/85,1985,27,1
+SGP,Singapore,Asia,South-eastern Asia,1/1/86,12/31/86,1986,27,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/87,12/31/87,1987,63,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/88,12/31/88,1988,19,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/89,12/31/89,1989,39,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/90,12/31/90,1990,26,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/91,12/31/91,1991,34,2
+SGP,Singapore,Asia,South-eastern Asia,1/1/92,12/31/92,1992,17,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/93,12/31/93,1993,24,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/94,12/31/94,1994,41,1
+SGP,Singapore,Asia,South-eastern Asia,1/1/95,12/31/95,1995,14,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/96,12/31/96,1996,19,1
+SGP,Singapore,Asia,South-eastern Asia,1/1/97,12/31/97,1997,19,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/98,12/31/98,1998,31,2
+SGP,Singapore,Asia,South-eastern Asia,1/1/99,12/31/99,1999,11,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/00,12/31/00,2000,10,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/01,12/31/01,2001,8,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/02,12/31/02,2002,2,
+SGP,Singapore,Asia,South-eastern Asia,1/1/03,12/31/03,2003,1,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/04,12/31/04,2004,11,1
+SGP,Singapore,Asia,South-eastern Asia,1/1/11,12/31/11,2011,2,
+SGP,Singapore,Asia,South-eastern Asia,1/1/12,12/31/12,2012,2,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/13,12/31/13,2013,2,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/14,12/31/14,2014,2,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/17,12/31/17,2017,3,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/18,12/31/18,2018,2,0
+SGP,Singapore,Asia,South-eastern Asia,1/1/19,12/31/19,2019,2,0
+SVN,Slovenia,Europe,Southern Europe,1/1/07,12/31/07,2007,0,0
+SLB,Solomon Islands,Oceania,Melanesia,1/1/17,12/31/17,2017,0,0
+SLB,Solomon Islands,Oceania,Melanesia,1/1/18,12/31/18,2018,0,0
+SOM,Somalia,Africa,Eastern Africa,1/1/70,12/31/70,1970,43,10
+SOM,Somalia,Africa,Eastern Africa,1/1/71,12/31/71,1971,89,10
+SOM,Somalia,Africa,Eastern Africa,1/1/85,12/31/85,1985,10199,1589
+SOM,Somalia,Africa,Eastern Africa,1/1/86,12/31/86,1986,15980,1945
+SOM,Somalia,Africa,Eastern Africa,1/1/94,12/31/94,1994,28334,1206
+SOM,Somalia,Africa,Eastern Africa,1/1/95,12/31/95,1995,9255,191
+SOM,Somalia,Africa,Eastern Africa,1/1/96,12/31/96,1996,10274,464
+SOM,Somalia,Africa,Eastern Africa,1/1/97,12/31/97,1997,6814,252
+SOM,Somalia,Africa,Eastern Africa,1/1/98,12/31/98,1998,4417,196
+SOM,Somalia,Africa,Eastern Africa,1/1/99,12/31/99,1999,17757,693
+SOM,Somalia,Africa,Eastern Africa,1/1/00,12/31/00,2000,7496,563
+SOM,Somalia,Africa,Eastern Africa,1/1/01,12/31/01,2001,2567,93
+SOM,Somalia,Africa,Eastern Africa,1/1/02,12/31/02,2002,2775,159
+SOM,Somalia,Africa,Eastern Africa,1/1/03,12/31/03,2003,11020,56
+SOM,Somalia,Africa,Eastern Africa,1/1/04,12/31/04,2004,4490,26
+SOM,Somalia,Africa,Eastern Africa,1/1/07,12/31/07,2007,41643,1182
+SOM,Somalia,Africa,Eastern Africa,1/1/08,12/31/08,2008,1281,16
+SOM,Somalia,Africa,Eastern Africa,1/1/09,12/31/09,2009,208,3
+SOM,Somalia,Africa,Eastern Africa,1/1/10,12/31/10,2010,3510,103
+SOM,Somalia,Africa,Eastern Africa,1/1/11,12/31/11,2011,77636,1130
+SOM,Somalia,Africa,Eastern Africa,1/1/12,12/31/12,2012,22576,200
+SOM,Somalia,Africa,Eastern Africa,1/1/13,12/31/13,2013,6864,140
+SOM,Somalia,Africa,Eastern Africa,1/1/14,12/31/14,2014,2820,
+SOM,Somalia,Africa,Eastern Africa,1/1/15,12/31/15,2015,7536,84
+SOM,Somalia,Africa,Eastern Africa,1/1/16,12/31/16,2016,15619,548
+SOM,Somalia,Africa,Eastern Africa,1/1/17,12/31/17,2017,75414,1007
+SOM,Somalia,Africa,Eastern Africa,1/1/18,12/31/18,2018,6761,45
+SOM,Somalia,Africa,Eastern Africa,1/1/19,12/31/19,2019,3100,4
+ZAF,South Africa,Africa,Southern Africa,1/1/73,12/31/73,1973,1,0
+ZAF,South Africa,Africa,Southern Africa,1/1/74,12/31/74,1974,37,0
+ZAF,South Africa,Africa,Southern Africa,1/1/79,12/31/79,1979,2,0
+ZAF,South Africa,Africa,Southern Africa,1/1/80,12/31/80,1980,859,16
+ZAF,South Africa,Africa,Southern Africa,1/1/81,12/31/81,1981,4180,52
+ZAF,South Africa,Africa,Southern Africa,1/1/82,12/31/82,1982,11968,224
+ZAF,South Africa,Africa,Southern Africa,1/1/83,12/31/83,1983,4715,63
+ZAF,South Africa,Africa,Southern Africa,1/1/84,12/31/84,1984,1182,20
+ZAF,South Africa,Africa,Southern Africa,1/1/85,12/31/85,1985,2742,4
+ZAF,South Africa,Africa,Southern Africa,1/1/86,12/31/86,1986,120,1
+ZAF,South Africa,Africa,Southern Africa,1/1/87,12/31/87,1987,37,0
+ZAF,South Africa,Africa,Southern Africa,1/1/91,12/31/91,1991,10,0
+ZAF,South Africa,Africa,Southern Africa,1/1/92,12/31/92,1992,11,0
+ZAF,South Africa,Africa,Southern Africa,1/1/93,12/31/93,1993,78,2
+ZAF,South Africa,Africa,Southern Africa,1/1/94,12/31/94,1994,4,0
+ZAF,South Africa,Africa,Southern Africa,1/1/98,12/31/98,1998,20,1
+ZAF,South Africa,Africa,Southern Africa,1/1/99,12/31/99,1999,68,2
+ZAF,South Africa,Africa,Southern Africa,1/1/00,12/31/00,2000,19667,68
+ZAF,South Africa,Africa,Southern Africa,1/1/01,12/31/01,2001,106159,232
+ZAF,South Africa,Africa,Southern Africa,1/1/02,12/31/02,2002,10004,32
+ZAF,South Africa,Africa,Southern Africa,1/1/03,12/31/03,2003,3901,45
+ZAF,South Africa,Africa,Southern Africa,1/1/04,12/31/04,2004,2767,35
+ZAF,South Africa,Africa,Southern Africa,1/1/05,12/31/05,2005,3503,28
+ZAF,South Africa,Africa,Southern Africa,1/1/06,12/31/06,2006,0,0
+ZAF,South Africa,Africa,Southern Africa,1/1/08,12/31/08,2008,3907,22
+ZAF,South Africa,Africa,Southern Africa,1/1/09,12/31/09,2009,10520,57
+ZAF,South Africa,Africa,Southern Africa,1/1/13,12/31/13,2013,1,0
+SSD,South Sudan,Africa,Eastern Africa,1/1/14,12/31/14,2014,6421,167
+SSD,South Sudan,Africa,Eastern Africa,1/1/15,12/31/15,2015,1818,47
+SSD,South Sudan,Africa,Eastern Africa,1/1/16,12/31/16,2016,4295,82
+SSD,South Sudan,Africa,Eastern Africa,1/1/17,12/31/17,2017,16088,353
+SSD,South Sudan,Africa,Eastern Africa,1/1/18,12/31/18,2018,0,0
+SSD,South Sudan,Africa,Eastern Africa,1/1/19,12/31/19,2019,0,0
+ESP,Spain,Europe,Southern Europe,1/1/71,12/31/71,1971,22,
+ESP,Spain,Europe,Southern Europe,1/1/74,12/31/74,1974,5,
+ESP,Spain,Europe,Southern Europe,1/1/75,12/31/75,1975,11,0
+ESP,Spain,Europe,Southern Europe,1/1/76,12/31/76,1976,2,0
+ESP,Spain,Europe,Southern Europe,1/1/79,12/31/79,1979,267,
+ESP,Spain,Europe,Southern Europe,1/1/80,12/31/80,1980,4,0
+ESP,Spain,Europe,Southern Europe,1/1/82,12/31/82,1982,2,0
+ESP,Spain,Europe,Southern Europe,1/1/83,12/31/83,1983,2,0
+ESP,Spain,Europe,Southern Europe,1/1/84,12/31/84,1984,4,
+ESP,Spain,Europe,Southern Europe,1/1/87,12/31/87,1987,2,0
+ESP,Spain,Europe,Southern Europe,1/1/89,12/31/89,1989,3,0
+ESP,Spain,Europe,Southern Europe,1/1/90,12/31/90,1990,11,0
+ESP,Spain,Europe,Southern Europe,1/1/91,12/31/91,1991,1,0
+ESP,Spain,Europe,Southern Europe,1/1/93,12/31/93,1993,3,0
+ESP,Spain,Europe,Southern Europe,1/1/94,12/31/94,1994,1,0
+ESP,Spain,Europe,Southern Europe,1/1/95,12/31/95,1995,6,0
+ESP,Spain,Europe,Southern Europe,1/1/96,12/31/96,1996,1,0
+ESP,Spain,Europe,Southern Europe,1/1/01,12/31/01,2001,1,
+ESP,Spain,Europe,Southern Europe,1/1/02,12/31/02,2002,1,
+ESP,Spain,Europe,Southern Europe,1/1/06,12/31/06,2006,2,0
+ESP,Spain,Europe,Southern Europe,1/1/07,12/31/07,2007,2,0
+ESP,Spain,Europe,Southern Europe,1/1/08,12/31/08,2008,5,0
+ESP,Spain,Europe,Southern Europe,1/1/15,12/31/15,2015,2,0
+LKA,Sri Lanka,Asia,Southern Asia,1/1/73,12/31/73,1973,118,13
+LKA,Sri Lanka,Asia,Southern Asia,1/1/74,12/31/74,1974,4559,333
+LKA,Sri Lanka,Asia,Southern Asia,1/1/75,12/31/75,1975,1453,67
+LKA,Sri Lanka,Asia,Southern Asia,1/1/76,12/31/76,1976,728,16
+LKA,Sri Lanka,Asia,Southern Asia,1/1/77,12/31/77,1977,5,0
+LKA,Sri Lanka,Asia,Southern Asia,1/1/78,12/31/78,1978,48,2
+LKA,Sri Lanka,Asia,Southern Asia,1/1/79,12/31/79,1979,46,0
+LKA,Sri Lanka,Asia,Southern Asia,1/1/80,12/31/80,1980,104,4
+LKA,Sri Lanka,Asia,Southern Asia,1/1/81,12/31/81,1981,574,57
+LKA,Sri Lanka,Asia,Southern Asia,1/1/82,12/31/82,1982,309,21
+LKA,Sri Lanka,Asia,Southern Asia,1/1/83,12/31/83,1983,86,2
+LKA,Sri Lanka,Asia,Southern Asia,1/1/88,12/31/88,1988,154,11
+LKA,Sri Lanka,Asia,Southern Asia,1/1/91,12/31/91,1991,70,2
+LKA,Sri Lanka,Asia,Southern Asia,1/1/92,12/31/92,1992,121,3
+LKA,Sri Lanka,Asia,Southern Asia,1/1/93,12/31/93,1993,1,0
+LKA,Sri Lanka,Asia,Southern Asia,1/1/97,12/31/97,1997,430,12
+LKA,Sri Lanka,Asia,Southern Asia,1/1/98,12/31/98,1998,1536,49
+LKA,Sri Lanka,Asia,Southern Asia,1/1/99,12/31/99,1999,108,5
+LKA,Sri Lanka,Asia,Southern Asia,1/1/00,12/31/00,2000,2,0
+LKA,Sri Lanka,Asia,Southern Asia,1/1/02,12/31/02,2002,9,1
+LKA,Sri Lanka,Asia,Southern Asia,1/1/17,12/31/17,2017,0,0
+LKA,Sri Lanka,Asia,Southern Asia,1/1/18,12/31/18,2018,0,0
+PSE,State of Palestine,Asia,Western Asia,1/1/18,12/31/18,2018,0,0
+SDN,Sudan,Africa,Northern Africa,1/1/79,12/31/79,1979,845,176
+SDN,Sudan,Africa,Northern Africa,1/1/80,12/31/80,1980,17,2
+SDN,Sudan,Africa,Northern Africa,1/1/85,12/31/85,1985,4457,239
+SDN,Sudan,Africa,Northern Africa,1/1/99,12/31/99,1999,0,0
+SDN,Sudan,Africa,Northern Africa,1/1/06,12/31/06,2006,30662,1011
+SDN,Sudan,Africa,Northern Africa,1/1/07,12/31/07,2007,13731,500
+SDN,Sudan,Africa,Northern Africa,1/1/08,12/31/08,2008,17241,118
+SDN,Sudan,Africa,Northern Africa,1/1/09,12/31/09,2009,13681,52
+SDN,Sudan,Africa,Northern Africa,1/1/18,12/31/18,2018,0,0
+SDN,Sudan,Africa,Northern Africa,1/1/19,12/31/19,2019,346,11
+SUR,Suriname,South America,South America,1/1/92,12/31/92,1992,12,1
+SWE,Sweden,Europe,Northern Europe,1/1/71,12/31/71,1971,4,0
+SWE,Sweden,Europe,Northern Europe,1/1/73,12/31/73,1973,10,0
+SWE,Sweden,Europe,Northern Europe,1/1/74,12/31/74,1974,1,0
+SWE,Sweden,Europe,Northern Europe,1/1/76,12/31/76,1976,1,0
+SWE,Sweden,Europe,Northern Europe,1/1/79,12/31/79,1979,1,0
+SWE,Sweden,Europe,Northern Europe,1/1/84,12/31/84,1984,,0
+SWE,Sweden,Europe,Northern Europe,1/1/86,12/31/86,1986,1,0
+SWE,Sweden,Europe,Northern Europe,1/1/87,12/31/87,1987,1,0
+SWE,Sweden,Europe,Northern Europe,1/1/92,12/31/92,1992,1,0
+SWE,Sweden,Europe,Northern Europe,1/1/94,12/31/94,1994,1,0
+SWE,Sweden,Europe,Northern Europe,1/1/95,12/31/95,1995,2,0
+SWE,Sweden,Europe,Northern Europe,1/1/96,12/31/96,1996,1,0
+SWE,Sweden,Europe,Northern Europe,1/1/03,12/31/03,2003,1,
+SWE,Sweden,Europe,Northern Europe,1/1/04,12/31/04,2004,1,0
+SWE,Sweden,Europe,Northern Europe,1/1/06,12/31/06,2006,1,0
+SWE,Sweden,Europe,Northern Europe,1/1/11,12/31/11,2011,1,0
+SWE,Sweden,Europe,Northern Europe,1/1/15,12/31/15,2015,1,0
+CHE,Switzerland,Europe,Western Europe,1/1/77,12/31/77,1977,1,0
+CHE,Switzerland,Europe,Western Europe,1/1/78,12/31/78,1978,1,0
+CHE,Switzerland,Europe,Western Europe,1/1/80,12/31/80,1980,,0
+CHE,Switzerland,Europe,Western Europe,1/1/81,12/31/81,1981,2,
+CHE,Switzerland,Europe,Western Europe,1/1/85,12/31/85,1985,1,0
+CHE,Switzerland,Europe,Western Europe,1/1/88,12/31/88,1988,1,0
+CHE,Switzerland,Europe,Western Europe,1/1/92,12/31/92,1992,1,0
+CHE,Switzerland,Europe,Western Europe,1/1/93,12/31/93,1993,2,0
+CHE,Switzerland,Europe,Western Europe,1/1/95,12/31/95,1995,2,0
+CHE,Switzerland,Europe,Western Europe,1/1/98,12/31/98,1998,2,
+CHE,Switzerland,Europe,Western Europe,1/1/06,12/31/06,2006,1,0
+CHE,Switzerland,Europe,Western Europe,1/1/15,12/31/15,2015,2,0
+SYR,Syrian Arab Republic,Asia,Western Asia,1/1/70,12/31/70,1970,49,0
+SYR,Syrian Arab Republic,Asia,Western Asia,1/1/71,12/31/71,1971,5,0
+SYR,Syrian Arab Republic,Asia,Western Asia,1/1/72,12/31/72,1972,505,25
+SYR,Syrian Arab Republic,Asia,Western Asia,1/1/75,12/31/75,1975,67,6
+SYR,Syrian Arab Republic,Asia,Western Asia,1/1/76,12/31/76,1976,795,11
+SYR,Syrian Arab Republic,Asia,Western Asia,1/1/77,12/31/77,1977,2362,66
+SYR,Syrian Arab Republic,Asia,Western Asia,1/1/79,12/31/79,1979,689,30
+SYR,Syrian Arab Republic,Asia,Western Asia,1/1/17,12/31/17,2017,0,0
+SYR,Syrian Arab Republic,Asia,Western Asia,1/1/18,12/31/18,2018,0,0
+SYR,Syrian Arab Republic,Asia,Western Asia,1/1/19,12/31/19,2019,0,0
+TJK,Tajikistan,Asia,Central Asia,1/1/93,12/31/93,1993,165,5
+TJK,Tajikistan,Asia,Central Asia,1/1/94,12/31/94,1994,10,0
+THA,Thailand,Asia,South-eastern Asia,1/1/49,12/31/49,1949,16,2
+THA,Thailand,Asia,South-eastern Asia,1/1/51,12/31/51,1951,1,0
+THA,Thailand,Asia,South-eastern Asia,1/1/58,12/31/58,1958,10201,1426
+THA,Thailand,Asia,South-eastern Asia,1/1/59,12/31/59,1959,4368,613
+THA,Thailand,Asia,South-eastern Asia,1/1/63,12/31/63,1963,2230,156
+THA,Thailand,Asia,South-eastern Asia,1/1/64,12/31/64,1964,960,30
+THA,Thailand,Asia,South-eastern Asia,1/1/65,12/31/65,1965,65,4
+THA,Thailand,Asia,South-eastern Asia,1/1/66,12/31/66,1966,401,21
+THA,Thailand,Asia,South-eastern Asia,1/1/67,12/31/67,1967,148,6
+THA,Thailand,Asia,South-eastern Asia,1/1/68,12/31/68,1968,404,21
+THA,Thailand,Asia,South-eastern Asia,1/1/69,12/31/69,1969,961,40
+THA,Thailand,Asia,South-eastern Asia,1/1/73,12/31/73,1973,844,33
+THA,Thailand,Asia,South-eastern Asia,1/1/74,12/31/74,1974,1475,64
+THA,Thailand,Asia,South-eastern Asia,1/1/75,12/31/75,1975,1335,88
+THA,Thailand,Asia,South-eastern Asia,1/1/76,12/31/76,1976,6,0
+THA,Thailand,Asia,South-eastern Asia,1/1/77,12/31/77,1977,383,5
+THA,Thailand,Asia,South-eastern Asia,1/1/78,12/31/78,1978,4183,123
+THA,Thailand,Asia,South-eastern Asia,1/1/79,12/31/79,1979,1788,44
+THA,Thailand,Asia,South-eastern Asia,1/1/80,12/31/80,1980,4331,85
+THA,Thailand,Asia,South-eastern Asia,1/1/81,12/31/81,1981,39,2
+THA,Thailand,Asia,South-eastern Asia,1/1/82,12/31/82,1982,638,16
+THA,Thailand,Asia,South-eastern Asia,1/1/83,12/31/83,1983,1497,41
+THA,Thailand,Asia,South-eastern Asia,1/1/84,12/31/84,1984,645,19
+THA,Thailand,Asia,South-eastern Asia,1/1/85,12/31/85,1985,899,14
+THA,Thailand,Asia,South-eastern Asia,1/1/86,12/31/86,1986,213,1
+THA,Thailand,Asia,South-eastern Asia,1/1/87,12/31/87,1987,6353,36
+THA,Thailand,Asia,South-eastern Asia,1/1/88,12/31/88,1988,3418,41
+THA,Thailand,Asia,South-eastern Asia,1/1/94,12/31/94,1994,3487,5
+THA,Thailand,Asia,South-eastern Asia,1/1/06,12/31/06,2006,35,0
+THA,Thailand,Asia,South-eastern Asia,1/1/07,12/31/07,2007,1428,7
+THA,Thailand,Asia,South-eastern Asia,1/1/08,12/31/08,2008,436,3
+THA,Thailand,Asia,South-eastern Asia,1/1/09,12/31/09,2009,315,2
+THA,Thailand,Asia,South-eastern Asia,1/1/10,12/31/10,2010,1974,15
+THA,Thailand,Asia,South-eastern Asia,1/1/11,12/31/11,2011,279,4
+THA,Thailand,Asia,South-eastern Asia,1/1/12,12/31/12,2012,29,0
+THA,Thailand,Asia,South-eastern Asia,1/1/13,12/31/13,2013,8,0
+THA,Thailand,Asia,South-eastern Asia,1/1/14,12/31/14,2014,12,0
+THA,Thailand,Asia,South-eastern Asia,1/1/15,12/31/15,2015,125,1
+THA,Thailand,Asia,South-eastern Asia,1/1/16,12/31/16,2016,52,1
+THA,Thailand,Asia,South-eastern Asia,1/1/17,12/31/17,2017,8,0
+THA,Thailand,Asia,South-eastern Asia,1/1/18,12/31/18,2018,6,0
+THA,Thailand,Asia,South-eastern Asia,1/1/19,12/31/19,2019,12,1
+TLS,Timor-Leste,Asia,South-eastern Asia,1/1/17,12/31/17,2017,0,0
+TLS,Timor-Leste,Asia,South-eastern Asia,1/1/18,12/31/18,2018,0,0
+TLS,Timor-Leste,Asia,South-eastern Asia,1/1/19,12/31/19,2019,0,0
+TGO,Togo,Africa,Western Africa,1/1/70,12/31/70,1970,75,3
+TGO,Togo,Africa,Western Africa,1/1/71,12/31/71,1971,335,26
+TGO,Togo,Africa,Western Africa,1/1/72,12/31/72,1972,16,0
+TGO,Togo,Africa,Western Africa,1/1/74,12/31/74,1974,58,8
+TGO,Togo,Africa,Western Africa,1/1/77,12/31/77,1977,132,12
+TGO,Togo,Africa,Western Africa,1/1/78,12/31/78,1978,6,6
+TGO,Togo,Africa,Western Africa,1/1/88,12/31/88,1988,1,0
+TGO,Togo,Africa,Western Africa,1/1/91,12/31/91,1991,2396,81
+TGO,Togo,Africa,Western Africa,1/1/92,12/31/92,1992,753,53
+TGO,Togo,Africa,Western Africa,1/1/93,12/31/93,1993,19,2
+TGO,Togo,Africa,Western Africa,1/1/94,12/31/94,1994,47,5
+TGO,Togo,Africa,Western Africa,1/1/95,12/31/95,1995,65,4
+TGO,Togo,Africa,Western Africa,1/1/96,12/31/96,1996,146,17
+TGO,Togo,Africa,Western Africa,1/1/97,12/31/97,1997,42,7
+TGO,Togo,Africa,Western Africa,1/1/98,12/31/98,1998,3217,221
+TGO,Togo,Africa,Western Africa,1/1/99,12/31/99,1999,667,31
+TGO,Togo,Africa,Western Africa,1/1/00,12/31/00,2000,338,23
+TGO,Togo,Africa,Western Africa,1/1/01,12/31/01,2001,2551,130
+TGO,Togo,Africa,Western Africa,1/1/02,12/31/02,2002,257,14
+TGO,Togo,Africa,Western Africa,1/1/03,12/31/03,2003,384,28
+TGO,Togo,Africa,Western Africa,1/1/04,12/31/04,2004,1080,33
+TGO,Togo,Africa,Western Africa,1/1/05,12/31/05,2005,1320,15
+TGO,Togo,Africa,Western Africa,1/1/06,12/31/06,2006,1159,25
+TGO,Togo,Africa,Western Africa,1/1/07,12/31/07,2007,65,1
+TGO,Togo,Africa,Western Africa,1/1/08,12/31/08,2008,397,3
+TGO,Togo,Africa,Western Africa,1/1/09,12/31/09,2009,218,1
+TGO,Togo,Africa,Western Africa,1/1/10,12/31/10,2010,72,3
+TGO,Togo,Africa,Western Africa,1/1/11,12/31/11,2011,4,0
+TGO,Togo,Africa,Western Africa,1/1/12,12/31/12,2012,61,1
+TGO,Togo,Africa,Western Africa,1/1/13,12/31/13,2013,166,4
+TGO,Togo,Africa,Western Africa,1/1/14,12/31/14,2014,262,11
+TGO,Togo,Africa,Western Africa,1/1/15,12/31/15,2015,35,1
+TGO,Togo,Africa,Western Africa,1/1/18,12/31/18,2018,0,0
+TGO,Togo,Africa,Western Africa,1/1/19,12/31/19,2019,0,0
+TON,Tonga,Oceania,Polynesia,1/1/01,12/31/01,2001,145,2
+TON,Tonga,Oceania,Polynesia,1/1/17,12/31/17,2017,0,0
+TON,Tonga,Oceania,Polynesia,1/1/18,12/31/18,2018,0,0
+TUN,Tunisia,Africa,Northern Africa,1/1/70,12/31/70,1970,27,0
+TUN,Tunisia,Africa,Northern Africa,1/1/72,12/31/72,1972,4,0
+TUN,Tunisia,Africa,Northern Africa,1/1/73,12/31/73,1973,656,16
+TUN,Tunisia,Africa,Northern Africa,1/1/17,12/31/17,2017,0,0
+TUN,Tunisia,Africa,Northern Africa,1/1/18,12/31/18,2018,0,0
+TUR,Turkey,Asia,Western Asia,1/1/70,12/31/70,1970,384,52
+TUR,Turkey,Asia,Western Asia,1/1/77,12/31/77,1977,17,0
+TKM,Turkmenistan,Asia,Central Asia,1/1/94,12/31/94,1994,1,0
+TKM,Turkmenistan,Asia,Central Asia,1/1/97,12/31/97,1997,55,0
+TKM,Turkmenistan,Asia,Central Asia,1/1/01,12/31/01,2001,561,6
+TKM,Turkmenistan,Asia,Central Asia,1/1/02,12/31/02,2002,30,2
+TUV,Tuvalu,Oceania,Polynesia,1/1/90,12/31/90,1990,42,0
+TUV,Tuvalu,Oceania,Polynesia,1/1/92,12/31/92,1992,293,8
+TUV,Tuvalu,Oceania,Polynesia,1/1/17,12/31/17,2017,0,0
+TUV,Tuvalu,Oceania,Polynesia,1/1/18,12/31/18,2018,0,0
+UGA,Uganda,Africa,Eastern Africa,1/1/71,12/31/71,1971,757,30
+UGA,Uganda,Africa,Eastern Africa,1/1/75,12/31/75,1975,3,0
+UGA,Uganda,Africa,Eastern Africa,1/1/78,12/31/78,1978,1120,110
+UGA,Uganda,Africa,Eastern Africa,1/1/79,12/31/79,1979,940,60
+UGA,Uganda,Africa,Eastern Africa,1/1/80,12/31/80,1980,1539,181
+UGA,Uganda,Africa,Eastern Africa,1/1/82,12/31/82,1982,190,48
+UGA,Uganda,Africa,Eastern Africa,1/1/87,12/31/87,1987,140,50
+UGA,Uganda,Africa,Eastern Africa,1/1/91,12/31/91,1991,279,28
+UGA,Uganda,Africa,Eastern Africa,1/1/92,12/31/92,1992,5072,104
+UGA,Uganda,Africa,Eastern Africa,1/1/94,12/31/94,1994,704,39
+UGA,Uganda,Africa,Eastern Africa,1/1/95,12/31/95,1995,538,66
+UGA,Uganda,Africa,Eastern Africa,1/1/96,12/31/96,1996,291,40
+UGA,Uganda,Africa,Eastern Africa,1/1/97,12/31/97,1997,2610,188
+UGA,Uganda,Africa,Eastern Africa,1/1/98,12/31/98,1998,49514,2064
+UGA,Uganda,Africa,Eastern Africa,1/1/99,12/31/99,1999,5179,228
+UGA,Uganda,Africa,Eastern Africa,1/1/00,12/31/00,2000,2807,172
+UGA,Uganda,Africa,Eastern Africa,1/1/01,12/31/01,2001,247,4
+UGA,Uganda,Africa,Eastern Africa,1/1/02,12/31/02,2002,2274,133
+UGA,Uganda,Africa,Eastern Africa,1/1/03,12/31/03,2003,4377,129
+UGA,Uganda,Africa,Eastern Africa,1/1/04,12/31/04,2004,3380,91
+UGA,Uganda,Africa,Eastern Africa,1/1/05,12/31/05,2005,4924,98
+UGA,Uganda,Africa,Eastern Africa,1/1/06,12/31/06,2006,5194,106
+UGA,Uganda,Africa,Eastern Africa,1/1/07,12/31/07,2007,276,3
+UGA,Uganda,Africa,Eastern Africa,1/1/08,12/31/08,2008,3726,120
+UGA,Uganda,Africa,Eastern Africa,1/1/09,12/31/09,2009,1095,23
+UGA,Uganda,Africa,Eastern Africa,1/1/10,12/31/10,2010,2341,78
+UGA,Uganda,Africa,Eastern Africa,1/1/12,12/31/12,2012,6326,135
+UGA,Uganda,Africa,Eastern Africa,1/1/13,12/31/13,2013,748,27
+UGA,Uganda,Africa,Eastern Africa,1/1/14,12/31/14,2014,309,9
+UGA,Uganda,Africa,Eastern Africa,1/1/15,12/31/15,2015,1461,33
+UGA,Uganda,Africa,Eastern Africa,1/1/16,12/31/16,2016,516,11
+UGA,Uganda,Africa,Eastern Africa,1/1/17,12/31/17,2017,252,0
+UGA,Uganda,Africa,Eastern Africa,1/1/18,12/31/18,2018,4440,90
+UGA,Uganda,Africa,Eastern Africa,1/1/19,12/31/19,2019,358,5
+UKR,Ukraine,Europe,Eastern Europe,1/1/91,12/31/91,1991,75,0
+UKR,Ukraine,Europe,Eastern Europe,1/1/94,12/31/94,1994,813,20
+UKR,Ukraine,Europe,Eastern Europe,1/1/95,12/31/95,1995,525,10
+UKR,Ukraine,Europe,Eastern Europe,1/1/99,12/31/99,1999,2,0
+UKR,Ukraine,Europe,Eastern Europe,1/1/07,12/31/07,2007,0,0
+UKR,Ukraine,Europe,Eastern Europe,1/1/11,12/31/11,2011,33,0
+ARE,United Arab Emirates,Asia,Western Asia,1/1/72,12/31/72,1972,2,0
+ARE,United Arab Emirates,Asia,Western Asia,1/1/02,12/31/02,2002,3,
+ARE,United Arab Emirates,Asia,Western Asia,1/1/17,12/31/17,2017,12,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/70,12/31/70,1970,1,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/71,12/31/71,1971,3,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/72,12/31/72,1972,2,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/73,12/31/73,1973,5,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/74,12/31/74,1974,3,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/75,12/31/75,1975,1,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/76,12/31/76,1976,1,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/77,12/31/77,1977,2,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/80,12/31/80,1980,6,
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/81,12/31/81,1981,12,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/82,12/31/82,1982,1,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/83,12/31/83,1983,4,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/84,12/31/84,1984,5,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/85,12/31/85,1985,4,1
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/86,12/31/86,1986,11,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/87,12/31/87,1987,2,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/88,12/31/88,1988,10,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/89,12/31/89,1989,1,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/90,12/31/90,1990,6,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/91,12/31/91,1991,8,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/92,12/31/92,1992,5,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/93,12/31/93,1993,13,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/94,12/31/94,1994,18,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/95,12/31/95,1995,10,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/96,12/31/96,1996,13,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/97,12/31/97,1997,6,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/98,12/31/98,1998,18,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/00,12/31/00,2000,33,
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/03,12/31/03,2003,9,
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/04,12/31/04,2004,13,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/06,12/31/06,2006,49,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/07,12/31/07,2007,32,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/08,12/31/08,2008,8,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/09,12/31/09,2009,16,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/10,12/31/10,2010,8,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/11,12/31/11,2011,32,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/12,12/31/12,2012,17,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/13,12/31/13,2013,6,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/14,12/31/14,2014,14,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/15,12/31/15,2015,15,0
+GBR,United Kingdom of Great Britain and Northern Ireland,Europe,Northern Europe,1/1/16,12/31/16,2016,19,0
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/74,12/31/74,1974,10,6
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/77,12/31/77,1977,297,26
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/78,12/31/78,1978,6608,733
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/79,12/31/79,1979,2559,305
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/80,12/31/80,1980,5196,587
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/81,12/31/81,1981,4241,330
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/82,12/31/82,1982,4071,324
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/83,12/31/83,1983,1816,127
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/84,12/31/84,1984,2600,338
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/85,12/31/85,1985,1984,250
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/86,12/31/86,1986,1231,215
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/87,12/31/87,1987,1892,232
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/88,12/31/88,1988,5267,580
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/89,12/31/89,1989,2150,232
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/90,12/31/90,1990,2230,81
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/91,12/31/91,1991,5676,572
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/92,12/31/92,1992,18526,2173
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/93,12/31/93,1993,792,74
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/94,12/31/94,1994,2240,155
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/95,12/31/95,1995,2957,96
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/96,12/31/96,1996,1464,36
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/97,12/31/97,1997,40249,2231
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/98,12/31/98,1998,14488,608
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/99,12/31/99,1999,12266,584
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/00,12/31/00,2000,4637,156
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/01,12/31/01,2001,1300,52
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/02,12/31/02,2002,11920,297
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/03,12/31/03,2003,710,32
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/04,12/31/04,2004,10319,272
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/05,12/31/05,2005,2945,94
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/06,12/31/06,2006,14297,254
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/07,12/31/07,2007,1609,65
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/08,12/31/08,2008,2911,88
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/09,12/31/09,2009,7700,113
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/10,12/31/10,2010,4469,59
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/11,12/31/11,2011,942,11
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/12,12/31/12,2012,286,4
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/13,12/31/13,2013,270,17
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/15,12/31/15,2015,11563,144
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/16,12/31/16,2016,11360,172
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/17,12/31/17,2017,4895,99
+TZA,United Republic of Tanzania,Africa,Eastern Africa,1/1/18,12/31/18,2018,4777,84
+USA,United States of America,North America,Northern America,1/1/87,12/31/87,1987,6,0
+USA,United States of America,North America,Northern America,1/1/88,12/31/88,1988,9,0
+USA,United States of America,North America,Northern America,1/1/90,12/31/90,1990,7,0
+USA,United States of America,North America,Northern America,1/1/91,12/31/91,1991,26,0
+USA,United States of America,North America,Northern America,1/1/92,12/31/92,1992,103,1
+USA,United States of America,North America,Northern America,1/1/93,12/31/93,1993,19,0
+USA,United States of America,North America,Northern America,1/1/94,12/31/94,1994,47,0
+USA,United States of America,North America,Northern America,1/1/95,12/31/95,1995,19,0
+USA,United States of America,North America,Northern America,1/1/96,12/31/96,1996,3,0
+USA,United States of America,North America,Northern America,1/1/97,12/31/97,1997,4,0
+USA,United States of America,North America,Northern America,1/1/98,12/31/98,1998,17,0
+USA,United States of America,North America,Northern America,1/1/99,12/31/99,1999,6,0
+USA,United States of America,North America,Northern America,1/1/00,12/31/00,2000,4,0
+USA,United States of America,North America,Northern America,1/1/01,12/31/01,2001,4,
+USA,United States of America,North America,Northern America,1/1/02,12/31/02,2002,2,
+USA,United States of America,North America,Northern America,1/1/03,12/31/03,2003,2,
+USA,United States of America,North America,Northern America,1/1/04,12/31/04,2004,5,0
+USA,United States of America,North America,Northern America,1/1/05,12/31/05,2005,12,0
+USA,United States of America,North America,Northern America,1/1/06,12/31/06,2006,8,0
+USA,United States of America,North America,Northern America,1/1/07,12/31/07,2007,7,0
+USA,United States of America,North America,Northern America,1/1/08,12/31/08,2008,5,0
+USA,United States of America,North America,Northern America,1/1/09,12/31/09,2009,10,0
+USA,United States of America,North America,Northern America,1/1/10,12/31/10,2010,15,0
+USA,United States of America,North America,Northern America,1/1/11,12/31/11,2011,42,0
+USA,United States of America,North America,Northern America,1/1/12,12/31/12,2012,18,0
+USA,United States of America,North America,Northern America,1/1/13,12/31/13,2013,14,0
+USA,United States of America,North America,Northern America,1/1/14,12/31/14,2014,7,0
+USA,United States of America,North America,Northern America,1/1/15,12/31/15,2015,4,0
+USA,United States of America,North America,Northern America,1/1/16,12/31/16,2016,14,0
+USA,United States of America,North America,Northern America,1/1/18,12/31/18,2018,10,0
+UZB,Uzbekistan,Asia,Central Asia,1/1/94,12/31/94,1994,1,0
+VUT,Vanuatu,Oceania,Melanesia,1/1/17,12/31/17,2017,0,0
+VUT,Vanuatu,Oceania,Melanesia,1/1/18,12/31/18,2018,0,0
+VEN,Venezuela (Bolivarian Republic of),South America,South America,1/1/91,12/31/91,1991,15,2
+VEN,Venezuela (Bolivarian Republic of),South America,South America,1/1/92,12/31/92,1992,2842,68
+VEN,Venezuela (Bolivarian Republic of),South America,South America,1/1/93,12/31/93,1993,409,10
+VEN,Venezuela (Bolivarian Republic of),South America,South America,1/1/96,12/31/96,1996,269,9
+VEN,Venezuela (Bolivarian Republic of),South America,South America,1/1/97,12/31/97,1997,2551,59
+VEN,Venezuela (Bolivarian Republic of),South America,South America,1/1/98,12/31/98,1998,313,7
+VEN,Venezuela (Bolivarian Republic of),South America,South America,1/1/99,12/31/99,1999,376,8
+VEN,Venezuela (Bolivarian Republic of),South America,South America,1/1/00,12/31/00,2000,141,0
+VEN,Venezuela (Bolivarian Republic of),South America,South America,1/1/11,12/31/11,2011,49,0
+VEN,Venezuela (Bolivarian Republic of),South America,South America,1/1/13,12/31/13,2013,4,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/50,12/31/50,1950,9,4
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/51,12/31/51,1951,26,21
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/52,12/31/52,1952,7,6
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/53,12/31/53,1953,7,7
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/54,12/31/54,1954,3,3
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/64,12/31/64,1964,20186,872
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/65,12/31/65,1965,1738,29
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/66,12/31/66,1966,8353,167
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/67,12/31/67,1967,7664,71
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/68,12/31/68,1968,1097,8
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/69,12/31/69,1969,2573,26
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/70,12/31/70,1970,82,1
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/71,12/31/71,1971,270,1
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/72,12/31/72,1972,146,1
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/73,12/31/73,1973,1495,18
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/74,12/31/74,1974,139,2
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/75,12/31/75,1975,5,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/76,12/31/76,1976,1068,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/77,12/31/77,1977,32,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/78,12/31/78,1978,2,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/79,12/31/79,1979,365,28
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/80,12/31/80,1980,978,49
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/81,12/31/81,1981,157,8
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/82,12/31/82,1982,57,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/83,12/31/83,1983,392,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/84,12/31/84,1984,22,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/85,12/31/85,1985,502,9
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/86,12/31/86,1986,525,8
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/87,12/31/87,1987,216,5
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/88,12/31/88,1988,343,7
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/89,12/31/89,1989,143,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/90,12/31/90,1990,358,4
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/91,12/31/91,1991,52,1
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/92,12/31/92,1992,4260,110
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/93,12/31/93,1993,3361,9
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/94,12/31/94,1994,5776,68
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/95,12/31/95,1995,6088,45
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/96,12/31/96,1996,566,2
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/97,12/31/97,1997,4,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/98,12/31/98,1998,13,1
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/99,12/31/99,1999,169,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/05,12/31/05,2005,0,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/07,12/31/07,2007,1946,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/08,12/31/08,2008,853,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/09,12/31/09,2009,471,1
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/10,12/31/10,2010,606,0
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/11,12/31/11,2011,3,
+VNM,Viet Nam,Asia,South-eastern Asia,1/1/17,12/31/17,2017,0,0
+YEM,Yemen,Asia,Western Asia,1/1/71,12/31/71,1971,190,26
+YEM,Yemen,Asia,Western Asia,1/1/72,12/31/72,1972,1064,140
+YEM,Yemen,Asia,Western Asia,1/1/73,12/31/73,1973,215,23
+YEM,Yemen,Asia,Western Asia,1/1/74,12/31/74,1974,6,1
+YEM,Yemen,Asia,Western Asia,1/1/75,12/31/75,1975,1,0
+YEM,Yemen,Asia,Western Asia,1/1/78,12/31/78,1978,414,12
+YEM,Yemen,Asia,Western Asia,1/1/79,12/31/79,1979,1953,45
+YEM,Yemen,Asia,Western Asia,1/1/80,12/31/80,1980,720,20
+YEM,Yemen,Asia,Western Asia,1/1/92,12/31/92,1992,4,0
+YEM,Yemen,Asia,Western Asia,1/1/09,12/31/09,2009,55,3
+YEM,Yemen,Asia,Western Asia,1/1/10,12/31/10,2010,300,4
+YEM,Yemen,Asia,Western Asia,1/1/11,12/31/11,2011,31789,134
+YEM,Yemen,Asia,Western Asia,1/1/16,12/31/16,2016,15751,164
+YEM,Yemen,Asia,Western Asia,1/1/17,12/31/17,2017,1032481,2261
+YEM,Yemen,Asia,Western Asia,1/1/18,12/31/18,2018,371326,505
+YEM,Yemen,Asia,Western Asia,1/1/19,12/31/19,2019,861096,1025
+YEM,Yemen,Asia,Western Asia,1/1/20,12/31/20,2020,226783,
+ZMB,Zambia,Africa,Eastern Africa,1/1/78,12/31/78,1978,263,36
+ZMB,Zambia,Africa,Eastern Africa,1/1/79,12/31/79,1979,12,11
+ZMB,Zambia,Africa,Eastern Africa,1/1/80,12/31/80,1980,57,17
+ZMB,Zambia,Africa,Eastern Africa,1/1/81,12/31/81,1981,14,0
+ZMB,Zambia,Africa,Eastern Africa,1/1/82,12/31/82,1982,1403,131
+ZMB,Zambia,Africa,Eastern Africa,1/1/83,12/31/83,1983,233,19
+ZMB,Zambia,Africa,Eastern Africa,1/1/89,12/31/89,1989,44,44
+ZMB,Zambia,Africa,Eastern Africa,1/1/90,12/31/90,1990,3717,315
+ZMB,Zambia,Africa,Eastern Africa,1/1/91,12/31/91,1991,13154,1091
+ZMB,Zambia,Africa,Eastern Africa,1/1/92,12/31/92,1992,11659,913
+ZMB,Zambia,Africa,Eastern Africa,1/1/93,12/31/93,1993,6766,426
+ZMB,Zambia,Africa,Eastern Africa,1/1/96,12/31/96,1996,2172,42
+ZMB,Zambia,Africa,Eastern Africa,1/1/97,12/31/97,1997,36,0
+ZMB,Zambia,Africa,Eastern Africa,1/1/98,12/31/98,1998,171,0
+ZMB,Zambia,Africa,Eastern Africa,1/1/99,12/31/99,1999,13511,535
+ZMB,Zambia,Africa,Eastern Africa,1/1/00,12/31/00,2000,4504,303
+ZMB,Zambia,Africa,Eastern Africa,1/1/01,12/31/01,2001,3109,165
+ZMB,Zambia,Africa,Eastern Africa,1/1/02,12/31/02,2002,339,12
+ZMB,Zambia,Africa,Eastern Africa,1/1/03,12/31/03,2003,1049,29
+ZMB,Zambia,Africa,Eastern Africa,1/1/04,12/31/04,2004,12149,373
+ZMB,Zambia,Africa,Eastern Africa,1/1/05,12/31/05,2005,1503,7
+ZMB,Zambia,Africa,Eastern Africa,1/1/06,12/31/06,2006,5360,183
+ZMB,Zambia,Africa,Eastern Africa,1/1/07,12/31/07,2007,2286,35
+ZMB,Zambia,Africa,Eastern Africa,1/1/08,12/31/08,2008,2061,39
+ZMB,Zambia,Africa,Eastern Africa,1/1/09,12/31/09,2009,4712,80
+ZMB,Zambia,Africa,Eastern Africa,1/1/10,12/31/10,2010,6794,62
+ZMB,Zambia,Africa,Eastern Africa,1/1/11,12/31/11,2011,330,7
+ZMB,Zambia,Africa,Eastern Africa,1/1/12,12/31/12,2012,198,2
+ZMB,Zambia,Africa,Eastern Africa,1/1/17,12/31/17,2017,1794,57
+ZMB,Zambia,Africa,Eastern Africa,1/1/18,12/31/18,2018,4082,74
+ZMB,Zambia,Africa,Eastern Africa,1/1/19,12/31/19,2019,447,9
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/73,12/31/73,1973,1,
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/74,12/31/74,1974,37,0
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/75,12/31/75,1975,615,33
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/76,12/31/76,1976,144,9
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/85,12/31/85,1985,144,6
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/86,12/31/86,1986,2,
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/92,12/31/92,1992,2048,105
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/93,12/31/93,1993,5385,332
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/98,12/31/98,1998,995,44
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/99,12/31/99,1999,5637,385
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/00,12/31/00,2000,1675,223
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/01,12/31/01,2001,650,14
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/02,12/31/02,2002,3125,192
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/03,12/31/03,2003,1009,35
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/04,12/31/04,2004,119,9
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/05,12/31/05,2005,516,26
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/06,12/31/06,2006,789,61
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/07,12/31/07,2007,65,4
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/08,12/31/08,2008,60055,2928
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/09,12/31/09,2009,68153,2706
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/10,12/31/10,2010,951,21
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/11,12/31/11,2011,1220,2
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/12,12/31/12,2012,23,1
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/15,12/31/15,2015,60,0
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/16,12/31/16,2016,10,1
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/18,12/31/18,2018,10692,65
+ZWE,Zimbabwe,Africa,Eastern Africa,1/1/19,12/31/19,2019,61,3

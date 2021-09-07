@@ -13,8 +13,16 @@ if (Sys.getenv("INTERACTIVE_RUN", FALSE)) {
   )
 }
 
-#### Libraries
+#### Libraries -- using the consistent one 7/2021
+#######Kaiyue Added on 7/21/2021#######
+#======Use other packages needed======#
+chooseCRANmirror(ind = 77) #specify the mirror so that the packages can be successfully installed in the non-interactive way
+
 package_list <- c(
+  "GADMTools", 
+  "rgdal", 
+  "drat", 
+  "roxygen2", 
   "data.table",
   "dplyr",
   "exactextractr",
@@ -28,7 +36,8 @@ package_list <- c(
   "tibble",
   "tidyr",
   "yaml"
-  )
+)
+
 for (package in package_list) {
   if (!require(package = package, character.only = T)) {
     install.packages(pkgs = package)
@@ -36,6 +45,32 @@ for (package in package_list) {
   }
   detach(pos = which(grepl(package, search())))
 }
+
+#======Initialize Montagu package======#
+if (!require('montagu', character.only = T)) {
+  drat:::add("vimc")
+  install.packages('montagu')
+  library('montagu', character.only = T)
+}
+source("scripts/montagu_handle.R")
+
+#======Use the ocvImpact package======#
+if (!require('ocvImpact', character.only = T)) {
+  roxygen2::roxygenise("packages/ocvImpact")
+  install.packages("packages/ocvImpact", type = "source", repos = NULL)
+  library('ocvImpact', character.only = T)
+}
+
+#======For the convenience of debugging======#
+###These a few lines can be deleted safely after the model can run smoothly on the server. 
+library(raster)
+roxygen2::roxygenise("packages/ocvImpact")
+install.packages("packages/ocvImpact", type = "source", repos = NULL)
+library('ocvImpact', character.only = T)
+
+###########Comment completed###########
+
+
 
 ### Run options
 option_list <- list(
@@ -55,7 +90,7 @@ config <- yaml::read_yaml(opt$config)
 runname <- config$runname
 country <- config$country
 scenario <- config$scenario
-nsamples <- config$num_samples
+nsamples <- config$incid$num_samples
 
 #### Create paths
 mpathname <- file.path("montagu", runname)
@@ -66,13 +101,16 @@ dir.create(dpathname, showWarnings = FALSE)
 dir.create(opathname, showWarnings = FALSE)
 
 #### Crop incid raster by country
+#######Kaiyue Added on 7/14/2021####### --- add mpathname as input
 message(paste("Cropping incidence raster:", runname, country, scenario, nsamples))
 incid <- ocvImpact::create_incid_raster(
+  mpathname, 
   dpathname,
   country,
   nsamples,
-  clean = TRUE
+  clean <- TRUE #updated from "=" to "<-"
   )
+###########Comment completed###########
 
 rm(incid)
 gc()

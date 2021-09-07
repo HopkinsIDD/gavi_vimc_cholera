@@ -8,7 +8,18 @@
 #' @importFrom magrittr %>%
 #' @return Dataframe with vaccination coverage for a single scenario and country. Years without vaccination are excluded from the returned dataframe. Countries without vaccination in any year return a null dataframe.
 #' @export
-import_coverage_scenario <- function(modelpath, country, scenario, filter0 = FALSE){
+#' @include retrieve_montagu_coverage.R
+import_coverage_scenario <- function(modelpath, country, scenario, filter0 = FALSE, redownload = TRUE){
+  
+  #First check, then retrieve
+  CoverageFiles <- list.files(modelpath, pattern = "^coverage_")
+  if (length(CoverageFiles) >= 2 & redownload == FALSE){ #there should be 2 coverage data files, so the default should be 2
+    message(paste0("The coverage data files have been under the directory: ", modelpath, '. No new download was made. '))
+  } else{
+    retrieve_montagu_coverage(modelpath)
+  }
+  
+  #Start importing
   cov_fnames <- list.files(modelpath, pattern = "^coverage_")
   scn_fname <- paste0(modelpath, "/", grep(scenario, cov_fnames, ignore.case = TRUE, value = TRUE))
 
@@ -41,7 +52,18 @@ import_coverage_scenario <- function(modelpath, country, scenario, filter0 = FAL
 #' @param country country code
 #' @return dataframe for central burden template for one country
 #' @export 
-import_centralburden_template <- function(modelpath, country){
+#' @include retrieve_montagu_centralburden_template.R
+import_centralburden_template <- function(modelpath, country, redownload = TRUE){
+  
+  #First check, then retrieve
+  CentralBurdenTempFiles <- list.files(modelpath, pattern = "^central-burden")
+  if (length(CentralBurdenTempFiles) > 0 & redownload == FALSE){
+    message(paste0("The central burden template files have been under the directory: ", modelpath, '. No new download was made. '))
+  } else{
+    retrieve_montagu_centralburden_template(modelpath)
+  }
+  
+  #Start importing
   fname <- list.files(modelpath, pattern = "^central-burden")
   if (length(fname)>1){
     stop(paste("More than 1 central burden template was found in", modelpath))
@@ -61,7 +83,18 @@ import_centralburden_template <- function(modelpath, country){
 #' @importFrom magrittr %>%
 #' @return 
 #' @export 
-import_country_population <- function(modelpath, country){
+#' @include retrieve_montagu_population.R
+import_country_population <- function(modelpath, country, redownload = TRUE){
+  
+  #First check, then retrieve
+  TotPopFiles <- list.files(modelpath, pattern = "tot_pop_both.csv$")
+  if (length(TotPopFiles) >= 1 & redownload == FALSE){ #there should be 1 file
+    message(paste0("The total population files have been under the directory: ", modelpath, '. No new download was made. '))
+  } else{
+    retrieve_montagu_population(modelpath)
+  }
+  
+  #Start importing
   pop_fn <- list.files(modelpath, pattern = "tot_pop_both.csv$")
   if (length(pop_fn)>1){
     stop(paste("More than 1 tot_pop_both demographic file was found in", modelpath))
@@ -104,7 +137,18 @@ import_country_population_1yr <- function(modelpath, country, year){
 #' @importFrom magrittr %>%
 #' @return 
 #' @export 
-import_country_agePop <- function(modelpath, country){
+#' @include retrieve_montagu_agePop.R
+import_country_agePop <- function(modelpath, country, redownload = TRUE){
+  
+  #First check, then retrieve
+  AgePopFiles <- list.files(modelpath, pattern = "int_pop_both.csv$")
+  if (length(AgePopFiles) >= 1 & redownload == FALSE){ #there should be 1 file
+    message(paste0("The age-specific population files have been under the directory: ", modelpath, '. No new download was made. '))
+  } else{
+    retrieve_montagu_agePop(modelpath) 
+  }
+  
+  #Start importing
   pop_fn <- list.files(modelpath, pattern = "int_pop_both.csv$")
   if (length(pop_fn)>1){
     stop(paste("More than 1 int_pop_both demographic file was found in", modelpath))
@@ -134,7 +178,18 @@ import_country_agePop <- function(modelpath, country){
 #' @importFrom magrittr %>%
 #' @return 
 #' @export 
-import_country_lifeExpectancy <- function(modelpath, country){
+#' @include retrieve_montagu_lifeExpectancy.R
+import_country_lifeExpectancy <- function(modelpath, country, redownload = TRUE){
+  
+  #First check, then retrieve
+  LifeExpFiles <- list.files(modelpath, pattern = "lx0_both.csv$")
+  if (length(LifeExpFiles) >= 1 & redownload == FALSE){ #there should be 1 file
+    message(paste0("The life expectancy data files have been under the directory: ", modelpath, '. No new download was made. '))
+  } else{
+    retrieve_montagu_lifeExpectancy(modelpath)
+  }
+  
+  #Start importing
   lx0_fn <- list.files(modelpath, pattern = "lx0_both.csv$")
   if (length(lx0_fn)>1){
     stop(paste("More than 1 lx0_both (life expectancy) file was found in", modelpath))
@@ -185,8 +240,18 @@ import_disability_weight <- function(){
 #' @param modelpath path to Montagu files
 #' @return template filename prefix
 #' @export 
-import_templateFilename_prefix <- function(type, modelpath){
-
+#' @include retrieve_montagu_stochasticburden_template.R
+import_templateFilename_prefix <- function(type, modelpath, redownload = FALSE){
+  
+  #First check, then retrieve
+  StocBurdenTempFiles <- list.files(modelpath, pattern = "stochastic-burden-template")
+  if (length(StocBurdenTempFiles) > 0 & redownload == FALSE){
+    message(paste0("The stochastic burden template file has been under the directory: ", modelpath, '. No new download was made. '))
+  } else{
+    retrieve_montagu_stochasticburden_template(modelpath)
+  }
+  
+  #The file is already available
   if (type == "stochastic"){
     fn <- list.files(modelpath, pattern = "stochastic-burden-template")[1]
     rc <- stringr::str_remove(fn, " standard template.csv")
