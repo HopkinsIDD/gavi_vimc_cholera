@@ -1,0 +1,706 @@
+---
+title: "VE_PLOTTING"
+author: "Kaiyue Zou"
+date: "`r Sys.time()`"
+output: html_document
+---
+
+```{r include=FALSE}
+### Setup
+package_list <- c("tidyverse",
+                  "lubridate",
+                  "knitr",
+                  "kableExtra",
+                  "countrycode", 
+                  "rstudioapi")
+for (package in package_list) {
+  if (!require(package = package, character.only = T)) {
+    install.packages(pkgs = package, dependencies = TRUE)
+    library(package = package, character.only = T)
+  }
+  library(package = package, character.only = T)
+}
+
+current_working_dir <- dirname(rstudioapi::getActiveDocumentContext()$path)
+setwd(current_working_dir)                 
+
+codebook <- read_csv("meta_code_book.csv")
+meta_table <- read_csv('meta_data_extraction_consensus.csv')
+original_table <- read_csv("ocv_ve_overtime_original.csv")
+
+```
+
+
+
+# Fig 1. The vaccine efficacy change based on the original table from GAVI model
+```{r include=FALSE}
+### Get the output -- within 48 months for now
+ve.dat <- original_table
+ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+ve.dat$weights <- 1/(abs(ve.dat$se)^2)
+ve.dat <- ve.dat[ve.dat$TL<48,]
+ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+
+year = seq(0, 4, 1/12)
+months <- (year)*12
+rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+rc <- cbind(rc, months)
+rc <- as.data.frame(rc)
+colnames(rc) <- c('estimate', 'upper', 'lower', 'months')
+rc$type <- 'Efficacy'
+
+```
+
+
+
+```{r echo=FALSE}
+rc %>% 
+ ggplot(aes(x=months, y=estimate, ymin=lower, ymax=upper, fill=type, linetype=type)) + 
+ geom_line() + 
+ geom_ribbon(alpha=0.3) + 
+ xlab("Months") + 
+ ylab("Efficacy (%)") +
+ theme_minimal()
+
+```
+
+
+
+# Fig 2. The change in unadjusted vaccine efficacy/effectiveness overtime based on the unadjusted estimates from the 2017 meta-analysis
+```{r include=FALSE}
+### Clean up and tailor
+meta_table <- meta_table %>% 
+  filter(!is.na(review_id_label))
+
+tailored <- meta_table %>% 
+  filter(   !is.na(estim_unadj)) %>% 
+  mutate(   estim_unadj_ci_u = as.numeric(estim_unadj_ci_u)) %>% 
+  mutate(   TL = time_length((ymd(study_l) - ymd(vac_l)), 'month')    ) %>% 
+  mutate(   TR = time_length((ymd(study_u) - ymd(vac_l)), 'month')    ) %>% 
+  mutate(   StudyType = case_when(m_design == 1 ~ 'Efficacy',
+                                  TRUE ~ 'Effectiveness')) %>% 
+  mutate(   Continent = countrycode(m_countr, origin = 'iso3c', destination = 'continent')) %>% 
+  mutate(   Location = countrycode(m_countr, origin = 'iso3c', destination = 'country.name')) %>% 
+  mutate(   Paper = review_id_label) %>% 
+  mutate(   Mean.VE = estim_unadj) %>% 
+  mutate(   VE.l = estim_unadj_ci_l) %>% 
+  mutate(   VE.u = estim_unadj_ci_u) %>% 
+  mutate(   yearid = time_length((ymd(study_u) - ymd(vac_u)), 'year')) %>% 
+  mutate(   Dose = 2) %>% 
+  mutate(   fPaper = NA, uid = NA, fuid = NA) %>% 
+  mutate(   se = (log(1 - estim_unadj_ci_l/100) - log(1 - estim_unadj_ci_u/100))/3.92   ) %>% 
+  mutate(   yi = log(1 - estim_unadj/100)   ) %>% 
+  mutate(   source = 'meta-2017') %>% 
+  select(TL, TR, StudyType, Continent, Location, Paper, Mean.VE, VE.l, VE.u, 
+         yearid, Dose, fPaper, uid, fuid, se, yi, source)
+
+```
+
+
+
+```{r include=FALSE}
+### Get the output -- within 48 months for now
+ve.dat <- tailored %>% filter(StudyType == 'Efficacy')
+ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+ve.dat$weights <- 1/(abs(ve.dat$se)^2)
+ve.dat <- ve.dat[ve.dat$TL<48,]
+ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+
+year = seq(0, 4, 1/12)
+months <- (year)*12
+rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+rc <- cbind(rc, months)
+rc_efficacy <- as.data.frame(rc)
+colnames(rc_efficacy) <- c('estimate', 'upper', 'lower', 'months')
+rc_efficacy$type <- 'Efficacy'
+
+
+
+ve.dat <- tailored %>% filter(StudyType == 'Effectiveness')
+ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+ve.dat$weights <- 1/(abs(ve.dat$se)^2)
+ve.dat <- ve.dat[ve.dat$TL<48,]
+ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+
+year = seq(0, 4, 1/12)
+months <- (year)*12
+rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+rc <- cbind(rc, months)
+rc_effectiveness <- as.data.frame(rc)
+colnames(rc_effectiveness) <- c('estimate', 'upper', 'lower', 'months')
+rc_effectiveness$type <- 'Effectiveness'
+
+
+
+ve.dat <- tailored
+ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+ve.dat$weights <- 1/(abs(ve.dat$se)^2)
+ve.dat <- ve.dat[ve.dat$TL<48,]
+ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+
+year = seq(0, 4, 1/12)
+months <- (year)*12
+rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+rc <- cbind(rc, months)
+rc_both <- as.data.frame(rc)
+colnames(rc_both) <- c('estimate', 'upper', 'lower', 'months')
+rc_both$type <- 'Both'
+
+## Combine them together
+rc <- rbind(rc_efficacy, rc_effectiveness, rc_both)
+
+```
+
+
+
+```{r echo=FALSE}
+rc %>% 
+ ggplot(aes(x=months, y=estimate, ymin=lower, ymax=upper, fill=type, linetype=type)) + 
+ geom_line() + 
+ geom_ribbon(alpha=0.3) + 
+ xlab("Months") + 
+ ylab("Effectiveness or Efficacy (%)") +
+ theme_minimal()
+
+```
+
+
+
+# Fig 3. The unadjusted estimates and sample sizes from the India studies included in the 2017 meta-analysis
+```{r echo=FALSE, fig.width=10}
+### Dig into the India data
+tailored_india <- meta_table %>% 
+  filter(   !is.na(estim_unadj)) %>% 
+  mutate(   estim_unadj_ci_u = as.numeric(estim_unadj_ci_u)) %>% 
+  mutate(   TL = time_length((ymd(study_l) - ymd(vac_l)), 'month')    ) %>% 
+  mutate(   TR = time_length((ymd(study_u) - ymd(vac_l)), 'month')    ) %>% 
+  mutate(   StudyType = case_when(m_design == 1 ~ 'Efficacy',
+                                  TRUE ~ 'Effectiveness')) %>% 
+  mutate(   Continent = countrycode(m_countr, origin = 'iso3c', destination = 'continent')) %>% 
+  mutate(   Location = countrycode(m_countr, origin = 'iso3c', destination = 'country.name')) %>% 
+  mutate(   Paper = paste0(review_id_label, '--', StudyType)) %>% 
+  mutate(   Mean.VE = estim_unadj) %>% 
+  mutate(   VE.l = estim_unadj_ci_l) %>% 
+  mutate(   VE.u = estim_unadj_ci_u) %>% 
+  mutate(   yearid = time_length((ymd(study_u) - ymd(vac_u)), 'year')) %>% 
+  mutate(   Dose = 2) %>% 
+  mutate(   fPaper = NA, uid = NA, fuid = NA) %>% 
+  mutate(   se = (log(1 - estim_unadj_ci_l/100) - log(1 - estim_unadj_ci_u/100))/3.92   ) %>% 
+  mutate(   yi = log(1 - estim_unadj/100)   ) %>% 
+  mutate(   source = 'meta-2017') %>% 
+  mutate(   sample_size = sample_size) %>% 
+  mutate(   labels = paste0('Study ends on ', study_u)) %>% 
+  select(TL, TR, StudyType, Continent, Location, Paper, Mean.VE, VE.l, VE.u, 
+         yearid, Dose, fPaper, uid, fuid, se, yi, source, sample_size, labels) %>% 
+  filter(Location == 'India')
+
+tailored_india %>% 
+  ggplot(aes(x = TR, y = Mean.VE, fill = Paper, size = sample_size, label = labels)) +
+  geom_line(color="grey", size = 0.5) +
+  geom_point(shape=21) +
+  geom_text(aes(label = labels), hjust=1.10, vjust=1, size = 2.5) + 
+  xlim(-5, 60) +
+  labs(x = 'The length of study (months)', y = 'Mean of VE (%)') + 
+  theme_minimal()
+
+```
+
+
+
+# Fig 4. The change in unadjusted vaccine efficacy/effectiveness overtime based on the unadjusted estimates from the 2017 meta-analysis without the India studies
+```{r echo=FALSE}
+### To see the plots without the India data
+tailored_no_india <- tailored %>% 
+  filter(Location != 'India')
+
+ve.dat <- tailored_no_india %>% filter(StudyType == 'Efficacy')
+ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+ve.dat$weights <- 1/(abs(ve.dat$se)^2)
+ve.dat <- ve.dat[ve.dat$TL<48,]
+ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+
+year = seq(0, 4, 1/12)
+months <- (year)*12
+rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+rc <- cbind(rc, months)
+rc_efficacy <- as.data.frame(rc)
+colnames(rc_efficacy) <- c('estimate', 'upper', 'lower', 'months')
+rc_efficacy$type <- 'Efficacy'
+
+
+
+ve.dat <- tailored_no_india %>% filter(StudyType == 'Effectiveness')
+ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+ve.dat$weights <- 1/(abs(ve.dat$se)^2)
+ve.dat <- ve.dat[ve.dat$TL<48,]
+ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+
+year = seq(0, 4, 1/12)
+months <- (year)*12
+rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+rc <- cbind(rc, months)
+rc_effectiveness <- as.data.frame(rc)
+colnames(rc_effectiveness) <- c('estimate', 'upper', 'lower', 'months')
+rc_effectiveness$type <- 'Effectiveness'
+
+
+
+ve.dat <- tailored_no_india
+ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+ve.dat$weights <- 1/(abs(ve.dat$se)^2)
+ve.dat <- ve.dat[ve.dat$TL<48,]
+ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+
+year = seq(0, 4, 1/12)
+months <- (year)*12
+rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+rc <- cbind(rc, months)
+rc_both <- as.data.frame(rc)
+colnames(rc_both) <- c('estimate', 'upper', 'lower', 'months')
+rc_both$type <- 'Both'
+
+## Combine them together
+rc <- rbind(rc_efficacy, rc_effectiveness, rc_both)
+
+```
+
+
+
+```{r echo=FALSE}
+rc %>% 
+ ggplot(aes(x=months, y=estimate, ymin=lower, ymax=upper, fill=type, linetype=type)) + 
+ geom_line() + 
+ geom_ribbon(alpha=0.3) + 
+ xlab("Months") + 
+ ylab("Effectiveness or Efficacy (%)") +
+ theme_minimal()
+
+```
+
+
+
+# Table 1. Extended studies 1 -- Qadri et al, 2015 (included in meta) & Ali et al, 2021 (extended study)
+```{r echo=FALSE}
+### Official
+df <- data.frame(
+  StudyLabel = as.character(),
+  is_in_meta = as.logical(),
+  Country = as.character(), 
+  EstimateType = as.character(), 
+  vac_l = lubridate::as_date(as.character()),
+  vac_u = lubridate::as_date(as.character()),
+  study_l = lubridate::as_date(as.character()),
+  study_u = lubridate::as_date(as.character()),
+  MissingUnadjustedEstimate = as.logical(),
+  AdjustedUnadjusted = as.character(), 
+  Mean.VE = as.numeric(),
+  VE.l = as.numeric(),
+  VE.u = as.numeric()
+)
+
+num_row <- nrow(meta_table[meta_table$review_id_label == 'Qadri et al, 2015', ])
+temp_df <- meta_table %>% 
+  filter(review_id_label == 'Qadri et al, 2015') %>% 
+  mutate(StudyLabel = rep('Qadri et al, 2015', num_row)) %>% 
+  mutate(is_in_meta = TRUE) %>% 
+  mutate(Country = m_countr) %>% 
+  mutate(EstimateType = case_when(m_design == 1 ~ 'Efficacy',
+                                  TRUE ~ 'Effectiveness')) %>% 
+  mutate(vac_l = lubridate::as_date(vac_l)) %>% 
+  mutate(vac_u = lubridate::as_date(vac_u)) %>% 
+  mutate(study_l = lubridate::as_date(study_l)) %>% 
+  mutate(study_u = lubridate::as_date(study_u)) %>% 
+  mutate(MissingUnadjustedEstimate = any(is.na(estim_unadj))) %>% 
+  mutate(AdjustedUnadjusted = case_when(MissingUnadjustedEstimate ~ 'adjusted',
+                                        TRUE ~ 'unadjusted')) %>% 
+  mutate(Mean.VE = case_when(AdjustedUnadjusted == 'adjusted' ~ estim_adj,
+                             TRUE ~ estim_unadj)) %>% 
+  mutate(VE.l = case_when(AdjustedUnadjusted == 'adjusted' ~ estim_adj_ci_l,
+                             TRUE ~ estim_unadj_ci_l)) %>% 
+  mutate(VE.u = case_when(AdjustedUnadjusted == 'adjusted' ~ as.numeric(estim_adj_ci_u),
+                             TRUE ~ as.numeric(estim_unadj_ci_u))) %>% 
+  select(StudyLabel, is_in_meta, Country, EstimateType, vac_l, vac_u, 
+         study_l, study_u, MissingUnadjustedEstimate, AdjustedUnadjusted,
+         Mean.VE, VE.l, VE.u)
+  
+df1 <- temp_df %>% 
+  add_row(
+    StudyLabel = rep('Ali et al, 2021', 4),
+    is_in_meta = rep(FALSE, 4),
+    Country = rep("BGD", 4),
+    EstimateType = rep('Efficacy', 4),
+    vac_l = lubridate::as_date(rep('2011-2-17', 4)),
+    vac_u = lubridate::as_date(rep('2011-4-6', 4)),
+    study_l = lubridate::as_date(c('2011-4-17', '2012-4-17', '2013-4-17', '2014-4-17')),
+    study_u = lubridate::as_date(c('2012-4-16', '2013-4-16', '2014-4-16', '2015-11-1')),
+    MissingUnadjustedEstimate = rep(FALSE, 4),
+    AdjustedUnadjusted = rep('unadjusted', 4),
+    Mean.VE = c(43, 50, 24, 45),
+    VE.l = c(10, 15, -14, 13),
+    VE.u = c(64, 71, 49, 65))
+
+df1 <- df1 %>% 
+  mutate(   TL = time_length((ymd(study_l) - ymd(vac_l)), 'month')    ) %>% 
+  mutate(   TR = time_length((ymd(study_u) - ymd(vac_l)), 'month')    ) %>% 
+  select(   TL, TR, EstimateType, Country, StudyLabel, is_in_meta, 
+            vac_l, vac_u, study_l, study_u, MissingUnadjustedEstimate, AdjustedUnadjusted, 
+            Mean.VE, VE.l, VE.u)
+
+kableExtra::kable(df1) %>% 
+  kable_styling(font_size = 10) %>% 
+  kable_styling(fixed_thead = T)
+
+```
+
+
+
+# Table 2. Extended studies 2: Franke et al, 2017 (not in meta) & Franke et al, 2018 (extended study)
+```{r echo=FALSE}
+df2 <- df %>% 
+  add_row(
+    StudyLabel = c("Franke et al, 2017", 
+                   "Franke et al, 2018"), 
+    is_in_meta = rep(FALSE, 2),
+    Country = rep("HTI", 2),
+    EstimateType = rep('Effectiveness', 2),
+    vac_l = lubridate::as_date(rep('2012-4-15', 2)),
+    vac_u = lubridate::as_date(rep('2014-9-19', 2)),
+    study_l = lubridate::as_date(ym(c('2012-10', '2012-10'))),
+    study_u = lubridate::as_date(ym(c('2016-11', '2016-11'))),
+    MissingUnadjustedEstimate = c(TRUE, FALSE), 
+    AdjustedUnadjusted = c('adjusted', 'adjusted'),
+    Mean.VE = c(74, 76),
+    VE.l = c(49, 59),
+    VE.u = c(87, 86)
+    )
+
+df2 <- df2 %>% 
+  mutate(   TL = time_length((ymd(study_l) - ymd(vac_l)), 'month')    ) %>% 
+  mutate(   TR = time_length((ymd(study_u) - ymd(vac_l)), 'month')    ) %>% 
+  select(   TL, TR, EstimateType, Country, StudyLabel, is_in_meta, 
+            vac_l, vac_u, study_l, study_u, MissingUnadjustedEstimate, AdjustedUnadjusted, 
+            Mean.VE, VE.l, VE.u)
+
+kableExtra::kable(df2) %>% 
+  kable_styling(font_size = 10)
+
+```
+
+
+
+# Table 3. Extended studies 3: Sur et al, 2009 (included in meta) & Fong et al, 2018 (extended study)
+```{r echo=FALSE}
+num_row <- nrow(meta_table[meta_table$review_id_label == 'Sur et al, 2009', ])
+temp_df <- meta_table %>% 
+  filter(review_id_label == 'Sur et al, 2009') %>% 
+  mutate(StudyLabel = rep('Sur et al, 2009', num_row)) %>% 
+  mutate(is_in_meta = TRUE) %>% 
+  mutate(Country = m_countr) %>% 
+  mutate(EstimateType = case_when(m_design == 1 ~ 'Efficacy',
+                                  TRUE ~ 'Effectiveness')) %>% 
+  mutate(vac_l = lubridate::as_date(vac_l)) %>% 
+  mutate(vac_u = lubridate::as_date(vac_u)) %>% 
+  mutate(study_l = lubridate::as_date(study_l)) %>% 
+  mutate(study_u = lubridate::as_date(study_u)) %>% 
+  mutate(MissingUnadjustedEstimate = any(is.na(estim_unadj))) %>% 
+  mutate(AdjustedUnadjusted = case_when(MissingUnadjustedEstimate ~ 'adjusted',
+                                        TRUE ~ 'unadjusted')) %>% 
+  mutate(Mean.VE = case_when(AdjustedUnadjusted == 'adjusted' ~ estim_adj,
+                             TRUE ~ estim_unadj)) %>% 
+  mutate(VE.l = case_when(AdjustedUnadjusted == 'adjusted' ~ estim_adj_ci_l,
+                             TRUE ~ estim_unadj_ci_l)) %>% 
+  mutate(VE.u = case_when(AdjustedUnadjusted == 'adjusted' ~ as.numeric(estim_adj_ci_u),
+                             TRUE ~ as.numeric(estim_unadj_ci_u))) %>% 
+  select(StudyLabel, is_in_meta, Country, EstimateType, vac_l, vac_u, 
+         study_l, study_u, MissingUnadjustedEstimate, AdjustedUnadjusted,
+         Mean.VE, VE.l, VE.u)
+
+df3 <- temp_df %>% 
+  add_row(
+    StudyLabel = c("Fong et al, 2018"), 
+    is_in_meta = rep(FALSE, 1),
+    Country = rep("IND", 1),
+    EstimateType = rep('Efficacy', 1),
+    vac_l = lubridate::as_date('2006-7-27'),
+    vac_u = lubridate::as_date('2006-9-20'),
+    study_l = lubridate::as_date(ymd(c('2006-9-20'))),
+    study_u = lubridate::ymd('2011', truncated = 2L), 
+    MissingUnadjustedEstimate = c(FALSE), 
+    AdjustedUnadjusted = c('adjusted'),
+    Mean.VE = c(69),
+    VE.l = c(49),
+    VE.u = c(81)
+    )
+
+df3 <- df3 %>% 
+  mutate(   TL = time_length((ymd(study_l) - ymd(vac_l)), 'month')    ) %>% 
+  mutate(   TR = time_length((ymd(study_u) - ymd(vac_l)), 'month')    ) %>% 
+  select(   TL, TR, EstimateType, Country, StudyLabel, is_in_meta, 
+            vac_l, vac_u, study_l, study_u, MissingUnadjustedEstimate, AdjustedUnadjusted, 
+            Mean.VE, VE.l, VE.u)
+
+kableExtra::kable(df3) %>% 
+  kable_styling(font_size = 10)
+
+```
+
+
+
+# Table 4. The original table of data that we used to simulate the GAVI model
+```{r echo=FALSE}
+newtable_adj <- original_table %>% 
+  arrange(Paper)
+
+kableExtra::kable(newtable_adj) %>% 
+  kable_styling(font_size = 10)
+
+```
+
+
+
+
+
+
+
+
+
+
+```{r eval=FALSE, include=FALSE}
+### Transfer the data -- adjusted
+newtable_adj <- newtable_adj %>% 
+  select(-`...1`)
+
+tailored <- meta_table %>% 
+  filter(   !is.na(estim_adj)) %>% 
+  mutate(   estim_adj_ci_u = as.numeric(estim_adj_ci_u)) %>% 
+  mutate(   TL = time_length((ymd(study_l) - ymd(vac_l)), 'month')    ) %>% 
+  mutate(   TR = time_length((ymd(study_u) - ymd(vac_u)), 'month')    ) %>% 
+  mutate(   StudyType = case_when(main_estimate == 1 ~ 'Efficacy',
+                                  main_estimate == 0 ~ 'Non-Efficacy',
+                                  TRUE ~ 'Unknown')) %>% 
+  mutate(   Continent = countrycode(m_countr, origin = 'iso3c', destination = 'continent')) %>% 
+  mutate(   Location = countrycode(m_countr, origin = 'iso3c', destination = 'country.name')) %>% 
+  mutate(   Paper = review_id_label) %>% 
+  mutate(   Mean.VE = estim_adj) %>% 
+  mutate(   VE.l = estim_adj_ci_l) %>% 
+  mutate(   VE.u = estim_adj_ci_u) %>% 
+  mutate(   yearid = time_length((ymd(study_u) - ymd(vac_u)), 'year')) %>% 
+  mutate(   Dose = 2) %>% 
+  mutate(   fPaper = NA, uid = NA, fuid = NA) %>% 
+  mutate(   se = (log(1 - estim_adj_ci_l/100) - log(1 - estim_adj_ci_u/100))/3.92   ) %>% 
+  mutate(   yi = log(1 - estim_adj/100)   ) %>% 
+  mutate(   source = 'meta-2017') %>% 
+  select(TL, TR, StudyType, Continent, Location, Paper, Mean.VE, VE.l, VE.u, 
+         yearid, Dose, fPaper, uid, fuid, se, yi, source)
+
+newtable_adj <- rbind(newtable_adj, tailored)
+
+
+
+### Transfer the data -- unadjusted
+newtable_unadj <- newtable_unadj %>% 
+  select(-`...1`) %>% 
+  mutate(   se = (log(1 - VE.l/100) - log(1 - VE.u/100))/3.92   ) %>% 
+  mutate(   yi = log(1 - Mean.VE/100)   ) 
+
+tailored <- meta_table %>% 
+  filter(   !is.na(estim_unadj)) %>% 
+  mutate(   estim_unadj_ci_u = as.numeric(estim_unadj_ci_u)) %>% 
+  mutate(   TL = time_length((ymd(study_l) - ymd(vac_l)), 'month')    ) %>% 
+  mutate(   TR = time_length((ymd(study_u) - ymd(vac_u)), 'month')    ) %>% 
+  mutate(   StudyType = case_when(main_estimate == 1 ~ 'Efficacy',
+                                  main_estimate == 0 ~ 'Non-Efficacy',
+                                  TRUE ~ 'Unknown')) %>% 
+  mutate(   Continent = countrycode(m_countr, origin = 'iso3c', destination = 'continent')) %>% 
+  mutate(   Location = countrycode(m_countr, origin = 'iso3c', destination = 'country.name')) %>% 
+  mutate(   Paper = review_id_label) %>% 
+  mutate(   Mean.VE = estim_unadj) %>% 
+  mutate(   VE.l = estim_unadj_ci_l) %>% 
+  mutate(   VE.u = estim_unadj_ci_u) %>% 
+  mutate(   yearid = time_length((ymd(study_u) - ymd(vac_u)), 'year')) %>% 
+  mutate(   Dose = 2) %>% 
+  mutate(   fPaper = NA, uid = NA, fuid = NA) %>% 
+  mutate(   se = (log(1 - estim_unadj_ci_l/100) - log(1 - estim_unadj_ci_u/100))/3.92   ) %>% 
+  mutate(   yi = log(1 - estim_unadj/100)   ) %>% 
+  mutate(   source = 'meta-2017') %>% 
+  select(TL, TR, StudyType, Continent, Location, Paper, Mean.VE, VE.l, VE.u, 
+         yearid, Dose, fPaper, uid, fuid, se, yi, source)
+
+newtable_unadj <- rbind(newtable_unadj, tailored)
+
+
+
+### Cleaning -- no new studies included
+newtable_adj <- newtable_adj %>% filter(source != 'newstudy')
+newtable_unadj <- newtable_unadj %>% filter(source != 'newstudy')
+
+
+
+
+
+Note: I am not sure if the original model table is a part from the meta-analysis extraction table, I assumed that these two tables are from different sources and they don't overlap, so I didn't eliminate the potential duplicates in the combined table.
+
+I am also not sure if the original model table included the adjusted estiamtes or the un-adjusted estimates, so I plotted the figures in both scenarios. Plus, not all the studies in the meta-analysis table are indicated whether they used the efficacy or the effectiveness as the main estiamte, I used "Efficacy", "Non-efficacy", and "Unknown" to classify them. 
+
+New studies after 2017 are not include in this current analysis given they are potential meta-analysis candidate studies and using one single table for the modeling purpose may fail to extract the rich information they are providing. New studies after 2017 retrieved from a brief literature search are summerized in the table at the bottom of this markdown file. 
+
+
+
+# (adjusted) The changes in efficacy, non-efficacy & unknown, and the combined (both efficacy and effectiveness) overtime 
+
+### Plotting the adjusted results -- efficacy, non-efficacy & unknown, all
+ve.dat <- newtable_adj %>% filter(StudyType == 'Efficacy')
+ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+ve.dat$weights <- 1/(abs(ve.dat$se)^2)
+ve.dat <- ve.dat[ve.dat$TL<48,]
+##this is our basic trend in vaccine effectiveness.
+ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+
+year = seq(0, 5, 1/12)
+months <- (year)*12
+rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+rc <- cbind(rc, months)
+class(rc)
+rc_efficacy <- as.data.frame(rc)
+colnames(rc_efficacy) <- c('estimate', 'upper', 'lower', 'months')
+rc_efficacy$type <- 'Efficacy'
+
+
+
+### Plotting the adjusted results -- efficacy, non-efficacy & unknown, all
+ve.dat <- newtable_adj %>% filter(StudyType != 'Efficacy')
+ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+ve.dat$weights <- 1/(abs(ve.dat$se)^2)
+ve.dat <- ve.dat[ve.dat$TL<48,]
+##this is our basic trend in vaccine effectiveness.
+ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+
+rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+rc <- cbind(rc, months)
+rc_noefficacy <- as.data.frame(rc)
+colnames(rc_noefficacy) <- c('estimate', 'upper', 'lower', 'months')
+rc_noefficacy$type <- 'Non-Efficacy&Unknown'
+
+
+
+### Plotting the adjusted results -- efficacy, non-efficacy & unknown, all
+ve.dat <- newtable_adj
+ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+ve.dat$weights <- 1/(abs(ve.dat$se)^2)
+ve.dat <- ve.dat[ve.dat$TL<48,]
+##this is our basic trend in vaccine effectiveness.
+ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+
+rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+rc <- cbind(rc, months)
+rc_all <- as.data.frame(rc)
+colnames(rc_all) <- c('estimate', 'upper', 'lower', 'months')
+rc_all$type <- 'AllStudies'
+
+
+
+### Combine them together
+rc <- rbind(rc_efficacy, rc_noefficacy, rc_all)
+
+
+
+
+
+
+rc %>% 
+ ggplot(aes(x=months, y=estimate, ymin=lower, ymax=upper, fill=type, linetype=type)) + 
+ geom_line() + 
+ geom_ribbon(alpha=0.3) + 
+ xlab("Months") + 
+ ylab("Effectiveness or Efficacy (%)") +
+ ggtitle('Based on the adjusted estimates') +
+ theme_minimal()
+
+
+
+
+
+# (unadjusted) The changes in efficacy, non-efficacy & unknown, and the combined (both efficacy and effectiveness) overtime 
+
+### Plotting the adjusted results -- efficacy, non-efficacy & unknown, all
+ve.dat <- newtable_unadj %>% filter(StudyType == 'Efficacy')
+ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+ve.dat$weights <- 1/(abs(ve.dat$se)^2)
+ve.dat <- ve.dat[ve.dat$TL<48,]
+##this is our basic trend in vaccine effectiveness.
+ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+
+year = seq(0, 5, 1/12)
+months <- (year)*12
+rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+rc <- cbind(rc, months)
+class(rc)
+rc_efficacy <- as.data.frame(rc)
+colnames(rc_efficacy) <- c('estimate', 'upper', 'lower', 'months')
+rc_efficacy$type <- 'Efficacy'
+
+
+
+### Plotting the adjusted results -- efficacy, non-efficacy & unknown, all
+ve.dat <- newtable_unadj %>% filter(StudyType != 'Efficacy')
+ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+ve.dat$weights <- 1/(abs(ve.dat$se)^2)
+ve.dat <- ve.dat[ve.dat$TL<48,]
+##this is our basic trend in vaccine effectiveness.
+ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+
+rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+rc <- cbind(rc, months)
+rc_noefficacy <- as.data.frame(rc)
+colnames(rc_noefficacy) <- c('estimate', 'upper', 'lower', 'months')
+rc_noefficacy$type <- 'Non-Efficacy&Unknown'
+
+
+
+### Plotting the adjusted results -- efficacy, non-efficacy & unknown, all
+ve.dat <- newtable_unadj
+ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+ve.dat$weights <- 1/(abs(ve.dat$se)^2)
+ve.dat <- ve.dat[ve.dat$TL<48,]
+##this is our basic trend in vaccine effectiveness.
+ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+
+rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+rc <- cbind(rc, months)
+rc_all <- as.data.frame(rc)
+colnames(rc_all) <- c('estimate', 'upper', 'lower', 'months')
+rc_all$type <- 'AllStudies'
+
+
+
+### Combine them together
+rc <- rbind(rc_efficacy, rc_noefficacy, rc_all)
+
+
+
+
+
+
+rc %>% 
+ ggplot(aes(x=months, y=estimate, ymin=lower, ymax=upper, fill=type, linetype=type)) + 
+ geom_line() + 
+ geom_ribbon(alpha=0.3) + 
+ xlab("Months") + 
+ ylab("Effectiveness or Efficacy (%)") +
+ ggtitle('Based on the unadjusted estimates') +
+ theme_minimal()
+
+
+
+
+
+# The summary table for the new studies (since Oct. 2017) found
+
+kableExtra::kable(newstudy_table) %>% 
+  kable_styling(font_size = 8)
+
+
+*When the "#StudyPeriod" is larger than one, it means that effectiveness/efficacy estiamtes are reported more than once. 
+```
+
+
