@@ -38,7 +38,11 @@ export_country_stoch_template <- function(
   }
 
   ## import already-generated model outputs
-  ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_ec.csv")
+  incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
+  outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)
+  setting <- paste0('incid_trend_', incidence_rate_trend, '_outb_layer_',  outbreak_multiplier)
+
+  ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_ec.csv")
   expCases <- readr::read_csv(ec_out_fn) 
   expCases_age <- dplyr::left_join(expCases, lifeExpect_df, by = c("country", "year")) %>%
     dplyr::mutate(
@@ -64,8 +68,13 @@ export_country_stoch_template <- function(
     dplyr::full_join(cb_template, by = c("year", "country", "age")) %>%
     dplyr::select(disease, run_id, year, age, country, country_name, cohort_size, cases, deaths, dalys) %>%
     dplyr::arrange(run_id, age, year)
+  
+  ## include setting into the file name 
+  # incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
+  # outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)
+  # setting <- paste0('incid_trend_', incidence_rate_trend, '_outb_layer_',  outbreak_multiplier)
 
-  out_fn <- paste0(outpath, "/", country, "_", scenario, "_stoch.csv")
+  out_fn <- paste0(outpath, "/", country, "_", scenario, "_", setting, "_stoch.csv")
   message(paste("Writing", out_fn))
   readr::write_csv(stoch, out_fn)
 
@@ -75,7 +84,7 @@ export_country_stoch_template <- function(
     dplyr::summarise(incid_rate = mean(incid_rate)) %>%
     dplyr::mutate(aoi = aoi, cfr = cfr, infect_dur = infect_dur) %>%
     dplyr::select(run_id, country, aoi, incid_rate, cfr, infect_dur) 
-  par_fn <- paste0(outpath, "/", country, "_", scenario, "_pars.csv")
+  par_fn <- paste0(outpath, "/", country, "_", scenario, "_", setting, "_pars.csv")
   message(paste("Writing", par_fn))
   readr::write_csv(params, par_fn)
 

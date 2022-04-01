@@ -10,6 +10,8 @@ import_centralburden_template(modelpath, country, redownload = TRUE)
 \item{modelpath}{Path to montagu files}
 
 \item{country}{country code}
+
+\item{redownload}{whether to redownload the file}
 }
 \value{
 dataframe for central burden template for one country

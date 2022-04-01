@@ -9,7 +9,7 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     knitr,
     rmarkdown
@@ -27,6 +27,7 @@ Collate:
     'utils_montagu.R'
     'get_singular_estimate.R'
     'create_incid_raster.R'
+    'incidence_rate_trend_multiplier.R'
     'utils_targeting.R'
     'utils.R'
     'create_expectedCases.R'
@@ -34,5 +35,8 @@ Collate:
     'create_sus_modelInputs.R'
     'export_central_template.R'
     'export_country_stoch_template.R'
+    'import_age_targeted_vac_pro.R'
+    'outbreak_incidence_rate_multiplier.R'
+    'outbreak_incidence_rate_multiplier_old.R'
     'run_country_scenario.R'
     'utils_config.R'

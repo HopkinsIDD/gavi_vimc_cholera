@@ -26,7 +26,7 @@ run_country_scenario <- function(
   nsamples, 
   ve_direct = generate_pct_protect_function(),
   indirect_mult = generate_indirect_incidence_mult(),
-  secular_trend_mult = generate_flatline_multiplier(),
+  secular_trend_mult = function(a,b,c,d){return(a*b*c*d)},
   clean = TRUE,
   redraw = FALSE,
   ...){
@@ -39,7 +39,12 @@ run_country_scenario <- function(
   ## write susceptible population proportion raster 
   dummy2 <- create_sus_modelInputs(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, ve_direct, clean)
 
-  ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_ec.csv")  
+  incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
+  outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)
+  setting <- paste0('incid_trend_', incidence_rate_trend, '_outb_layer_',  outbreak_multiplier)
+
+  dir.create(paste0(rawoutpath, "/", scenario, "/", setting), showWarnings = FALSE)
+  ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_ec.csv")
   if(clean | !file.exists(ec_out_fn)){ ## rerun
 
     if (is.null(vacc_alloc)){

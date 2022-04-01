@@ -19,7 +19,7 @@
 create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
 
   #######Kaiyue Added on 7/15/2021#######
-  ######Kaiyue editted on 7/21/2021######
+  ######Kaiyue editted on 1/30/2022######
   ###Use the WHO data source to update the current spreadsheet
   IncidenceTable <- ocvImpact::get_singular_estimate(datapath, country)
   RasterCountry <- subset(IncidenceTable, is.na(IncidenceTable$singular_estimate))$country_code
@@ -43,7 +43,10 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
       message('The "is_num_case" variable has an invalid value. ')
     }
     
-    
+    if(country == "IND"){ #borrow BGD incidence rate for IND
+      NumCases <- 0.0008536926*CountryPopMean
+    }
+
     PoisCases <- rpois(nsamples, NumCases)
     StochasticIR <- PoisCases / CountryPopMean
     write.csv(IncidenceTable, file = paste0(datapath, '/incidence/VIMC-47-countries-for-cholera-modelling.csv'), row.names=FALSE)
@@ -59,11 +62,21 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
   if (!file.exists(incid_out_fn) | redraw){
     
     ###If we want to redraw, first delete
-    if(redraw & file.exists(incid_out_fn)){
+    if(file.exists(incid_out_fn)){
       message(paste("Clean existing", incid_out_fn))
       file.remove(incid_out_fn)
     }
+
+    ###For BGD
+    if(country == "BGD"){
+      random_seed <- as.numeric(config$setting$random_seed)
+      setting_num <- random_seed #for the current design
+      BGD_raster <- raster::stack(paste0(datapath, "/incidence/BGD_incid_5k_50_setting", setting_num, ".tif"))
+      return(BGD_raster)
+    }
     
+
+
     ###Just generate
     #######Kaiyue Added on 7/12/2021#######
     #if (country %in% c("COD", "ETH", "KEN", "SOM", "SSD")){ ----the older code with just the testing countries

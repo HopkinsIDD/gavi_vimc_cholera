@@ -20,9 +20,14 @@ prepare_config <- function(p, configpath){
     "incid:\n",
     "  num_samples: ", p$nsamples, "\n",
     "  redraw: ", p$redrawIncid, "\n",
+    "  use_country_incid_trend: ", p$use_country_incid_trend, "\n",
     "vacc:\n",
     "  targeting_strategy: ", p$targeting, "\n",
-    "  num_skip_years: ", p$nskipyear, "\n"
+    "  num_skip_years: ", p$nskipyear, "\n",
+    "setting:\n",
+    "  incidence_rate_trend: ", p$incidence_rate_trend, "\n",
+    "  outbreak_multiplier: ", p$outbreak_multiplier, "\n", 
+    "  random_seed: ", p$random_seed, "\n"
   ))
 
   sink()

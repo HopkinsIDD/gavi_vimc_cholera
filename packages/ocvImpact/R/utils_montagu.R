@@ -5,6 +5,7 @@
 #' @param country country code
 #' @param scenario Unique string that identifies the coverage scenario name
 #' @param filter0 logical for whether 0 vaccination years should be filtered out (default = FALSE)
+#' @param redownload whether to redownload the file
 #' @importFrom magrittr %>%
 #' @return Dataframe with vaccination coverage for a single scenario and country. Years without vaccination are excluded from the returned dataframe. Countries without vaccination in any year return a null dataframe.
 #' @export
@@ -50,6 +51,7 @@ import_coverage_scenario <- function(modelpath, country, scenario, filter0 = FAL
 #' @description Imports a CSV template file for the central burden estimates static columns indicating the burden estimates that need to be generated for each scenario
 #' @param modelpath Path to montagu files
 #' @param country country code
+#' @param redownload whether to redownload the file
 #' @return dataframe for central burden template for one country
 #' @export 
 #' @include retrieve_montagu_centralburden_template.R
@@ -80,6 +82,7 @@ import_centralburden_template <- function(modelpath, country, redownload = TRUE)
 #' @description Get total country population from standardized source in Montagu. [may be used in future for case-based targeting]
 #' @param modelpath path to montagu files
 #' @param country country code
+#' @param redownload whether to redownload the file
 #' @importFrom magrittr %>%
 #' @return 
 #' @export 
@@ -119,7 +122,7 @@ import_country_population <- function(modelpath, country, redownload = TRUE){
 #' @export
 import_country_population_1yr <- function(modelpath, country, year){
 
-  country_pop <- import_country_population(modelpath, country)
+  country_pop <- import_country_population(modelpath, country, redownload = FALSE) #this is important
   if (year > max(country_pop$year)){
     message(paste("Population data not available for", year, "- Using", max(country_pop$year), "data instead"))
     year <- max(country_pop$year)
@@ -134,6 +137,7 @@ import_country_population_1yr <- function(modelpath, country, year){
 #' @description Get age-specific (1-year) country population from standardized source in Montagu. [may be used in future for case-based targeting]
 #' @param modelpath path to montagu files
 #' @param country country code
+#' @param redownload whether to redownload the file
 #' @importFrom magrittr %>%
 #' @return 
 #' @export 
@@ -175,6 +179,7 @@ import_country_agePop <- function(modelpath, country, redownload = TRUE){
 #' @description Get total life expectancy at birth from standardized source in Montagu. [may be used in future for case-based targeting]
 #' @param modelpath path to montagu files
 #' @param country country code
+#' @param redownload whether to redownload the file
 #' @importFrom magrittr %>%
 #' @return 
 #' @export 
@@ -213,7 +218,7 @@ import_country_lifeExpectancy <- function(modelpath, country, redownload = TRUE)
 #' @return
 #' @export
 import_country_lifeExpectancy_1yr <- function(modelpath, country, year){
-  lx0_df <- import_country_lifeExpectancy(modelpath, country)
+  lx0_df <- import_country_lifeExpectancy(modelpath, country, redownload = FALSE) #important change
   rc <- dplyr::filter(lx0_df, year == !!year) %>%
     dplyr::select(lx0) %>%
     unlist %>% unname
@@ -238,6 +243,7 @@ import_disability_weight <- function(){
 #' @description Return string from filename template
 #' @param type "stochastic", "central", "parameter"
 #' @param modelpath path to Montagu files
+#' @param redownload whether to redownload the file
 #' @return template filename prefix
 #' @export 
 #' @include retrieve_montagu_stochasticburden_template.R

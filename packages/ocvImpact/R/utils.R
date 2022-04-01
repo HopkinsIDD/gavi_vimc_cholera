@@ -237,11 +237,43 @@ generate_indirect_incidence_mult <- function(){
 #' @name generate_flatline_multiplier
 #' @title generate_flatline_multiplier
 #' @description Generate a function that represents projected secular trends in cholera incidence. This multiplier is used to adjust projected cholera incidence in future years.
-#' @return
+#' @param trendtype what type of trend function to return
+#' @param datapath path to input data 
+#' @param modelpath path to montagu files
+#' @param country country code
+#' @param use_country_incid_trend whether use the country-level incidence rate trend
+#' @return a function that can take in year or other parameters to produce a value
 #' @export
-generate_flatline_multiplier <- function(){
-  flatline_multiplier <- function(year, base_year = 2016) { return(1) }
-  return(flatline_multiplier)
+#' @include incidence_rate_trend_multiplier.R
+generate_flatline_multiplier <- function(trendtype, 
+                                         datapath, 
+                                         modelpath, 
+                                         country, 
+                                         use_country_incid_trend){
+  #flatline_multiplier <- function(year, base_year = 2016) { return(1) }
+  #return(flatline_multiplier)
+  print('Now beginning using the generate_flatline_multiplier function. ')
+  ### 11/03/2021 change -- now it works as a checkpoint
+  if(trendtype == 'incidence rate'){
+    return(ocvImpact::incidence_rate_trend_multiplier(datapath, 
+                                                      modelpath, 
+                                                      country, 
+                                                      use_country_incid_trend = use_country_incid_trend))
+
+    # FunctionName <- paste0('incidence_rate_trend_multiplier_function_', country)
+    # if(exists(FunctionName)){
+    #   return(get(FunctionName))
+    # }else{
+    #   assign(paste0('incidence_rate_trend_multiplier_function_', country), 
+    #           ocvImpact::incidence_rate_trend_multiplier(datapath, 
+    #                                                      modelpath, 
+    #                                                      country, 
+    #                                                      use_country_incid_trend = use_country_incid_trend))
+    #   return(get(FunctionName))
+      
+    # }
+  }
+
 }
 
 

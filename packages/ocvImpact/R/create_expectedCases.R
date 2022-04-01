@@ -29,6 +29,11 @@ create_expectedCases <- function(
   redraw
   ){
 
+  ############# Use the configs (might not work) -- 11/18/2021 #############
+  incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
+  use_country_incid_trend <- as.logical(config$incid$use_country_incid_trend)
+  outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)
+  
   ## create template and inputs
   years_ls <- get_model_years(modelpath, country, vacc_alloc)
   model_years <- years_ls[["model_years"]]
@@ -48,58 +53,196 @@ create_expectedCases <- function(
   vacc_rasterStack <- raster::brick(vacc_out_fn)
   pop_rasterStack <- raster::brick(pop_out_fn)
   shp0 <- load_shapefile_by_country(datapath, country, simple = TRUE)
+  
+  #fixing the BGD issue
+  if(country == 'BGD'){
+    lambda <- raster::resample(lambda, pop_rasterStack, method = "ngb")
+  }
+  
+  ### new tries -- 11/03/2021
+  if(incidence_rate_trend){
+    incid_trend_function <- ocvImpact::generate_flatline_multiplier(
+                                        trendtype = 'incidence rate', 
+                                        datapath = datapath, 
+                                        modelpath = modelpath, 
+                                        country = country, 
+                                        use_country_incid_trend = use_country_incid_trend)
+  }else{ 
+    incid_trend_function <- function(year){return(1)}
+  }
+  
+  # if(outbreak_multiplier & country != "NGA"){
+  #   outbreak_trend_function <- ocvImpact::outbreak_incidence_rate_multiplier(
+  #                                         datapath = datapath,
+  #                                         modelpath = modelpath,
+  #                                         country = country,
+  #                                         lambda = lambda, 
+  #                                         population_raster = pop_rasterStack, 
+  #                                         output_years = output_years, 
+  #                                         use_country_incid_trend = use_country_incid_trend)
+      
+  # }else{
+  #   outbreak_trend_function <- function(yr_index){return(1)}
+  # }
+  # print('The outbreak_trend_function has been generated. ')
 
+  ## make sure that the directory where all outbreak data is saved exists 
+  dir.create(paste0(datapath, '/outbreak'), showWarnings = FALSE)
+
+  ## apply outbreak multiplier only to the campaign years for now
+  first_year <- min(ocvImpact::import_coverage_scenario(modelpath, country, "campaign-default", filter0 = FALSE, redownload = FALSE)$year)
+  last_year  <- max(ocvImpact::import_coverage_scenario(modelpath, country, "campaign-default", filter0 = FALSE, redownload = FALSE)$year) + 5
+  campaign_years <- first_year:last_year
+  
+
+
+  #set.seed(666) #hopefully that the ramdom seed set by the previous steps could pass onto here and be used, but it needs to be checked
   ec_ls <- lapply(output_years, function(oy){
+
+    ## calculate the outbreak multiplier for that year
+    if(outbreak_multiplier){
+      # first check if the outbreak raster file already exists, generate one if not
+      random_seed <- as.numeric(config$setting$random_seed)
+      setting_num <- random_seed #for now, yes
+      outbreak_out_fn <- paste0(datapath, '/outbreak/', country, '_', (oy %% 10), '.tif')
+
+      if(!file.exists(outbreak_out_fn)){
+        outbreak_trend_function <- ocvImpact::outbreak_incidence_rate_multiplier(
+                                              datapath = datapath,
+                                              modelpath = modelpath,
+                                              country = country,
+                                              lambda = lambda, 
+                                              population_raster = pop_rasterStack, 
+                                              output_years = c(oy), 
+                                              use_country_incid_trend = use_country_incid_trend)
+      }else{
+        outbreak_multiplier_raster <- raster::stack(outbreak_out_fn) #please note that the raster here is RasterStack, not RasterBrick
+        outbreak_trend_function <- function(yr_index){return(outbreak_multiplier_raster)}
+      }
+      
+    }else{
+      outbreak_trend_function <- function(yr_index){return(1)}
+    }
+
+
 
     yr_index <- which(oy == output_years)
     pop_rasterLayer <- raster::subset(pop_rasterStack, yr_index, drop = FALSE)
     vacc_rasterLayer <- raster::subset(vacc_rasterStack, yr_index, drop = FALSE)
     sus_rasterLayer <- raster::subset(sus_rasterStack, yr_index, drop = FALSE)
 
+    incid_trend_multiplier <- incid_trend_function(year = as.numeric(output_years[yr_index]))
+    outbreak_ic_multiplier <- outbreak_trend_function(yr_index = 1) ### the returned list only has one element to use anyways
+    confirmation_multiplier <- 1 ### 11/25 added
+    utilization_multiplier <- 1 ### 11/25 added
+    
+    overall_multiplier <- secular_trend_mult(incid_trend_multiplier, outbreak_ic_multiplier, confirmation_multiplier, utilization_multiplier)
+    
+
+    
     if (oy %in% model_years){ ## consecutive years where vaccine dynamics are in play
 
       ## make new indirect effects template
       indirect_rasterLayer <- pop_rasterLayer
       raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer)))
-      incid_trend <- secular_trend_mult(year = oy)
 
       ec_rasterStack <- tryCatch(
-        raster::overlay(
-          sus_rasterLayer,
-          pop_rasterLayer,
-          lambda,
-          indirect_rasterLayer,
-          fun = function(x, y, z, a){
-            x*y*z*a*incid_trend
-          },
-          recycle = TRUE),
+        if(!is.numeric(overall_multiplier) & class(overall_multiplier) == 'raster'){
+          raster::overlay(
+            sus_rasterLayer,
+            pop_rasterLayer,
+            lambda,
+            indirect_rasterLayer,
+            overall_multiplier, 
+            fun = function(x, y, z, a, b){
+              x*y*z*a*b
+            },
+            recycle = TRUE, unstack = TRUE) 
+            
+        }else {
+          lambda * sus_rasterLayer * pop_rasterLayer  * indirect_rasterLayer * overall_multiplier
+        },
+
         error = function(e){
-          print(list(lambda = raster::extent(lambda),
-                     sus = raster::extent(sus_rasterLayer),
-                     pop = raster::extent(pop_rasterLayer)))
+          print(paste0('The year when it goes wrong is ', oy))
+          print('This is a year when vaccination campaign is going on. ')
+          print('The following is the class for each object: sus_rasterLayer, pop_rasterLayer, lambda, indirect_rasterLayer, and overall_multiplier: ')
+          print(class(sus_rasterLayer))
+          print(class(pop_rasterLayer))
+          print(class(lambda))
+          print(class(indirect_rasterLayer))
+          print(class(overall_multiplier))
+          print('The following is the nlayers for each object: sus_rasterLayer, pop_rasterLayer, lambda, and indirect_rasterLayer: ')
+          print(raster::nlayers(sus_rasterLayer))
+          print(raster::nlayers(pop_rasterLayer))
+          print(raster::nlayers(lambda))
+          print(raster::nlayers(indirect_rasterLayer))
+          
         }
       )
 
-    } else{
+    } else {
       
-      incid_trend <- secular_trend_mult(year = oy)
       ec_rasterStack <- tryCatch(
-        raster::overlay(
-          pop_rasterLayer,
-          lambda,
-          fun = function(x, y){
-            return(x*y*incid_trend)
-          },
-          recycle = TRUE, unstack = TRUE),
+        if(!is.numeric(overall_multiplier) & class(overall_multiplier) == 'raster'){
+          raster::overlay(
+            pop_rasterLayer,
+            lambda,
+            overall_multiplier, 
+            fun = function(x, y, z){
+              return(x*y*z)
+            },
+            recycle = TRUE, unstack = TRUE)
+
+        }else{
+          lambda * pop_rasterLayer * overall_multiplier
+        },
+
         error = function(e){
-          print(list(lambda = raster::extent(lambda),
-                     pop = raster::extent(pop_rasterLayer)))
+          print(paste0('The year when it goes wrong is ', oy))
+          print('This is a year when no vaccination campaign is going on. ')
+          print('The following is the class for each object: pop_rasterLayer, lambda, and overall_multiplier: ')
+          print(class(pop_rasterLayer))
+          print(class(lambda))
+          print(class(overall_multiplier))
+          print('The following is the nlayers/value for each object: pop_rasterLayer, lambda, and overall_multiplier: ')
+          if(!is.numeric(overall_multiplier) & class(overall_multiplier) == 'raster'){
+            print(list(lambda = raster::nlayers(lambda),
+                       pop = raster::nlayers(pop_rasterLayer), 
+                       overall_multiplier = raster::nlayers(overall_multiplier)))
+          }else{
+            print(list(lambda = raster::extent(lambda),
+                       pop = raster::extent(pop_rasterLayer), 
+                       overall_multiplier = overall_multiplier))
+          }
+          
         }
       )
 
     }
+    print('ec_rasterStack has been generated')
+
+
+
+    ### optimize memory usage
+    rm(outbreak_ic_multiplier)
+    rm(outbreak_trend_function)
+    rm(overall_multiplier)
+    gc()
+
+
+    
+    ### fixing the MRT issue
+    if(country == 'MRT'){
+      lambda <- raster::setExtent(lambda, raster::extent(shp0), keepres=FALSE, snap=FALSE)
+      pop_rasterLayer <- raster::setExtent(pop_rasterLayer, raster::extent(shp0), keepres=FALSE, snap=FALSE)
+    }
+    
+
 
     ec_yr <- exactextractr::exact_extract(ec_rasterStack, shp0, fun = "sum", stack_apply = TRUE)
+    print('The first exact_extract function got passed. ')
+
     mean_incid <- exactextractr::exact_extract(
       lambda, 
       shp0, 
@@ -108,6 +251,7 @@ create_expectedCases <- function(
       },
       weights = pop_rasterLayer, 
       stack_apply = TRUE)
+    print('The second exact_extract function got passed. ')
 
     ec_vec <- as.numeric(ec_yr)
     mean_incid_vec <- as.numeric(mean_incid)

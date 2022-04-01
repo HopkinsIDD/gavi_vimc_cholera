@@ -10,6 +10,8 @@ import_country_agePop(modelpath, country, redownload = TRUE)
 \item{modelpath}{path to montagu files}
 
 \item{country}{country code}
+
+\item{redownload}{whether to redownload the file}
 }
 \value{
 

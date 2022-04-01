@@ -9,6 +9,8 @@ load_targets_by_country(datapath, modelpath, country)
 \arguments{
 \item{datapath}{path to data}
 
+\item{modelpath}{modelpath}
+
 \item{country}{country code}
 }
 \value{

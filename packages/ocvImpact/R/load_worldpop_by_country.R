@@ -18,7 +18,13 @@ load_worldpop_by_country <- function(datapath, country){
     stop(paste("There is no worldpop file with  ppp_2020_5km in the filename"))
   } else{
     message(paste0("Loading ", datapath, "/worldpop/", pop_fn))
-    pop_world <- raster::raster(paste0(datapath, "/worldpop/", pop_fn))
+    
+    while(!exists('pop_world')){
+      try(pop_world <- raster::raster(paste0(datapath, "/worldpop/", pop_fn)))
+      date_time<-Sys.time()
+      while((as.numeric(Sys.time()) - as.numeric(date_time))<3.0){}
+    }
+    # pop_world <- raster::raster(paste0(datapath, "/worldpop/", pop_fn))
     shp <- load_shapefile_by_country(datapath, country, simple=TRUE)
     cropped <- raster::crop(pop_world, shp, snap = "out")
     pop <- raster::mask(cropped, shp, updatevalue = NA)
