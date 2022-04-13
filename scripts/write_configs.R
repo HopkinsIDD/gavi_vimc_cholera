@@ -76,18 +76,28 @@ for(scn in scenarios){
 
   scnpathname <- file.path(cpathname, scn)
   dir.create(scnpathname, showWarnings = FALSE)
-  pars <- tidyr::expand_grid(runname = runname, scenario = scn, country = countries, targeting = targeting_strategy, nsamples = num_samples, nskipyear = num_skip_years, clean = clean_outputs, redrawIncid = clean_incid) 
-  pars$use_country_incid_trend <- use_country_incid_trend
-  pars$incidence_rate_trend <- incidence_rate_trend
-  pars$outbreak_multiplier <- outbreak_multiplier          
-  pars$random_seed <- random_seed                 
 
-  lapply(1:nrow(pars), function(i){
-    par_row <- pars[i,]
-    ocvImpact::prepare_config(par_row, scnpathname)
-  })
+  for(surveillance_scenario in surveillance_scenarios){
+    
+    scnpathname <- file.path(cpathname, scn, surveillance_scenario)
+    dir.create(scnpathname, showWarnings = FALSE)
+    pars <- tidyr::expand_grid(runname = runname, scenario = scn, country = countries, targeting = targeting_strategy, nsamples = num_samples, nskipyear = num_skip_years, clean = clean_outputs, redrawIncid = clean_incid) 
+    pars$use_country_incid_trend <- use_country_incid_trend
+    pars$incidence_rate_trend <- incidence_rate_trend
+    pars$outbreak_multiplier <- outbreak_multiplier          
+    pars$random_seed <- random_seed
+
+    # the followings are specific to the surveillance project
+    pars$vac_incid_threshold <- vac_incid_threshold
+    pars$vac_unconstrained <- vac_unconstrained  
+    pars$vac_admin_level <- vac_admin_level
+    pars$vac_coverage <- vac_coverage
+    pars$surveillance_scenario <- surveillance_scenario               
+
+    lapply(1:nrow(pars), function(i){
+      par_row <- pars[i,]
+      ocvImpact::prepare_config(par_row, scnpathname)
+    })
+  }  
 
 }
-
-
-

@@ -1,15 +1,24 @@
-runname <- "202110gavi-3" ### Most important
+#====== The Basics ======#
+runname <- "202110gavi-3" ### Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
 scenarios <- c("campaign-default", "no-vaccination")
-# countries <- c("COD", "ETH", "KEN", "SOM", "SSD", "HTI")
-countries <-    c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
-                  "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE",
-                  "AFG", "HTI", "IRN", "IRQ", "NPL", "PAK", "PHL", "THA", "YEM", "IND", "BGD")
-# countries <- c("COD", "ETH", "BGD", "HTI", "YEM")
+countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
+              "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE",
+              "AFG", "HTI", "IRN", "IRQ", "NPL", "PAK", "PHL", "THA", "YEM", "IND", "BGD")
+countries <- c("COD", "ETH", "BGD", "HTI", "YEM") #for testing, temporary 
+
+#====== Surveillance Project Specific ======#
+targeting_strategy <- "surveillance_project" #c("surveillance_project", "affected_pop", "incidence")
+vac_incid_threshold <- 1/1000 #c(1/1000, 1/5000, 1/10000), use one at a time for now
+vac_unconstrained <- TRUE
+vac_admin_level <- 2 #c(1, 2)
+vac_coverage <- 0.8 #for now
+surveillance_scenarios <- c("no-estimate", "global-estimate", "district-estimate") #use all three at the same time for now
+
+#====== Other Parameters ======#
+num_skip_years <- 3 #relevant to the surveillance project
+num_samples <- 50 #relevant to the surveillance project
 clean_outputs <- TRUE #changed on 1.31
-targeting_strategy <- "affected_pop"
 clean_incid <- TRUE #changed on 1.31
-num_samples <- 50
-num_skip_years <- 3
 
 # ### tmp
 # outbreak_file_name <- paste0("/home/kaiyuezou/VIMC_Model/202110gavi-3/gavi_vimc_cholera/input_data", '/outbreak/outbreak_df.csv')
@@ -22,12 +31,7 @@ num_skip_years <- 3
 # # countries <- countries[!countries %in% outbreak_countries]
 # countries <- outbreak_countries
 
-
 use_country_incid_trend <- rep(TRUE, length(countries))
-# newly added on 11/18/2021 -- like this for now, but will change to the following
-# c("CMR", "COD", "ETH", "IRQ", "KEN", "LBR", "NGA", "SEN", "SOM", "YEM", "ZAF", "ZWE") -- FALSE
-# c("HTI", "BGD", "IND") -- not sure
-
 
 no_country_list <- c("CMR", "COD", "ETH", "IRQ", "KEN", "LBR", "NGA", "SEN", "SOM", "YEM", "ZAF", "ZWE")
 not_sure_country_list <- c("HTI", "BGD", "IND") 
@@ -37,13 +41,12 @@ use_country_incid_trend <- lapply(countries, function(country_code){
 })
 use_country_incid_trend <- unlist(use_country_incid_trend)
 
-# rm(country_code)
-# rm(country_index)
 rm(no_country_list)
 rm(not_sure_country_list)
 
-incidence_rate_trend <- TRUE
-outbreak_multiplier <- TRUE
+#====== Setting Parameters--incidence rate trend and outbreak multiplier ======#
+incidence_rate_trend <- FALSE #for surveillance for now
+outbreak_multiplier <- FALSE #for surveillance for now
 ### For now, the random seed equals setting number
 random_seed <- dplyr::case_when(
   !incidence_rate_trend & !outbreak_multiplier ~ 1, 
