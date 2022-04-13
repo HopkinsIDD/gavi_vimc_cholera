@@ -92,7 +92,12 @@ for(scn in scenarios){
     pars$vac_unconstrained <- vac_unconstrained  
     pars$vac_admin_level <- vac_admin_level
     pars$vac_coverage <- vac_coverage
-    pars$surveillance_scenario <- surveillance_scenario               
+    pars$surveillance_scenario <- surveillance_scenario 
+    pars$vac_interval <- vac_interval
+    pars$sim_start_year <- sim_start_year
+    pars$vac_start_year <- vac_start_year
+    pars$vac_end_year <- vac_end_year
+    pars$sim_end_year <- sim_end_year           
 
     lapply(1:nrow(pars), function(i){
       par_row <- pars[i,]

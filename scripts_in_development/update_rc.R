@@ -140,7 +140,7 @@ load_baseline_incidence <- function(datapath, country, campaign_cov = 0.8, basel
 # actual_prop_vaccinated: if that place is vaccinated, then this is campaign_cov = 0.8, if it that place is not vaccinated, then it is 0.
 update_targets_list <- function(rc_list, threshold = 1/10000, baseline_year = baseline_year, campaign_cov = campaign_cov){
   
-  this_year <- max(rc_list[[1]]$target_year)
+  this_year <- max(rc_list[[1]]$target_year) #it could be directly from the argument 
   rc1_this_year <- rc_list[[1]] %>% filter(target_year == this_year)
   rc2_this_year <- rc_list[[2]] %>% filter(target_year == this_year)
 

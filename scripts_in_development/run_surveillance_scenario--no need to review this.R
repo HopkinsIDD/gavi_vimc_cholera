@@ -1,5 +1,5 @@
-#' @name run_country_scenario
-#' @title run_country_scenario
+#' @name run_surveillance_scenario
+#' @title run_surveillance_scenario
 #' @description Run full country scenario
 #' @param datapath path to input data 
 #' @param modelpath path to montagu files
@@ -17,7 +17,7 @@
 #' @return 
 #' @export
 #' @include utils.R create_static_modelInputs.R create_sus_modelInputs.R create_expectedCases.R
-run_country_scenario <- function(
+run_surveillance_scenario <- function(
   datapath, 
   modelpath, 
   country, 

@@ -109,31 +109,55 @@ dir.create(dpathname, showWarnings = FALSE)
 dir.create(ropathname, showWarnings = FALSE)
 dir.create(opathname, showWarnings = FALSE)
 
-#### Run model
-message(paste("Running:", runname, country, scenario, nsamples, targeting))
-expected_cases <- ocvImpact::run_country_scenario(
-  dpathname,
-  mpathname,
-  country,
-  scenario,
-  ropathname,
-  nsamples,
-  clean = cln,
-  redraw = redrawIncid,
-  targeting_strat = targeting,
-  num_skip_years = nskipyears
-  )
+#### Run model -- where different projects diverge 
+if(config$vacc$targeting_strategy == 'surveillance_project'){
+  ### The surveillance project
+  ##tmp: all new functions should be called first
+  source() #add more later 
 
-#### Create stochastic output file for country
-message(paste("Calculating stochastic output:", runname, country, scenario, nsamples, targeting))
-stoch_template <- ocvImpact::export_country_stoch_template(
-  mpathname,
-  country,
-  scenario,
-  ropathname,
-  opathname
-  )
+  cat(paste0(" --- Running Surveillance Project: ", country)) #needs to add more
+  run_surveillance_scenario( 
+    dpathname,
+    mpathname,
+    country,
+    scenario,
+    ropathname,
+    nsamples,
+    clean = cln,
+    redraw = redrawIncid,
+    config = config #all new parameters that would be used will be read in as one config file 
+  ) #just raw output for now
+
+  ## organize the output -- leave it empty for now 
+
+}else{
+  ### The VIMC project 
+  message(paste("Running:", runname, country, scenario, nsamples, targeting))
+  expected_cases <- ocvImpact::run_country_scenario(
+    dpathname,
+    mpathname,
+    country,
+    scenario,
+    ropathname,
+    nsamples,
+    clean = cln,
+    redraw = redrawIncid,
+    targeting_strat = targeting,
+    num_skip_years = nskipyears
+    )
+
+  ## Create stochastic output file for country
+  message(paste("Calculating stochastic output:", runname, country, scenario, nsamples, targeting))
+  stoch_template <- ocvImpact::export_country_stoch_template(
+    mpathname,
+    country,
+    scenario,
+    ropathname,
+    opathname
+    )
 
 
-message(paste("End script:", runname, country, scenario, nsamples, targeting))
+  message(paste("End script:", runname, country, scenario, nsamples, targeting))
+}
+
 
