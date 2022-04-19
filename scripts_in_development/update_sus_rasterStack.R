@@ -49,7 +49,7 @@ update_sus_rasterStack <- function(datapath,
     prob_still_protected_admin1 <- raster::overlay(vacck_admin1, pkj, fun = function(x, y){return(x*y*ve_j_k)}) 
     prob_still_protected_admin2 <- raster::overlay(vacck_admin2, pkj, fun = function(x, y){return(x*y*ve_j_k)}) 
       
-    # get the new sus raster layer
+    # get the new sus raster layer -- from protected to still susceptible 
     tmp1 <- raster::overlay(tmp1, prob_still_protected_admin1, fun = function(x, y){x*(1-y)})
     tmp2 <- raster::overlay(tmp2, prob_still_protected_admin2, fun = function(x, y){x*(1-y)})
       

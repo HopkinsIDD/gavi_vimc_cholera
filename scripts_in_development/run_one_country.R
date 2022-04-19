@@ -98,7 +98,7 @@ run_one_country <- function(datapath, country, campaign_cov = 0.8, modelpath, ra
     }
     
     
-    # append empty rows to prepare for next campaign
+    # append empty rows to prepare for next campaign -- this function will attach a new empty row anyway 
     rc_list <- new_campaign_preparation(rc_list = rc_list, shp1 = shp1, shp2 = shp2)
     
     # fill in new incidence for the new campaign year 

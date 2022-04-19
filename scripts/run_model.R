@@ -35,7 +35,8 @@ package_list <- c(
   "stringr",
   "tibble",
   "tidyr",
-  "yaml"
+  "yaml", 
+  "truncnorm"
 )
 
 for (package in package_list) {
@@ -115,13 +116,13 @@ if(config$vacc$targeting_strategy == 'surveillance_project'){
   ##tmp: all new functions should be called first
   source() #add more later 
 
-  cat(paste0(" --- Running Surveillance Project: ", country)) #needs to add more
+  message(paste0(" --- Running Surveillance Project: ", country)) #needs to add more
   run_surveillance_scenario( 
-    dpathname,
-    mpathname,
+    datapath = dpathname,
+    modelpath = mpathname,
     country,
     scenario,
-    ropathname,
+    rawoutpath = ropathname,
     nsamples,
     clean = cln,
     redraw = redrawIncid,
