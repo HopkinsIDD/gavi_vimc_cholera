@@ -62,7 +62,7 @@ run_surveillance_scenario <- function(
   ##### Loop through all the years to simulate 
   for(model_year in sim_start_year:sim_end_year){
     
-    #### Update the list of districts to target at the beginning of a year
+    #### Update the list of districts to target at the beginning of a year -- this is where stochasticity introduced due to random draw of confirmation rates
     message(paste("Starting simulation of campaign of year", model_year, "in country", country))
     rc_list <- update_targets_list( datapath = datapath, modelpath = modelpath, country = country, scenario = scenario, 
                                     rc_list = rc_list, model_year = model_year, baseline_year = vac_start_year, campaign_cov = vac_coverage, 
@@ -78,19 +78,40 @@ run_surveillance_scenario <- function(
     # latest_campaign_year <- max(rc_list[[1]]$target_year)
     pop <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, model_year)
     
-    ### Calculate/update pop and vacc raster input -- may wanna simplify these two functions into one 
+    ### Calculate/update pop and vacc raster input
     if(model_year == sim_start_year){
       
       input_list <- create_first_year_vac_raster( datapath, modelpath, country,
-                                                  rc_list = rc_list, baseline_year = baseline_year, pop = pop)
-    } else{
+                                                  rc_list = rc_list, model_year = model_year, pop = pop)
+    }else{
       
       input_list <- update_vac_raster(datapath,modelpath, country, scenario, rawoutpath,
                                       rc_list = rc_list, pop = pop,
-                                      baseline_year = baseline_year, this_year = latest_campaign_year,
+                                      model_year,
                                       input_list = input_list) # input an empty list for the first year, for the following year, input is that list from last year)
     }
     
+    ### Calculate/update suspectible population raster 
+    ve_direct <- generate_pct_protect_function() #for temp use
+      
+    if(!exists("sus_list")){
+      sus_list <- NULL
+    }
+    sus_list <- update_sus_rasterStack( datapath, modelpath, country, scenario, rawoutpath,
+                                        rc_list = rc_list,
+                                        pop = pop,
+                                        ve_direct = ve_direct,
+                                        baseline_year = sim_start_year,
+                                        model_year = model_year, 
+                                        input_list = input_list, # generated from update_input_rasterStack() function
+                                        sus_list = sus_list # rasterStack of proportion susceptible generated in last year
+                                      )
+    
+    
+    
+
+    
+
   }
 
 

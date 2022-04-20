@@ -93,7 +93,7 @@ load_baseline_incidence <- function(datapath,
   
   ## incidence data ##
   message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
-  afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
+  # afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
   
   # load population data of the first year 
   pop_baseline <- create_model_pop_raster(datapath, modelpath, country, baseline_year)
@@ -199,9 +199,9 @@ update_targets_list <- function(datapath, modelpath, country, scenario,
     }
 
   }else{
-      rc_list <- update_vacc_year(datapath, modelpath, country, rc_list, model_year, 
-                                  campaign_cov, threshold, surveillance_scenario, 
-                                  vac_start_year, vac_end_year, num_skip_years) 
+    rc_list <- update_vacc_year(datapath, modelpath, country, rc_list, model_year, 
+                                campaign_cov, threshold, surveillance_scenario, 
+                                vac_start_year, vac_end_year, num_skip_years) 
   }
   
   return(rc_list) # updated with latest targets of this year
