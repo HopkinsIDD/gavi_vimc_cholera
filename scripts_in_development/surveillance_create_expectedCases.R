@@ -15,7 +15,7 @@
 #' @return dataframe with 
 #' @export
 #' @include utils.R utils_montagu.R create_incid_raster.R load_shapefile_by_country.R 
-create_expectedCases <- function(
+surveillance_create_expectedCases <- function(
   datapath,
   modelpath,
   country,
@@ -40,6 +40,9 @@ create_expectedCases <- function(
   outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)
   sim_start_year <- as.numeric(config$vacc$sim_start_year)
   sim_end_year <- as.numeric(config$vacc$sim_end_year)
+
+  vac_incid_threshold <- as.numeric(config$vacc$vac_incid_threshold)
+  surveillance_scenario <- config$surveillance_scenario$surveillance_scenario
   
   
   ### Get the rasters ready 
@@ -166,9 +169,9 @@ create_expectedCases <- function(
   )
 
 
-  ### Save the ec_list first -- across layers averaged **************************
-  ec_rasterLayer_admin1 <- raster::calc(ec_rasterStack1, fun = mean, na.rm = T)
-  ec_rasterLayer_admin2 <- raster::calc(ec_rasterStack2, fun = mean, na.rm = T)
+  ### Save the ec_list first -- across layers averaged -- suspected cases ********************************************
+  ec_rasterLayer_admin1 <- raster::calc(ec_rasterStack1 / confirmation_multiplier, fun = mean, na.rm = T)
+  ec_rasterLayer_admin2 <- raster::calc(ec_rasterStack2 / confirmation_multiplier, fun = mean, na.rm = T)
       
   # append new ec raster layer
   if(is.null(ec_list)){
@@ -203,7 +206,7 @@ create_expectedCases <- function(
     pop_rasterLayer <- raster::setExtent(pop_rasterLayer, raster::extent(shp0), keepres=FALSE, snap=FALSE)
   }
   
-  ### Save the raw output 
+  ### Save the raw output -- true cases here 
   ec_yr1 <- exactextractr::exact_extract(ec_rasterStack1, shp0, fun = "sum", stack_apply = TRUE)
   ec_yr2 <- exactextractr::exact_extract(ec_rasterStack2, shp0, fun = "sum", stack_apply = TRUE)
   ec_vec1 <- as.numeric(ec_yr1)
@@ -211,6 +214,7 @@ create_expectedCases <- function(
   lambda1 <- ec_rasterStack1/pop_rasterLayer
   lambda2 <- ec_rasterStack2/pop_rasterLayer
 
+  #the following mean incidence calculation can be simplified, but will be kept this way for now 
   mean_incid1 <- exactextractr::exact_extract(
     lambda1, 
     shp0, 
@@ -232,14 +236,19 @@ create_expectedCases <- function(
   
   mean_incid_vec1 <- as.numeric(mean_incid1)
   mean_incid_vec2 <- as.numeric(mean_incid2)
-  rc1 <- tibble::tibble(country = country, year = oy, run_id = seq_along(ec_vec1), ec = ec_vec1, incid_rate = mean_incid_vec1)
-  rc2 <- tibble::tibble(country = country, year = oy, run_id = seq_along(ec_vec2), ec = ec_vec2, incid_rate = mean_incid_vec2)
+  rc1 <- tibble::tibble(country = country, incidence_rate_trend = incidence_rate_trend, outbreak_multiplier = outbreak_multiplier, 
+                        vac_incid_threshold = vac_incid_threshold, surveillance_scenario = surveillance_scenario, 
+                        year = oy, run_id = seq_along(ec_vec1), ec = ec_vec1, incid_rate = mean_incid_vec1)
+  rc2 <- tibble::tibble(country = country, incidence_rate_trend = incidence_rate_trend, outbreak_multiplier = outbreak_multiplier, 
+                        vac_incid_threshold = vac_incid_threshold, surveillance_scenario = surveillance_scenario, 
+                        year = oy, run_id = seq_along(ec_vec2), ec = ec_vec2, incid_rate = mean_incid_vec2)
 
 
   ### External dataset 
   dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
   ec_out_fn1 <- paste0(rawoutpath, "/", scenario, "/", country, "_ec_admin1.csv")
   ec_out_fn2 <- paste0(rawoutpath, "/", scenario, "/", country, "_ec_admin2.csv")
+  
   if(file.exists(ec_out_fn1)){
     ec_out1 <- readr::read_csv(ec_out_fn1)
     ec_out1 <- rbind(ec_out1, rc1)
@@ -262,3 +271,4 @@ create_expectedCases <- function(
   return(ec_list)
 
 }
+

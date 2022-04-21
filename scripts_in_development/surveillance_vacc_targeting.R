@@ -93,17 +93,17 @@ load_baseline_incidence <- function(datapath,
   
   ## incidence data ##
   message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
-  # afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
+  afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
   
   # load population data of the first year 
-  pop_baseline <- create_model_pop_raster(datapath, modelpath, country, baseline_year)
+  pop_baseline <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, baseline_year)
   
   ## summarize rasters to admin level 1
-  incid1 <- pop_weighted_admin_mean_incid(datapath, modelpath, country, admin_shp = shp1, year = baseline_year)
+  incid1 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = afr, pop_raster = pop_baseline, country, admin_shp = shp1, year = baseline_year)
   pop1 <- get_admin_population(pop_baseline, shp1) 
   
   ## summarize rasters to admin level 2
-  incid2 <- pop_weighted_admin_mean_incid(datapath, modelpath, country, admin_shp = shp2, year = baseline_year) 
+  incid2 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = afr, pop_raster = pop_baseline, country, admin_shp = shp2, year = baseline_year)
   pop2 <- get_admin_population(pop_baseline, shp2)
   
   # total population
@@ -306,39 +306,70 @@ get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scena
 
 
 
-# Function to append the new template for a new year's campaign
-# three parts:
-# 1) append rows and fill in with admin names
-# 2) fill in target_year column (which is latest_campaign_year + 1)
-# 3) fill in pop_model column (based on the raster of that year)
-new_campaign_preparation <- function(rc_list, shp1, shp2){ # raster layer for the new campaign year
+surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_start_year, sim_end_year, shp1, shp2){
+
+  ## load newly updated incidence data 
+  year_idx <- match(model_year, sim_start_year:sim_end_year)
+  lambda1 <- ec_list$ec_rasterStack_admin1[[year_idx]] / pop
+  lambda2 <- ec_list$ec_rasterStack_admin2[[year_idx]] / pop
   
-  latest_campaign_year <- max(rc_list[[1]]$target_year)
+  ## summarize rasters to admin level 1
+  incid1 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = lambda1, pop_raster = pop, country, admin_shp = shp1)
+  pop1 <- get_admin_population(pop, shp1) 
   
-  message(paste0("Appending new rows in rc_list tables in preparation of next year's (", latest_campaign_year+1, ") campaign."))
-  new_pop <- create_model_pop_raster(datapath, modelpath, country, latest_campaign_year + 1)
+  ## summarize rasters to admin level 2
+  incid2 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = lambda2, pop_raster = pop, country, admin_shp = shp2)
+  pop2 <- get_admin_population(pop, shp2)
   
-  # prepare empty columns
-  df_new_campaign_admin1 <- rc_list[[1]] %>% 
-    filter(target_year == latest_campaign_year) %>%
-    mutate(incidence=NA, pop_prop=NA, pop_model=NA, target_year=latest_campaign_year+1, is_target=NA, actual_prop_vaccinated=NA, actual_fvp=NA)
-  df_new_campaign_admin2 <- rc_list[[2]] %>% 
-    filter(target_year == latest_campaign_year) %>%
-    mutate(incidence=NA, pop_prop=NA, pop_model=NA, target_year=latest_campaign_year+1, is_target=NA, actual_prop_vaccinated=NA, actual_fvp=NA)
+  # total population
+  total_pop <- sum(pop1)
+
+  # total population test
+  if(sum(pop1) != sum(pop2)){warning(paste(" *** population summarized across admin1 and admin2 districts differ by", abs(sum(pop1) - sum(pop2))))}
   
-  # fill in pop_model and pop_prop columns
-  # pop <- create_model_pop_raster(datapath, modelpath, country, latest_campaign_year + 1) # might need to pre-run function to get this outside this function, because in the functions creating population rasters (in order to update incidence), this will be reused
+  # get incidence and pop table (admin 1 level)
+  rc1 <- dplyr::mutate(shp1, 
+                       suspected_incidence = incid1,
+                       confirmation_lens = NA,
+                       confirmation_rate = NA, 
+                       confirmed_incidence = NA,  
+                       pop_model = pop1,
+                       pop_prop = pop1/total_pop,
+                       year = model_year + 1, 
+                       latest_target_year = NA,
+                       is_target = NA,  # whether that place was target in this year
+                       actual_prop_vaccinated = NA,
+                       actual_fvp = NA) %>% # fully vaccinated population
+    dplyr::select(ISO, NAME_0, NAME_1, suspected_incidence, confirmation_lens, confirmation_rate, confirmed_incidence, 
+                  pop_model, pop_prop, year, latest_target_year, is_target,
+                  actual_prop_vaccinated, actual_fvp)
   
-  df_new_campaign_admin1$pop_model <- exactextractr::exact_extract(new_pop, shp1, 'sum') # might need to pre-run functions about to get shp1 and shp2
-  df_new_campaign_admin2$pop_model <- exactextractr::exact_extract(new_pop, shp2, 'sum')
+  # get incidence and pop table (admin 2 level)
+  rc2 <- dplyr::mutate(shp2, 
+                       suspected_incidence = incid2,
+                       confirmation_lens = NA,
+                       confirmation_rate = NA, 
+                       confirmed_incidence = NA,  
+                       pop_model = pop2,
+                       pop_prop = pop2/total_pop,
+                       year = model_year + 1, 
+                       latest_target_year = NA, 
+                       is_target = NA,     # whether that place was target in this year
+                       actual_prop_vaccinated = NA,
+                       actual_fvp = NA) %>% # fully vaccinated population
+    dplyr::select(ISO, NAME_0, NAME_1, NAME_2, suspected_incidence, confirmation_lens, confirmation_rate, confirmed_incidence, 
+                  pop_model, pop_prop, year, latest_target_year, is_target,
+                  actual_prop_vaccinated, actual_fvp)
   
-  total_pop <- sum(df_new_campaign_admin1$pop_model)
-  df_new_campaign_admin1$pop_prop <- df_new_campaign_admin1$pop_model / total_pop
-  df_new_campaign_admin2$pop_prop <- df_new_campaign_admin2$pop_model / total_pop
+  # check on population proportion 
+  if (sum(rc1$pop_prop)!=1 | sum(rc2$pop_prop)!=1){
+   warning(paste(" *** The population proportion calculation is incorrect for", country, ", they are", sum(rc1$pop_prop), "and", sum(rc2$pop_prop)))
+  }
   
-  # append rows of new campaign to the working tables 
-  rc_list[[1]] <- rbind(rc_list[[1]], df_new_campaign_admin1)
-  rc_list[[2]] <- rbind(rc_list[[2]], df_new_campaign_admin2)
+  rc_list$rc1 <- rbind(rc_list$rc1, rc1)
+  rc_list$rc2 <- rbind(rc_list$rc2, rc2)
+  rm(pop1, pop2)
+  gc()
   
   return(rc_list)
   
