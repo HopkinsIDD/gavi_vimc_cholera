@@ -55,7 +55,7 @@ run_surveillance_scenario <- function(
   rc_list <- load_baseline_incidence(datapath, country, campaign_cov = vac_coverage, baseline_year = sim_start_year, first_vacc_year = vac_start_year, 
                                      shp1 = shp1, shp2 = shp2)
   
-  lambda <- ocvImpact::create_incid_raster(modelpath, datapath, country, nsamples, redraw)
+  # lambda <- ocvImpact::create_incid_raster(modelpath, datapath, country, nsamples, redraw)
 
 
 
@@ -91,12 +91,11 @@ run_surveillance_scenario <- function(
                                       input_list = input_list) # input an empty list for the first year, for the following year, input is that list from last year)
     }
     
-    ### Calculate/update suspectible population raster 
+
+    #### Calculate/update suspectible population raster 
     ve_direct <- generate_pct_protect_function() #for temp use
       
-    if(!exists("sus_list")){
-      sus_list <- NULL
-    }
+    if(!exists("sus_list")){sus_list <- NULL}
     sus_list <- update_sus_rasterStack( datapath, modelpath, country, scenario, rawoutpath,
                                         rc_list = rc_list,
                                         pop = pop,
@@ -107,6 +106,27 @@ run_surveillance_scenario <- function(
                                         sus_list = sus_list # rasterStack of proportion susceptible generated in last year
                                       )
     
+
+    #### Get the expected cases for the year
+    indirect_mult = generate_indirect_incidence_mult() #temp, will be deleted 
+    secular_trend_mult = function(a,b,c,d){return(a*b*c*d)} #temp, will be deleted 
+    if(!exists("ec_list")){ec_list <- NULL}
+    expCases <- surveillance_create_expectedCases(datapath, 
+                                                  modelpath, 
+                                                  country, 
+                                                  scenario, 
+                                                  rawoutpath, 
+                                                  vacc_alloc = NULL, 
+                                                  indirect_mult, 
+                                                  secular_trend_mult, 
+                                                  nsamples, 
+                                                  is_cf = TRUE, 
+                                                  redraw, 
+                                                  sus_list, 
+                                                  pop, 
+                                                  model_year, 
+                                                  ec_list = ec_list, 
+                                                  config)
     
     
 

@@ -35,8 +35,6 @@ Collate:
     'create_sus_modelInputs.R'
     'export_central_template.R'
     'export_country_stoch_template.R'
-    'import_age_targeted_vac_pro.R'
     'outbreak_incidence_rate_multiplier.R'
-    'outbreak_incidence_rate_multiplier_old.R'
     'run_country_scenario.R'
     'utils_config.R'

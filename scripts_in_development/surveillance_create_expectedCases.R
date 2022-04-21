@@ -1,0 +1,264 @@
+#' @name surveillance_create_expectedCases
+#' @title surveillance_create_expectedCases
+#' @description Create proportion of population vaccinated and total population rasterStacks. Write vaccination raster to file and export population raster
+#' @param datapath path to input data 
+#' @param modelpath path to montagu files
+#' @param country country code
+#' @param scenario Unique string that identifies the coverage scenario name
+#' @param rawoutpath path to raw model output files
+#' @param vacc_alloc object returned from [`allocate_vaccine()`]
+#' @param indirect_mult function for calculating indirect effects
+#' @param secular_trend_mult function for calculating secular trends in mean annual incidence
+#' @param nsamples number of stochastic samples to use
+#' @param is_cf logical indicating whether to run counterfactual model
+#' @param redraw logical indicate whether to redraw incidence raster samples; pass to [`create_incid_raster()`]
+#' @return dataframe with 
+#' @export
+#' @include utils.R utils_montagu.R create_incid_raster.R load_shapefile_by_country.R 
+create_expectedCases <- function(
+  datapath,
+  modelpath,
+  country,
+  scenario,
+  rawoutpath,
+  vacc_alloc,
+  indirect_mult,
+  secular_trend_mult,
+  nsamples,
+  is_cf,
+  redraw, 
+  sus_list, 
+  pop, 
+  model_year, 
+  ec_list, 
+  config
+  ){
+
+  ############# Use the configs to determine the setting #############
+  incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
+  use_country_incid_trend <- as.logical(config$incid$use_country_incid_trend)
+  outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)
+  sim_start_year <- as.numeric(config$vacc$sim_start_year)
+  sim_end_year <- as.numeric(config$vacc$sim_end_year)
+  
+  
+  ### Get the rasters ready 
+  lambda <- create_incid_raster(modelpath, datapath, country, nsamples, redraw)
+  layer_idx <- match(model_year, sim_start_year:sim_end_year)
+  sus_rasterLayer1 <- sus_list$sus_rasterStack_admin1[[layer_idx]]
+  sus_rasterLayer2 <- sus_list$sus_rasterStack_admin2[[layer_idx]]
+  pop_rasterLayer <- pop
+  shp0 <- load_shapefile_by_country(datapath, country, simple = TRUE)
+  
+  #fixing the BGD issue
+  if(country == 'BGD'){
+    lambda <- raster::resample(lambda, pop_rasterStack, method = "ngb")
+  }
+  
+
+  ### The incidence rate trend multiplier 
+  if(incidence_rate_trend){
+    incid_trend_function <- ocvImpact::generate_flatline_multiplier(
+                                        trendtype = 'incidence rate', 
+                                        datapath = datapath, 
+                                        modelpath = modelpath, 
+                                        country = country, 
+                                        use_country_incid_trend = use_country_incid_trend)
+  }else{ 
+    incid_trend_function <- function(year){return(1)}
+  }
+  
+ 
+  ### The outbreak multiplier and the model year 
+  ## make sure that the directory where all outbreak data is saved exists 
+  dir.create(paste0(datapath, '/outbreak'), showWarnings = FALSE)
+  oy <- model_year
+
+  ## get the multiplier function 
+  if(outbreak_multiplier){
+    # first check if the outbreak raster file already exists, generate one if not
+    random_seed <- as.numeric(config$setting$random_seed)
+    setting_num <- random_seed #for now, yes
+    outbreak_out_fn <- paste0(datapath, '/outbreak/', country, '_', (oy %% 10), '.tif')
+
+    if(!file.exists(outbreak_out_fn)){
+      outbreak_trend_function <- ocvImpact::outbreak_incidence_rate_multiplier(
+                                            datapath = datapath,
+                                            modelpath = modelpath,
+                                            country = country,
+                                            lambda = lambda, 
+                                            population_raster = pop_rasterStack, 
+                                            output_years = c(oy), 
+                                            use_country_incid_trend = use_country_incid_trend)
+    }else{
+      outbreak_multiplier_raster <- raster::stack(outbreak_out_fn) #please note that the raster here is RasterStack, not RasterBrick
+      outbreak_trend_function <- function(yr_index){return(outbreak_multiplier_raster)}
+    }
+    
+  }else{
+    outbreak_trend_function <- function(yr_index){return(1)}
+  }
+
+
+  ### Get the overall multiplier ready 
+  incid_trend_multiplier <- incid_trend_function(year = model_year)
+  outbreak_ic_multiplier <- outbreak_trend_function(yr_index = 1) ### the returned list only has one element to use anyways
+  confirmation_multiplier <- surveillance_true_confirmation_rate(datapath) ### April 21 added
+  utilization_multiplier <- 1 ### 11/25 added
+  
+  overall_multiplier <- secular_trend_mult(incid_trend_multiplier, outbreak_ic_multiplier, confirmation_multiplier, utilization_multiplier)
+    
+
+  ### Multiply all the layers 
+
+  ## admin1 first 
+  # make new indirect effects template
+  indirect_rasterLayer <- pop_rasterLayer
+  raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer1)))
+
+  ec_rasterStack1 <- tryCatch(
+    if(!is.numeric(overall_multiplier) & class(overall_multiplier) == 'raster'){
+      raster::overlay(
+        sus_rasterLayer1,
+        pop_rasterLayer,
+        lambda,
+        indirect_rasterLayer,
+        overall_multiplier, 
+        fun = function(x, y, z, a, b){
+          x*y*z*a*b
+        },
+        recycle = TRUE, unstack = TRUE) 
+        
+    }else{
+      lambda * sus_rasterLayer1 * pop_rasterLayer  * indirect_rasterLayer * overall_multiplier
+    },
+
+    error = function(e){
+      print(paste0('The year when it goes wrong is ', oy))
+    }
+  )
+
+  ## admin2 then 
+  # make new indirect effects template
+  indirect_rasterLayer <- pop_rasterLayer
+  raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer2)))
+
+  ec_rasterStack2 <- tryCatch(
+    if(!is.numeric(overall_multiplier) & class(overall_multiplier) == 'raster'){
+      raster::overlay(
+        sus_rasterLayer2,
+        pop_rasterLayer,
+        lambda,
+        indirect_rasterLayer,
+        overall_multiplier, 
+        fun = function(x, y, z, a, b){
+          x*y*z*a*b
+        },
+        recycle = TRUE, unstack = TRUE) 
+        
+    }else{
+      lambda * sus_rasterLayer2 * pop_rasterLayer  * indirect_rasterLayer * overall_multiplier
+    },
+
+    error = function(e){
+      print(paste0('The year when it goes wrong is ', oy))
+    }
+  )
+
+
+  ### Save the ec_list first -- across layers averaged **************************
+  ec_rasterLayer_admin1 <- raster::calc(ec_rasterStack1, fun = mean, na.rm = T)
+  ec_rasterLayer_admin2 <- raster::calc(ec_rasterStack2, fun = mean, na.rm = T)
+      
+  # append new ec raster layer
+  if(is.null(ec_list)){
+    ec_rasterStack_admin1 <- raster::stack(ec_rasterLayer_admin1)
+    ec_rasterStack_admin2 <- raster::stack(ec_rasterLayer_admin2)
+
+    ec_list <- list("ec_rasterStack_admin1" = ec_rasterStack_admin1,
+                    "ec_rasterStack_admin2" = ec_rasterStack_admin2)
+  }else{
+    ec_list[["ec_rasterStack_admin1"]] <- raster::addLayer(ec_list[["ec_rasterStack_admin1"]], ec_rasterLayer_admin1)
+    ec_list[["ec_rasterStack_admin2"]] <- raster::addLayer(ec_list[["ec_rasterStack_admin2"]], ec_rasterLayer_admin2)
+  }
+  
+  # rm(ec_rasterLayer_admin1, ec_rasterLayer_admin2, 
+  #    pop_rasterLayer, vacc_rasterLayer_admin1, vacc_rasterLayer_admin2,
+  #    sus_rasterLayer_admin1, sus_rasterLayer_admin2)
+  # gc()
+  
+  # return(ec_list)
+
+
+
+  ### optimize memory usage
+  rm(outbreak_ic_multiplier)
+  rm(outbreak_trend_function)
+  rm(overall_multiplier)
+  gc()
+
+  ### fixing the MRT issue
+  if(country == 'MRT'){
+    lambda <- raster::setExtent(lambda, raster::extent(shp0), keepres=FALSE, snap=FALSE)
+    pop_rasterLayer <- raster::setExtent(pop_rasterLayer, raster::extent(shp0), keepres=FALSE, snap=FALSE)
+  }
+  
+  ### Save the raw output 
+  ec_yr1 <- exactextractr::exact_extract(ec_rasterStack1, shp0, fun = "sum", stack_apply = TRUE)
+  ec_yr2 <- exactextractr::exact_extract(ec_rasterStack2, shp0, fun = "sum", stack_apply = TRUE)
+  ec_vec1 <- as.numeric(ec_yr1)
+  ec_vec2 <- as.numeric(ec_yr2)
+  lambda1 <- ec_rasterStack1/pop_rasterLayer
+  lambda2 <- ec_rasterStack2/pop_rasterLayer
+
+  mean_incid1 <- exactextractr::exact_extract(
+    lambda1, 
+    shp0, 
+    function(values, coverage_frac, weights){
+      weighted.mean(values, ifelse(is.na(coverage_frac*weights), 0, coverage_frac*weights), na.rm = TRUE)
+    },
+    weights = pop_rasterLayer, 
+    stack_apply = TRUE)
+
+  mean_incid2 <- exactextractr::exact_extract(
+    lambda2, 
+    shp0, 
+    function(values, coverage_frac, weights){
+      weighted.mean(values, ifelse(is.na(coverage_frac*weights), 0, coverage_frac*weights), na.rm = TRUE)
+    },
+    weights = pop_rasterLayer, 
+    stack_apply = TRUE)
+
+  
+  mean_incid_vec1 <- as.numeric(mean_incid1)
+  mean_incid_vec2 <- as.numeric(mean_incid2)
+  rc1 <- tibble::tibble(country = country, year = oy, run_id = seq_along(ec_vec1), ec = ec_vec1, incid_rate = mean_incid_vec1)
+  rc2 <- tibble::tibble(country = country, year = oy, run_id = seq_along(ec_vec2), ec = ec_vec2, incid_rate = mean_incid_vec2)
+
+
+  ### External dataset 
+  dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
+  ec_out_fn1 <- paste0(rawoutpath, "/", scenario, "/", country, "_ec_admin1.csv")
+  ec_out_fn2 <- paste0(rawoutpath, "/", scenario, "/", country, "_ec_admin2.csv")
+  if(file.exists(ec_out_fn1)){
+    ec_out1 <- readr::read_csv(ec_out_fn1)
+    ec_out1 <- rbind(ec_out1, rc1)
+  }else{
+    ec_out1 <- rc1
+  }
+
+  if(file.exists(ec_out_fn2)){
+    ec_out2 <- readr::read_csv(ec_out_fn2)
+    ec_out2 <- rbind(ec_out2, rc2)
+  }else{
+    ec_out2 <- rc2
+  }
+
+  readr::write_csv(ec_out1, ec_out_fn1)
+  readr::write_csv(ec_out2, ec_out_fn2)
+  
+
+  ### Return the list 
+  return(ec_list)
+
+}
