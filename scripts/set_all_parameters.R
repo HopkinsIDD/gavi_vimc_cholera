@@ -4,9 +4,12 @@ scenarios <- c("campaign-default", "no-vaccination")
 countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
               "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE",
               "AFG", "HTI", "IRN", "IRQ", "NPL", "PAK", "PHL", "THA", "YEM", "IND", "BGD") #will likely to only include the countries in sub-Saharan Africa
-countries <- c("COD", "ETH", "BGD", "HTI", "YEM") #for testing, temporary 
+countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
+              "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE") # now only includes the countries in Africa
+countries <- c("COD", "GHA", "MRT", "NGA", "TZA") #for testing, temporary 
 
 #====== Surveillance Project Specific ======#
+save_intermediate_raster <- TRUE
 targeting_strategy <- "surveillance_project" #c("surveillance_project", "affected_pop", "incidence")
 vac_incid_threshold <- 1/1000 #c(1/1000, 1/5000, 1/10000), use one at a time for now
 vac_unconstrained <- TRUE #or refer to an external coverage dataset 
@@ -24,8 +27,8 @@ num_skip_years <- 3 #district level, relevant to the surveillance project
 num_samples <- 50 #relevant to the surveillance project
 define_random_seed <- TRUE #whether or not to have a random seed that governs the stochasticity 
 self_random_seed <- NULL #for now, just use the random seed specified by the setting
-clean_outputs <- TRUE #changed on 1.31
-clean_incid <- TRUE #changed on 1.31
+clean_outputs <- TRUE
+clean_incid <- FALSE
 
 # ### tmp
 # outbreak_file_name <- paste0("/home/kaiyuezou/VIMC_Model/202110gavi-3/gavi_vimc_cholera/input_data", '/outbreak/outbreak_df.csv')

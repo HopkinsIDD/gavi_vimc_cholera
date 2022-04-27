@@ -88,6 +88,7 @@ for(scn in scenarios){
     pars$random_seed <- random_seed
 
     # the followings are specific to the surveillance project
+    pars$save_intermediate_raster <- save_intermediate_raster
     pars$vac_incid_threshold <- vac_incid_threshold
     pars$vac_unconstrained <- vac_unconstrained  
     pars$vac_admin_level <- vac_admin_level

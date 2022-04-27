@@ -88,22 +88,44 @@ load_baseline_incidence <- function(datapath,
                                     campaign_cov, 
                                     baseline_year, 
                                     first_vacc_year, 
+                                    incidence_rate_trend, 
+                                    use_country_incid_trend, 
+                                    shp0, 
                                     shp1, 
                                     shp2){
   
   ## incidence data ##
   message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
   afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
-  
+  country_baseline <- raster::mask(raster::crop(raster::stack(afr), shp0, snap = "out"), shp0, updatevalue = NA)
+  rm(afr)
   # load population data of the first year 
   pop_baseline <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, baseline_year)
+  # adjust country_baseline so that it's in line with the expected cases rasters in the future (more NA cells after multiplying it with pop raster)
+  pop_baseline[!is.na(raster::values(pop_baseline)), ] <- 1
+  country_baseline <- country_baseline * pop_baseline
+
+
+  ## if the incidence rate trend should be implemented 
+  if(incidence_rate_trend){
+    incid_trend_function <- ocvImpact::generate_flatline_multiplier(
+                                        trendtype = 'incidence rate', 
+                                        datapath = datapath, 
+                                        modelpath = modelpath, 
+                                        country = country, 
+                                        use_country_incid_trend = use_country_incid_trend)
+  }else{ 
+    incid_trend_function <- function(year){return(1)}
+  }
+  country_baseline <- country_baseline*incid_trend_function(baseline_year)
+  
   
   ## summarize rasters to admin level 1
-  incid1 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = afr, pop_raster = pop_baseline, country, admin_shp = shp1, year = baseline_year)
+  incid1 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = country_baseline, pop_raster = pop_baseline, country, admin_shp = shp1)
   pop1 <- get_admin_population(pop_baseline, shp1) 
   
   ## summarize rasters to admin level 2
-  incid2 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = afr, pop_raster = pop_baseline, country, admin_shp = shp2, year = baseline_year)
+  incid2 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = country_baseline, pop_raster = pop_baseline, country, admin_shp = shp2)
   pop2 <- get_admin_population(pop_baseline, shp2)
   
   # total population
@@ -152,7 +174,7 @@ load_baseline_incidence <- function(datapath,
   }
   
   rc_list <- list("rc1" = rc1, "rc2" = rc2)
-  rm(afr, pop1, pop2)
+  rm(pop1, pop2)
   gc()
   
   return(rc_list)
@@ -165,7 +187,7 @@ load_baseline_incidence <- function(datapath,
 # is_target: to mark whether a place in a certain year is targeted or not 
 # actual_prop_vaccinated: if that place is vaccinated, then this is campaign_cov = 0.8, if it that place is not vaccinated, then it is 0.
 update_targets_list <- function(datapath, modelpath, country, scenario, 
-                                rc_list, model_year, baseline_year, #here the baseline year is the first vacc year, but it's not likely to be used 
+                                rc_list, model_year, #here the baseline year is the first vacc year, but it's not likely to be used 
                                 campaign_cov, 
                                 threshold, vac_unconstrained, 
                                 surveillance_scenario, 
@@ -209,13 +231,15 @@ update_targets_list <- function(datapath, modelpath, country, scenario,
 
 
 
-update_novacc_year <- function(rc_list, model_year)
-  # Update the latest target year, if all NA's, no need to update 
-  if(!all(is.na(rc_list$rc1[rc_list$rc1$year == model_year, ]$latest_target_year))){
-    rc_list$rc1[rc_list$rc1$year == model_year, ]$latest_target_year <- rc_list$rc1[rc_list$rc1$year == model_year-1, ]$latest_target_year
-  }
-  if(!all(is.na(rc_list$rc2[rc_list$rc2$year == model_year, ]$latest_target_year))){
-    rc_list$rc2[rc_list$rc2$year == model_year, ]$latest_target_year <- rc_list$rc2[rc_list$rc2$year == model_year-1, ]$latest_target_year
+update_novacc_year <- function(rc_list, model_year){
+  # Update the latest target year, if all NA's from last year or this is the first simulation year, no need to update
+  if(model_year > min(rc_list$rc1$year)){ 
+    if(!all(is.na(rc_list$rc1[rc_list$rc1$year == model_year-1, ]$latest_target_year))){
+      rc_list$rc1[rc_list$rc1$year == model_year, ]$latest_target_year <- rc_list$rc1[rc_list$rc1$year == model_year-1, ]$latest_target_year
+    }
+    if(!all(is.na(rc_list$rc2[rc_list$rc2$year == model_year-1, ]$latest_target_year))){
+      rc_list$rc2[rc_list$rc2$year == model_year, ]$latest_target_year <- rc_list$rc2[rc_list$rc2$year == model_year-1, ]$latest_target_year
+    }
   }
   # Update the other variables 
   rc_list$rc1[rc_list$rc1$year == model_year, c("is_target", "actual_prop_vaccinated", "actual_fvp")] <- 0 
@@ -366,6 +390,7 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
    warning(paste(" *** The population proportion calculation is incorrect for", country, ", they are", sum(rc1$pop_prop), "and", sum(rc2$pop_prop)))
   }
   
+  # sometimes rc1 or rc2 has NA's for suspected_incidence due to disagreement about NA's in grid cells 
   rc_list$rc1 <- rbind(rc_list$rc1, rc1)
   rc_list$rc2 <- rbind(rc_list$rc2, rc2)
   rm(pop1, pop2)

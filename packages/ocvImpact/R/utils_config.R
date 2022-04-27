@@ -62,7 +62,9 @@ prepare_config <- function(p, configpath){
       "setting:\n",
       "  incidence_rate_trend: ", p$incidence_rate_trend, "\n",
       "  outbreak_multiplier: ", p$outbreak_multiplier, "\n", 
-      "  random_seed: ", p$random_seed, "\n"
+      "  random_seed: ", p$random_seed, "\n", 
+      "optimize:\n",
+      "  save_intermediate_raster: ", p$save_intermediate_raster, "\n"
     ))
 
     sink()

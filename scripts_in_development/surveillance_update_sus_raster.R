@@ -45,8 +45,12 @@ update_sus_rasterStack <- function(datapath,
     vacck_admin1 <- raster::subset(vacc_rasterStack_admin1, subset = k, drop = FALSE)
     vacck_admin2 <- raster::subset(vacc_rasterStack_admin2, subset = k, drop = FALSE)
       
-    # population retention (measures turnover rate due to death) from years k into year j
-    pkj <- raster::overlay(popk, popj, fun = function(x, y){x*(1-((j-k)*mu))/y})
+    # population retention (measures turnover rate due to death) from years k into year j -- this assumes that the pop during one same year is constant**********
+    # a fix for the 0's on both population rasters (0 -> 1), good thing is that the changed population rasters will not be used elsewhere 
+    popk[popk == 0] <- 1
+    popj[popj == 0] <- 1
+    pkj <- raster::overlay(popk, popj, fun = function(x, y){x*(1-((j-k)*mu))/y}) 
+    # pkj <- popk*(1-((j-k)*mu))/popj #new
     ve_j_k <- as.numeric(ve_direct(j-k+1))
       
     prob_still_protected_admin1 <- raster::overlay(vacck_admin1, pkj, fun = function(x, y){return(x*y*ve_j_k)}) 

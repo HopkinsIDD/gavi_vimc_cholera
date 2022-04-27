@@ -26,6 +26,7 @@ surveillance_create_expectedCases <- function(
   secular_trend_mult,
   nsamples,
   is_cf,
+  clean, 
   redraw, 
   sus_list, 
   pop, 
@@ -251,14 +252,40 @@ surveillance_create_expectedCases <- function(
   
   if(file.exists(ec_out_fn1)){
     ec_out1 <- readr::read_csv(ec_out_fn1)
-    ec_out1 <- rbind(ec_out1, rc1)
+    if(nrow(ec_out1[ec_out1$country == country & ec_out1$incidence_rate_trend == incidence_rate_trend 
+                    & ec_out1$outbreak_multiplier == outbreak_multiplier 
+                    & ec_out1$vac_incid_threshold == vac_incid_threshold 
+                    & ec_out1$surveillance_scenario == surveillance_scenario 
+                    & ec_out1$year == oy, ])>0 & clean){
+      ec_out1[ec_out1$country == country & ec_out1$incidence_rate_trend == incidence_rate_trend 
+                    & ec_out1$outbreak_multiplier == outbreak_multiplier 
+                    & ec_out1$vac_incid_threshold == vac_incid_threshold 
+                    & ec_out1$surveillance_scenario == surveillance_scenario 
+                    & ec_out1$year == oy, ] <- rc1 #this may not work
+    }else{
+      ec_out1 <- rbind(ec_out1, rc1)
+    }
+    
   }else{
     ec_out1 <- rc1
   }
 
   if(file.exists(ec_out_fn2)){
     ec_out2 <- readr::read_csv(ec_out_fn2)
-    ec_out2 <- rbind(ec_out2, rc2)
+    if(nrow(ec_out2[ec_out2$country == country & ec_out2$incidence_rate_trend == incidence_rate_trend 
+                    & ec_out2$outbreak_multiplier == outbreak_multiplier 
+                    & ec_out2$vac_incid_threshold == vac_incid_threshold 
+                    & ec_out2$surveillance_scenario == surveillance_scenario 
+                    & ec_out2$year == oy, ])>0 & clean){
+      ec_out2[ec_out2$country == country & ec_out2$incidence_rate_trend == incidence_rate_trend 
+                    & ec_out2$outbreak_multiplier == outbreak_multiplier 
+                    & ec_out2$vac_incid_threshold == vac_incid_threshold 
+                    & ec_out2$surveillance_scenario == surveillance_scenario 
+                    & ec_out2$year == oy, ] <- rc2 #this may not work
+    }else{
+      ec_out2 <- rbind(ec_out2, rc2)
+    }
+
   }else{
     ec_out2 <- rc2
   }

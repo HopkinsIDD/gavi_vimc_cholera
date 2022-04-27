@@ -1,10 +1,10 @@
 runname: '202110gavi-3'
-country: 'YEM'
+country: 'NGA'
 scenario: 'campaign-default'
 clean: TRUE
 incid:
   num_samples: 50
-  redraw: TRUE
+  redraw: FALSE
   use_country_incid_trend: FALSE
 vacc:
   targeting_strategy: 'surveillance_project'
@@ -19,8 +19,10 @@ vacc:
   vac_end_year: 2030
   sim_end_year: 2035
 surveillance_scenario:
-  surveillance_scenario: 'district-estimate'
+  surveillance_scenario: 'no-estimate'
 setting:
   incidence_rate_trend: FALSE
   outbreak_multiplier: FALSE
   random_seed: 1
+optimize:
+  save_intermediate_raster: TRUE
