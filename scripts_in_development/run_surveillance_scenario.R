@@ -33,7 +33,7 @@ run_surveillance_scenario <- function(
   ...){
 
   ##### Get all the parameters ready 
-  save_intermediate_raster <- as.logical(optimize$save_intermediate_raster)
+  save_intermediate_raster <- as.logical(config$optimize$save_intermediate_raster)
   targeting_strategy <- config$vacc$targeting_strategy
   vac_incid_threshold <- as.numeric(config$vacc$vac_incid_threshold)
   vac_unconstrained <- as.logical(config$vacc$vac_unconstrained)
@@ -58,7 +58,7 @@ run_surveillance_scenario <- function(
   shp0 <- load_shp0_by_country(datapath, country)
   shp1 <- load_shp1_by_country(datapath, country)
   shp2 <- load_shp2_by_country(datapath, country)
-  rc_list <- load_baseline_incidence(datapath, country, campaign_cov = vac_coverage, baseline_year = sim_start_year, first_vacc_year = vac_start_year, 
+  rc_list <- load_baseline_incidence(datapath, modelpath, country, campaign_cov = vac_coverage, baseline_year = sim_start_year, first_vacc_year = vac_start_year, 
                                      incidence_rate_trend, use_country_incid_trend, shp0 = shp0, shp1 = shp1, shp2 = shp2)
 
 
@@ -89,7 +89,7 @@ run_surveillance_scenario <- function(
                                         
 
     #### Calculate/update suspectible population raster 
-    ve_direct <- generate_pct_protect_function() #for temp use **************************************
+    # ve_direct <- generate_pct_protect_function() #for temp use **************************************
       
     if(!exists("sus_list")){sus_list <- NULL}
     sus_list <- update_sus_rasterStack( datapath, modelpath, country, scenario, rawoutpath,
@@ -104,8 +104,8 @@ run_surveillance_scenario <- function(
     
 
     #### Get the expected cases for the year
-    indirect_mult = generate_indirect_incidence_mult() #temp, will be deleted **************************************
-    secular_trend_mult = function(a,b,c,d){return(a*b*c*d)} #temp, will be deleted **************************************
+    # indirect_mult = generate_indirect_incidence_mult() #temp, will be deleted **************************************
+    # secular_trend_mult = function(a,b,c,d){return(a*b*c*d)} #temp, will be deleted **************************************
     if(!exists("ec_list")){ec_list <- NULL}
     ec_list <- surveillance_create_expectedCases( datapath, 
                                                   modelpath, 
@@ -174,7 +174,7 @@ run_surveillance_scenario <- function(
   
   
   
-  message(paste("End of simulating vaccination campaigns in", country, "from", baseline_year, "to", end_year))
+  message(paste("End of simulating vaccination campaigns in", country, "from", sim_start_year, "to", sim_end_year))
   rm(rc_list, input_list, sus_list, ec_list, shp1, shp2)
   gc()
   

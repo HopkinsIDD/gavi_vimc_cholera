@@ -257,14 +257,13 @@ surveillance_create_expectedCases <- function(
                     & ec_out1$vac_incid_threshold == vac_incid_threshold 
                     & ec_out1$surveillance_scenario == surveillance_scenario 
                     & ec_out1$year == oy, ])>0 & clean){
-      ec_out1[ec_out1$country == country & ec_out1$incidence_rate_trend == incidence_rate_trend 
-                    & ec_out1$outbreak_multiplier == outbreak_multiplier 
-                    & ec_out1$vac_incid_threshold == vac_incid_threshold 
-                    & ec_out1$surveillance_scenario == surveillance_scenario 
-                    & ec_out1$year == oy, ] <- rc1 #this may not work
-    }else{
-      ec_out1 <- rbind(ec_out1, rc1)
+      ec_out1 <- ec_out1[!(ec_out1$country == country & ec_out1$incidence_rate_trend == incidence_rate_trend 
+                          & ec_out1$outbreak_multiplier == outbreak_multiplier 
+                          & ec_out1$vac_incid_threshold == vac_incid_threshold 
+                          & ec_out1$surveillance_scenario == surveillance_scenario 
+                          & ec_out1$year == oy), ] 
     }
+    ec_out1 <- rbind(ec_out1, rc1)
     
   }else{
     ec_out1 <- rc1
@@ -277,14 +276,13 @@ surveillance_create_expectedCases <- function(
                     & ec_out2$vac_incid_threshold == vac_incid_threshold 
                     & ec_out2$surveillance_scenario == surveillance_scenario 
                     & ec_out2$year == oy, ])>0 & clean){
-      ec_out2[ec_out2$country == country & ec_out2$incidence_rate_trend == incidence_rate_trend 
-                    & ec_out2$outbreak_multiplier == outbreak_multiplier 
-                    & ec_out2$vac_incid_threshold == vac_incid_threshold 
-                    & ec_out2$surveillance_scenario == surveillance_scenario 
-                    & ec_out2$year == oy, ] <- rc2 #this may not work
-    }else{
-      ec_out2 <- rbind(ec_out2, rc2)
+      ec_out2 <- ec_out2[!(ec_out2$country == country & ec_out2$incidence_rate_trend == incidence_rate_trend 
+                          & ec_out2$outbreak_multiplier == outbreak_multiplier 
+                          & ec_out2$vac_incid_threshold == vac_incid_threshold 
+                          & ec_out2$surveillance_scenario == surveillance_scenario 
+                          & ec_out2$year == oy), ]
     }
+    ec_out2 <- rbind(ec_out2, rc2)
 
   }else{
     ec_out2 <- rc2

@@ -86,6 +86,7 @@ opt <- optparse::parse_args(optparse::OptionParser(option_list = option_list))
 
 ### Read config file parameters
 config <- yaml::read_yaml(opt$config)
+config <- yaml::read_yaml("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/configs/202110gavi-3/campaign-default/district-estimate/COD_campaign-default_district-estimate_50.yml") #for testing run 
 
 runname <- config$runname
 country <- config$country
@@ -114,6 +115,7 @@ dir.create(opathname, showWarnings = FALSE)
 if(config$vacc$targeting_strategy == 'surveillance_project'){
   ### The surveillance project
   ##tmp: all new functions should be called first
+  source("scripts_in_development/run_surveillance_scenario.R")
   source("scripts_in_development/surveillance_vacc_targeting.R") #add more later 
   source("scripts_in_development/surveillance_pop_weighted_incid.R")
   source("scripts_in_development/surveillance_update_vac_raster.R")

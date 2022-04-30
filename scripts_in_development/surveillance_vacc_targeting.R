@@ -84,6 +84,7 @@ load_shp2_by_country <- function(datapath, country, simple = FALSE){
 # each table contains admin info, baseline incidence, and pop_prop
 
 load_baseline_incidence <- function(datapath, 
+                                    modelpath, 
                                     country, 
                                     campaign_cov, 
                                     baseline_year, 
@@ -102,8 +103,9 @@ load_baseline_incidence <- function(datapath,
   # load population data of the first year 
   pop_baseline <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, baseline_year)
   # adjust country_baseline so that it's in line with the expected cases rasters in the future (more NA cells after multiplying it with pop raster)
-  pop_baseline[!is.na(raster::values(pop_baseline)), ] <- 1
-  country_baseline <- country_baseline * pop_baseline
+  # pop_baseline[!is.na(raster::values(pop_baseline)), ] <- 1 
+  # country_baseline <- raster::resample(country_baseline, pop_baseline)
+  # country_baseline <- country_baseline * pop_baseline
 
 
   ## if the incidence rate trend should be implemented 
@@ -147,6 +149,7 @@ load_baseline_incidence <- function(datapath,
                        is_target = NA,  # whether that place was target in this year
                        actual_prop_vaccinated = NA,
                        actual_fvp = NA) %>% # fully vaccinated population
+    dplyr::mutate( suspected_incidence = ifelse(is.na(suspected_incidence), 0, suspected_incidence) ) %>% 
     dplyr::select(ISO, NAME_0, NAME_1, suspected_incidence, confirmation_lens, confirmation_rate, confirmed_incidence, 
                   pop_model, pop_prop, year, latest_target_year, is_target,
                   actual_prop_vaccinated, actual_fvp)
@@ -164,6 +167,7 @@ load_baseline_incidence <- function(datapath,
                        is_target = NA,     # whether that place was target in this year
                        actual_prop_vaccinated = NA,
                        actual_fvp = NA) %>% # fully vaccinated population
+    dplyr::mutate( suspected_incidence = ifelse(is.na(suspected_incidence), 0, suspected_incidence) ) %>% 
     dplyr::select(ISO, NAME_0, NAME_1, NAME_2, suspected_incidence, confirmation_lens, confirmation_rate, confirmed_incidence, 
                   pop_model, pop_prop, year, latest_target_year, is_target,
                   actual_prop_vaccinated, actual_fvp)
@@ -214,11 +218,13 @@ update_targets_list <- function(datapath, modelpath, country, scenario,
       (model_year < vac_start_year) ){
     
     message(paste("The vaccination campaign is skipped for year", model_year, "for the whole country", country))
-    if( max(rc_list$rc1$latest_target_year) != max(rc_list$rc2$latest_target_year) ){
-      stop("admin1 and admin2 do not agree on the latest target year in the rc list table, please check. ")
-    }else{
-      rc_list <- update_novacc_year(rc_list, model_year)
+    if( max(rc_list$rc1$latest_target_year, na.rm = TRUE) != max(rc_list$rc2$latest_target_year, na.rm = TRUE) ){
+      message("admin1 and admin2 do not agree on the latest target year in the rc list table, please check. ")
+      cat(paste("The country level vaccination elapse year for the admin1 scenario is", (model_year - max(rc_list$rc1$latest_target_year, na.rm = TRUE))))
+      cat(paste("The country level vaccination elapse year for the admin2 scenario is", (model_year - max(rc_list$rc2$latest_target_year, na.rm = TRUE))))
     }
+    rc_list <- update_novacc_year(rc_list, model_year)
+    
 
   }else{
     rc_list <- update_vacc_year(datapath, modelpath, country, rc_list, model_year, 
@@ -290,9 +296,11 @@ update_vacc_year<- function(datapath, modelpath, country, rc_list, model_year,
     rc_list$rc2[rc_list$rc2$year == model_year, ]$latest_target_year <- ifelse(rc_list$rc2[rc_list$rc2$year == model_year, ]$is_target, model_year, NA)
   }else{
     rc_list$rc1[rc_list$rc1$year == model_year, ]$latest_target_year <- rc_list$rc1[rc_list$rc1$year == model_year-1, ]$latest_target_year
-    rc_list$rc1[rc_list$rc1$year == model_year & rc_list$rc1$is_target, ]$latest_target_year <- model_year
+    if(any(rc_list$rc1$year == model_year & rc_list$rc1$is_target)){
+      rc_list$rc1[rc_list$rc1$year == model_year & rc_list$rc1$is_target, ]$latest_target_year <- model_year}
     rc_list$rc2[rc_list$rc2$year == model_year, ]$latest_target_year <- rc_list$rc2[rc_list$rc2$year == model_year-1, ]$latest_target_year
-    rc_list$rc2[rc_list$rc2$year == model_year & rc_list$rc2$is_target, ]$latest_target_year <- model_year
+    if(any(rc_list$rc2$year == model_year & rc_list$rc2$is_target)){
+      rc_list$rc2[rc_list$rc2$year == model_year & rc_list$rc2$is_target, ]$latest_target_year <- model_year}
   }
 
   return(rc_list)               
@@ -364,6 +372,7 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
                        is_target = NA,  # whether that place was target in this year
                        actual_prop_vaccinated = NA,
                        actual_fvp = NA) %>% # fully vaccinated population
+    dplyr::mutate( suspected_incidence = ifelse(is.na(suspected_incidence), 0, suspected_incidence) ) %>% 
     dplyr::select(ISO, NAME_0, NAME_1, suspected_incidence, confirmation_lens, confirmation_rate, confirmed_incidence, 
                   pop_model, pop_prop, year, latest_target_year, is_target,
                   actual_prop_vaccinated, actual_fvp)
@@ -381,6 +390,7 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
                        is_target = NA,     # whether that place was target in this year
                        actual_prop_vaccinated = NA,
                        actual_fvp = NA) %>% # fully vaccinated population
+    dplyr::mutate( suspected_incidence = ifelse(is.na(suspected_incidence), 0, suspected_incidence) ) %>% 
     dplyr::select(ISO, NAME_0, NAME_1, NAME_2, suspected_incidence, confirmation_lens, confirmation_rate, confirmed_incidence, 
                   pop_model, pop_prop, year, latest_target_year, is_target,
                   actual_prop_vaccinated, actual_fvp)
