@@ -25,7 +25,7 @@ sim_end_year <- 2035
 #====== Other Parameters ======#
 num_skip_years <- 3 #district level, relevant to the surveillance project
 num_samples <- 50 #relevant to the surveillance project
-define_random_seed <- TRUE #whether or not to have a random seed that governs the stochasticity 
+use_random_seed <- TRUE #whether or not to have a random seed that governs the stochasticity 
 self_random_seed <- NULL #for now, just use the random seed specified by the setting
 clean_outputs <- TRUE
 clean_incid <- FALSE
@@ -58,15 +58,15 @@ rm(not_sure_country_list)
 incidence_rate_trend <- FALSE #for surveillance for now
 outbreak_multiplier <- FALSE #for surveillance for now
 ### For now, the random seed equals setting number
-if(define_random_seed & is.null(self_random_seed)){
+if(use_random_seed & is.null(self_random_seed)){
   random_seed <- dplyr::case_when(
     !incidence_rate_trend & !outbreak_multiplier ~ 1, 
     !incidence_rate_trend & outbreak_multiplier ~ 2, 
     incidence_rate_trend & !outbreak_multiplier ~ 3, 
     incidence_rate_trend & outbreak_multiplier ~ 4
   )
-}else if(define_random_seed & !is.null(self_random_seed)){
+}else if(use_random_seed & !is.null(self_random_seed)){
   random_seed <- self_random_seed
-}else if(!define_random_seed){
+}else if(!use_random_seed){
   random_seed <- sample(1:10000, 1) #let loose on random seed 
 }

@@ -111,7 +111,8 @@ incid <- ocvImpact::create_incid_raster(
     dpathname,
     country,
     nsamples,
-    clean <- TRUE #updated from "=" to "<-"
+    clean <- TRUE, 
+    random_seed = as.numeric(config$setting$random_seed) #updated from "=" to "<-"
     )
 
 

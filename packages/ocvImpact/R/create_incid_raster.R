@@ -7,7 +7,8 @@
 #' @param country country code
 #' @param nsamples numeric, number of layers to sample (must be below 1000)
 #' @param redraw logical that indicates whether existing incid samples should be drawn again
-#' @return raster of incidence rate, 30 samples
+#' @param random_seed
+#' @return raster of incidence rate, "nsamples" samples
 #' @export
 #' @include get_singular_estimate.R align_rasters.R utils_montagu.R load_worldpop_by_country.R
 #######Kaiyue Added on 7/12/2021#######
@@ -16,7 +17,7 @@
 ###We also include modelpath as input
 ###########Comment completed###########
 
-create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
+create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw, random_seed = NULL){
 
   #######Kaiyue Added on 7/15/2021#######
   ######Kaiyue editted on 1/30/2022######
@@ -69,7 +70,9 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
 
     ###For BGD
     if(country == "BGD"){
-      random_seed <- as.numeric(config$setting$random_seed)
+      if(is.null(random_seed)){
+        random_seed <- as.numeric(config$setting$random_seed)
+      }
       setting_num <- random_seed #for the current design
       BGD_raster <- raster::stack(paste0(datapath, "/incidence/BGD_incid_5k_50_setting", setting_num, ".tif"))
       return(BGD_raster)
@@ -83,6 +86,10 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
     #the next line is the new code
     if (country %in% RasterCountry){
       ###########Comment completed###########
+      if(is.null(random_seed)){
+        random_seed <- as.numeric(config$setting$random_seed)
+      }
+      set.seed(random_seed)
       layer_indexes <- sort(sample(1:1000, nsamples, replace=TRUE))
       print(layer_indexes)
       

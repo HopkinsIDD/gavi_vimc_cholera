@@ -93,13 +93,24 @@ load_baseline_incidence <- function(datapath,
                                     use_country_incid_trend, 
                                     shp0, 
                                     shp1, 
-                                    shp2){
+                                    shp2, 
+                                    random_seed, 
+                                    nsamples, 
+                                    redraw){
   
-  ## incidence data ##
-  message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
-  afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
-  country_baseline <- raster::mask(raster::crop(raster::stack(afr), shp0, snap = "out"), shp0, updatevalue = NA)
-  rm(afr)
+  ## incidence data -- using the 1000-layer raster and draw layers according to the pre-generated country-level incidence rate raster ##
+  # set.seed(random_seed)
+  # layer_indexes <- sort(sample(1:1000, nsamples, replace=TRUE))
+
+  # message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
+  # afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
+  # afr_sample <- raster::subset(afr, layer_indexes, drop = FALSE)
+  # country_baseline <- raster::mask(raster::crop(raster::stack(afr), shp0, snap = "out"), shp0, updatevalue = NA)
+  # rm(afr)
+
+  # load the incidence rate raster and initialize the rc_list 
+  country_baseline <- create_incid_raster(modelpath, datapath, country, nsamples, redraw, random_seed)
+  rc_list <- NULL
   # load population data of the first year 
   pop_baseline <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, baseline_year)
   # adjust country_baseline so that it's in line with the expected cases rasters in the future (more NA cells after multiplying it with pop raster)
@@ -121,64 +132,82 @@ load_baseline_incidence <- function(datapath,
   }
   country_baseline <- country_baseline*incid_trend_function(baseline_year)
   
-  
-  ## summarize rasters to admin level 1
-  incid1 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = country_baseline, pop_raster = pop_baseline, country, admin_shp = shp1)
-  pop1 <- get_admin_population(pop_baseline, shp1) 
-  
-  ## summarize rasters to admin level 2
-  incid2 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = country_baseline, pop_raster = pop_baseline, country, admin_shp = shp2)
+  ## get the pop ready
+  pop1 <- get_admin_population(pop_baseline, shp1)
   pop2 <- get_admin_population(pop_baseline, shp2)
-  
   # total population
   total_pop <- sum(pop1)
-
   # total population test
   if(sum(pop1) != sum(pop2)){warning(paste(" *** population summarized across admin1 and admin2 districts differ by", abs(sum(pop1) - sum(pop2))))}
-  
-  # get incidence and pop table (admin 1 level)
-  rc1 <- dplyr::mutate(shp1, 
-                       suspected_incidence = incid1,
-                       confirmation_lens = NA,
-                       confirmation_rate = NA, 
-                       confirmed_incidence = NA,  
-                       pop_model = pop1,
-                       pop_prop = pop1/total_pop,
-                       year = baseline_year, 
-                       latest_target_year = NA,
-                       is_target = NA,  # whether that place was target in this year
-                       actual_prop_vaccinated = NA,
-                       actual_fvp = NA) %>% # fully vaccinated population
-    dplyr::mutate( suspected_incidence = ifelse(is.na(suspected_incidence), 0, suspected_incidence) ) %>% 
-    dplyr::select(ISO, NAME_0, NAME_1, suspected_incidence, confirmation_lens, confirmation_rate, confirmed_incidence, 
-                  pop_model, pop_prop, year, latest_target_year, is_target,
-                  actual_prop_vaccinated, actual_fvp)
-  
-  # get incidence and pop table (admin 2 level)
-  rc2 <- dplyr::mutate(shp2, 
-                       suspected_incidence = incid2,
-                       confirmation_lens = NA,
-                       confirmation_rate = NA, 
-                       confirmed_incidence = NA,  
-                       pop_model = pop2,
-                       pop_prop = pop2/total_pop,
-                       year = baseline_year, 
-                       latest_target_year = NA, 
-                       is_target = NA,     # whether that place was target in this year
-                       actual_prop_vaccinated = NA,
-                       actual_fvp = NA) %>% # fully vaccinated population
-    dplyr::mutate( suspected_incidence = ifelse(is.na(suspected_incidence), 0, suspected_incidence) ) %>% 
-    dplyr::select(ISO, NAME_0, NAME_1, NAME_2, suspected_incidence, confirmation_lens, confirmation_rate, confirmed_incidence, 
-                  pop_model, pop_prop, year, latest_target_year, is_target,
-                  actual_prop_vaccinated, actual_fvp)
-  
-  # check on population proportion 
-  if (sum(rc1$pop_prop)!=1 | sum(rc2$pop_prop)!=1){
-   warning(paste(" *** The population proportion calculation is incorrect for", country, ", they are", sum(rc1$pop_prop), "and", sum(rc2$pop_prop)))
+    
+
+  ## loop through all the layers 
+  for(layer_idx in 1:nsamples){
+    ## get one layer 
+    country_baseline_single_layer <- country_baseline[[layer_idx]]
+
+    ## summarize rasters to admin level 1
+    incid1 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = country_baseline_single_layer, pop_raster = pop_baseline, country, admin_shp = shp1)
+     
+    ## summarize rasters to admin level 2
+    incid2 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = country_baseline_single_layer, pop_raster = pop_baseline, country, admin_shp = shp2)
+    
+    # get incidence and pop table (admin 1 level)
+    rc1 <- dplyr::mutate(shp1, 
+                        suspected_incidence = incid1,
+                        confirmation_lens = NA,
+                        confirmation_rate = NA, 
+                        confirmed_incidence = NA,  
+                        pop_model = pop1,
+                        pop_prop = pop1/total_pop,
+                        year = baseline_year, 
+                        latest_target_year = NA,
+                        is_target = NA,  # whether that place was target in this year
+                        actual_prop_vaccinated = NA,
+                        actual_fvp = NA) %>% # fully vaccinated population
+      dplyr::mutate( suspected_incidence = ifelse(is.na(suspected_incidence), 0, suspected_incidence) ) %>% 
+      dplyr::select(ISO, NAME_0, NAME_1, suspected_incidence, confirmation_lens, confirmation_rate, confirmed_incidence, 
+                    pop_model, pop_prop, year, latest_target_year, is_target,
+                    actual_prop_vaccinated, actual_fvp)
+    
+    # get incidence and pop table (admin 2 level)
+    rc2 <- dplyr::mutate(shp2, 
+                        suspected_incidence = incid2,
+                        confirmation_lens = NA,
+                        confirmation_rate = NA, 
+                        confirmed_incidence = NA,  
+                        pop_model = pop2,
+                        pop_prop = pop2/total_pop,
+                        year = baseline_year, 
+                        latest_target_year = NA, 
+                        is_target = NA,     # whether that place was target in this year
+                        actual_prop_vaccinated = NA,
+                        actual_fvp = NA) %>% # fully vaccinated population
+      dplyr::mutate( suspected_incidence = ifelse(is.na(suspected_incidence), 0, suspected_incidence) ) %>% 
+      dplyr::select(ISO, NAME_0, NAME_1, NAME_2, suspected_incidence, confirmation_lens, confirmation_rate, confirmed_incidence, 
+                    pop_model, pop_prop, year, latest_target_year, is_target,
+                    actual_prop_vaccinated, actual_fvp)
+    
+    # check on population proportion 
+    if (sum(rc1$pop_prop)!=1 | sum(rc2$pop_prop)!=1){
+    warning(paste(" *** The population proportion calculation is incorrect for", country, ", they are", sum(rc1$pop_prop), "and", sum(rc2$pop_prop)))
+    }
+    
+    # save the tables 
+    rc_list_single_layer <- list("rc1" = rc1, "rc2" = rc2)
+    if(is.null(rc_list)){
+      rc_list <- list(rc_list_single_layer)
+    }else{
+      rc_list[[length(rc_list)+1]] <- rc_list_single_layer
+    }
+
   }
+
+
   
-  rc_list <- list("rc1" = rc1, "rc2" = rc2)
+  rm(rc_list_single_layer)
   rm(pop1, pop2)
+  rm(rc1, rc2)
   gc()
   
   return(rc_list)
@@ -211,13 +240,15 @@ update_targets_list <- function(datapath, modelpath, country, scenario,
 
   ### What if this is no vac scenario or the vac_interval is larger than 1 year or the vacc is skipped for the year or the vacc has ended or not yet started?
   if(
-      ( !all(is.na(rc_list$rc1$latest_target_year)) & (model_year - max(rc_list$rc1$latest_target_year, na.rm = TRUE) < vac_interval 
-                                                        | model_year - max(rc_list$rc2$latest_target_year, na.rm = TRUE) < vac_interval) ) | 
-      (scenario == "no-vaccination") |
-      (model_year > vac_end_year) |
+      ( (!all(is.na(rc_list$rc1$latest_target_year)) & !all(is.na(rc_list$rc2$latest_target_year)))
+          & (model_year - max(rc_list$rc1$latest_target_year, na.rm = TRUE) < vac_interval 
+              & model_year - max(rc_list$rc2$latest_target_year, na.rm = TRUE) < vac_interval) )      | 
+      (scenario == "no-vaccination")                                                                  |
+      (model_year > vac_end_year)                                                                     |
       (model_year < vac_start_year) ){
     
     message(paste("The vaccination campaign is skipped for year", model_year, "for the whole country", country))
+    
     if( max(rc_list$rc1$latest_target_year, na.rm = TRUE) != max(rc_list$rc2$latest_target_year, na.rm = TRUE) ){
       message("admin1 and admin2 do not agree on the latest target year in the rc list table, please check. ")
       cat(paste("The country level vaccination elapse year for the admin1 scenario is", (model_year - max(rc_list$rc1$latest_target_year, na.rm = TRUE))))
@@ -256,13 +287,13 @@ update_novacc_year <- function(rc_list, model_year){
 
 
 
-update_vacc_year<- function(datapath, modelpath, country, rc_list, model_year, 
+update_vacc_year <- function(datapath, modelpath, country, rc_list, model_year, 
                             campaign_cov, threshold, surveillance_scenario, 
                             vac_start_year, vac_end_year, num_skip_years){
   ### Put on the confirmation lens 
   ## Read in
-  message(paste0("Loading ", datapath, "/confirmation_rate/something.csv"))
-  omicron_dataset <- readr::read_csv(paste0(datapath, "/confirmation_rate/something.csv")) #the true confirmation rate 
+  message(paste0("Loading ", datapath, "/confirmation_rate/parameters.csv"))
+  omicron_dataset <- readr::read_csv(paste0(datapath, "/confirmation_rate/parameters.csv")) #the true confirmation rate 
   ## Assign
   rc_list <- get_confirmed_incidence_rate(rc_list, model_year, surveillance_scenario, omicron_dataset)
 
@@ -298,6 +329,7 @@ update_vacc_year<- function(datapath, modelpath, country, rc_list, model_year,
     rc_list$rc1[rc_list$rc1$year == model_year, ]$latest_target_year <- rc_list$rc1[rc_list$rc1$year == model_year-1, ]$latest_target_year
     if(any(rc_list$rc1$year == model_year & rc_list$rc1$is_target)){
       rc_list$rc1[rc_list$rc1$year == model_year & rc_list$rc1$is_target, ]$latest_target_year <- model_year}
+
     rc_list$rc2[rc_list$rc2$year == model_year, ]$latest_target_year <- rc_list$rc2[rc_list$rc2$year == model_year-1, ]$latest_target_year
     if(any(rc_list$rc2$year == model_year & rc_list$rc2$is_target)){
       rc_list$rc2[rc_list$rc2$year == model_year & rc_list$rc2$is_target, ]$latest_target_year <- model_year}
@@ -309,6 +341,8 @@ update_vacc_year<- function(datapath, modelpath, country, rc_list, model_year,
 
 
 get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scenario, omicron_dataset){
+  ##### The same district/country can only use the same confirmation rate across years but different across layers 
+
   ### Get the confirmation rate
   rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmation_lens <- surveillance_scenario
   rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmation_lens <- surveillance_scenario
@@ -316,20 +350,59 @@ get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scena
   if(surveillance_scenario == "no-estimate"){
     rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmation_rate <- 1
     rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmation_rate <- 1
+
   }else if(surveillance_scenario == "global-estimate"){
-    ### determine how to use the omicron dataset
-    global_estimate <- truncnorm::rtruncnorm(n = 1, a = 0, b = 1, mean = 0.43, sd = 0.5) #tmp, for now
+    ## global estimate scenario 
+    if(all(is.na(rc_list$rc1$confirmation_rate))){
+      global_estimate <- rnorm(n = 1, mean = omicron_dataset$mean, sd = omicron_dataset$sd) #tmp, for now
+    }else{
+      global_estimate <- unique(rc_list$rc1$confirmation_rate)[1]
+    }
     rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmation_rate <- global_estimate
     rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmation_rate <- global_estimate
+    
   }else if(surveillance_scenario == "district-estimate"){
-    ### determine how to use the omicron dataset
-    district_estimate_rc1 <- truncnorm::rtruncnorm(n = nrow(rc_list$rc1[rc_list$rc1$year == model_year, ]), a = 0, b = 1, mean = 0.43, sd = 0.5)
-    rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmation_rate <- district_estimate_rc1
-    district_estimate_rc2 <- truncnorm::rtruncnorm(n = nrow(rc_list$rc2[rc_list$rc2$year == model_year, ]), a = 0, b = 1, mean = 0.43, sd = 0.5)
-    rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmation_rate <- district_estimate_rc2
+    ## district estimate scenario 
+    if(all(is.na(rc_list$rc1$confirmation_rate))){
+      district_estimate_rc1 <- rnorm(n = nrow(rc_list$rc1[rc_list$rc1$year == model_year, ]), mean = omicron_dataset$mean, sd = omicron_dataset$sd)
+      rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmation_rate <- district_estimate_rc1
+      district_estimate_rc2 <- rnorm(n = nrow(rc_list$rc2[rc_list$rc2$year == model_year, ]), mean = omicron_dataset$mean, sd = omicron_dataset$sd)
+      rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmation_rate <- district_estimate_rc2
+    }else{
+      # Dist 1
+      for(dist1 in unique(rc_list$rc1[rc_list$rc1$year == model_year, ]$NAME_1)){
+        rc_list$rc1[rc_list$rc1$year == model_year & rc_list$rc1$NAME_1 == dist1, ]$confirmation_rate <- 
+          rc_list$rc1[rc_list$rc1$year == model_year-1 & rc_list$rc1$NAME_1 == dist1, ]$confirmation_rate
+      }
+      # Dist 2
+      for(dist1 in unique(rc_list$rc2[rc_list$rc2$year == model_year, ]$NAME_1)){
+        for(dist2 in unique(rc_list$rc2[rc_list$rc2$year == model_year & rc_list$rc2$NAME_1 == dist1, ]$NAME_2)){
+          rc_list$rc2[rc_list$rc2$year == model_year & rc_list$rc2$NAME_1 == dist1 & rc_list$rc2$NAME_2 == dist2, ]$confirmation_rate <- 
+            rc_list$rc2[rc_list$rc2$year == model_year-1 & rc_list$rc2$NAME_1 == dist1 & rc_list$rc2$NAME_2 == dist2, ]$confirmation_rate
+        }
+      }
+      # # Dist 1
+      # tmp <- rc_list$rc1 %>% 
+      #   dplyr::filter(year == min(rc_list$rc1$year, na.rm = T)) %>% 
+      #   dplyr::rename(confirmation_rate_1 = confirmation_rate) %>% 
+      #   dplyr::select(confirmation_rate_1)
+      # rc_list$rc1 <- sf::st_join(rc_list$rc1, tmp) %>% 
+      #   dplyr::mutate(confirmation_rate = confirmation_rate_1) %>% 
+      #   dplyr::select( - confirmation_rate_1)
+      # # Dist 2
+      # tmp <- rc_list$rc2 %>% 
+      #   filter(year == min(rc_list$rc2$year, na.rm = T)) %>% 
+      #   rename(confirmation_rate_1 = confirmation_rate) %>% 
+      #   select(confirmation_rate_1)
+      # rc_list$rc2 <- sf::st_join(rc_list$rc2, tmp) %>% 
+      #   mutate(confirmation_rate = confirmation_rate_1) %>% 
+      #   select( - confirmation_rate_1)
+      # rm(tmp)
+    }
+
   }
 
-  ### Update the confirmed rate 
+  ### Update the confirmed incidence rate 
   rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmed_incidence <- rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmation_rate * rc_list$rc1[rc_list$rc1$year == model_year, ]$suspected_incidence
   rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmed_incidence <- rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmation_rate * rc_list$rc2[rc_list$rc2$year == model_year, ]$suspected_incidence
   

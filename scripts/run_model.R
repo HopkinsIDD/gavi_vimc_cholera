@@ -86,7 +86,7 @@ opt <- optparse::parse_args(optparse::OptionParser(option_list = option_list))
 
 ### Read config file parameters
 config <- yaml::read_yaml(opt$config)
-config <- yaml::read_yaml("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/configs/202110gavi-3/campaign-default/district-estimate/COD_campaign-default_district-estimate_50.yml") #for testing run 
+# config <- yaml::read_yaml("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/configs/202110gavi-3/campaign-default/district-estimate/COD_campaign-default_district-estimate_50.yml") #for testing run 
 
 runname <- config$runname
 country <- config$country
@@ -98,8 +98,8 @@ nskipyears <- config$vacc$num_skip_years
 cln <- config$clean
 
 random_seed <- as.numeric(config$setting$random_seed) #this one will be used through redrawing incidence rate raster and generating other rasters
-set.seed(random_seed)
-rm(random_seed)
+# set.seed(random_seed)
+# rm(random_seed)
 
 #### Create paths
 mpathname <- file.path("montagu", runname)
@@ -168,4 +168,5 @@ if(config$vacc$targeting_strategy == 'surveillance_project'){
   message(paste("End script:", runname, country, scenario, nsamples, targeting))
 }
 
-
+rm(list = ls()) #temp *******************************************************************
+gc() #temp ******************************************************************************

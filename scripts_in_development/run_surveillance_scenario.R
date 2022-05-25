@@ -50,6 +50,7 @@ run_surveillance_scenario <- function(
   incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
   use_country_incid_trend <- as.logical(config$incid$use_country_incid_trend)
   outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)  
+  random_seed <- as.numeric(config$setting$random_seed)
 
 
 
@@ -59,7 +60,8 @@ run_surveillance_scenario <- function(
   shp1 <- load_shp1_by_country(datapath, country)
   shp2 <- load_shp2_by_country(datapath, country)
   rc_list <- load_baseline_incidence(datapath, modelpath, country, campaign_cov = vac_coverage, baseline_year = sim_start_year, first_vacc_year = vac_start_year, 
-                                     incidence_rate_trend, use_country_incid_trend, shp0 = shp0, shp1 = shp1, shp2 = shp2)
+                                     incidence_rate_trend, use_country_incid_trend, shp0 = shp0, shp1 = shp1, shp2 = shp2, 
+                                     random_seed = random_seed, nsamples = nsamples, redraw = redraw)
 
 
 
@@ -67,7 +69,7 @@ run_surveillance_scenario <- function(
   for(model_year in sim_start_year:sim_end_year){
     
     #### Update the list of districts to target at the beginning of a year -- this is where stochasticity introduced due to random draw of confirmation rates
-    message(paste("Starting simulation of campaign of year", model_year, "in country", country))
+    message(paste("Starting simulation of year", model_year, "in country", country))
     rc_list <- update_targets_list( datapath = datapath, modelpath = modelpath, country = country, scenario = scenario, 
                                     rc_list = rc_list, model_year = model_year, campaign_cov = vac_coverage, 
                                     threshold = vac_incid_threshold, vac_unconstrained = vac_unconstrained, 
@@ -136,6 +138,18 @@ run_surveillance_scenario <- function(
 
   ##### Write output files
   
+  # vaccination proportion rasterStack
+  dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
+  vac1_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+                        vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_vac_admin1.tif")
+  vac2_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+                        vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_vac_admin2.tif")
+  message(paste("Writing proportion vaccinated rasterStack for", country))
+  if( !file.exists(vac1_out_fn) | (file.exists(vac1_out_fn)&clean) ){
+    raster::writeRaster(input_list[["vacc_rasterStack_admin1"]], filename = vac1_out_fn, overwrite = TRUE)}
+  if( !file.exists(vac2_out_fn) | (file.exists(vac2_out_fn)&clean) ){
+    raster::writeRaster(input_list[["vacc_rasterStack_admin2"]], filename = vac2_out_fn, overwrite = TRUE)}
+
   # proportion susceptible rasterStack
   dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
   sus1_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
@@ -144,9 +158,9 @@ run_surveillance_scenario <- function(
                         vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_sus_admin2.tif")
   message(paste("Writing proportion susceptible rasterStack for", country))
   if( !file.exists(sus1_out_fn) | (file.exists(sus1_out_fn)&clean) ){
-    raster::writeRaster(sus_list[["sus_rasterStack_admin1"]], filename = sus1_out_fn)}
+    raster::writeRaster(sus_list[["sus_rasterStack_admin1"]], filename = sus1_out_fn, overwrite = TRUE)}
   if( !file.exists(sus2_out_fn) | (file.exists(sus2_out_fn)&clean) ){
-    raster::writeRaster(sus_list[["sus_rasterStack_admin2"]], filename = sus2_out_fn)}
+    raster::writeRaster(sus_list[["sus_rasterStack_admin2"]], filename = sus2_out_fn, overwrite = TRUE)}
   
   # expected cases rasterStack
   ec1_out_fn <- paste0( rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
@@ -155,9 +169,9 @@ run_surveillance_scenario <- function(
                         vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_ec_admin2.tif")
   message(paste("Writing expected cases rasterStack for", country))
   if( !file.exists(ec1_out_fn) | (file.exists(ec1_out_fn)&clean) ){
-    raster::writeRaster(ec_list[["ec_rasterStack_admin1"]], filename = ec1_out_fn)}
+    raster::writeRaster(ec_list[["ec_rasterStack_admin1"]], filename = ec1_out_fn, overwrite = TRUE)}
   if( !file.exists(ec2_out_fn) | (file.exists(ec2_out_fn)&clean) ){
-    raster::writeRaster(ec_list[["ec_rasterStack_admin2"]], filename = ec2_out_fn)}
+    raster::writeRaster(ec_list[["ec_rasterStack_admin2"]], filename = ec2_out_fn, overwrite = TRUE)}
   
   # rc_list with incidence and targeted area of each modeled year
   rc1_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 

@@ -59,9 +59,7 @@ update_vac_raster <- function(datapath,
     pop_rasterStack <- input_list[["pop_rasterStack"]]
     
     pop_rasterStack <- raster::addLayer(pop_rasterStack, pop)
-    vacc_rasterStack_admin1 <- raster::addLayer(vacc_rasterStack_admin1, new_vacc_layer_admin1) 
-  vacc_rasterStack_admin1 <- raster::addLayer(vacc_rasterStack_admin1, new_vacc_layer_admin1) 
-    vacc_rasterStack_admin1 <- raster::addLayer(vacc_rasterStack_admin1, new_vacc_layer_admin1) 
+    vacc_rasterStack_admin1 <- raster::addLayer(vacc_rasterStack_admin1, new_vacc_layer_admin1)
     vacc_rasterStack_admin2 <- raster::addLayer(vacc_rasterStack_admin2, new_vacc_layer_admin2)
   }else{
     pop_rasterStack <- pop

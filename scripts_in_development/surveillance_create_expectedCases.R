@@ -47,7 +47,7 @@ surveillance_create_expectedCases <- function(
   
   
   ### Get the rasters ready 
-  lambda <- create_incid_raster(modelpath, datapath, country, nsamples, redraw)
+  lambda <- create_incid_raster(modelpath, datapath, country, nsamples, redraw, random_seed = config$setting$random_seed)
   layer_idx <- match(model_year, sim_start_year:sim_end_year)
   sus_rasterLayer1 <- sus_list$sus_rasterStack_admin1[[layer_idx]]
   sus_rasterLayer2 <- sus_list$sus_rasterStack_admin2[[layer_idx]]
