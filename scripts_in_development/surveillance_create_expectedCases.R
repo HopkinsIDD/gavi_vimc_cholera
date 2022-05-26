@@ -30,8 +30,7 @@ surveillance_create_expectedCases <- function(
   redraw, 
   sus_list, 
   pop, 
-  model_year, 
-  ec_list, 
+  model_year,
   config
   ){
 
@@ -44,16 +43,40 @@ surveillance_create_expectedCases <- function(
 
   vac_incid_threshold <- as.numeric(config$vacc$vac_incid_threshold)
   surveillance_scenario <- config$surveillance_scenario$surveillance_scenario
+  save_intermediate_raster <- as.logical(config$optimize$save_intermediate_raster)
+  save_final_output_raster <- as.logical(config$optimize$save_final_output_raster)
   
   
-  ### Get the rasters ready 
+  ### Get the rasters and shapefile ready 
   lambda <- create_incid_raster(modelpath, datapath, country, nsamples, redraw, random_seed = config$setting$random_seed)
-  layer_idx <- match(model_year, sim_start_year:sim_end_year)
-  sus_rasterLayer1 <- sus_list$sus_rasterStack_admin1[[layer_idx]]
-  sus_rasterLayer2 <- sus_list$sus_rasterStack_admin2[[layer_idx]]
   pop_rasterLayer <- pop
+  rm(pop)
   shp0 <- load_shapefile_by_country(datapath, country, simple = TRUE)
   
+  if(!save_intermediate_raster){
+    sus_rasterLayer1 <- sus_list[[1]]$sus_rasterStack_admin1
+    for(layer_idx in 2:nsamples){
+      sus_rasterLayer1 <- raster::stack(sus_rasterLayer1, sus_list[[layer_idx]]$sus_rasterStack_admin1)
+    }
+    sus_rasterLayer2 <- sus_list[[1]]$sus_rasterStack_admin2
+    for(layer_idx in 2:nsamples){
+      sus_rasterLayer2 <- raster::stack(sus_rasterLayer2, sus_list[[layer_idx]]$sus_rasterStack_admin2)
+    }
+    rm(sus_list)
+
+  }else{
+    sus_admin1_fn <- paste0("intermediate_raster/", country, "_sus_admin1_", model_year, ".tif")
+    sus_admin2_fn <- paste0("intermediate_raster/", country, "_sus_admin2_", model_year, ".tif")
+  
+    sus_rasterLayer1 <- raster::stack(sus_admin1_fn)
+    sus_rasterLayer2 <- raster::stack(sus_admin2_fn)
+  }
+  
+  #fixing the MRT issue
+  if(country == 'MRT'){
+    lambda <- raster::setExtent(lambda, raster::extent(shp0), keepres=FALSE, snap=FALSE)
+    pop_rasterLayer <- raster::setExtent(pop_rasterLayer, raster::extent(shp0), keepres=FALSE, snap=FALSE)
+  }
   #fixing the BGD issue
   if(country == 'BGD'){
     lambda <- raster::resample(lambda, pop_rasterStack, method = "ngb")
@@ -117,7 +140,7 @@ surveillance_create_expectedCases <- function(
 
   ## admin1 first 
   # make new indirect effects template
-  indirect_rasterLayer <- pop_rasterLayer
+  indirect_rasterLayer <- sus_rasterLayer1
   raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer1)))
 
   ec_rasterStack1 <- tryCatch(
@@ -134,17 +157,19 @@ surveillance_create_expectedCases <- function(
         recycle = TRUE, unstack = TRUE) 
         
     }else{
-      lambda * sus_rasterLayer1 * pop_rasterLayer  * indirect_rasterLayer * overall_multiplier
+      lambda * sus_rasterLayer1 * indirect_rasterLayer * pop_rasterLayer * overall_multiplier
     },
 
     error = function(e){
       print(paste0('The year when it goes wrong is ', oy))
     }
   )
+  ec_rasterStack1 <- raster::stack(ec_rasterStack1)
+
 
   ## admin2 then 
   # make new indirect effects template
-  indirect_rasterLayer <- pop_rasterLayer
+  indirect_rasterLayer <- sus_rasterLayer2
   raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer2)))
 
   ec_rasterStack2 <- tryCatch(
@@ -161,30 +186,50 @@ surveillance_create_expectedCases <- function(
         recycle = TRUE, unstack = TRUE) 
         
     }else{
-      lambda * sus_rasterLayer2 * pop_rasterLayer  * indirect_rasterLayer * overall_multiplier
+      lambda * sus_rasterLayer2 * indirect_rasterLayer * pop_rasterLayer * overall_multiplier
     },
 
     error = function(e){
       print(paste0('The year when it goes wrong is ', oy))
     }
   )
+  ec_rasterStack2 <- raster::stack(ec_rasterStack2)
 
 
-  ### Save the ec_list first -- across layers averaged -- suspected cases ********************************************
-  ec_rasterLayer_admin1 <- raster::calc(ec_rasterStack1 / confirmation_multiplier, fun = mean, na.rm = T)
-  ec_rasterLayer_admin2 <- raster::calc(ec_rasterStack2 / confirmation_multiplier, fun = mean, na.rm = T)
-      
-  # append new ec raster layer
-  if(is.null(ec_list)){
-    ec_rasterStack_admin1 <- raster::stack(ec_rasterLayer_admin1)
-    ec_rasterStack_admin2 <- raster::stack(ec_rasterLayer_admin2)
 
-    ec_list <- list("ec_rasterStack_admin1" = ec_rasterStack_admin1,
-                    "ec_rasterStack_admin2" = ec_rasterStack_admin2)
-  }else{
-    ec_list[["ec_rasterStack_admin1"]] <- raster::addLayer(ec_list[["ec_rasterStack_admin1"]], ec_rasterLayer_admin1)
-    ec_list[["ec_rasterStack_admin2"]] <- raster::addLayer(ec_list[["ec_rasterStack_admin2"]], ec_rasterLayer_admin2)
+  ### Save the raster -- suspected cases ********************************************
+  if(save_final_output_raster){
+    ec1_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+                        vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_ec_admin1_", model_year, ".tif")
+    ec2_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+                        vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_ec_admin2_", model_year, ".tif")
+    
+    message(paste("Writing expected true cases rasterStack for", country))
+    dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
+    if( !file.exists(ec1_out_fn) | (file.exists(ec1_out_fn)&clean) ){
+      raster::writeRaster(ec_rasterStack1 / confirmation_multiplier, filename = ec1_out_fn, overwrite = TRUE)}
+    if( !file.exists(ec2_out_fn) | (file.exists(ec2_out_fn)&clean) ){
+      raster::writeRaster(ec_rasterStack2 / confirmation_multiplier, filename = ec2_out_fn, overwrite = TRUE)}
+  
   }
+
+  
+  
+
+  # ec_rasterLayer_admin1 <- raster::calc(ec_rasterStack1 / confirmation_multiplier, fun = mean, na.rm = T)
+  # ec_rasterLayer_admin2 <- raster::calc(ec_rasterStack2 / confirmation_multiplier, fun = mean, na.rm = T)
+      
+  # # append new ec raster layer
+  # if(is.null(ec_list)){
+  #   ec_rasterStack_admin1 <- raster::stack(ec_rasterLayer_admin1)
+  #   ec_rasterStack_admin2 <- raster::stack(ec_rasterLayer_admin2)
+
+  #   ec_list <- list("ec_rasterStack_admin1" = ec_rasterStack_admin1,
+  #                   "ec_rasterStack_admin2" = ec_rasterStack_admin2)
+  # }else{
+  #   ec_list[["ec_rasterStack_admin1"]] <- raster::addLayer(ec_list[["ec_rasterStack_admin1"]], ec_rasterLayer_admin1)
+  #   ec_list[["ec_rasterStack_admin2"]] <- raster::addLayer(ec_list[["ec_rasterStack_admin2"]], ec_rasterLayer_admin2)
+  # }
   
   # rm(ec_rasterLayer_admin1, ec_rasterLayer_admin2, 
   #    pop_rasterLayer, vacc_rasterLayer_admin1, vacc_rasterLayer_admin2,
@@ -198,41 +243,45 @@ surveillance_create_expectedCases <- function(
   ### optimize memory usage
   rm(outbreak_ic_multiplier)
   rm(outbreak_trend_function)
+  rm(sus_rasterLayer1)
+  rm(sus_rasterLayer2)
+  rm(lambda)
+  rm(indirect_rasterLayer)
   rm(overall_multiplier)
   gc()
 
-  ### fixing the MRT issue
-  if(country == 'MRT'){
-    lambda <- raster::setExtent(lambda, raster::extent(shp0), keepres=FALSE, snap=FALSE)
-    pop_rasterLayer <- raster::setExtent(pop_rasterLayer, raster::extent(shp0), keepres=FALSE, snap=FALSE)
-  }
-  
-  ### Save the raw output -- true cases here 
+  ### Save the tables -- true cases here 
   ec_yr1 <- exactextractr::exact_extract(ec_rasterStack1, shp0, fun = "sum", stack_apply = TRUE)
   ec_yr2 <- exactextractr::exact_extract(ec_rasterStack2, shp0, fun = "sum", stack_apply = TRUE)
   ec_vec1 <- as.numeric(ec_yr1)
   ec_vec2 <- as.numeric(ec_yr2)
-  lambda1 <- ec_rasterStack1/pop_rasterLayer
-  lambda2 <- ec_rasterStack2/pop_rasterLayer
+  pop_total <- as.numeric(exactextractr::exact_extract(pop_rasterLayer, shp0, fun = "sum", stack_apply = TRUE))
+  mean_incid1 <- ec_vec1 / pop_total
+  mean_incid2 <- ec_vec2 / pop_total
 
-  #the following mean incidence calculation can be simplified, but will be kept this way for now 
-  mean_incid1 <- exactextractr::exact_extract(
-    lambda1, 
-    shp0, 
-    function(values, coverage_frac, weights){
-      weighted.mean(values, ifelse(is.na(coverage_frac*weights), 0, coverage_frac*weights), na.rm = TRUE)
-    },
-    weights = pop_rasterLayer, 
-    stack_apply = TRUE)
+  # rm(ec_rasterStack1, ec_rasterStack2, pop_rasterLayer)
+  # gc()
 
-  mean_incid2 <- exactextractr::exact_extract(
-    lambda2, 
-    shp0, 
-    function(values, coverage_frac, weights){
-      weighted.mean(values, ifelse(is.na(coverage_frac*weights), 0, coverage_frac*weights), na.rm = TRUE)
-    },
-    weights = pop_rasterLayer, 
-    stack_apply = TRUE)
+  # #the following mean incidence calculation can be simplified, but will be kept this way for now 
+  # lambda1 <- ec_rasterStack1/pop_rasterLayer
+  # lambda2 <- ec_rasterStack2/pop_rasterLayer
+  # mean_incid1 <- exactextractr::exact_extract(
+  #   lambda1, 
+  #   shp0, 
+  #   function(values, coverage_frac, weights){
+  #     weighted.mean(values, ifelse(is.na(coverage_frac*weights), 0, coverage_frac*weights), na.rm = TRUE)
+  #   },
+  #   weights = pop_rasterLayer, 
+  #   stack_apply = TRUE)
+
+  # mean_incid2 <- exactextractr::exact_extract(
+  #   lambda2, 
+  #   shp0, 
+  #   function(values, coverage_frac, weights){
+  #     weighted.mean(values, ifelse(is.na(coverage_frac*weights), 0, coverage_frac*weights), na.rm = TRUE)
+  #   },
+  #   weights = pop_rasterLayer, 
+  #   stack_apply = TRUE)
 
   
   mean_incid_vec1 <- as.numeric(mean_incid1)
@@ -293,7 +342,13 @@ surveillance_create_expectedCases <- function(
   
 
   ### Return the list 
+  ec_list <- list("ec_rasterStack_admin1" = ec_rasterStack1 / confirmation_multiplier,
+                  "ec_rasterStack_admin2" = ec_rasterStack2 / confirmation_multiplier)
+  rm(ec_rasterStack1)
+  rm(ec_rasterStack2)
+
   return(ec_list)
 
 }
+
 

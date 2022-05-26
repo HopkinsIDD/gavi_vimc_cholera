@@ -7,7 +7,7 @@ incid:
   redraw: FALSE
   use_country_incid_trend: TRUE
 vacc:
-  targeting_strategy: 'surveillance_project'
+  targeting_strategy: 'threshold_unconstrained'
   vac_incid_threshold: 0.001
   vac_unconstrained: TRUE
   vac_admin_level: 'both'
@@ -26,3 +26,4 @@ setting:
   random_seed: 1
 optimize:
   save_intermediate_raster: TRUE
+  save_final_output_raster: TRUE

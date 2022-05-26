@@ -79,6 +79,72 @@ update_vac_raster <- function(datapath,
 
 
 
+### Save the multi-layer vac raster 
+save_vac_raster <- function(datapath,
+                            modelpath, 
+                            country, 
+                            nsamples, 
+                            model_year,
+                            input_list, 
+                            rawoutpath = NULL, 
+                            clean = NULL, 
+                            scenario = NULL, 
+                            incidence_rate_trend = NULL, 
+                            outbreak_multiplier = NULL, 
+                            vac_incid_threshold = NULL, 
+                            surveillance_scenario = NULL # input an empty list for the first year, for the following year, input is that list from last year
+                            ){
+  
+  ### Create the file names
+  vac_admin1_fn <- paste0("intermediate_raster/", country, "_vac_admin1_", model_year, ".tif")
+  vac_admin2_fn <- paste0("intermediate_raster/", country, "_vac_admin2_", model_year, ".tif")
+  vac_pop_fn <- paste0("intermediate_raster/", country, "_vac_pop_", model_year, ".tif")
+
+  vac1_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+                        vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_vac_admin1_", model_year, ".tif")
+  vac2_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+                        vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_vac_admin2_", model_year, ".tif")
+  
+
+  ### Convert the structure of the layers 
+  if(!is.null(input_list)){
+    vac_admin1 <- input_list[[1]]$vacc_rasterStack_admin1
+    vac_admin2 <- input_list[[1]]$vacc_rasterStack_admin2
+    vac_pop <- input_list[[1]]$pop_rasterStack #one layer is enough for population 
+
+    for(layer_idx in 2:nsamples){
+      vac_admin1 <- raster::stack(vac_admin1, input_list[[layer_idx]]$vacc_rasterStack_admin1)
+      vac_admin2 <- raster::stack(vac_admin2, input_list[[layer_idx]]$vacc_rasterStack_admin2)
+    }
+
+  }else if(!is.null(rawoutpath)){
+    if( !file.exists(vac1_out_fn) | (file.exists(vac1_out_fn)&clean) ){
+      file.rename(from=vac_admin1_fn, to=vac1_out_fn)}
+    if( !file.exists(vac2_out_fn) | (file.exists(vac2_out_fn)&clean) ){
+      file.rename(from=vac_admin2_fn, to=vac2_out_fn)}
+    return(NULL)
+  }
+
+
+  ### Save 
+  if(is.null(rawoutpath)){
+    dir.create(paste0("intermediate_raster/"), showWarnings = FALSE)
+    raster::writeRaster(vac_admin1, filename = vac_admin1_fn, overwrite = TRUE)
+    raster::writeRaster(vac_admin2, filename = vac_admin2_fn, overwrite = TRUE)
+    raster::writeRaster(vac_pop, filename = vac_pop_fn, overwrite = TRUE)
+  }else{
+    message(paste("Writing proportion vaccinated rasterStack for", country))
+    dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
+    if( !file.exists(vac1_out_fn) | (file.exists(vac1_out_fn)&clean) ){
+      raster::writeRaster(vac_admin1, filename = vac1_out_fn, overwrite = TRUE)}
+    if( !file.exists(vac2_out_fn) | (file.exists(vac2_out_fn)&clean) ){
+      raster::writeRaster(vac_admin2, filename = vac2_out_fn, overwrite = TRUE)}
+  }
+
+}
+
+
+
 ### This function will not be called because the first one will suffice from now 
 create_first_year_vac_raster <- function( datapath, modelpath, country,
                                           model_year, rc_list,

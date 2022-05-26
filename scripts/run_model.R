@@ -112,7 +112,7 @@ dir.create(ropathname, showWarnings = FALSE)
 dir.create(opathname, showWarnings = FALSE)
 
 #### Run model -- where different projects diverge 
-if(config$vacc$targeting_strategy == 'surveillance_project'){
+if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
   ### The surveillance project
   ##tmp: all new functions should be called first
   source("scripts_in_development/run_surveillance_scenario.R")

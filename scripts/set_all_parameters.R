@@ -10,7 +10,8 @@ countries <- c("COD", "GHA", "MRT", "NGA", "TZA") #for testing, temporary
 
 #====== Surveillance Project Specific ======#
 save_intermediate_raster <- TRUE
-targeting_strategy <- "surveillance_project" #c("surveillance_project", "affected_pop", "incidence")
+save_final_output_raster <- TRUE
+targeting_strategy <- "threshold_unconstrained" #c("threshold_unconstrained", "affected_pop", "incidence")
 vac_incid_threshold <- 1/1000 #c(1/1000, 1/5000, 1/10000), use one at a time for now
 vac_unconstrained <- TRUE #or refer to an external coverage dataset 
 vac_admin_level <- "both" #only support "both" for now, which means admin1 and admin2 will be simulated at the same time 

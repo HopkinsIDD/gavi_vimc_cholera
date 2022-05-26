@@ -8,7 +8,7 @@
 #' @return Message returning name of yaml config file 
 #' @export
 prepare_config <- function(p, configpath){
-  if(!p$targeting == "surveillance_project"){
+  if(!p$targeting == "threshold_unconstrained"){
     config_name <- paste0(configpath, "/", paste(p$country, p$scenario, p$nsamples, sep = "_"), ".yml")
     sink(file = config_name)
 
@@ -32,7 +32,7 @@ prepare_config <- function(p, configpath){
 
     sink()
 
-  }else if(p$targeting == "surveillance_project"){
+  }else if(p$targeting == "threshold_unconstrained"){
     config_name <- paste0(configpath, "/", paste(p$country, p$scenario, p$surveillance_scenario, p$nsamples, sep = "_"), ".yml") #for now 
     sink(file = config_name)
 
@@ -64,7 +64,8 @@ prepare_config <- function(p, configpath){
       "  outbreak_multiplier: ", p$outbreak_multiplier, "\n", 
       "  random_seed: ", p$random_seed, "\n", 
       "optimize:\n",
-      "  save_intermediate_raster: ", p$save_intermediate_raster, "\n"
+      "  save_intermediate_raster: ", p$save_intermediate_raster, "\n", 
+      "  save_final_output_raster: ", p$save_final_output_raster, "\n"
     ))
 
     sink()
