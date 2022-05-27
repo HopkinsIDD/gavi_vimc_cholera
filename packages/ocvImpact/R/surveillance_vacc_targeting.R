@@ -1,20 +1,11 @@
-# This is the draft code for VIMC model updates
-
-# Main changes: the updated model should incorporate incidence reduction after every round of campaign
-# so it is generally repetitions of:
-# 0) prepare baseline incidence tables (admin1 & admin2);
-# 1) select places to target and mark which areas are targeted and which are not in that year;
-# 2) get the number n: this is the n-th year after the latest campaign in an area (represented by n_years_since_last_campaign column in the incidence tables);
-# 3) get raster of susceptibles/incidence (considering direct and indirect effect of the latest campaign), 
-#    based on the last year's incidence and n_years_since_last_campaign+1 (time elapse since the latest vacc campaign, might need this to get the residual vaccine effect)
-# 4) update/calculate incidence tables based on the susceptible raster, which is the input for the next round of targeting
-# ... (repeat the process every year)
-
-
-#### PENDING: need to incorporate the proportion positive
-# confirmation rate is a raster? or it is vector with one value for each admin ? might need to use this to calculate the true incidence (the true incidence will be compared to the threshold)
-
-# Function to load admin0 level shp
+#' @name load_shp0_by_country
+#' @title load_shp0_by_country
+#' @description load_shp0_by_country
+#' @param datapath path to input data 
+#' @param country country code 
+#' @return 
+#' @export
+#' @include
 load_shp0_by_country <- function(datapath, country){
   
   tryCatch(
@@ -32,7 +23,15 @@ load_shp0_by_country <- function(datapath, country){
   return(shp)
 }
 
-# Function to load admin1 level shp
+#' @name load_shp1_by_country
+#' @title load_shp1_by_country
+#' @description load_shp1_by_country
+#' @param datapath path to input data 
+#' @param country country code 
+#' @param simple return country level shapefile is TRUE  
+#' @return 
+#' @export
+#' @include
 load_shp1_by_country <- function(datapath, country, simple = FALSE){
   
   tryCatch(
@@ -54,9 +53,16 @@ load_shp1_by_country <- function(datapath, country, simple = FALSE){
   return(shp)
 }
 
-# function to load admin2 level shp
+#' @name load_shp2_by_country
+#' @title load_shp2_by_country
+#' @description load_shp2_by_country
+#' @param datapath path to input data 
+#' @param country country code 
+#' @param simple return country level shapefile is TRUE  
+#' @return 
+#' @export
+#' @include
 load_shp2_by_country <- function(datapath, country, simple = FALSE){
-  
   
   tryCatch(
     {
@@ -77,12 +83,26 @@ load_shp2_by_country <- function(datapath, country, simple = FALSE){
   return(shp)
 }
 
-
-
-# function to load baseline incidence of a country at both admin1 and admin2 level
-# return a list containing two tables(one for admin1 and one for admin2)
-# each table contains admin info, baseline incidence, and pop_prop
-
+#' @name load_baseline_incidence
+#' @title load_baseline_incidence
+#' @description from lambda to incidence rate look-up table to rc_list 
+#' @param datapath
+#' @param modelpath
+#' @param country  
+#' @param campaign_cov
+#' @param baseline_year
+#' @param first_vacc_year
+#' @param incidence_rate_trend
+#' @param use_country_incid_trend
+#' @param shp0
+#' @param shp1
+#' @param shp2
+#' @param random_seed
+#' @param nsamples
+#' @param redraw
+#' @return 
+#' @export
+#' @include
 load_baseline_incidence <- function(datapath, 
                                     modelpath, 
                                     country, 
@@ -98,27 +118,13 @@ load_baseline_incidence <- function(datapath,
                                     nsamples, 
                                     redraw){
   
-  ## incidence data -- using the 1000-layer raster and draw layers according to the pre-generated country-level incidence rate raster ##
-  # set.seed(random_seed)
-  # layer_indexes <- sort(sample(1:1000, nsamples, replace=TRUE))
-
-  # message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
-  # afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
-  # afr_sample <- raster::subset(afr, layer_indexes, drop = FALSE)
-  # country_baseline <- raster::mask(raster::crop(raster::stack(afr), shp0, snap = "out"), shp0, updatevalue = NA)
-  # rm(afr)
-
-  # load the incidence rate raster and initialize the rc_list 
+  ## load the incidence rate raster and initialize the rc_list 
   country_baseline <- create_incid_raster(modelpath, datapath, country, nsamples, redraw, random_seed)
   rc_list <- NULL
-  # load population data of the first year 
+
+  ## load population data of the first year 
   pop_baseline <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, baseline_year)
-  # adjust country_baseline so that it's in line with the expected cases rasters in the future (more NA cells after multiplying it with pop raster)
-  # pop_baseline[!is.na(raster::values(pop_baseline)), ] <- 1 
-  # country_baseline <- raster::resample(country_baseline, pop_baseline)
-  # country_baseline <- country_baseline * pop_baseline
-
-
+  
   ## if the incidence rate trend should be implemented 
   if(incidence_rate_trend){
     incid_trend_function <- ocvImpact::generate_flatline_multiplier(
@@ -205,24 +211,37 @@ load_baseline_incidence <- function(datapath,
 
   }
 
-
-  
+  ## Clean up and return 
   rm(rc_list_single_layer)
   rm(pop1, pop2)
   rm(rc1, rc2)
   gc()
   
   return(rc_list)
-  
 }
 
-
-
-# Function to update target indicator (is_target column) and vaccine coverage (actual_prop_vaccinated column)
-# is_target: to mark whether a place in a certain year is targeted or not 
-# actual_prop_vaccinated: if that place is vaccinated, then this is campaign_cov = 0.8, if it that place is not vaccinated, then it is 0.
+#' @name update_targets_list
+#' @title update_targets_list
+#' @description update targets in the rc_list
+#' @param datapath path to input data 
+#' @param modelpath 
+#' @param country
+#' @param scenario 
+#' @param rc_list 
+#' @param model_year
+#' @param campaign_cov
+#' @param threshold
+#' @param vac_unconstrained
+#' @param surveillance_scenario
+#' @param vac_interval country level skipped years 
+#' @param vac_start_year
+#' @param vac_end_year 
+#' @param num_skip_years district level skipped years 
+#' @return 
+#' @export
+#' @include
 update_targets_list <- function(datapath, modelpath, country, scenario, 
-                                rc_list, model_year, #here the baseline year is the first vacc year, but it's not likely to be used 
+                                rc_list, model_year, 
                                 campaign_cov, 
                                 threshold, vac_unconstrained, 
                                 surveillance_scenario, 
@@ -268,8 +287,14 @@ update_targets_list <- function(datapath, modelpath, country, scenario,
   return(rc_list) # updated with latest targets of this year
 }
 
-
-
+#' @name update_novacc_year
+#' @title update_novacc_year
+#' @description update the targets in the list if it's not a vaccination campaign year 
+#' @param rc_list
+#' @param model_year
+#' @return 
+#' @export
+#' @include
 update_novacc_year <- function(rc_list, model_year){
   # Update the latest target year, if all NA's from last year or this is the first simulation year, no need to update
   if(model_year > min(rc_list$rc1$year)){ 
@@ -287,11 +312,26 @@ update_novacc_year <- function(rc_list, model_year){
   ### this is where we might need to include the waning effects of vaccines, but we're not doing it for the time being
 }
 
-
-
-update_vacc_year <- function(datapath, modelpath, country, rc_list, model_year, 
-                            campaign_cov, threshold, surveillance_scenario, 
-                            vac_start_year, vac_end_year, num_skip_years){
+#' @name update_vacc_year
+#' @title update_vacc_year
+#' @description update the targets in the list if it's a vaccination campaign year 
+#' @param datapath
+#' @param modelpath
+#' @param country
+#' @param rc_list
+#' @param model_year
+#' @param campaign_cov
+#' @param threshold
+#' @param surveillance_scenario
+#' @param vac_start_year
+#' @param vac_end_year
+#' @param num_skip_years
+#' @return 
+#' @export
+#' @include
+update_vacc_year <- function( datapath, modelpath, country, rc_list, model_year, 
+                              campaign_cov, threshold, surveillance_scenario, 
+                              vac_start_year, vac_end_year, num_skip_years  ){
   ### Put on the confirmation lens 
   ## Read in
   message(paste0("Loading ", datapath, "/confirmation_rate/parameters.csv"))
@@ -340,8 +380,14 @@ update_vacc_year <- function(datapath, modelpath, country, rc_list, model_year,
   return(rc_list)               
 }
 
-
-
+#' @name get_confirmed_incidence_rate
+#' @title get_confirmed_incidence_rate
+#' @description to get confirmed incidence rate in the rc_list 
+#' @param datapath path to input data 
+#' @param country country code 
+#' @return 
+#' @export
+#' @include
 get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scenario, omicron_dataset){
   ##### The same district/country can only use the same confirmation rate across years but different across layers 
 
@@ -383,23 +429,6 @@ get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scena
             rc_list$rc2[rc_list$rc2$year == model_year-1 & rc_list$rc2$NAME_1 == dist1 & rc_list$rc2$NAME_2 == dist2, ]$confirmation_rate
         }
       }
-      # # Dist 1
-      # tmp <- rc_list$rc1 %>% 
-      #   dplyr::filter(year == min(rc_list$rc1$year, na.rm = T)) %>% 
-      #   dplyr::rename(confirmation_rate_1 = confirmation_rate) %>% 
-      #   dplyr::select(confirmation_rate_1)
-      # rc_list$rc1 <- sf::st_join(rc_list$rc1, tmp) %>% 
-      #   dplyr::mutate(confirmation_rate = confirmation_rate_1) %>% 
-      #   dplyr::select( - confirmation_rate_1)
-      # # Dist 2
-      # tmp <- rc_list$rc2 %>% 
-      #   filter(year == min(rc_list$rc2$year, na.rm = T)) %>% 
-      #   rename(confirmation_rate_1 = confirmation_rate) %>% 
-      #   select(confirmation_rate_1)
-      # rc_list$rc2 <- sf::st_join(rc_list$rc2, tmp) %>% 
-      #   mutate(confirmation_rate = confirmation_rate_1) %>% 
-      #   select( - confirmation_rate_1)
-      # rm(tmp)
     }
 
   }
@@ -411,8 +440,21 @@ get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scena
   return(rc_list)
 }
 
-
-
+#' @name surveillance_add_rc_new_row
+#' @title surveillance_add_rc_new_row
+#' @description quite similar to the load baseline incidence function, but focused on using the expected cases raster and adding new rows instead 
+#' @param rc_list
+#' @param ec_list
+#' @param pop
+#' @param model_year
+#' @param sim_start_year
+#' @param sim_end_year
+#' @param shp1
+#' @param shp2
+#' @param nsamples
+#' @return 
+#' @export
+#' @include
 surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_start_year, sim_end_year, shp1, shp2, nsamples){
 
   ## Prepare

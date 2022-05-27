@@ -6,13 +6,16 @@
 #' @param country country code
 #' @param scenario Unique string that identifies the coverage scenario name
 #' @param rawoutpath path to raw model output files
-#' @param vacc_alloc object returned from [`allocate_vaccine()`]
 #' @param indirect_mult function for calculating indirect effects
 #' @param secular_trend_mult function for calculating secular trends in mean annual incidence
 #' @param nsamples number of stochastic samples to use
-#' @param is_cf logical indicating whether to run counterfactual model
+#' @param clean
 #' @param redraw logical indicate whether to redraw incidence raster samples; pass to [`create_incid_raster()`]
-#' @return dataframe with 
+#' @param sus_list
+#' @param pop
+#' @param model_year
+#' @param config
+#' @return
 #' @export
 #' @include utils.R utils_montagu.R create_incid_raster.R load_shapefile_by_country.R 
 surveillance_create_expectedCases <- function(
@@ -21,11 +24,9 @@ surveillance_create_expectedCases <- function(
   country,
   scenario,
   rawoutpath,
-  vacc_alloc,
   indirect_mult,
   secular_trend_mult,
   nsamples,
-  is_cf,
   clean, 
   redraw, 
   sus_list, 
@@ -212,7 +213,7 @@ surveillance_create_expectedCases <- function(
     ec2_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
                         vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_ec_admin2_", model_year, ".tif")
     
-    message(paste("Writing expected true cases rasterStack for", country))
+    message(paste("Writing expected suspected cases rasterStack for", country))
     dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
     if( !file.exists(ec1_out_fn) | (file.exists(ec1_out_fn)&clean) ){
       raster::writeRaster(ec_rasterStack1 / confirmation_multiplier, filename = ec1_out_fn, overwrite = TRUE)}
@@ -222,32 +223,6 @@ surveillance_create_expectedCases <- function(
   }
 
   
-  
-
-  # ec_rasterLayer_admin1 <- raster::calc(ec_rasterStack1 / confirmation_multiplier, fun = mean, na.rm = T)
-  # ec_rasterLayer_admin2 <- raster::calc(ec_rasterStack2 / confirmation_multiplier, fun = mean, na.rm = T)
-      
-  # # append new ec raster layer
-  # if(is.null(ec_list)){
-  #   ec_rasterStack_admin1 <- raster::stack(ec_rasterLayer_admin1)
-  #   ec_rasterStack_admin2 <- raster::stack(ec_rasterLayer_admin2)
-
-  #   ec_list <- list("ec_rasterStack_admin1" = ec_rasterStack_admin1,
-  #                   "ec_rasterStack_admin2" = ec_rasterStack_admin2)
-  # }else{
-  #   ec_list[["ec_rasterStack_admin1"]] <- raster::addLayer(ec_list[["ec_rasterStack_admin1"]], ec_rasterLayer_admin1)
-  #   ec_list[["ec_rasterStack_admin2"]] <- raster::addLayer(ec_list[["ec_rasterStack_admin2"]], ec_rasterLayer_admin2)
-  # }
-  
-  # rm(ec_rasterLayer_admin1, ec_rasterLayer_admin2, 
-  #    pop_rasterLayer, vacc_rasterLayer_admin1, vacc_rasterLayer_admin2,
-  #    sus_rasterLayer_admin1, sus_rasterLayer_admin2)
-  # gc()
-  
-  # return(ec_list)
-
-
-
   ### optimize memory usage
   rm(outbreak_ic_multiplier)
   rm(outbreak_trend_function)
@@ -258,7 +233,8 @@ surveillance_create_expectedCases <- function(
   rm(overall_multiplier)
   gc()
 
-  ### Save the tables -- true cases here 
+
+  ### Save the tables -- true cases here ********************************************
   ec_yr1 <- exactextractr::exact_extract(ec_rasterStack1, shp0, fun = "sum", stack_apply = TRUE)
   ec_yr2 <- exactextractr::exact_extract(ec_rasterStack2, shp0, fun = "sum", stack_apply = TRUE)
   ec_vec1 <- as.numeric(ec_yr1)
@@ -267,31 +243,6 @@ surveillance_create_expectedCases <- function(
   mean_incid1 <- ec_vec1 / pop_total
   mean_incid2 <- ec_vec2 / pop_total
 
-  # rm(ec_rasterStack1, ec_rasterStack2, pop_rasterLayer)
-  # gc()
-
-  # #the following mean incidence calculation can be simplified, but will be kept this way for now 
-  # lambda1 <- ec_rasterStack1/pop_rasterLayer
-  # lambda2 <- ec_rasterStack2/pop_rasterLayer
-  # mean_incid1 <- exactextractr::exact_extract(
-  #   lambda1, 
-  #   shp0, 
-  #   function(values, coverage_frac, weights){
-  #     weighted.mean(values, ifelse(is.na(coverage_frac*weights), 0, coverage_frac*weights), na.rm = TRUE)
-  #   },
-  #   weights = pop_rasterLayer, 
-  #   stack_apply = TRUE)
-
-  # mean_incid2 <- exactextractr::exact_extract(
-  #   lambda2, 
-  #   shp0, 
-  #   function(values, coverage_frac, weights){
-  #     weighted.mean(values, ifelse(is.na(coverage_frac*weights), 0, coverage_frac*weights), na.rm = TRUE)
-  #   },
-  #   weights = pop_rasterLayer, 
-  #   stack_apply = TRUE)
-
-  
   mean_incid_vec1 <- as.numeric(mean_incid1)
   mean_incid_vec2 <- as.numeric(mean_incid2)
   rc1 <- tibble::tibble(country = country, incidence_rate_trend = incidence_rate_trend, outbreak_multiplier = outbreak_multiplier, 
@@ -301,8 +252,7 @@ surveillance_create_expectedCases <- function(
                         vac_incid_threshold = vac_incid_threshold, surveillance_scenario = surveillance_scenario, 
                         year = oy, run_id = seq_along(ec_vec2), ec = ec_vec2, incid_rate = mean_incid_vec2)
 
-
-  ### External dataset 
+  ## External dataset 
   dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
   ec_out_fn1 <- paste0(rawoutpath, "/", scenario, "/", country, "_ec_admin1.csv")
   ec_out_fn2 <- paste0(rawoutpath, "/", scenario, "/", country, "_ec_admin2.csv")
@@ -349,8 +299,8 @@ surveillance_create_expectedCases <- function(
   readr::write_csv(ec_out2, ec_out_fn2)
   
 
-  ### Return the list 
-  message("Finished calculating expected cases now. ")
+  ### Return the list -- suspected cases ********************************************
+  message("Finished calculating expected cases and generating the new ec_list that contains suspected cases. ")
   message(Sys.time())
   ec_list <- list("ec_rasterStack_admin1" = ec_rasterStack1 / confirmation_multiplier,
                   "ec_rasterStack_admin2" = ec_rasterStack2 / confirmation_multiplier)

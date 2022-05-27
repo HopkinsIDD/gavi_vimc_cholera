@@ -97,7 +97,7 @@ targeting <- config$vacc$targeting_strategy
 nskipyears <- config$vacc$num_skip_years
 cln <- config$clean
 
-random_seed <- as.numeric(config$setting$random_seed) #this one will be used through redrawing incidence rate raster and generating other rasters
+# random_seed <- as.numeric(config$setting$random_seed) #this one will be used through redrawing incidence rate raster and generating other rasters
 # set.seed(random_seed)
 # rm(random_seed)
 
@@ -115,13 +115,13 @@ dir.create(opathname, showWarnings = FALSE)
 if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
   ### The surveillance project
   ##tmp: all new functions should be called first
-  source("scripts_in_development/run_surveillance_scenario.R")
-  source("scripts_in_development/surveillance_vacc_targeting.R") #add more later 
-  source("scripts_in_development/surveillance_pop_weighted_incid.R")
-  source("scripts_in_development/surveillance_update_vac_raster.R")
-  source("scripts_in_development/surveillance_update_sus_raster.R")
-  source("scripts_in_development/surveillance_true_confirmation_rate.R")
-  source("scripts_in_development/surveillance_create_expectedCases.R")
+  # source("scripts_in_development/run_surveillance_scenario.R")
+  # source("scripts_in_development/surveillance_vacc_targeting.R") #add more later 
+  # source("scripts_in_development/surveillance_pop_weighted_incid.R")
+  # source("scripts_in_development/surveillance_update_vac_raster.R")
+  # source("scripts_in_development/surveillance_update_sus_raster.R")
+  # source("scripts_in_development/surveillance_true_confirmation_rate.R")
+  # source("scripts_in_development/surveillance_create_expectedCases.R")
 
   message(paste0(" --- Running Surveillance Project: ", country)) #needs to add more
   run_surveillance_scenario( 
@@ -134,9 +134,8 @@ if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
     clean = cln,
     redraw = redrawIncid,
     config = config #all new parameters that would be used will be read in as one config file 
-  ) #just raw output for now
+  ) 
 
-  ## organize the output -- leave it empty for now 
 
 }else{
   ### The VIMC project 
@@ -168,5 +167,5 @@ if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
   message(paste("End script:", runname, country, scenario, nsamples, targeting))
 }
 
-rm(list = ls()) #temp *******************************************************************
-gc() #temp ******************************************************************************
+# rm(list = ls()) #temp *******************************************************************
+# gc() #temp ******************************************************************************

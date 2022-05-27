@@ -1,4 +1,18 @@
-# Function: update_input_rasterStack() to get the input rasterstack
+#' @name update_vac_raster
+#' @title update_vac_raster
+#' @description update_vac_raster one at a time 
+#' @param datapath
+#' @param modelpath
+#' @param country
+#' @param scenario
+#' @param rawoutpath
+#' @param rc_list
+#' @param model_year
+#' @param pop
+#' @param input_list
+#' @return 
+#' @export
+#' @include
 update_vac_raster <- function(datapath,
                               modelpath, 
                               country, 
@@ -85,9 +99,25 @@ update_vac_raster <- function(datapath,
   
 }
 
-
-
-### Save the multi-layer vac raster 
+#' @name save_vac_raster
+#' @title save_vac_raster
+#' @description save_vac_raster
+#' @param datapath
+#' @param modelpath
+#' @param country
+#' @param nsamples
+#' @param model_year
+#' @param input_list
+#' @param rawoutpath
+#' @param clean
+#' @param scenario
+#' @param incidence_rate_trend
+#' @param outbreak_multiplier
+#' @param vac_incid_threshold
+#' @param surveillance_scenario
+#' @return 
+#' @export
+#' @include
 save_vac_raster <- function(datapath,
                             modelpath, 
                             country, 
@@ -152,62 +182,3 @@ save_vac_raster <- function(datapath,
 }
 
 
-
-### This function will not be called because the first one will suffice from now 
-create_first_year_vac_raster <- function( datapath, modelpath, country,
-                                          model_year, rc_list,
-                                          pop){
-
-    message("Loading first layer of population and vaccination proportion rasterStack.")
-    
-    raster0_template <- raster::calc(pop, fun = function(x){ifelse(!is.na(x), 0, NA)})
-    shp1_targeted <- rc_list[[1]][rc_list[[1]]$year == model_year & rc_list[[1]]$is_target == 1, ]
-    shp2_targeted <- rc_list[[2]][rc_list[[2]]$year == model_year & rc_list[[2]]$is_target == 1, ]
-
-    # check point: if there is not a single place targeted this year.
-    if(nrow(shp1_targeted) == 0){
-      
-      message(paste("There is no admin 1 level areas vaccinated in", model_year, "in", country, "."))
-      startvacc_raster_admin1 <- raster0_template
-    
-    }else{
-      startvacc_raster_admin1 <- fasterize::fasterize(
-        shp1_targeted,
-        raster0_template,
-        field = "actual_prop_vaccinated",
-        fun = "last",
-        background = 0
-      )
-      startvacc_raster_admin1 <- raster::mask(startvacc_raster_admin1, raster0_template, updatevalue = NA)
-    }
-
-    if(nrow(shp2_targeted) == 0){
-      
-      message(paste("There is no admin 2 level areas vaccinated in", model_year, "in", country, "."))
-      startvacc_raster_admin2 <- raster0_template
-    
-    }else{
-      startvacc_raster_admin2 <- fasterize::fasterize(
-        shp2_targeted,
-        raster0_template,
-        field = "actual_prop_vaccinated",
-        fun = "last",
-        background = 0
-      )
-      startvacc_raster_admin2 <- raster::mask(startvacc_raster_admin2, raster0_template, updatevalue = NA)
-    }
-
-    # stack
-    vacc_rasterStack_admin1 <- raster::stack(startvacc_raster_admin1)
-    vacc_rasterStack_admin2 <- raster::stack(startvacc_raster_admin2)
-    pop_rasterStack <- raster::stack(pop)
-
-    input_list = list("vacc_rasterStack_admin1" = vacc_rasterStack_admin1,
-                      "vacc_rasterStack_admin2" = vacc_rasterStack_admin2,
-                      "pop_rasterStack" = pop_rasterStack)
-    
-    rm(vacc_rasterStack_admin1, vacc_rasterStack_admin2, pop_rasterStack)
-
-    return(input_list)
-    
-}

@@ -1,5 +1,19 @@
-# Function updating proportion susceptible raster stack
-# proportion susceptible is based on proportion vaccinated, considering both population migration (death) and vaccine waning effect (ve_direct)
+#' @name update_sus_rasterStack_optimized
+#' @title update_sus_rasterStack_optimized
+#' @description update multi-layer sus rasterStack at one time 
+#' @param datapath
+#' @param modelpath
+#' @param country
+#' @param scenario
+#' @param rawoutpath
+#' @param pop
+#' @param ve_direct
+#' @param baseline_year
+#' @param model_year
+#' @param last_vac_ef_year the last year when vac is still effective after received 
+#' @return 
+#' @export
+#' @include
 update_sus_rasterStack_optimized <- function( datapath, 
                                               modelpath,
                                               country, 
@@ -20,6 +34,7 @@ update_sus_rasterStack_optimized <- function( datapath,
   tmp1 <- raster1_template
   tmp2 <- raster1_template
 
+  #### For the campaign scenario 
   if(scenario == 'campaign-default'){
 
     ### First make sure that the last vaccine effective year is the 5th year 
@@ -27,23 +42,15 @@ update_sus_rasterStack_optimized <- function( datapath,
       stop("The last vaccine effective year is not the 5th year, please check the update_sus_rasterStack_optimized function and change the preset value. ")
     }
     
-    # ### Create the file names 
-    # vac_admin1_fn <- paste0("intermediate_raster/", country, "_vac_admin1_", model_year, ".tif")
-    # vac_admin2_fn <- paste0("intermediate_raster/", country, "_vac_admin2_", model_year, ".tif")
-    # vac_pop_fn <- paste0("intermediate_raster/", country, "_vac_pop_", model_year, ".tif")
-
-    
-    # vac_pop_fn <- paste0("intermediate_raster/", country, "_vac_pop_", model_year, ".tif")
-    # pop_rasterStack <- raster::stack(vac_pop_fn)
+    ### population and year j
     j <- model_year - baseline_year + 1
-    # vac_pop_fn <- paste0("intermediate_raster/", country, "_vac_pop_", model_year, ".tif")
-    # popj <- raster::stack(vac_pop_fn)
     popj <- pop
 
-    # get life expectancy data from file       
+    ### get life expectancy data from file       
     mu <- 1/(import_country_lifeExpectancy_1yr(modelpath, country, model_year))
-    message(paste("Modeling susceptibility:", country, model_year, 1/mu, "life expectancy"))
+    message(paste("Modeling campaign scenario susceptibility:", country, model_year, 1/mu, "life expectancy"))
 
+    ### loop through the previous years 
     for (year in max(baseline_year, model_year-last_vac_ef_year+1):model_year){
       
       k <- year - baseline_year + 1 
@@ -83,8 +90,25 @@ update_sus_rasterStack_optimized <- function( datapath,
 
 }
 
-
-
+#' @name save_sus_raster
+#' @title save_sus_raster
+#' @description save_sus_raster
+#' @param datapath
+#' @param modelpath
+#' @param country
+#' @param nsamples
+#' @param model_year
+#' @param sus_list
+#' @param rawoutpath
+#' @param clean
+#' @param scenario
+#' @param incidence_rate_trend
+#' @param outbreak_multiplier
+#' @param vac_incid_threshold
+#' @param surveillance_scenario
+#' @return 
+#' @export
+#' @include
 save_sus_raster <- function(datapath, modelpath, country, nsamples, model_year, sus_list, 
                             rawoutpath = NULL, 
                             clean = NULL, 
@@ -145,8 +169,23 @@ save_sus_raster <- function(datapath, modelpath, country, nsamples, model_year, 
 
 }
 
-
-
+#' @name update_sus_rasterStack
+#' @title update_sus_rasterStack
+#' @description update one sus rasterStack at a time 
+#' @param datapath
+#' @param modelpath
+#' @param country
+#' @param scenario
+#' @param rawoutpath
+#' @param pop
+#' @param ve_direct
+#' @param baseline_year
+#' @param model_year
+#' @param input_list
+#' @param sus_list 
+#' @return 
+#' @export
+#' @include
 update_sus_rasterStack <- function(datapath, 
                                    modelpath,
                                    country, 
@@ -226,9 +265,7 @@ update_sus_rasterStack <- function(datapath,
   # align raster to the extent and resolution of the worldpop rasters and GADM shapefiles -- necessary? 
   sus_rs_admin1 <- sus_rasterStack_admin1
   sus_rs_admin2 <- sus_rasterStack_admin2
-  # sus_rs_admin1 <- align_rasters(datapath, country, sus_rasterStack_admin1)
-  # sus_rs_admin2 <- align_rasters(datapath, country, sus_rasterStack_admin2)
-    
+   
   rm(raster1_template, pop_rasterStack, vacc_rasterStack_admin1, vacc_rasterStack_admin2,
       sus_rasterStack_admin1, sus_rasterStack_admin2)
   gc()
@@ -241,25 +278,3 @@ update_sus_rasterStack <- function(datapath,
 }
 
 
-
-### The following function will be called if the assumption that the vacc begins and finishes at the start of the year and affects the whole year's cases 
-# function to load the susceptible rasterStack list for the first year
-create_first_year_sus <- function(datapath, modelpath, country, scenario, rawoutpath,
-                                  rc_list, ve_direct,
-                                  baseline_year, 
-                                  pop,
-                                  input_list, # generated from update_input_rasterStack() function
-                                  clean){
-    
-    raster1_template <- raster::calc(pop, fun = function(x){ifelse(x>0, x/x, 0)})
-    message("Loading the first layer of proportion susceptible rasterStack.")
-
-    # assume full susceptibility in the first year
-    sus_rasterStack <- raster::stack(raster1_template)
-    
-    sus_list <- list("sus_rasterStack_admin1" = sus_rasterStack,
-                     "sus_rasterStack_admin2" = sus_rasterStack)
- 
-    return(sus_list)
-    rm(raster1_template, sus_rasterStack)
-}

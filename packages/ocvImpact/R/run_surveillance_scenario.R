@@ -16,7 +16,7 @@
 #' @param ... Optional parameters to pass to [`assign_vaccine_targets()`]. See [`assign_vaccine_targets()`] for defaults.
 #' @return 
 #' @export
-#' @include utils.R create_static_modelInputs.R create_sus_modelInputs.R create_expectedCases.R
+#' @include utils.R surveillance_create_expectedCases.R surveillance_pop_weighted_incid.R surveillance_true_confirmation_rate.R surveillance_update_sus_raster.R surveillance_update_vac_raster.R surveillance_vacc_targeting.R
 run_surveillance_scenario <- function(
   datapath, 
   modelpath, 
@@ -135,20 +135,15 @@ run_surveillance_scenario <- function(
 
 
     #### Get the expected cases for the year
-    # indirect_mult = generate_indirect_incidence_mult() #temp, will be deleted **************************************
-    # secular_trend_mult = function(a,b,c,d){return(a*b*c*d)} #temp, will be deleted **************************************
-    # if(!exists("ec_list")){ec_list <- NULL}
     ec_list <- surveillance_create_expectedCases( datapath, 
                                                   modelpath, 
                                                   country, 
                                                   scenario, 
                                                   rawoutpath, 
-                                                  vacc_alloc = NULL, 
                                                   indirect_mult, 
                                                   secular_trend_mult, 
                                                   nsamples, 
-                                                  is_cf = TRUE, 
-                                                  clean = clean, 
+                                                  clean, 
                                                   redraw, 
                                                   sus_list, 
                                                   pop, 
@@ -167,7 +162,7 @@ run_surveillance_scenario <- function(
 
 
 
-  ##### Write output files
+  ##### Write output files and clean up 
   if(save_final_output_raster){
   # vaccination proportion and susceptible proportion rasterStack
     for(model_year in sim_start_year:sim_end_year){
@@ -184,29 +179,6 @@ run_surveillance_scenario <- function(
   file.remove(paste0("intermediate_raster/", country, c("_sus_admin2_"), (sim_start_year:sim_end_year), ".tif"))
   file.remove(paste0("intermediate_raster/", country, c("_vac_admin2_"), (sim_start_year:sim_end_year), ".tif"))
   file.remove(paste0("intermediate_raster/", country, c("_vac_pop_"), (sim_start_year:sim_end_year), ".tif"))
-
-  # # proportion susceptible rasterStack
-  # dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
-  # sus1_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
-  #                       vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_sus_admin1.tif")
-  # sus2_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
-  #                       vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_sus_admin2.tif")
-  # message(paste("Writing proportion susceptible rasterStack for", country))
-  # if( !file.exists(sus1_out_fn) | (file.exists(sus1_out_fn)&clean) ){
-  #   raster::writeRaster(sus_list[["sus_rasterStack_admin1"]], filename = sus1_out_fn, overwrite = TRUE)}
-  # if( !file.exists(sus2_out_fn) | (file.exists(sus2_out_fn)&clean) ){
-  #   raster::writeRaster(sus_list[["sus_rasterStack_admin2"]], filename = sus2_out_fn, overwrite = TRUE)}
-  
-  # # expected cases rasterStack
-  # ec1_out_fn <- paste0( rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
-  #                       vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_ec_admin1.tif")
-  # ec2_out_fn <- paste0( rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
-  #                       vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_ec_admin2.tif")
-  # message(paste("Writing expected cases rasterStack for", country))
-  # if( !file.exists(ec1_out_fn) | (file.exists(ec1_out_fn)&clean) ){
-  #   raster::writeRaster(ec_list[["ec_rasterStack_admin1"]], filename = ec1_out_fn, overwrite = TRUE)}
-  # if( !file.exists(ec2_out_fn) | (file.exists(ec2_out_fn)&clean) ){
-  #   raster::writeRaster(ec_list[["ec_rasterStack_admin2"]], filename = ec2_out_fn, overwrite = TRUE)}
   
   # rc_list with incidence and targeted area of each modeled year -- only save the first one for now
   rc1_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
@@ -220,7 +192,6 @@ run_surveillance_scenario <- function(
     readr::write_csv(rc1, rc1_out_fn)}
   if( !file.exists(rc2_out_fn) | (file.exists(rc2_out_fn)&clean) ){
     readr::write_csv(rc2, rc2_out_fn)}
-  
   
   
   message(paste("End of simulating vaccination campaigns in", country, "from", sim_start_year, "to", sim_end_year))
