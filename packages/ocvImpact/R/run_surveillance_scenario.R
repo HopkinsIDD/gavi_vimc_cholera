@@ -70,7 +70,9 @@ run_surveillance_scenario <- function(
   for(model_year in sim_start_year:sim_end_year){
     
     #### Update the list of districts to target at the beginning of a year -- this is where stochasticity introduced due to random draw of confirmation rates
-    message(paste("Starting simulation of year", model_year, "in country", country))
+    no_vacc_year <- (!model_year %in% vac_start_year:vac_end_year)
+    message(paste("Starting simulation of year", model_year, "in country", country, ifelse(no_vacc_year | scenario == "no-vaccination", "with NO", "with"), "vaccination campaign going on. "))
+
     for(layer_idx in 1:nsamples){
       rc_list[[layer_idx]] <- update_targets_list(datapath = datapath, modelpath = modelpath, country = country, scenario = scenario, 
                                                   rc_list = rc_list[[layer_idx]], model_year = model_year, campaign_cov = vac_coverage, 
@@ -95,7 +97,7 @@ run_surveillance_scenario <- function(
     for(layer_idx in 1:nsamples){
       input_list[[layer_idx]] <- update_vac_raster( datapath, modelpath, country, scenario, rawoutpath,
                                                     rc_list = rc_list[[layer_idx]], model_year = model_year, pop = pop,
-                                                    input_list = input_list[[layer_idx]])
+                                                    input_list = input_list[[layer_idx]], no_vacc_year = no_vacc_year)
     } 
     
     if(save_intermediate_raster){  
@@ -121,12 +123,14 @@ run_surveillance_scenario <- function(
                                                         )
       }
     }else{
-      sus_list <- update_sus_rasterStack_optimized( datapath, modelpath, country, scenario, rawoutpath,
-                                                    pop = pop,
-                                                    ve_direct = ve_direct,
-                                                    baseline_year = sim_start_year,
-                                                    model_year = model_year
-                                                  )
+      if(scenario == "campaign-default" | model_year == sim_start_year){
+        sus_list <- update_sus_rasterStack_optimized( datapath, modelpath, country, scenario, rawoutpath,
+                                                      pop = pop,
+                                                      ve_direct = ve_direct,
+                                                      baseline_year = sim_start_year,
+                                                      model_year = model_year
+                                                    )
+      }
       if(scenario == "campaign-default"){
         save_sus_raster(datapath, modelpath, country, nsamples, model_year, sus_list)
         sus_list <- NULL

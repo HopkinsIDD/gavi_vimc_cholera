@@ -10,6 +10,7 @@
 #' @param model_year
 #' @param pop
 #' @param input_list
+#' @param no_vacc_year
 #' @return 
 #' @export
 #' @include
@@ -21,7 +22,8 @@ update_vac_raster <- function(datapath,
                               rc_list,
                               model_year,
                               pop, # pop raster for the latest year
-                              input_list # input an empty list for the first year, for the following year, input is that list from last year
+                              input_list, # input an empty list for the first year, for the following year, input is that list from last year
+                              no_vacc_year
                               ){
 
   ## initiate the vac raster 
@@ -29,7 +31,7 @@ update_vac_raster <- function(datapath,
   raster0_template <- raster::calc(pop, fun = function(x){ifelse(!is.na(x), 0, NA)})
   
   ## quick exit if scenario == 'no-vaccination'
-  if(scenario == 'no-vaccination'){
+  if(scenario == 'no-vaccination' | no_vacc_year){
     # use the empty raster directly 
     new_vacc_layer_admin1 <- raster0_template
     new_vacc_layer_admin2 <- raster0_template

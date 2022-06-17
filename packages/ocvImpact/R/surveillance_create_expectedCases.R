@@ -139,7 +139,7 @@ surveillance_create_expectedCases <- function(
   ### Get the overall multiplier ready 
   incid_trend_multiplier <- incid_trend_function(year = model_year)
   outbreak_ic_multiplier <- outbreak_trend_function(yr_index = 1) ### the returned list only has one element to use anyways
-  confirmation_multiplier <- surveillance_true_confirmation_rate(datapath) ### April 21 added
+  confirmation_multiplier <- surveillance_true_confirmation_rate(country, admin_level = 2)
   utilization_multiplier <- 1 ### 11/25 added
   
   overall_multiplier <- secular_trend_mult(incid_trend_multiplier, outbreak_ic_multiplier, confirmation_multiplier, utilization_multiplier)
@@ -206,19 +206,19 @@ surveillance_create_expectedCases <- function(
 
 
 
-  ### Save the raster -- suspected cases ********************************************
+  ### Save the raster -- true cases ********************************************
   if(save_final_output_raster){
     ec1_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
                         vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_ec_admin1_", model_year, ".tif")
     ec2_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
                         vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_ec_admin2_", model_year, ".tif")
     
-    message(paste("Writing expected suspected cases rasterStack for", country))
+    message(paste("Writing expected true cases rasterStack for", country))
     dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
     if( !file.exists(ec1_out_fn) | (file.exists(ec1_out_fn)&clean) ){
-      raster::writeRaster(ec_rasterStack1 / confirmation_multiplier, filename = ec1_out_fn, overwrite = TRUE)}
+      raster::writeRaster(ec_rasterStack1, filename = ec1_out_fn, overwrite = TRUE)}
     if( !file.exists(ec2_out_fn) | (file.exists(ec2_out_fn)&clean) ){
-      raster::writeRaster(ec_rasterStack2 / confirmation_multiplier, filename = ec2_out_fn, overwrite = TRUE)}
+      raster::writeRaster(ec_rasterStack2, filename = ec2_out_fn, overwrite = TRUE)}
   
   }
 
@@ -299,11 +299,11 @@ surveillance_create_expectedCases <- function(
   readr::write_csv(ec_out2, ec_out_fn2)
   
 
-  ### Return the list -- suspected cases ********************************************
+  ### Return the list -- true cases ********************************************
   message("Finished calculating expected cases and generating the new ec_list that contains suspected cases. ")
   message(Sys.time())
-  ec_list <- list("ec_rasterStack_admin1" = ec_rasterStack1 / confirmation_multiplier,
-                  "ec_rasterStack_admin2" = ec_rasterStack2 / confirmation_multiplier)
+  ec_list <- list("ec_rasterStack_admin1" = ec_rasterStack1,
+                  "ec_rasterStack_admin2" = ec_rasterStack2)
   rm(ec_rasterStack1)
   rm(ec_rasterStack2)
 

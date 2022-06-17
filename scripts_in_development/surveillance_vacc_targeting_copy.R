@@ -147,70 +147,20 @@ load_baseline_incidence <- function(datapath,
   if(sum(pop1) != sum(pop2)){warning(paste(" *** population summarized across admin1 and admin2 districts differ by", abs(sum(pop1) - sum(pop2))))}
   
   ## get the trur confirm rate layer ready 
+  # get the confirmation rate distribution
+  omicron_dataset <- readr::read_csv(paste0(datapath, "/confirmation_rate/parameters.csv"))
+  # prepare to save the true confirm rate and set the random seed here to make sure they are consistent across different runs/scenarios 
   dir.create(paste0("intermediate_raster/"), showWarnings = FALSE)
   confirm_rate_fn <- paste0("intermediate_raster/", country, "_trueconfirmrate_admin2.tif")
   
   if(file.exists(confirm_rate_fn)){
     message("The true confirm rate rasters have already been in place, they will not be replaced. ")
-    confirm_rate_raster <- raster::stack(confirm_rate_fn)
   }else{
     message("Generating the new true confirm rate rasters and saving them after. ")
-  }
-    
-  omicron_dataset <- readr::read_csv(paste0(datapath, "/confirmation_rate/parameters.csv"))
-  raster1_template <- raster::calc(country_baseline[[1]], fun = function(x){ifelse(!is.na(x), 1, NA)})
-  # prepare to generate the true confirm rate and set the random seed here to make sure they are consistent across different runs/scenarios 
-  set.seed(random_seed) #******************************************************************************** IMPORTANT ********************************************************************************
-  
+    set.seed(random_seed) #******************************************************************************** IMPORTANT ********************************************************************************
 
-  for(layer_idx in 1:nsamples){
-    
-    confirm_rate_value <- rnorm(n = nrow(shp2), mean = omicron_dataset$mean, sd = omicron_dataset$sd)
-    
-    ## get one layer 
-    country_baseline_single_layer <- country_baseline[[layer_idx]]
-    ## summarize rasters to admin level 1
-    incid1 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = country_baseline_single_layer, pop_raster = pop_baseline, country, admin_shp = shp1)
-    ## summarize rasters to admin level 2
-    incid2 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = country_baseline_single_layer, pop_raster = pop_baseline, country, admin_shp = shp2)
-
-    confirm_rate_df <- dplyr::mutate(shp2, 
-                                    true_confirm_rate = confirm_rate_value, 
-                                    true_incidence_rate = incid2 * true_confirm_rate, 
-                                    pop_model = pop2,
-                                    observed_incidence_rate = incid2, 
-                                    observed_case = observed_incidence_rate * pop_model) 
-    
-    ## rasterize
-    if(!file.exists(confirm_rate_fn)){
-      confirm_rate_raster <- fasterize::fasterize(
-          confirm_rate_df,
-          raster1_template,
-          field = "true_confirm_rate",
-          fun = "last",
-          background = 1
-      )
-      confirm_rate_raster <- raster::mask(confirm_rate_raster, raster1_template, updatevalue = NA)
-      confirm_rate_raster_one_layer <- confirm_rate_raster
-    }else{
-      confirm_rate_raster_one_layer <- confirm_rate_raster[[layer_idx]]
-    }
-    
-    observed_case_raster <- fasterize::fasterize(
-        confirm_rate_df,
-        raster1_template,
-        field = "observed_case",
-        fun = "last",
-        background = 1
-    )
-    observed_case_raster <- raster::mask(observed_case_raster, raster1_template, updatevalue = NA)
-    confirm_rate_value_for_admin1 <- pop_weighted_admin_mean_incid(datapath, modelpath, confirm_rate_raster_one_layer, observed_case_raster, country, admin_shp = shp1)
-    rm(confirm_rate_raster_one_layer, observed_case_raster)
-
-    ## make the df
-    # get incidence and pop table (admin 1 level)
-    rc1 <- dplyr::mutate(shp1, 
-                        true_incidence_rate = incid1 * confirm_rate_value_for_admin1,
+    confirm_rate <- dplyr::mutate(shp2, 
+                        true_incidence_rate = incid1 * true_confirm_rate1,
                         confirmation_lens = NA,
                         confirmation_rate = NA, 
                         observed_incidence_rate = NA,  
@@ -221,7 +171,44 @@ load_baseline_incidence <- function(datapath,
                         is_target = NA,  # whether that place was target in this year
                         actual_prop_vaccinated = NA,
                         actual_fvp = NA, 
-                        true_confirm_rate = confirm_rate_value_for_admin1) %>% # fully vaccinated population
+                        true_confirm_rate = true_confirm_rate1) %>% # fully vaccinated population
+      dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
+                      true_case = true_incidence_rate * pop_model ) %>% 
+      dplyr::select(ISO, NAME_0, NAME_1, true_confirm_rate, true_incidence_rate, confirmation_lens, confirmation_rate, observed_incidence_rate, 
+                    pop_model, pop_prop, year, latest_target_year, is_target,
+                    actual_prop_vaccinated, actual_fvp, true_case)
+    raster1_template <- raster::calc(pop_baseline, fun = function(x){ifelse(!is.na(x), 1, NA)})
+  }
+  # set.seed(random_seed) #******************************************************************************** IMPORTANT ********************************************************************************
+
+
+  ## loop through all the layers 
+  for(layer_idx in 1:nsamples){
+    ## get one layer 
+    country_baseline_single_layer <- country_baseline[[layer_idx]]
+
+    ## summarize rasters to admin level 1 and get the true confirmation rate
+    incid1 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = country_baseline_single_layer, pop_raster = pop_baseline, country, admin_shp = shp1)
+    true_confirm_rate1 <- rnorm(n = length(incid1), mean = omicron_dataset$mean, sd = omicron_dataset$sd)
+
+    ## summarize rasters to admin level 2 and get the true confirmation rate
+    incid2 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = country_baseline_single_layer, pop_raster = pop_baseline, country, admin_shp = shp2)
+    true_confirm_rate2 <- rnorm(n = length(incid2), mean = omicron_dataset$mean, sd = omicron_dataset$sd)
+
+    # get incidence and pop table (admin 1 level)
+    rc1 <- dplyr::mutate(shp1, 
+                        true_incidence_rate = incid1 * true_confirm_rate1,
+                        confirmation_lens = NA,
+                        confirmation_rate = NA, 
+                        observed_incidence_rate = NA,  
+                        pop_model = pop1,
+                        pop_prop = pop1/total_pop,
+                        year = baseline_year, 
+                        latest_target_year = NA,
+                        is_target = NA,  # whether that place was target in this year
+                        actual_prop_vaccinated = NA,
+                        actual_fvp = NA, 
+                        true_confirm_rate = true_confirm_rate1) %>% # fully vaccinated population
       dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
                       true_case = true_incidence_rate * pop_model ) %>% 
       dplyr::select(ISO, NAME_0, NAME_1, true_confirm_rate, true_incidence_rate, confirmation_lens, confirmation_rate, observed_incidence_rate, 
@@ -230,7 +217,7 @@ load_baseline_incidence <- function(datapath,
     
     # get incidence and pop table (admin 2 level)
     rc2 <- dplyr::mutate(shp2, 
-                        true_incidence_rate = incid2 * confirm_rate_value,
+                        true_incidence_rate = incid2 * true_confirm_rate2,
                         confirmation_lens = NA,
                         confirmation_rate = NA, 
                         observed_incidence_rate = NA,  
@@ -241,30 +228,52 @@ load_baseline_incidence <- function(datapath,
                         is_target = NA,  # whether that place was target in this year
                         actual_prop_vaccinated = NA,
                         actual_fvp = NA, 
-                        true_confirm_rate = confirm_rate_value) %>% # fully vaccinated population
+                        true_confirm_rate = true_confirm_rate2) %>% # fully vaccinated population
       dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
                       true_case = true_incidence_rate * pop_model ) %>% 
       dplyr::select(ISO, NAME_0, NAME_1, NAME_2, true_confirm_rate, true_incidence_rate, confirmation_lens, confirmation_rate, observed_incidence_rate, 
                     pop_model, pop_prop, year, latest_target_year, is_target,
                     actual_prop_vaccinated, actual_fvp, true_case)
     
-    # Save the confirm_rate_raster raster into the intermediate folder
-    if(!file.exists(confirm_rate_fn)){
+    # solidify the true confirm rate from sf to raster into the intermediate folder
+    if(!file.exists(confirm_rate1_fn) | !file.exists(confirm_rate1_fn)){
+      # raster1_template <- raster::calc(pop_baseline, fun = function(x){ifelse(!is.na(x), 1, NA)})
+      true_confirm_rate_admin1 <- fasterize::fasterize(
+          rc1,
+          raster1_template,
+          field = "true_confirm_rate",
+          fun = "last",
+          background = 1
+      )
+      true_confirm_rate_admin1 <- raster::mask(true_confirm_rate_admin1, raster1_template, updatevalue = NA)
+      true_confirm_rate_admin2 <- fasterize::fasterize(
+          rc2,
+          raster1_template,
+          field = "true_confirm_rate",
+          fun = "last",
+          background = 1
+      )
+      true_confirm_rate_admin2 <- raster::mask(true_confirm_rate_admin2, raster1_template, updatevalue = NA)
+
       if(layer_idx == 1){
-        tmp <- confirm_rate_raster
+        tmp1 <- true_confirm_rate_admin1
+        tmp2 <- true_confirm_rate_admin2
       }else if(layer_idx < nsamples){
-        tmp <- raster::stack(tmp, confirm_rate_raster)
+        tmp1 <- raster::stack(tmp1, true_confirm_rate_admin1)
+        tmp2 <- raster::stack(tmp2, true_confirm_rate_admin2)
       }else{
-        tmp <- raster::stack(tmp, confirm_rate_raster)
-        if(!file.exists(confirm_rate_fn)){ raster::writeRaster(tmp, filename = confirm_rate_fn, overwrite = FALSE) }
-        rm(tmp, confirm_rate_raster)
+        tmp1 <- raster::stack(tmp1, true_confirm_rate_admin1)
+        tmp2 <- raster::stack(tmp2, true_confirm_rate_admin2)
+        if(!file.exists(confirm_rate1_fn)){ raster::writeRaster(tmp1, filename = confirm_rate1_fn, overwrite = FALSE) }
+        if(!file.exists(confirm_rate2_fn)){ raster::writeRaster(tmp2, filename = confirm_rate2_fn, overwrite = FALSE) }
+        rm(tmp1, true_confirm_rate1, tmp2, true_confirm_rate2)
       }
     }
 
     
     # check on population proportion 
     if (sum(rc1$pop_prop)!=1 | sum(rc2$pop_prop)!=1){
-      warning(paste(" *** The population proportion calculation is incorrect for", country, ", they are", sum(rc1$pop_prop), "and", sum(rc2$pop_prop)))
+    warning(paste(" *** The population proportion calculation is incorrect for", country, ", they are", sum(rc1$pop_prop), "and", sum(rc2$pop_prop)))
     }
     
     # save the tables 
@@ -276,7 +285,6 @@ load_baseline_incidence <- function(datapath,
     }
 
   }
-  
 
   ## Clean up and return 
   rm(rc_list_single_layer)
@@ -471,7 +479,7 @@ get_observed_incidence_rate <- function(rc_list, model_year, surveillance_scenar
     if(all(is.na(rc_list$rc1$confirmation_rate))){
       # global_estimate <- rnorm(n = 1, mean = omicron_dataset$mean, sd = omicron_dataset$sd)
       global_estimate <- weighted.mean(rc_list$rc2[rc_list$rc2$year == model_year, ]$true_confirm_rate, 
-        rc_list$rc2[rc_list$rc2$year == model_year, ]$true_case / rc_list$rc2[rc_list$rc2$year == model_year, ]$true_confirm_rate) #just admin2 because the true confirm rate is at admin2 level, weighted on the observed cases
+        rc_list$rc2[rc_list$rc2$year == model_year, ]$true_case) #just admin2 because the true confirm rate is at admin2 level 
     }else{
       global_estimate <- unique(rc_list$rc1$confirmation_rate)[1]
     }

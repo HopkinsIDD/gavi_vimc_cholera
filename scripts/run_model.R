@@ -114,15 +114,6 @@ dir.create(opathname, showWarnings = FALSE)
 #### Run model -- where different projects diverge 
 if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
   ### The surveillance project
-  ##tmp: all new functions should be called first
-  # source("scripts_in_development/run_surveillance_scenario.R")
-  # source("scripts_in_development/surveillance_vacc_targeting.R") #add more later 
-  # source("scripts_in_development/surveillance_pop_weighted_incid.R")
-  # source("scripts_in_development/surveillance_update_vac_raster.R")
-  # source("scripts_in_development/surveillance_update_sus_raster.R")
-  # source("scripts_in_development/surveillance_true_confirmation_rate.R")
-  # source("scripts_in_development/surveillance_create_expectedCases.R")
-
   message(paste0(" --- Running Surveillance Project: ", country)) #needs to add more
   run_surveillance_scenario( 
     datapath = dpathname,
