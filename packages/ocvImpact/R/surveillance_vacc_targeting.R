@@ -550,11 +550,11 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
     
     ## summarize rasters to admin level 1 and copy the previous confirm rate
     incid1 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = lambda1, pop_raster = pop, country, admin_shp = shp1)
-    true_confirm_rate_admin1 <- rc_list[[layer_idx]]$rc1$true_confirm_rate
+    true_confirm_rate_admin1 <- head(rc_list[[layer_idx]]$rc1, nrow(shp1))$true_confirm_rate 
 
     ## summarize rasters to admin level 2 and copy the previous confirm rate
     incid2 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = lambda2, pop_raster = pop, country, admin_shp = shp2)
-    true_confirm_rate_admin2 <- rc_list[[layer_idx]]$rc2$true_confirm_rate
+    true_confirm_rate_admin2 <- head(rc_list[[layer_idx]]$rc2, nrow(shp2))$true_confirm_rate
     
     # get incidence and pop table (admin 1 level)
     rc1 <- dplyr::mutate(shp1, 

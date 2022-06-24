@@ -87,6 +87,7 @@ opt <- optparse::parse_args(optparse::OptionParser(option_list = option_list))
 ### Read config file parameters
 config <- yaml::read_yaml(opt$config)
 # config <- yaml::read_yaml("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/configs/202110gavi-3/campaign-default/district-estimate/COD_campaign-default_district-estimate_50.yml") #for testing run 
+# config <- yaml::read_yaml("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/configs/202110gavi-3/no-vaccination/district-estimate/COD_no-vaccination_district-estimate_50.yml")
 
 runname <- config$runname
 country <- config$country

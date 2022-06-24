@@ -159,7 +159,7 @@ run_surveillance_scenario <- function(
     if(model_year < sim_end_year){
       rc_list <- surveillance_add_rc_new_row(rc_list, ec_list, pop, model_year, sim_start_year, sim_end_year, shp1, shp2, nsamples)
     }
-    if(exists("sus_list")){sus_list <- NULL}
+    if(exists("sus_list") & scenario == "campaign-default"){sus_list <- NULL}
     if(exists("ec_list")){rm(ec_list)}
     
   }
