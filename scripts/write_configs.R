@@ -81,30 +81,38 @@ for(scn in scenarios){
     
     scnpathname <- file.path(cpathname, scn, surveillance_scenario)
     dir.create(scnpathname, showWarnings = FALSE)
-    pars <- tidyr::expand_grid(runname = runname, scenario = scn, country = countries, targeting = targeting_strategy, nsamples = num_samples, nskipyear = num_skip_years, clean = clean_outputs, redrawIncid = clean_incid) 
-    pars$use_country_incid_trend <- use_country_incid_trend
-    pars$incidence_rate_trend <- incidence_rate_trend
-    pars$outbreak_multiplier <- outbreak_multiplier          
-    pars$random_seed <- random_seed
 
-    # the followings are specific to the surveillance project
-    pars$save_intermediate_raster <- save_intermediate_raster
-    pars$save_final_output_raster <- save_final_output_raster
-    pars$vac_incid_threshold <- vac_incid_threshold
-    pars$vac_unconstrained <- vac_unconstrained  
-    pars$vac_admin_level <- vac_admin_level
-    pars$vac_coverage <- vac_coverage
-    pars$surveillance_scenario <- surveillance_scenario 
-    pars$vac_interval <- vac_interval
-    pars$sim_start_year <- sim_start_year
-    pars$vac_start_year <- vac_start_year
-    pars$vac_end_year <- vac_end_year
-    pars$sim_end_year <- sim_end_year           
+    for(vac_incid_threshold in vac_incid_thresholds){
+      
+      scnpathname <- file.path(cpathname, scn, surveillance_scenario, vac_incid_threshold)
+      dir.create(scnpathname, showWarnings = FALSE)
 
-    lapply(1:nrow(pars), function(i){
-      par_row <- pars[i,]
-      ocvImpact::prepare_config(par_row, scnpathname)
-    })
+      pars <- tidyr::expand_grid(runname = runname, scenario = scn, country = countries, targeting = targeting_strategy, nsamples = num_samples, nskipyear = num_skip_years, clean = clean_outputs, redrawIncid = clean_incid) 
+      pars$use_country_incid_trend <- use_country_incid_trend
+      pars$incidence_rate_trend <- incidence_rate_trend
+      pars$outbreak_multiplier <- outbreak_multiplier          
+      pars$random_seed <- random_seed
+
+      # the followings are specific to the surveillance project
+      pars$save_intermediate_raster <- save_intermediate_raster
+      pars$save_final_output_raster <- save_final_output_raster
+      pars$vac_incid_threshold <- vac_incid_threshold
+      pars$vac_unconstrained <- vac_unconstrained  
+      pars$vac_admin_level <- vac_admin_level
+      pars$vac_coverage <- vac_coverage
+      pars$surveillance_scenario <- surveillance_scenario 
+      pars$vac_interval <- vac_interval
+      pars$sim_start_year <- sim_start_year
+      pars$vac_start_year <- vac_start_year
+      pars$vac_end_year <- vac_end_year
+      pars$sim_end_year <- sim_end_year           
+
+      lapply(1:nrow(pars), function(i){
+        par_row <- pars[i,]
+        ocvImpact::prepare_config(par_row, scnpathname)
+      })
+    }
+  
   }  
 
 }

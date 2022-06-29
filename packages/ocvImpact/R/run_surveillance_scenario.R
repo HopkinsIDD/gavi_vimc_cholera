@@ -55,14 +55,25 @@ run_surveillance_scenario <- function(
 
 
 
+  ##### Initialize the table that records elapsed time
+  time_table <- tibble::tibble(year = as.numeric(), load_baseline_incidence = as.numeric(), update_targets_list = as.numeric(), 
+    update_save_vac_raster = as.numeric(), update_save_sus_raster = as.numeric(), create_expectedCases = as.numeric(), 
+    add_new_row_to_target_list = as.numeric())
+  
+
+
   ##### Initialize the campaign table and load the incidence rate raster 
   if(vac_admin_level != "both"){stop("The only supported vaccination campagin administration level is 'both', please check the config. ")}
   shp0 <- load_shp0_by_country(datapath, country)
   shp1 <- load_shp1_by_country(datapath, country)
   shp2 <- load_shp2_by_country(datapath, country)
+  start.time <- Sys.time()
   rc_list <- load_baseline_incidence(datapath, modelpath, country, campaign_cov = vac_coverage, baseline_year = sim_start_year, first_vacc_year = vac_start_year, 
                                      incidence_rate_trend, use_country_incid_trend, shp0 = shp0, shp1 = shp1, shp2 = shp2, 
                                      random_seed = random_seed, nsamples = nsamples, redraw = redraw)
+  end.time <- Sys.time()
+  elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
+  time_table[1, ]$load_baseline_incidence <- elapsed_time
 
 
 
@@ -73,6 +84,7 @@ run_surveillance_scenario <- function(
     no_vacc_year <- (!model_year %in% vac_start_year:vac_end_year)
     message(paste("Starting simulation of year", model_year, "in country", country, ifelse(no_vacc_year | scenario == "no-vaccination", "with NO", "with"), "vaccination campaign going on. "))
 
+    start.time <- Sys.time()
     for(layer_idx in 1:nsamples){
       rc_list[[layer_idx]] <- update_targets_list(datapath = datapath, modelpath = modelpath, country = country, scenario = scenario, 
                                                   rc_list = rc_list[[layer_idx]], model_year = model_year, campaign_cov = vac_coverage, 
@@ -82,6 +94,11 @@ run_surveillance_scenario <- function(
                                                   vac_start_year = vac_start_year, vac_end_year = vac_end_year, 
                                                   num_skip_years = num_skip_years)
     }
+    end.time <- Sys.time()
+    elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
+    time_tab_idx <- match(model_year, sim_start_year:sim_end_year)
+    time_table[time_tab_idx, ]$year <- model_year
+    time_table[time_tab_idx, ]$load_baseline_incidence <- elapsed_time
 
 
     #### Update the vaccinated proportion raster 
@@ -89,6 +106,7 @@ run_surveillance_scenario <- function(
     pop <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, model_year)
     
     ### Calculate/update pop and vacc raster input
+    start.time <- Sys.time()
     if(!exists("input_list") | save_intermediate_raster){
       input_list_exp <- parse(text = paste0( "input_list <- list(", toString(rep("NULL", nsamples)), ")" ))
       eval(input_list_exp)
@@ -104,10 +122,15 @@ run_surveillance_scenario <- function(
       save_vac_raster(datapath, modelpath, country, nsamples, model_year, input_list)
       input_list <- NULL
     }
+    end.time <- Sys.time()
+    elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
+    time_table[time_tab_idx, ]$update_save_vac_raster <- elapsed_time
+
 
 
     #### Calculate/update suspectible population raster
     #### Now only save the newest year 
+    start.time <- Sys.time()
     if(!save_intermediate_raster){
       sus_list_exp <- parse(text = paste0( "sus_list <- list(", toString(rep("NULL", nsamples)), ")" ))
       eval(sus_list_exp)
@@ -136,9 +159,13 @@ run_surveillance_scenario <- function(
         sus_list <- NULL
       }
     }
+    end.time <- Sys.time()
+    elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
+    time_table[time_tab_idx, ]$update_save_sus_raster <- elapsed_time
 
 
     #### Get the expected cases for the year
+    start.time <- Sys.time()
     ec_list <- surveillance_create_expectedCases( datapath, 
                                                   modelpath, 
                                                   country, 
@@ -153,20 +180,31 @@ run_surveillance_scenario <- function(
                                                   pop, 
                                                   model_year,
                                                   config)
+    end.time <- Sys.time()
+    elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
+    time_table[time_tab_idx, ]$create_expectedCases <- elapsed_time
 
 
     #### Get ready for the next year -- the ec_list is deleted from within
+    start.time <- Sys.time()
     if(model_year < sim_end_year){
       rc_list <- surveillance_add_rc_new_row(rc_list, ec_list, pop, model_year, sim_start_year, sim_end_year, shp1, shp2, nsamples)
     }
     if(exists("sus_list") & scenario == "campaign-default"){sus_list <- NULL}
     if(exists("ec_list")){rm(ec_list)}
+    end.time <- Sys.time()
+    elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
+    time_table[time_tab_idx, ]$add_new_row_to_target_list <- elapsed_time
     
   }
 
 
 
   ##### Write output files and clean up 
+  # save the time table
+  readr::write_csv( time_table, paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+                    vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_time_table_", ".csv"))
+
   if(save_final_output_raster){
   # vaccination proportion and susceptible proportion rasterStack
     for(model_year in sim_start_year:sim_end_year){
@@ -184,14 +222,21 @@ run_surveillance_scenario <- function(
   file.remove(paste0("intermediate_raster/", country, c("_vac_admin2_"), (sim_start_year:sim_end_year), ".tif"))
   file.remove(paste0("intermediate_raster/", country, c("_vac_pop_"), (sim_start_year:sim_end_year), ".tif"))
   
-  # rc_list with incidence and targeted area of each modeled year -- only save the first one for now
+  # rc_list with incidence and targeted area of each modeled year -- save all the years now
   rc1_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
                         vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_rc_admin1.csv")
   rc2_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
                         vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_rc_admin2.csv")
-  rc1 <- rc_list[[1]]$rc1 %>% sf::st_drop_geometry()
-  rc2 <- rc_list[[1]]$rc2 %>% sf::st_drop_geometry()
-  message(paste("Writing targeting tables of the first layer across all years for", country))
+  for(i in 1:length(rc_list)){
+    if(i == 1){
+      rc1 <- rc_list[[i]]$rc1 %>% sf::st_drop_geometry() %>% dplyr::mutate(run_id = i)
+      rc2 <- rc_list[[i]]$rc2 %>% sf::st_drop_geometry() %>% dplyr::mutate(run_id = i)
+    }else{
+      rc1 <- rbind(rc1, rc_list[[i]]$rc1 %>% sf::st_drop_geometry() %>% dplyr::mutate(run_id = i))
+      rc2 <- rbind(rc2, rc_list[[i]]$rc2 %>% sf::st_drop_geometry() %>% dplyr::mutate(run_id = i))
+    }
+  }
+  message(paste("Writing targeting tables of all the layers across all years for", country))
   if( !file.exists(rc1_out_fn) | (file.exists(rc1_out_fn)&clean) ){
     readr::write_csv(rc1, rc1_out_fn)}
   if( !file.exists(rc2_out_fn) | (file.exists(rc2_out_fn)&clean) ){

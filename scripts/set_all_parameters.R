@@ -12,7 +12,7 @@ countries <- c("COD", "GHA", "MRT", "NGA", "TZA") #for testing, temporary
 save_intermediate_raster <- TRUE
 save_final_output_raster <- TRUE
 targeting_strategy <- "threshold_unconstrained" #c("threshold_unconstrained", "affected_pop", "incidence")
-vac_incid_threshold <- 1/1000 #c(1/1000, 1/5000, 1/10000), use one at a time for now
+vac_incid_thresholds <- c(1/1000, 1/5000, 1/10000) 
 vac_unconstrained <- TRUE #or refer to an external coverage dataset 
 vac_admin_level <- "both" #only support "both" for now, which means admin1 and admin2 will be simulated at the same time 
 vac_coverage <- 0.68 #borrowed from the method section of the previous study (https://doi.org/10.1371/journal.pmed.1003003) 
@@ -71,3 +71,4 @@ if(use_random_seed & is.null(self_random_seed)){
 }else if(!use_random_seed){
   random_seed <- sample(1:10000, 1) #let loose on random seed 
 }
+

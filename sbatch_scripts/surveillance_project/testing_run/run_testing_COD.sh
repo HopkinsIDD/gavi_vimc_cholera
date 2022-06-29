@@ -14,10 +14,10 @@ CONFIGDIR=configs/202110gavi-3
 RSCRIPT=/opt/R/4.0.3/bin/Rscript
 
 cd $TAXDIR
-$RSCRIPT $TAXDIR/scripts/run_model.R -c $TAXDIR/$CONFIGDIR/campaign-default/district-estimate/COD_campaign-default_district-estimate_50.yml 
-$RSCRIPT $TAXDIR/scripts/run_model.R -c $TAXDIR/$CONFIGDIR/campaign-default/global-estimate/COD_campaign-default_global-estimate_50.yml
-$RSCRIPT $TAXDIR/scripts/run_model.R -c $TAXDIR/$CONFIGDIR/campaign-default/no-estimate/COD_campaign-default_no-estimate_50.yml
-$RSCRIPT $TAXDIR/scripts/run_model.R -c $TAXDIR/$CONFIGDIR/no-vaccination/district-estimate/COD_no-vaccination_district-estimate_50.yml || exit 1
+$RSCRIPT $TAXDIR/scripts/run_model.R -c $TAXDIR/$CONFIGDIR/campaign-default/district-estimate/0.001/COD_campaign-default_district-estimate_50.yml
+$RSCRIPT $TAXDIR/scripts/run_model.R -c $TAXDIR/$CONFIGDIR/campaign-default/global-estimate/0.001/COD_campaign-default_global-estimate_50.yml
+$RSCRIPT $TAXDIR/scripts/run_model.R -c $TAXDIR/$CONFIGDIR/campaign-default/no-estimate/0.001/COD_campaign-default_no-estimate_50.yml
+$RSCRIPT $TAXDIR/scripts/run_model.R -c $TAXDIR/$CONFIGDIR/no-vaccination/district-estimate/0.001/COD_no-vaccination_district-estimate_50.yml || exit 1
 
 echo "End of script"
 date
