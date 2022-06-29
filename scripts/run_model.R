@@ -105,11 +105,12 @@ cln <- config$clean
 #### Create paths
 mpathname <- file.path("montagu", runname)
 dpathname <- file.path("input_data")
-ropathname <- file.path("output_raw", runname, scenario)
+ropathname <- file.path("output_raw", runname)
 opathname <- file.path("output_final", runname)
 dir.create(mpathname, showWarnings = FALSE)
 dir.create(dpathname, showWarnings = FALSE)
 dir.create(ropathname, showWarnings = FALSE)
+dir.create(file.path(ropathname, scenario), showWarnings = FALSE)
 dir.create(opathname, showWarnings = FALSE)
 
 #### Run model -- where different projects diverge 
