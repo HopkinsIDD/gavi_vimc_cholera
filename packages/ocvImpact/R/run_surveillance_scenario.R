@@ -252,12 +252,13 @@ run_surveillance_scenario <- function(
     readr::write_csv(rc2, rc2_out_fn)}
   
   
-  message(paste("End of simulating vaccination campaigns in", country, "from", sim_start_year, "to", sim_end_year))
+  message(paste("End of the simulation of", scenario, "scenario in", country, "from", sim_start_year, "to", sim_end_year))
   rm(rc_list, rc1, rc2, shp1, shp2, pop)
   gc()
   
   return(NULL)
 
 }
+
 
 
