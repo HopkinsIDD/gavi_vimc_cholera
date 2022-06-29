@@ -105,7 +105,7 @@ cln <- config$clean
 #### Create paths
 mpathname <- file.path("montagu", runname)
 dpathname <- file.path("input_data")
-ropathname <- file.path("output_raw", runname)
+ropathname <- file.path("output_raw", runname, scenario)
 opathname <- file.path("output_final", runname)
 dir.create(mpathname, showWarnings = FALSE)
 dir.create(dpathname, showWarnings = FALSE)
