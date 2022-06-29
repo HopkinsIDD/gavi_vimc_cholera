@@ -59,7 +59,10 @@ run_surveillance_scenario <- function(
   time_table <- tibble::tibble(year = as.numeric(), load_baseline_incidence = as.numeric(), update_targets_list = as.numeric(), 
     update_save_vac_raster = as.numeric(), update_save_sus_raster = as.numeric(), create_expectedCases = as.numeric(), 
     add_new_row_to_target_list = as.numeric())
-  
+  time_table_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+                          vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_time_table_", ".csv")
+  readr::write_csv(time_table, time_table_fn)
+
 
 
   ##### Initialize the campaign table and load the incidence rate raster 
@@ -74,6 +77,7 @@ run_surveillance_scenario <- function(
   end.time <- Sys.time()
   elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
   time_table[1, ]$load_baseline_incidence <- elapsed_time
+  readr::write_csv(time_table, time_table_fn)
 
 
 
@@ -98,7 +102,8 @@ run_surveillance_scenario <- function(
     elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
     time_tab_idx <- match(model_year, sim_start_year:sim_end_year)
     time_table[time_tab_idx, ]$year <- model_year
-    time_table[time_tab_idx, ]$load_baseline_incidence <- elapsed_time
+    time_table[time_tab_idx, ]$update_targets_list <- elapsed_time
+    readr::write_csv(time_table, time_table_fn)
 
 
     #### Update the vaccinated proportion raster 
@@ -125,7 +130,7 @@ run_surveillance_scenario <- function(
     end.time <- Sys.time()
     elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
     time_table[time_tab_idx, ]$update_save_vac_raster <- elapsed_time
-
+    readr::write_csv(time_table, time_table_fn)
 
 
     #### Calculate/update suspectible population raster
@@ -146,7 +151,7 @@ run_surveillance_scenario <- function(
                                                         )
       }
     }else{
-      if(scenario == "campaign-default" | model_year == sim_start_year){
+      if(scenario == "campaign-default" | model_year == sim_start_year){ #do the whole simulation if it's compaign scenario or the first year of no vacc scenario 
         sus_list <- update_sus_rasterStack_optimized( datapath, modelpath, country, scenario, rawoutpath,
                                                       pop = pop,
                                                       ve_direct = ve_direct,
@@ -154,7 +159,7 @@ run_surveillance_scenario <- function(
                                                       model_year = model_year
                                                     )
       }
-      if(scenario == "campaign-default"){
+      if(scenario == "campaign-default"){ #if campaign year, gen and save and use a new sus raster each year
         save_sus_raster(datapath, modelpath, country, nsamples, model_year, sus_list)
         sus_list <- NULL
       }
@@ -162,6 +167,7 @@ run_surveillance_scenario <- function(
     end.time <- Sys.time()
     elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
     time_table[time_tab_idx, ]$update_save_sus_raster <- elapsed_time
+    readr::write_csv(time_table, time_table_fn)
 
 
     #### Get the expected cases for the year
@@ -183,6 +189,7 @@ run_surveillance_scenario <- function(
     end.time <- Sys.time()
     elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
     time_table[time_tab_idx, ]$create_expectedCases <- elapsed_time
+    readr::write_csv(time_table, time_table_fn)
 
 
     #### Get ready for the next year -- the ec_list is deleted from within
@@ -195,6 +202,8 @@ run_surveillance_scenario <- function(
     end.time <- Sys.time()
     elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
     time_table[time_tab_idx, ]$add_new_row_to_target_list <- elapsed_time
+    readr::write_csv(time_table, time_table_fn)
+
     
   }
 

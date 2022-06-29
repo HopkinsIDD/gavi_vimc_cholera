@@ -121,8 +121,8 @@ save_sus_raster <- function(datapath, modelpath, country, nsamples, model_year, 
   message(Sys.time())
 
   ### Create the file names 
-  sus_admin1_fn <- paste0("intermediate_raster/", country, "_sus_admin1_", model_year, ".tif")
-  sus_admin2_fn <- paste0("intermediate_raster/", country, "_sus_admin2_", model_year, ".tif")
+  sus1_inter_fn <- paste0("intermediate_raster/", country, "_sus_admin1_", model_year, ".tif")
+  sus2_inter_fn <- paste0("intermediate_raster/", country, "_sus_admin2_", model_year, ".tif")
   
   sus1_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
                         vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_sus_admin1_", model_year, ".tif")
@@ -131,7 +131,7 @@ save_sus_raster <- function(datapath, modelpath, country, nsamples, model_year, 
   
 
   ### Sometimes convert the structure 
-  if(!is.null(sus_list) & is.null(names(sus_list)) & !is.null(rawoutpath)){
+  if(!is.null(sus_list) & is.null(names(sus_list)) & !is.null(rawoutpath)){ #if there's no name, it means the update_sus_rasterStack function is used
     sus_admin1 <- sus_list[[1]]$sus_rasterStack_admin1
     sus_admin2 <- sus_list[[1]]$sus_rasterStack_admin2
     
@@ -152,17 +152,17 @@ save_sus_raster <- function(datapath, modelpath, country, nsamples, model_year, 
 
 
   ### Save 
-  if(is.null(rawoutpath)){
+  if(is.null(rawoutpath)){ #must save the sus raster in the intermediate folder each year during the simulation
     dir.create(paste0("intermediate_raster/"), showWarnings = FALSE)
-    raster::writeRaster(sus_list$sus_rasterStack_admin1, filename = sus_admin1_fn, overwrite = TRUE)
-    raster::writeRaster(sus_list$sus_rasterStack_admin2, filename = sus_admin2_fn, overwrite = TRUE)
-  }else{
+    raster::writeRaster(sus_list$sus_rasterStack_admin1, filename = sus1_inter_fn, overwrite = TRUE)
+    raster::writeRaster(sus_list$sus_rasterStack_admin2, filename = sus2_inter_fn, overwrite = TRUE)
+  }else{ #transfer the files from the intermediate to the final output folder
     message(paste("Writing proportion susceptible rasterStack for", country))
     dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
     if( !file.exists(sus1_out_fn) | (file.exists(sus1_out_fn)&clean) ){
-      file.rename(from=sus_admin1_fn, to=sus1_out_fn)}
+      file.rename(from=sus1_inter_fn, to=sus1_out_fn)}
     if( !file.exists(sus2_out_fn) | (file.exists(sus2_out_fn)&clean) ){
-      file.rename(from=sus_admin2_fn, to=sus2_out_fn)}
+      file.rename(from=sus2_inter_fn, to=sus2_out_fn)}
   }
   message("Finished saving the susceptible proportion raster now. ")
   message(Sys.time())

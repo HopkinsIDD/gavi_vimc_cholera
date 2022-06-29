@@ -136,8 +136,8 @@ save_vac_raster <- function(datapath,
                             ){
   
   ### Create the file names
-  vac_admin1_fn <- paste0("intermediate_raster/", country, "_vac_admin1_", model_year, ".tif")
-  vac_admin2_fn <- paste0("intermediate_raster/", country, "_vac_admin2_", model_year, ".tif")
+  vac1_inter_fn <- paste0("intermediate_raster/", country, "_vac_admin1_", model_year, ".tif")
+  vac2_inter_fn <- paste0("intermediate_raster/", country, "_vac_admin2_", model_year, ".tif")
   vac_pop_fn <- paste0("intermediate_raster/", country, "_vac_pop_", model_year, ".tif")
 
   vac1_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
@@ -157,22 +157,22 @@ save_vac_raster <- function(datapath,
       vac_admin2 <- raster::stack(vac_admin2, input_list[[layer_idx]]$vacc_rasterStack_admin2)
     }
 
-  }else if(!is.null(rawoutpath)){
+  }else if(!is.null(rawoutpath)){ #this condition applies to when all the vac rasters have been saved in the intermediate folder waiting to be saved in the final output folder
     if( !file.exists(vac1_out_fn) | (file.exists(vac1_out_fn)&clean) ){
-      file.rename(from=vac_admin1_fn, to=vac1_out_fn)}
+      file.rename(from=vac1_inter_fn, to=vac1_out_fn)}
     if( !file.exists(vac2_out_fn) | (file.exists(vac2_out_fn)&clean) ){
-      file.rename(from=vac_admin2_fn, to=vac2_out_fn)}
+      file.rename(from=vac2_inter_fn, to=vac2_out_fn)}
     return(NULL)
   }
 
 
   ### Save 
-  if(is.null(rawoutpath)){
+  if(is.null(rawoutpath)){ #if no raw output path is specified, just save the vac rasters in the intermediate folder
     dir.create(paste0("intermediate_raster/"), showWarnings = FALSE)
-    raster::writeRaster(vac_admin1, filename = vac_admin1_fn, overwrite = TRUE)
-    raster::writeRaster(vac_admin2, filename = vac_admin2_fn, overwrite = TRUE)
+    raster::writeRaster(vac_admin1, filename = vac1_inter_fn, overwrite = TRUE)
+    raster::writeRaster(vac_admin2, filename = vac2_inter_fn, overwrite = TRUE)
     raster::writeRaster(vac_pop, filename = vac_pop_fn, overwrite = TRUE)
-  }else{
+  }else{ #if raw output path is specified, then directly save them in the raw output folder
     message(paste("Writing proportion vaccinated rasterStack for", country))
     dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
     if( !file.exists(vac1_out_fn) | (file.exists(vac1_out_fn)&clean) ){
