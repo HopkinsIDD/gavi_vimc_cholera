@@ -60,7 +60,7 @@ run_surveillance_scenario <- function(
     update_save_vac_raster = as.numeric(), update_save_sus_raster = as.numeric(), create_expectedCases = as.numeric(), 
     add_new_row_to_target_list = as.numeric())
   time_table_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
-                          vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_time_table_", ".csv")
+                          vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_time_table.csv")
   readr::write_csv(time_table, time_table_fn)
 
 
