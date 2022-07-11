@@ -223,7 +223,7 @@ load_baseline_incidence <- function(datapath,
                         actual_fvp = NA, 
                         true_confirm_rate = confirm_rate_value_for_admin1) %>% # fully vaccinated population
       dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
-                      true_case = true_incidence_rate * pop_model ) %>% 
+                      true_case = NA ) %>% 
       dplyr::select(ISO, NAME_0, NAME_1, true_confirm_rate, true_incidence_rate, confirmation_lens, confirmation_rate, observed_incidence_rate, 
                     pop_model, pop_prop, year, latest_target_year, is_target,
                     actual_prop_vaccinated, actual_fvp, true_case)
@@ -243,7 +243,7 @@ load_baseline_incidence <- function(datapath,
                         actual_fvp = NA, 
                         true_confirm_rate = confirm_rate_value) %>% # fully vaccinated population
       dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
-                      true_case = true_incidence_rate * pop_model ) %>% 
+                      true_case = NA ) %>% 
       dplyr::select(ISO, NAME_0, NAME_1, NAME_2, true_confirm_rate, true_incidence_rate, confirmation_lens, confirmation_rate, observed_incidence_rate, 
                     pop_model, pop_prop, year, latest_target_year, is_target,
                     actual_prop_vaccinated, actual_fvp, true_case)
@@ -479,7 +479,7 @@ get_observed_incidence_rate <- function(rc_list, model_year, surveillance_scenar
     if(all(is.na(rc_list$rc1$confirmation_rate))){
       # global_estimate <- rnorm(n = 1, mean = omicron_dataset$mean, sd = omicron_dataset$sd)
       global_estimate <- weighted.mean(rc_list$rc2[rc_list$rc2$year == model_year, ]$true_confirm_rate, 
-        rc_list$rc2[rc_list$rc2$year == model_year, ]$true_case / rc_list$rc2[rc_list$rc2$year == model_year, ]$true_confirm_rate) #just admin2 because the true confirm rate is at admin2 level, weighted on the observed cases
+        rc_list$rc2[rc_list$rc2$year == model_year, ]$true_incidence_rate * rc_list$rc2[rc_list$rc2$year == model_year, ]$pop_model / rc_list$rc2[rc_list$rc2$year == model_year, ]$true_confirm_rate) #just admin2 because the true confirm rate is at admin2 level, weighted on the observed cases
     }else{
       global_estimate <- unique(rc_list$rc1$confirmation_rate)[1]
     }
@@ -542,8 +542,8 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
   admin2_lambda_list <- ec_list$ec_rasterStack_admin2 / pop
   pop1 <- get_admin_population(pop, shp1) 
   pop2 <- get_admin_population(pop, shp2)
-  true_case1 <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin1, shp1, 'sum')
-  true_case2 <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin2, shp2, 'sum')
+  true_case1_all <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin1, shp1, 'sum')
+  true_case2_all <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin2, shp2, 'sum')
   rm(ec_list)
   
   # total population
@@ -557,8 +557,13 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
 
     lambda1 <- admin1_lambda_list[[layer_idx]]
     lambda2 <- admin2_lambda_list[[layer_idx]]
-    true_case1 <- true_case1[[layer_idx]]
-    true_case2 <- true_case2[[layer_idx]]
+    true_case1 <- true_case1_all[[layer_idx]]
+    true_case2 <- true_case2_all[[layer_idx]]
+
+    ## fill in the true cases for the simulated year and end here if this is the last year of simulation 
+    rc_list[[layer_idx]]$rc1$true_case[rc_list[[layer_idx]]$rc1$year == model_year] <- true_case1
+    rc_list[[layer_idx]]$rc2$true_case[rc_list[[layer_idx]]$rc2$year == model_year] <- true_case2
+    if(model_year >= sim_end_year){next} #**************************************************************
     
     ## summarize rasters to admin level 1 and copy the previous confirm rate
     incid1 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = lambda1, pop_raster = pop, country, admin_shp = shp1)
@@ -583,7 +588,7 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
                         actual_fvp = NA, 
                         true_confirm_rate = true_confirm_rate_admin1) %>% # fully vaccinated population
       dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
-                      true_case = true_case1 ) %>% 
+                      true_case = NA ) %>% 
       dplyr::select(ISO, NAME_0, NAME_1, true_confirm_rate, true_incidence_rate, confirmation_lens, confirmation_rate, observed_incidence_rate, 
                     pop_model, pop_prop, year, latest_target_year, is_target,
                     actual_prop_vaccinated, actual_fvp, true_case)
@@ -603,7 +608,7 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
                         actual_fvp = NA, 
                         true_confirm_rate = true_confirm_rate_admin2) %>% # fully vaccinated population
       dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
-                      true_case = true_case2 ) %>% 
+                      true_case = NA ) %>% 
       dplyr::select(ISO, NAME_0, NAME_1, NAME_2, true_confirm_rate, true_incidence_rate, confirmation_lens, confirmation_rate, observed_incidence_rate, 
                     pop_model, pop_prop, year, latest_target_year, is_target,
                     actual_prop_vaccinated, actual_fvp, true_case)

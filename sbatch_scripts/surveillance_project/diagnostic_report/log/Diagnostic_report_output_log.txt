@@ -1,0 +1,78 @@
+Beginning of script
+Sat Jul  9 14:28:56 EDT 2022
+
+
+processing file: diagnostic_report.Rmd
+  |                                                                              |                                                                      |   0%  |                                                                              |......                                                                |   9%
+   inline R code fragments
+
+  |                                                                              |.............                                                         |  18%
+label: setup (with options) 
+List of 3
+ $ include: logi FALSE
+ $ dev    : chr "CairoPNG"
+ $ message: logi FALSE
+
+
+Attaching package: 'dplyr'
+
+The following objects are masked from 'package:stats':
+
+    filter, lag
+
+The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union
+
+Loading required package: ocvImpact
+ℹ Loading ocvImpact
+Installing package into '/home/kaiyuezou/R/x86_64-pc-linux-gnu-library/4.0'
+(as 'lib' is unspecified)
+* installing *source* package ‘ocvImpact’ ...
+** using staged installation
+** R
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (ocvImpact)
+Loading required package: fasterize
+
+Attaching package: 'fasterize'
+
+The following object is masked from 'package:graphics':
+
+    plot
+
+The following object is masked from 'package:base':
+
+    plot
+
+Loading required package: remotes
+Loading required package: rgeoboundaries
+Loading required package: ggrepel
+  |                                                                              |...................                                                   |  27%
+   inline R code fragments
+
+  |                                                                              |.........................                                             |  36%
+label: unnamed-chunk-1 (with options) 
+List of 2
+ $ include: logi FALSE
+ $ message: logi FALSE
+
+Quitting from lines 93-109 (diagnostic_report.Rmd) 
+Error in ocvImpact::get_filenames(cache = cache, surveillance_project_directory = params$surveillance_project_directory,  : 
+  Incomplete model outputs for expected cases rasters for country COD
+Calls: <Anonymous> ... withCallingHandlers -> withVisible -> eval -> eval -> <Anonymous>
+In addition: Warning messages:
+1: In png(..., res = dpi, units = "in") :
+  unable to open connection to X11 display ''
+2: In in_dir(input_dir(), evaluate(code, envir = env, new_device = FALSE,  :
+  You changed the working directory to /home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera (probably via setwd()). It will be restored to /home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project. See the Note section in ?knitr::knit
+
+Execution halted
+rm: cannot remove '/home/kaiyuezou/.tmp/Rtmpw73PM5/.nfs000000000b7e099000008dff': Device or resource busy

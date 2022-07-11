@@ -194,9 +194,9 @@ run_surveillance_scenario <- function(
 
     #### Get ready for the next year -- the ec_list is deleted from within
     start.time <- Sys.time()
-    if(model_year < sim_end_year){
-      rc_list <- surveillance_add_rc_new_row(rc_list, ec_list, pop, model_year, sim_start_year, sim_end_year, shp1, shp2, nsamples)
-    }
+    
+    rc_list <- surveillance_add_rc_new_row(rc_list, ec_list, pop, model_year, sim_start_year, sim_end_year, shp1, shp2, nsamples)
+    
     if(exists("sus_list") & scenario == "campaign-default"){sus_list <- NULL}
     if(exists("ec_list")){rm(ec_list)}
     end.time <- Sys.time()
@@ -210,9 +210,9 @@ run_surveillance_scenario <- function(
 
 
   ##### Write output files and clean up 
-  # save the time table
-  readr::write_csv( time_table, paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
-                    vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_time_table_", ".csv"))
+  # # save the time table
+  # readr::write_csv( time_table, paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+  #                   vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_time_table_", ".csv"))
 
   if(save_final_output_raster){
   # vaccination proportion and susceptible proportion rasterStack
