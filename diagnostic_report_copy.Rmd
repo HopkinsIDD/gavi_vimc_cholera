@@ -7,7 +7,7 @@ output:
     toc_float: true
 params: 
   surveillance_project_directory: "/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera"
-  country: ["COD", "GHA", "TZA"] #country code specified or all the countries will be used for the diagnostic report
+  country: ["GHA"] #country code specified or all the countries will be used for the diagnostic report
   vac_incid_thresholds: [1/1000]
   no_vaccination_surveillance_scenario: "district-estimate"
   args: 'myarg'
@@ -239,12 +239,12 @@ plt
 ```
 
 
-## Observed case {.tabset}
-### Observed case by year {.tabset}
-#### Observed case by year at threshold 1/1000
-```{r Observed case by year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Observed case by year")}
+## Clinical case {.tabset}
+### Clinical case by year {.tabset}
+#### Clinical case by year at threshold 1/1000
+```{r Clinical case by year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case by year")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "observed_case", threshold = 1/1000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/1000, cumulative_type = "non_cumulative")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -255,10 +255,10 @@ plt
 
 ```
 
-#### Observed case by year at threshold 1/5000
-```{r Observed case by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Observed case by year")}
+#### Clinical case by year at threshold 1/5000
+```{r Clinical case by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case by year")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "observed_case", threshold = 1/5000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/5000, cumulative_type = "non_cumulative")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -269,10 +269,10 @@ plt
 
 ```
 
-#### Observed case by year at threshold 1/10000
-```{r Observed case by year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Observed case by year")}
+#### Clinical case by year at threshold 1/10000
+```{r Clinical case by year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case by year")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "observed_case", threshold = 1/10000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/10000, cumulative_type = "non_cumulative")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -283,11 +283,11 @@ plt
 
 ```
 
-### Observed case by district {.tabset}
-#### Observed case by district at threshold 1/1000
-```{r Observed case by district 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Observed case by district")}
+### Clinical case by district {.tabset}
+#### Clinical case by district at threshold 1/1000
+```{r Clinical case by district 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case by district")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "observed_case", threshold = 1/1000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/1000, cumulative_type = "district_level")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -298,10 +298,10 @@ plt
 
 ```
 
-#### Observed case by district at threshold 1/5000
-```{r Observed case by district 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Observed case by district")}
+#### Clinical case by district at threshold 1/5000
+```{r Clinical case by district 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case by district")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "observed_case", threshold = 1/5000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/5000, cumulative_type = "district_level")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -312,10 +312,10 @@ plt
 
 ```
 
-#### Observed case by district at threshold 1/10000
-```{r Observed case by district 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Observed case by district")}
+#### Clinical case by district at threshold 1/10000
+```{r Clinical case by district 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case by district")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "observed_case", threshold = 1/10000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/10000, cumulative_type = "district_level")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -326,11 +326,11 @@ plt
 
 ```
 
-### Observed case cumulative {.tabset}
-#### Observed case cumulative at threshold 1/1000
-```{r Observed case cumulative 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Observed case cumulative")}
+### Clinical case cumulative {.tabset}
+#### Clinical case cumulative at threshold 1/1000
+```{r Clinical case cumulative 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case cumulative")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "observed_case", threshold = 1/1000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/1000, cumulative_type = "country_level")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -341,10 +341,10 @@ plt
 
 ```
 
-#### Observed case cumulative at threshold 1/5000
-```{r Observed case cumulative 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Observed case cumulative")}
+#### Clinical case cumulative at threshold 1/5000
+```{r Clinical case cumulative 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case cumulative")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "observed_case", threshold = 1/5000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/5000, cumulative_type = "country_level")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -355,10 +355,10 @@ plt
 
 ```
 
-#### Observed case cumulative at threshold 1/10000
-```{r Observed case cumulative 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Observed case cumulative")}
+#### Clinical case cumulative at threshold 1/10000
+```{r Clinical case cumulative 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case cumulative")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "observed_case", threshold = 1/10000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/10000, cumulative_type = "country_level")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -501,10 +501,10 @@ plt
 ```
 
 
-## Averted observed case {.tabset}
-### Averted observed case by year {.tabset}
-#### Averted observed case by year at threshold 1/1000
-```{r Averted observed case by year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted observed case by year")}
+## Averted clinical case {.tabset}
+### Averted clinical case by year {.tabset}
+#### Averted clinical case by year at threshold 1/1000
+```{r Averted clinical case by year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case by year")}
 if(1/1000 %in% params$vac_incid_thresholds){
   plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/1000, cumulative_type = "non_cumulative")
 }else{
@@ -517,8 +517,8 @@ plt
 
 ```
 
-#### Averted observed case by year at threshold 1/5000
-```{r Averted observed case by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted observed case by year")}
+#### Averted clinical case by year at threshold 1/5000
+```{r Averted clinical case by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case by year")}
 if(1/5000 %in% params$vac_incid_thresholds){
   plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/5000, cumulative_type = "non_cumulative")
 }else{
@@ -531,8 +531,8 @@ plt
 
 ```
 
-#### Averted observed case by year at threshold 1/10000
-```{r Averted observed case by year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted observed case by year")}
+#### Averted clinical case by year at threshold 1/10000
+```{r Averted clinical case by year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case by year")}
 if(1/10000 %in% params$vac_incid_thresholds){
   plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/10000, cumulative_type = "non_cumulative")
 }else{
@@ -545,9 +545,9 @@ plt
 
 ```
 
-### Averted observed case by district {.tabset}
-#### Averted observed case by district at threshold 1/1000
-```{r Averted observed case by district 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted observed case by district")}
+### Averted clinical case by district {.tabset}
+#### Averted clinical case by district at threshold 1/1000
+```{r Averted clinical case by district 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case by district")}
 if(1/1000 %in% params$vac_incid_thresholds){
   plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/1000, cumulative_type = "district_level")
 }else{
@@ -560,8 +560,8 @@ plt
 
 ```
 
-#### Averted observed case by district at threshold 1/5000
-```{r Averted observed case by district 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted observed case by district")}
+#### Averted clinical case by district at threshold 1/5000
+```{r Averted clinical case by district 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case by district")}
 if(1/5000 %in% params$vac_incid_thresholds){
   plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/5000, cumulative_type = "district_level")
 }else{
@@ -574,8 +574,8 @@ plt
 
 ```
 
-#### Averted observed case by district at threshold 1/10000
-```{r Averted observed case by district 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted observed case by district")}
+#### Averted clinical case by district at threshold 1/10000
+```{r Averted clinical case by district 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case by district")}
 if(1/10000 %in% params$vac_incid_thresholds){
   plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/10000, cumulative_type = "district_level")
 }else{
@@ -588,9 +588,9 @@ plt
 
 ```
 
-### Averted observed case cumulative {.tabset}
-#### Averted observed case cumulative at threshold 1/1000
-```{r Averted observed case cumulative 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted observed case cumulative")}
+### Averted clinical case cumulative {.tabset}
+#### Averted clinical case cumulative at threshold 1/1000
+```{r Averted clinical case cumulative 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case cumulative")}
 if(1/1000 %in% params$vac_incid_thresholds){
   plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/1000, cumulative_type = "country_level")
 }else{
@@ -603,8 +603,8 @@ plt
 
 ```
 
-#### Averted observed case cumulative at threshold 1/5000
-```{r Averted observed case cumulative 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted observed case cumulative")}
+#### Averted clinical case cumulative at threshold 1/5000
+```{r Averted clinical case cumulative 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case cumulative")}
 if(1/5000 %in% params$vac_incid_thresholds){
   plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/5000, cumulative_type = "country_level")
 }else{
@@ -617,8 +617,8 @@ plt
 
 ```
 
-#### Averted observed case cumulative at threshold 1/10000
-```{r Averted observed case cumulative 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted observed case cumulative")}
+#### Averted clinical case cumulative at threshold 1/10000
+```{r Averted clinical case cumulative 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case cumulative")}
 if(1/10000 %in% params$vac_incid_thresholds){
   plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/10000, cumulative_type = "country_level")
 }else{
@@ -899,7 +899,7 @@ plt
 
 ```{r eval=FALSE, include=FALSE, message=FALSE}
 #Back-ups
-# # Function that returns cases plots (case type: true_case, observed_case, averted_tr_case, averted_ob_case) (cumulative_type: non_cumulative, district_level, country_level)
+# # Function that returns cases plots (case type: true_case, clinical_case, averted_tr_case, averted_ob_case) (cumulative_type: non_cumulative, district_level, country_level)
 # plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 0.001, cumulative_type = "district_level")
 
 # # Function that returns efficacy plots (compare_type: side-by-side, subtraction) (cumulative_type: non_cumulative, across_year, within_district)

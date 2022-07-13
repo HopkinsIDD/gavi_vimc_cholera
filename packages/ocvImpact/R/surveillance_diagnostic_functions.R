@@ -192,14 +192,14 @@ combine_output <- function(cache, surveillance_project_directory, output_to_comb
 plot_cases <- function(cache, case_type, threshold, cumulative_type){
   
   # Restructure of the target table 
-  if(grepl("true", case_type) | grepl("observed", case_type)){
+  if(grepl("true", case_type) | grepl("clinical", case_type)){
     if(!"target_table_long" %in% names(cache)){
       target_table <- cache$target_table %>% 
         rename(campaign_default = campaign_default_true_case) %>%
         rename(no_vaccination = no_vaccination_true_case) 
       target_table <- target_table %>% 
         tidyr::gather("general_scenario", "true_case", match(c("campaign_default", "no_vaccination"), names(target_table))) %>%
-        mutate(observed_case = true_case / confirmation_rate)
+        mutate(clinical_case = true_case / true_confirm_rate)
       cache$target_table_long <- target_table
     }else{
       target_table <- cache$target_table_long
@@ -208,10 +208,10 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type){
   }else{
     target_table <- cache$target_table %>%
       mutate(general_scenario = "both", 
-            campaign_default_observed_case = campaign_default_true_case / confirmation_rate, 
-            no_vaccination_observed_case = no_vaccination_true_case / confirmation_rate) %>% 
+            campaign_default_clinical_case = campaign_default_true_case / true_confirm_rate, 
+            no_vaccination_clinical_case = no_vaccination_true_case / true_confirm_rate) %>% 
       mutate(averted_true_case = no_vaccination_true_case - campaign_default_true_case, 
-            averted_observed_case = no_vaccination_observed_case - campaign_default_observed_case)
+            averted_clinical_case = no_vaccination_clinical_case - campaign_default_clinical_case)
   }
 
 
@@ -222,19 +222,19 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type){
         group_by(ISO, admin_level, incid_trend, outbk_trend, general_scenario, surveillance_scenario, threshold, year, run_id) %>% 
         summarise(campaign_default_true_case = sum(campaign_default_true_case), 
                   no_vaccination_true_case = sum(no_vaccination_true_case), 
-                  campaign_default_observed_case = sum(campaign_default_observed_case), 
-                  no_vaccination_observed_case = sum(no_vaccination_observed_case), 
+                  campaign_default_clinical_case = sum(campaign_default_clinical_case), 
+                  no_vaccination_clinical_case = sum(no_vaccination_clinical_case), 
                   averted_true_case = sum(averted_true_case), 
-                  averted_observed_case = sum(averted_observed_case)) %>%
+                  averted_clinical_case = sum(averted_clinical_case)) %>%
         mutate(run_id = paste0("total_country", run_id))
       target_table_mean_country <- target_table_total_country %>%
         group_by(ISO, admin_level, incid_trend, outbk_trend, general_scenario, surveillance_scenario, threshold, year) %>% 
         summarise(campaign_default_true_case = mean(campaign_default_true_case), 
                   no_vaccination_true_case = mean(no_vaccination_true_case), 
-                  campaign_default_observed_case = mean(campaign_default_observed_case), 
-                  no_vaccination_observed_case = mean(no_vaccination_observed_case), 
+                  campaign_default_clinical_case = mean(campaign_default_clinical_case), 
+                  no_vaccination_clinical_case = mean(no_vaccination_clinical_case), 
                   averted_true_case = mean(averted_true_case), 
-                  averted_observed_case = mean(averted_observed_case)) %>%
+                  averted_clinical_case = mean(averted_clinical_case)) %>%
         mutate(run_id = "mean_country")
       target_table_country <- plyr::rbind.fill(target_table_total_country, target_table_mean_country)
       # target_table <- plyr::rbind.fill(target_table, target_table_total_country, target_table_mean_country)
@@ -244,19 +244,19 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type){
         group_by(ISO, admin_level, NAME_1, NAME_2, incid_trend, outbk_trend, general_scenario, surveillance_scenario, threshold, run_id) %>% 
         summarise(campaign_default_true_case = sum(campaign_default_true_case), 
                   no_vaccination_true_case = sum(no_vaccination_true_case), 
-                  campaign_default_observed_case = sum(campaign_default_observed_case), 
-                  no_vaccination_observed_case = sum(no_vaccination_observed_case), 
+                  campaign_default_clinical_case = sum(campaign_default_clinical_case), 
+                  no_vaccination_clinical_case = sum(no_vaccination_clinical_case), 
                   averted_true_case = sum(averted_true_case), 
-                  averted_observed_case = sum(averted_observed_case)) %>%
+                  averted_clinical_case = sum(averted_clinical_case)) %>%
         mutate(run_id = "total_district")
       target_table_mean_district_across_year <- target_table_total_district_across_year %>%
         group_by(ISO, admin_level, NAME_1, NAME_2, incid_trend, outbk_trend, general_scenario, surveillance_scenario, threshold) %>% 
         summarise(campaign_default_true_case = mean(campaign_default_true_case), 
                   no_vaccination_true_case = mean(no_vaccination_true_case), 
-                  campaign_default_observed_case = mean(campaign_default_observed_case), 
-                  no_vaccination_observed_case = mean(no_vaccination_observed_case), 
+                  campaign_default_clinical_case = mean(campaign_default_clinical_case), 
+                  no_vaccination_clinical_case = mean(no_vaccination_clinical_case), 
                   averted_true_case = mean(averted_true_case), 
-                  averted_observed_case = mean(averted_observed_case)) %>%
+                  averted_clinical_case = mean(averted_clinical_case)) %>%
         mutate(run_id = "mean_district")
       target_table_district <- plyr::rbind.fill(target_table_total_district_across_year, target_table_mean_district_across_year)
       # target_table <- plyr::rbind.fill(target_table, target_table_total_district_across_year, target_table_mean_district_across_year)
@@ -268,12 +268,12 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type){
       target_table_total_country <- target_table %>% 
         group_by(ISO, admin_level, incid_trend, outbk_trend, general_scenario, surveillance_scenario, threshold, year, run_id) %>% 
         summarise(true_case = sum(true_case), 
-                  observed_case = sum(observed_case)) %>%
+                  clinical_case = sum(clinical_case)) %>%
         mutate(run_id = paste0("total_country", run_id))
       target_table_mean_country <- target_table_total_country %>%
         group_by(ISO, admin_level, incid_trend, outbk_trend, general_scenario, surveillance_scenario, threshold, year) %>% 
         summarise(true_case = mean(true_case), 
-                  observed_case = mean(observed_case)) %>%
+                  clinical_case = mean(clinical_case)) %>%
         mutate(run_id = "mean_country")
       target_table_country <- plyr::rbind.fill(target_table_total_country, target_table_mean_country)
       # target_table <- plyr::rbind.fill(target_table, target_table_total_country, target_table_mean_country)
@@ -282,12 +282,12 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type){
       target_table_total_district_across_year <- target_table %>%
         group_by(ISO, admin_level, NAME_1, NAME_2, incid_trend, outbk_trend, general_scenario, surveillance_scenario, threshold, run_id) %>% 
         summarise(true_case = sum(true_case), 
-                  observed_case = sum(observed_case)) %>%
+                  clinical_case = sum(clinical_case)) %>%
         mutate(run_id = "total_district")
       target_table_mean_district_across_year <- target_table_total_district_across_year %>%
         group_by(ISO, admin_level, NAME_1, NAME_2, incid_trend, outbk_trend, general_scenario, surveillance_scenario, threshold) %>% 
         summarise(true_case = mean(true_case), 
-                  observed_case = mean(observed_case)) %>%
+                  clinical_case = mean(clinical_case)) %>%
         mutate(run_id = "mean_district")
       target_table_district <- plyr::rbind.fill(target_table_total_district_across_year, target_table_mean_district_across_year)
       # target_table <- plyr::rbind.fill(target_table, target_table_total_district_across_year, target_table_mean_district_across_year)
@@ -311,24 +311,24 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type){
       geom_line(data = plt_table[grepl("total_country", plt_table$run_id), ], 
                 aes(x=year, y=true_case, group=run_id), 
                 color = "lightblue", size = 0.05) +
-      facet_wrap( ISO + admin_level ~ general_scenario + surveillance_scenario, ncol = 4) +
+      facet_grid( ISO + admin_level ~ general_scenario + surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test1.pdf")
     # plt
     # dev.off()
-  }else if(grepl("non", cumulative_type) & grepl("observed", case_type)){
+  }else if(grepl("non", cumulative_type) & grepl("clinical", case_type)){
     plt_table <- target_table_country %>% 
       filter(threshold == threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == "district-estimate") 
     plt <- plt_table %>% 
-      ggplot(aes(x=year, y=observed_case, group=run_id)) +
+      ggplot(aes(x=year, y=clinical_case, group=run_id)) +
       geom_line(data = plt_table[plt_table$run_id == "mean_country", ], 
-                aes(x=year, y=observed_case, group=run_id), 
+                aes(x=year, y=clinical_case, group=run_id), 
                 color = "red", size = 0.3) +
       geom_line(data = plt_table[grepl("total_country", plt_table$run_id), ], 
-                aes(x=year, y=observed_case, group=run_id), 
+                aes(x=year, y=clinical_case, group=run_id), 
                 color = "lightblue", size = 0.05) +
-      facet_wrap( ISO + admin_level ~ general_scenario + surveillance_scenario, ncol = 4) +
+      facet_grid( ISO + admin_level ~ general_scenario + surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test2.pdf")
     # plt
@@ -344,7 +344,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type){
       geom_line(data = plt_table[grepl("total_country", plt_table$run_id), ], 
                 aes(x=year, y=averted_true_case, group=run_id), 
                 color = "lightblue", size = 0.05) +
-      facet_wrap( ISO + admin_level ~ surveillance_scenario, ncol = 3) +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test3.pdf")
     # plt
@@ -353,14 +353,14 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type){
     plt_table <- target_table_country %>% 
       filter(threshold == threshold)
     plt <- plt_table %>% 
-      ggplot(aes(x=year, y=averted_observed_case, group=run_id)) +
+      ggplot(aes(x=year, y=averted_clinical_case, group=run_id)) +
       geom_line(data = plt_table[plt_table$run_id == "mean_country", ], 
-                aes(x=year, y=averted_observed_case, group=run_id), 
+                aes(x=year, y=averted_clinical_case, group=run_id), 
                 color = "red", size = 0.3) +
       geom_line(data = plt_table[grepl("total_country", plt_table$run_id), ], 
-                aes(x=year, y=averted_observed_case, group=run_id), 
+                aes(x=year, y=averted_clinical_case, group=run_id), 
                 color = "lightblue", size = 0.05) +
-      facet_wrap( ISO + admin_level ~ surveillance_scenario, ncol = 3) +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test4.pdf")
     # plt
@@ -383,26 +383,26 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type){
       geom_line(data = plt_table[grepl("total_country", plt_table$run_id), ], 
                 aes(x=year, y=true_case, group=run_id), 
                 color = "lightblue", size = 0.05) +
-      facet_wrap( ISO + admin_level ~ general_scenario + surveillance_scenario, ncol = 4) +
+      facet_grid( ISO + admin_level ~ general_scenario + surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test5.pdf")
     # plt
     # dev.off()
-  }else if(grepl("country", cumulative_type) & grepl("observed", case_type)){
+  }else if(grepl("country", cumulative_type) & grepl("clinical", case_type)){
     plt_table <- target_table_country %>% 
       filter(threshold == threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == "district-estimate") %>% 
       group_by(ISO, admin_level, incid_trend, outbk_trend, general_scenario, surveillance_scenario, run_id) %>%
-      mutate(observed_case = cumsum(observed_case))
+      mutate(clinical_case = cumsum(clinical_case))
     plt <- plt_table %>% 
-      ggplot(aes(x=year, y=observed_case, group=run_id)) +
+      ggplot(aes(x=year, y=clinical_case, group=run_id)) +
       geom_line(data = plt_table[plt_table$run_id == "mean_country", ], 
-                aes(x=year, y=observed_case, group=run_id), 
+                aes(x=year, y=clinical_case, group=run_id), 
                 color = "red", size = 0.3) +
       geom_line(data = plt_table[grepl("total_country", plt_table$run_id), ], 
-                aes(x=year, y=observed_case, group=run_id), 
+                aes(x=year, y=clinical_case, group=run_id), 
                 color = "lightblue", size = 0.05) +
-      facet_wrap( ISO + admin_level ~ general_scenario + surveillance_scenario, ncol = 4) +
+      facet_grid( ISO + admin_level ~ general_scenario + surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test6.pdf")
     # plt
@@ -420,7 +420,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type){
       geom_line(data = plt_table[grepl("total_country", plt_table$run_id), ], 
                 aes(x=year, y=averted_true_case, group=run_id), 
                 color = "lightblue", size = 0.05) +
-      facet_wrap( ISO + admin_level ~ surveillance_scenario, ncol = 3) +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test7.pdf")
     # plt
@@ -429,16 +429,16 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type){
     plt_table <- target_table_country %>% 
       filter(threshold == threshold) %>% 
       group_by(ISO, admin_level, incid_trend, outbk_trend, surveillance_scenario, run_id) %>%
-      mutate(averted_observed_case = cumsum(averted_observed_case))
+      mutate(averted_clinical_case = cumsum(averted_clinical_case))
     plt <- plt_table %>% 
-      ggplot(aes(x=year, y=averted_observed_case, group=run_id)) +
+      ggplot(aes(x=year, y=averted_clinical_case, group=run_id)) +
       geom_line(data = plt_table[plt_table$run_id == "mean_country", ], 
-                aes(x=year, y=averted_observed_case, group=run_id), 
+                aes(x=year, y=averted_clinical_case, group=run_id), 
                 color = "red", size = 0.3) +
       geom_line(data = plt_table[grepl("total_country", plt_table$run_id), ], 
-                aes(x=year, y=averted_observed_case, group=run_id), 
+                aes(x=year, y=averted_clinical_case, group=run_id), 
                 color = "lightblue", size = 0.05) +
-      facet_wrap( ISO + admin_level ~ surveillance_scenario, ncol = 3) +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test8.pdf")
     # plt
@@ -456,22 +456,22 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type){
       geom_bar(data = plt_table, 
               aes(x=NAME_1, y=true_case), 
               stat = "identity", color = "black", size = 0.2, fill = "orange") +
-      facet_grid( ISO + admin_level ~ general_scenario + surveillance_scenario, space="free_x") +
+      facet_grid( ISO + admin_level ~ general_scenario + surveillance_scenario, scales = "free", space = "free") +
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test9.pdf")
     # plt
     # dev.off()
-  }else if(grepl("district", cumulative_type) & grepl("observed", case_type)){
+  }else if(grepl("district", cumulative_type) & grepl("clinical", case_type)){
     plt_table <- target_table_mean_district_across_year %>% 
       filter(threshold == threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == "district-estimate")
     plt <- plt_table %>% 
       ggplot() +
       geom_bar(data = plt_table, 
-              aes(x=NAME_1, y=observed_case), 
+              aes(x=NAME_1, y=clinical_case), 
               stat = "identity", color = "black", size = 0.2, fill = "orange") +
-      facet_grid( ISO + admin_level ~ general_scenario + surveillance_scenario, space="free_x") +
+      facet_grid( ISO + admin_level ~ general_scenario + surveillance_scenario, scales = "free", space = "free") +
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test10.pdf")
@@ -485,7 +485,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type){
       geom_bar(data = plt_table, 
               aes(x=NAME_1, y=averted_true_case), 
               stat = "identity", color = "black", size = 0.2, fill = "orange") +
-      facet_grid( ISO + admin_level ~ surveillance_scenario, space="free_x") +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") +
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test11.pdf")
@@ -497,9 +497,9 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type){
     plt <- plt_table %>% 
       ggplot() +
       geom_bar(data = plt_table, 
-              aes(x=NAME_1, y=averted_observed_case, fill=ISO), 
+              aes(x=NAME_1, y=averted_clinical_case, fill=ISO), 
               stat = "identity", color = "black", size = 0.2, fill = "orange") +
-      facet_grid( ISO + admin_level ~ surveillance_scenario, space="free_x") +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") +
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test12.pdf")
@@ -529,10 +529,10 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
   # Restructure of the target table -- no NA's originally because it's all true case
   target_table <- cache$target_table %>%
     mutate(general_scenario = "both", 
-          campaign_default_observed_case = campaign_default_true_case / confirmation_rate, 
-          no_vaccination_observed_case = no_vaccination_true_case / confirmation_rate) %>% 
+          campaign_default_clinical_case = campaign_default_true_case / true_confirm_rate, 
+          no_vaccination_clinical_case = no_vaccination_true_case / true_confirm_rate) %>% 
     mutate(averted_true_case = no_vaccination_true_case - campaign_default_true_case, 
-          averted_observed_case = no_vaccination_observed_case - campaign_default_observed_case) %>%
+          averted_clinical_case = no_vaccination_clinical_case - campaign_default_clinical_case) %>%
     mutate(dose = actual_fvp * 2, 
           efficacy = averted_true_case / dose)
   target_table$efficacy[is.infinite(target_table$efficacy)] <- 0
@@ -609,7 +609,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
     plt <- plt_table %>% 
       ggplot(aes(x=year, y=efficacy, fill=year)) +
       geom_boxplot() + 
-      facet_wrap( ISO + admin_level ~ surveillance_scenario, ncol = 3) +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test13.pdf")
@@ -621,7 +621,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
     plt <- plt_table %>% 
       ggplot(aes(x=ISO, y=efficacy, fill=ISO)) +
       geom_boxplot() + 
-      facet_wrap( ISO + admin_level ~ surveillance_scenario, ncol = 3) +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test14.pdf")
     # plt
@@ -632,7 +632,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
     plt <- plt_table %>% 
       ggplot(aes(x=NAME_1, y=efficacy, fill=ISO)) +
       geom_boxplot() + 
-      facet_wrap( ISO + admin_level ~ surveillance_scenario, ncol = 3) +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test17.pdf", height = 20, width = 15)
@@ -645,7 +645,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
     plt <- plt_table %>% 
       ggplot(aes(x=year, y=efficacy, fill=year)) +
       geom_boxplot() + 
-      facet_wrap( ISO + admin_level ~ surveillance_scenario, ncol = 2) +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test15.pdf")
@@ -657,7 +657,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
     plt <- plt_table %>% 
       ggplot(aes(x=ISO, y=efficacy, fill=ISO)) +
       geom_boxplot() + 
-      facet_wrap( ISO + admin_level ~ surveillance_scenario, ncol = 2) +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test16.pdf")
     # plt
@@ -668,7 +668,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
     plt <- plt_table %>% 
       ggplot(aes(x=NAME_1, y=efficacy, fill=ISO)) +
       geom_boxplot() + 
-      facet_wrap( ISO + admin_level ~ surveillance_scenario, ncol = 2) +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test18.pdf", height = 20, width = 15)

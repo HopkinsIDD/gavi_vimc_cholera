@@ -194,8 +194,8 @@ run_surveillance_scenario <- function(
 
     #### Get ready for the next year -- the ec_list is deleted from within
     start.time <- Sys.time()
-    
-    rc_list <- surveillance_add_rc_new_row(rc_list, ec_list, pop, model_year, sim_start_year, sim_end_year, shp1, shp2, nsamples)
+    pop_plus_1 <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, (model_year + 1))
+    rc_list <- surveillance_add_rc_new_row(rc_list, ec_list, pop_plus_1, model_year, sim_start_year, sim_end_year, shp1, shp2, nsamples)
     
     if(exists("sus_list") & scenario == "campaign-default"){sus_list <- NULL}
     if(exists("ec_list")){rm(ec_list)}
