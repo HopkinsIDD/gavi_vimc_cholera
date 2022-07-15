@@ -907,4 +907,8 @@ plt
 
 #The district issue
 https://www.datacamp.com/tutorial/facets-ggplot-r 
+
+#To add bar chart 
+https://r-graph-gallery.com/line-chart-dual-Y-axis-ggplot2.html 
+
 ```
