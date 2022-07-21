@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=GHA_test
-#SBATCH --output=log/GHA_testing_run.txt
+#SBATCH --output=log/GHA_testing_run_1e-03.txt
 #SBATCH --time=10000:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=10G

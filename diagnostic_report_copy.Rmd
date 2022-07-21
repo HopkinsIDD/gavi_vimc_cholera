@@ -7,8 +7,8 @@ output:
     toc_float: true
 params: 
   surveillance_project_directory: "/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera"
-  country: ["GHA"] #country code specified or all the countries will be used for the diagnostic report
-  vac_incid_thresholds: [1/1000]
+  country: ["GHA", "TZA", "COD"] #country code specified or all the countries will be used for the diagnostic report
+  vac_incid_thresholds: [2e-04, 1e-04]
   no_vaccination_surveillance_scenario: "district-estimate"
   args: 'myarg'
 ---
@@ -18,7 +18,7 @@ params:
 # params <- new.env()
 # params$surveillance_project_directory <- "/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera"
 # params$country <- c("COD", "GHA", "TZA") #country code specified or all the countries will be used for the diagnostic report
-# params$vac_incid_thresholds <- c(1/1000)
+# params$vac_incid_thresholds <- c(2e-04, 1e-04)
 # params$no_vaccination_surveillance_scenario <- c("district-estimate")
 
 ## Try to set the working directory
@@ -88,7 +88,34 @@ capFig = function(x){
 
 
 # Modeling results summary for `r stringr::str_extract(params$country, "[A-Z]{3}")`
+
+# Model Settings 
 ```{r include=FALSE, message=FALSE}
+camp_d <- check_model_setting(countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", thresholds = params$vac_incid_thresholds)
+camp_g <- check_model_setting(countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", thresholds = params$vac_incid_thresholds)
+camp_n <- check_model_setting(countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", thresholds = params$vac_incid_thresholds)
+no_vac <- check_model_setting(countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, thresholds = params$vac_incid_thresholds)
+all_set <- rbind(camp_d, camp_g, camp_n, no_vac) %>% 
+  arrange(country) %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+
+```{r include=FALSE, message=FALSE}
+# Check whether the output is available to be read in and used 
+for(threshold in params$vac_incid_thresholds){
+  camp_d <- check_outputs_availability(countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = threshold)
+  camp_g <- check_outputs_availability(countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = threshold)
+  camp_n <- check_outputs_availability(countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = threshold)
+  no_vac <- check_outputs_availability(countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = threshold)
+  if(!all(camp_d & camp_g & camp_n & no_vac)){
+    unavailable <- c("campaign-district estimate", "campaign-global estimate", "campaign-no estimate", "no vaccination")[c(camp_d, camp_g, camp_n, no_vac)]
+    stop(paste0("For threshold ", threshold, ", the following scenario(s) does not have the corresponding model output: ", unavailable))
+  }
+}
+
 # Make a cache that saves all the tables and some important parameters 
 cache <- new.env()
 
@@ -113,7 +140,7 @@ fig_height <- 5 * length(params$country)
 #### True case by year at threshold 1/1000
 ```{r true case by year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("True cases by year")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/1000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/1000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -127,7 +154,7 @@ plt
 #### True case by year at threshold 1/5000
 ```{r true case by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("True cases by year")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/5000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/5000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -141,7 +168,7 @@ plt
 #### True case by year at threshold 1/10000
 ```{r true case by year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("True cases by year")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/10000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/10000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -156,7 +183,7 @@ plt
 #### True case by district at threshold 1/1000
 ```{r true case by district 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("True cases by district")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/1000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/1000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -170,7 +197,7 @@ plt
 #### True case by district at threshold 1/5000
 ```{r true case by district 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("True cases by district")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/5000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/5000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -184,7 +211,7 @@ plt
 #### True case by district at threshold 1/10000
 ```{r true case by district 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("True cases by district")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/10000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/10000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -199,7 +226,7 @@ plt
 #### True case cumulative at threshold 1/1000
 ```{r true case cumulative 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("True cases cumulative")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/1000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/1000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -213,7 +240,7 @@ plt
 #### True case cumulative at threshold 1/5000
 ```{r true case cumulative 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("True cases cumulative")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/5000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/5000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -227,7 +254,7 @@ plt
 #### True case cumulative at threshold 1/10000
 ```{r true case cumulative 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("True cases cumulative")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/10000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/10000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -244,7 +271,7 @@ plt
 #### Clinical case by year at threshold 1/1000
 ```{r Clinical case by year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case by year")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/1000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/1000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -258,7 +285,7 @@ plt
 #### Clinical case by year at threshold 1/5000
 ```{r Clinical case by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case by year")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/5000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/5000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -272,7 +299,7 @@ plt
 #### Clinical case by year at threshold 1/10000
 ```{r Clinical case by year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case by year")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/10000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/10000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -287,7 +314,7 @@ plt
 #### Clinical case by district at threshold 1/1000
 ```{r Clinical case by district 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case by district")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/1000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/1000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -301,7 +328,7 @@ plt
 #### Clinical case by district at threshold 1/5000
 ```{r Clinical case by district 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case by district")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/5000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/5000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -315,7 +342,7 @@ plt
 #### Clinical case by district at threshold 1/10000
 ```{r Clinical case by district 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case by district")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/10000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/10000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -330,7 +357,7 @@ plt
 #### Clinical case cumulative at threshold 1/1000
 ```{r Clinical case cumulative 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case cumulative")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/1000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/1000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -344,7 +371,7 @@ plt
 #### Clinical case cumulative at threshold 1/5000
 ```{r Clinical case cumulative 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case cumulative")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/5000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/5000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -358,7 +385,7 @@ plt
 #### Clinical case cumulative at threshold 1/10000
 ```{r Clinical case cumulative 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Clinical case cumulative")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/10000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "clinical_case", threshold = 1/10000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -370,12 +397,144 @@ plt
 ```
 
 
+## Confirmed case {.tabset}
+### Confirmed case by year {.tabset}
+#### Confirmed case by year at threshold 1/1000
+```{r Confirmed case by year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Confirmed case by year")}
+if(1/1000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "confirmed_case", threshold = 1/1000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL) #optional, but safer in case another theme is applied later
+}
+plt
+
+```
+
+#### Confirmed case by year at threshold 1/5000
+```{r Confirmed case by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Confirmed case by year")}
+if(1/5000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "confirmed_case", threshold = 1/5000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL)
+}
+plt
+
+```
+
+#### Confirmed case by year at threshold 1/10000
+```{r Confirmed case by year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Confirmed case by year")}
+if(1/10000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "confirmed_case", threshold = 1/10000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL)
+}
+plt
+
+```
+
+### Confirmed case by district {.tabset}
+#### Confirmed case by district at threshold 1/1000
+```{r Confirmed case by district 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Confirmed case by district")}
+if(1/1000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "confirmed_case", threshold = 1/1000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL) #optional, but safer in case another theme is applied later
+}
+plt
+
+```
+
+#### Confirmed case by district at threshold 1/5000
+```{r Confirmed case by district 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Confirmed case by district")}
+if(1/5000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "confirmed_case", threshold = 1/5000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL)
+}
+plt
+
+```
+
+#### Confirmed case by district at threshold 1/10000
+```{r Confirmed case by district 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Confirmed case by district")}
+if(1/10000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "confirmed_case", threshold = 1/10000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL)
+}
+plt
+
+```
+
+### Confirmed case cumulative {.tabset}
+#### Confirmed case cumulative at threshold 1/1000
+```{r Confirmed case cumulative 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Confirmed case cumulative")}
+if(1/1000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "confirmed_case", threshold = 1/1000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL) #optional, but safer in case another theme is applied later
+}
+plt
+
+```
+
+#### Confirmed case cumulative at threshold 1/5000
+```{r Confirmed case cumulative 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Confirmed case cumulative")}
+if(1/5000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "confirmed_case", threshold = 1/5000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL)
+}
+plt
+
+```
+
+#### Confirmed case cumulative at threshold 1/10000
+```{r Confirmed case cumulative 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Confirmed case cumulative")}
+if(1/10000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "confirmed_case", threshold = 1/10000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL)
+}
+plt
+
+```
+
+
+
 ## Averted true case {.tabset}
 ### Averted true case by year {.tabset}
 #### Averted true case by year at threshold 1/1000
 ```{r Averted true case by year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted true case by year")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/1000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/1000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -389,7 +548,7 @@ plt
 #### Averted true case by year at threshold 1/5000
 ```{r Averted true case by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted true case by year")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/5000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/5000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -403,7 +562,7 @@ plt
 #### Averted true case by year at threshold 1/10000
 ```{r Averted true case by year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted true case by year")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/10000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/10000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -418,7 +577,7 @@ plt
 #### Averted true case by district at threshold 1/1000
 ```{r Averted true case by district 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted true case by district")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/1000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/1000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -432,7 +591,7 @@ plt
 #### Averted true case by district at threshold 1/5000
 ```{r Averted true case by district 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted true case by district")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/5000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/5000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -446,7 +605,7 @@ plt
 #### Averted true case by district at threshold 1/10000
 ```{r Averted true case by district 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted true case by district")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/10000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/10000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -461,7 +620,7 @@ plt
 #### Averted true case cumulative at threshold 1/1000
 ```{r Averted true case cumulative 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted true case cumulative")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/1000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/1000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -475,7 +634,7 @@ plt
 #### Averted true case cumulative at threshold 1/5000
 ```{r Averted true case cumulative 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted true case cumulative")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/5000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/5000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -489,7 +648,7 @@ plt
 #### Averted true case cumulative at threshold 1/10000
 ```{r Averted true case cumulative 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted true case cumulative")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/10000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "averted_tr_case", threshold = 1/10000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -506,7 +665,7 @@ plt
 #### Averted clinical case by year at threshold 1/1000
 ```{r Averted clinical case by year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case by year")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/1000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "averted_cl_case", threshold = 1/1000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -520,7 +679,7 @@ plt
 #### Averted clinical case by year at threshold 1/5000
 ```{r Averted clinical case by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case by year")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/5000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "averted_cl_case", threshold = 1/5000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -534,7 +693,7 @@ plt
 #### Averted clinical case by year at threshold 1/10000
 ```{r Averted clinical case by year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case by year")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/10000, cumulative_type = "non_cumulative")
+  plt <- plot_cases(cache = cache, case_type = "averted_cl_case", threshold = 1/10000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -549,7 +708,7 @@ plt
 #### Averted clinical case by district at threshold 1/1000
 ```{r Averted clinical case by district 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case by district")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/1000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "averted_cl_case", threshold = 1/1000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -563,7 +722,7 @@ plt
 #### Averted clinical case by district at threshold 1/5000
 ```{r Averted clinical case by district 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case by district")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/5000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "averted_cl_case", threshold = 1/5000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -577,7 +736,7 @@ plt
 #### Averted clinical case by district at threshold 1/10000
 ```{r Averted clinical case by district 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case by district")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/10000, cumulative_type = "district_level")
+  plt <- plot_cases(cache = cache, case_type = "averted_cl_case", threshold = 1/10000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -592,7 +751,7 @@ plt
 #### Averted clinical case cumulative at threshold 1/1000
 ```{r Averted clinical case cumulative 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case cumulative")}
 if(1/1000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/1000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "averted_cl_case", threshold = 1/1000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -606,7 +765,7 @@ plt
 #### Averted clinical case cumulative at threshold 1/5000
 ```{r Averted clinical case cumulative 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case cumulative")}
 if(1/5000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/5000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "averted_cl_case", threshold = 1/5000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -620,7 +779,138 @@ plt
 #### Averted clinical case cumulative at threshold 1/10000
 ```{r Averted clinical case cumulative 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted clinical case cumulative")}
 if(1/10000 %in% params$vac_incid_thresholds){
-  plt <- plot_cases(cache = cache, case_type = "averted_ob_case", threshold = 1/10000, cumulative_type = "country_level")
+  plt <- plot_cases(cache = cache, case_type = "averted_cl_case", threshold = 1/10000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL)
+}
+plt
+
+```
+
+
+## Averted confirmed case {.tabset}
+### Averted confirmed case by year {.tabset}
+#### Averted confirmed case by year at threshold 1/1000
+```{r Averted confirmed case by year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted confirmed case by year")}
+if(1/1000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "averted_cf_case", threshold = 1/1000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL) #optional, but safer in case another theme is applied later
+}
+plt
+
+```
+
+#### Averted confirmed case by year at threshold 1/5000
+```{r Averted confirmed case by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted confirmed case by year")}
+if(1/5000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "averted_cf_case", threshold = 1/5000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL)
+}
+plt
+
+```
+
+#### Averted confirmed case by year at threshold 1/10000
+```{r Averted confirmed case by year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted confirmed case by year")}
+if(1/10000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "averted_cf_case", threshold = 1/10000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL)
+}
+plt
+
+```
+
+### Averted confirmed case by district {.tabset}
+#### Averted confirmed case by district at threshold 1/1000
+```{r Averted confirmed case by district 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted confirmed case by district")}
+if(1/1000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "averted_cf_case", threshold = 1/1000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL) #optional, but safer in case another theme is applied later
+}
+plt
+
+```
+
+#### Averted confirmed case by district at threshold 1/5000
+```{r Averted confirmed case by district 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted confirmed case by district")}
+if(1/5000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "averted_cf_case", threshold = 1/5000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL)
+}
+plt
+
+```
+
+#### Averted confirmed case by district at threshold 1/10000
+```{r Averted confirmed case by district 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted confirmed case by district")}
+if(1/10000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "averted_cf_case", threshold = 1/10000, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL)
+}
+plt
+
+```
+
+### Averted confirmed case cumulative {.tabset}
+#### Averted confirmed case cumulative at threshold 1/1000
+```{r Averted confirmed case cumulative 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted confirmed case cumulative")}
+if(1/1000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "averted_cf_case", threshold = 1/1000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL) #optional, but safer in case another theme is applied later
+}
+plt
+
+```
+
+#### Averted confirmed case cumulative at threshold 1/5000
+```{r Averted confirmed case cumulative 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted confirmed case cumulative")}
+if(1/5000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "averted_cf_case", threshold = 1/5000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL)
+}
+plt
+
+```
+
+#### Averted confirmed case cumulative at threshold 1/10000
+```{r Averted confirmed case cumulative 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Averted confirmed case cumulative")}
+if(1/10000 %in% params$vac_incid_thresholds){
+  plt <- plot_cases(cache = cache, case_type = "averted_cf_case", threshold = 1/10000, cumulative_type = "country_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -897,10 +1187,352 @@ plt
 
 
 
+# Dose tables {.tabset}
+## Compaign scenario--district estimate {.tabset}
+### By year {.tabset}
+#### Threshold 1/1000
+```{r include=FALSE, message=FALSE}
+if(1/1000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/1000)$df_admin1_sumadmins
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/5000
+```{r include=FALSE, message=FALSE}
+if(1/5000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/5000)$df_admin1_sumadmins
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/10000
+```{r include=FALSE, message=FALSE}
+if(1/10000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/10000)$df_admin1_sumadmins
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+### By admin {.tabset}
+#### Threshold 1/1000
+```{r include=FALSE, message=FALSE}
+if(1/1000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/1000)$df_admin1_byadmin
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/5000
+```{r include=FALSE, message=FALSE}
+if(1/5000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/5000)$df_admin1_byadmin
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/10000
+```{r include=FALSE, message=FALSE}
+if(1/10000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/10000)$df_admin1_byadmin
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+
+
+## Compaign scenario--global estimate {.tabset}
+### By year {.tabset}
+#### Threshold 1/1000
+```{r include=FALSE, message=FALSE}
+if(1/1000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/1000)$df_admin1_sumadmins
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/5000
+```{r include=FALSE, message=FALSE}
+if(1/5000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/5000)$df_admin1_sumadmins
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/10000
+```{r include=FALSE, message=FALSE}
+if(1/10000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/10000)$df_admin1_sumadmins
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+### By admin {.tabset}
+#### Threshold 1/1000
+```{r include=FALSE, message=FALSE}
+if(1/1000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/1000)$df_admin1_byadmin
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/5000
+```{r include=FALSE, message=FALSE}
+if(1/5000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/5000)$df_admin1_byadmin
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/10000
+```{r include=FALSE, message=FALSE}
+if(1/10000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/10000)$df_admin1_byadmin
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+
+
+## Compaign scenario--no estimate {.tabset}
+### By year {.tabset}
+#### Threshold 1/1000
+```{r include=FALSE, message=FALSE}
+if(1/1000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/1000)$df_admin1_sumadmins
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/5000
+```{r include=FALSE, message=FALSE}
+if(1/5000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/5000)$df_admin1_sumadmins
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/10000
+```{r include=FALSE, message=FALSE}
+if(1/10000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/10000)$df_admin1_sumadmins
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+### By admin {.tabset}
+#### Threshold 1/1000
+```{r include=FALSE, message=FALSE}
+if(1/1000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/1000)$df_admin1_byadmin
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/5000
+```{r include=FALSE, message=FALSE}
+if(1/5000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/5000)$df_admin1_byadmin
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/10000
+```{r include=FALSE, message=FALSE}
+if(1/10000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/10000)$df_admin1_byadmin
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+
+
+## No vaccination scenario {.tabset}
+### By year {.tabset}
+#### Threshold 1/1000
+```{r include=FALSE, message=FALSE}
+if(1/1000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/1000)$df_admin1_sumadmins
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/5000
+```{r include=FALSE, message=FALSE}
+if(1/5000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/5000)$df_admin1_sumadmins
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/10000
+```{r include=FALSE, message=FALSE}
+if(1/10000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/10000)$df_admin1_sumadmins
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+### By admin {.tabset}
+#### Threshold 1/1000
+```{r include=FALSE, message=FALSE}
+if(1/1000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/1000)$df_admin1_byadmin
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/5000
+```{r include=FALSE, message=FALSE}
+if(1/5000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/5000)$df_admin1_byadmin
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+#### Threshold 1/10000
+```{r include=FALSE, message=FALSE}
+if(1/10000 %in% params$vac_incid_thresholds){
+  table <- get_inc_tp_doses(countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/10000)$df_admin1_byadmin
+}else{
+  table <- tibble::tibble(ISO = as.character())
+}
+table %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+  kableExtra::kable_paper(full_width = F) %>%
+  kableExtra::row_spec(1, bold = T)
+
+```
+
+
+
+# Time Table
+```{r include=FALSE, message=FALSE}
+plot_time_table(cache)
+
+```
+
+
+
 ```{r eval=FALSE, include=FALSE, message=FALSE}
 #Back-ups
-# # Function that returns cases plots (case type: true_case, clinical_case, averted_tr_case, averted_ob_case) (cumulative_type: non_cumulative, district_level, country_level)
-# plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 0.001, cumulative_type = "district_level")
+# # Function that returns cases plots (case type: true_case, clinical_case, confirmed_case, averted_tr_case, averted_cl_case, averted_cf_case) (cumulative_type: non_cumulative, district_level, country_level)
+# plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 0.001, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 
 # # Function that returns efficacy plots (compare_type: side-by-side, subtraction) (cumulative_type: non_cumulative, across_year, within_district)
 # plt <- plot_efficacy(cache = cache, compare_type = "side-by-side", threshold = 0.001, cumulative_type = "non_cumulative")

@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=COD_test
-#SBATCH --output=log/COD_testing_run.txt
+#SBATCH --output=log/COD_testing_run_1e-03.txt
 #SBATCH --time=10000:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem=10G
+#SBATCH --mem=20G
 #SBATCH --nodelist=idmodeling2
 
 echo "Beginning of script"

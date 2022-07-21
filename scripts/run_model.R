@@ -65,8 +65,8 @@ if (!require('ocvImpact', character.only = T)) {
 
 #======For the convenience of debugging======#
 ###These a few lines should be commented out when running the formal model (as it may cause issues when running multiple countries at the same time)
-roxygen2::roxygenise("packages/ocvImpact")
-install.packages("packages/ocvImpact", type = "source", repos = NULL)
+# roxygen2::roxygenise("packages/ocvImpact")
+# install.packages("packages/ocvImpact", type = "source", repos = NULL)
 library('ocvImpact', character.only = T)
 
 ##======Load certain packages that are used a lot======#

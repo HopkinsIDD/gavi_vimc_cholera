@@ -78,6 +78,7 @@ run_surveillance_scenario <- function(
   elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
   time_table[1, ]$load_baseline_incidence <- elapsed_time
   readr::write_csv(time_table, time_table_fn)
+  gc()
 
 
 
@@ -104,6 +105,7 @@ run_surveillance_scenario <- function(
     time_table[time_tab_idx, ]$year <- model_year
     time_table[time_tab_idx, ]$update_targets_list <- elapsed_time
     readr::write_csv(time_table, time_table_fn)
+    gc()
 
 
     #### Update the vaccinated proportion raster 
@@ -131,6 +133,7 @@ run_surveillance_scenario <- function(
     elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
     time_table[time_tab_idx, ]$update_save_vac_raster <- elapsed_time
     readr::write_csv(time_table, time_table_fn)
+    gc()
 
 
     #### Calculate/update suspectible population raster
@@ -168,6 +171,7 @@ run_surveillance_scenario <- function(
     elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
     time_table[time_tab_idx, ]$update_save_sus_raster <- elapsed_time
     readr::write_csv(time_table, time_table_fn)
+    gc()
 
 
     #### Get the expected cases for the year
@@ -190,6 +194,7 @@ run_surveillance_scenario <- function(
     elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
     time_table[time_tab_idx, ]$create_expectedCases <- elapsed_time
     readr::write_csv(time_table, time_table_fn)
+    gc()
 
 
     #### Get ready for the next year -- the ec_list is deleted from within
@@ -203,6 +208,7 @@ run_surveillance_scenario <- function(
     elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
     time_table[time_tab_idx, ]$add_new_row_to_target_list <- elapsed_time
     readr::write_csv(time_table, time_table_fn)
+    gc()
 
     
   }
@@ -259,6 +265,5 @@ run_surveillance_scenario <- function(
   return(NULL)
 
 }
-
 
 
