@@ -138,7 +138,7 @@ get_filenames <- function(cache, surveillance_project_directory, pre_country, pr
   country_list <- ifelse(pre_country %in% countries, pre_country, countries)  
   rm(pre_country)
 
-  threshold_list <- ifelse(pre_vac_incid_thresholds %in% vac_incid_thresholds, pre_vac_incid_thresholds, vac_incid_thresholds)
+  threshold_list <- ifelse(as.numeric(pre_vac_incid_thresholds) %in% vac_incid_thresholds, pre_vac_incid_thresholds, vac_incid_thresholds)
   rm(pre_vac_incid_thresholds)
 
   if(identical(vac_admin_level, "both")) {admin_list <- c("admin1", "admin2")} else {admin_list <- vac_admin_level}
@@ -156,7 +156,10 @@ get_filenames <- function(cache, surveillance_project_directory, pre_country, pr
                               country_list[i], "ec", admin_list, paste0(year_list, ".tif")), 1, paste, collapse = "_")
     ecraster_fns <- c(ec_filenames_camp, ec_filenames_novac)
     ecraster_fns <- paste0(surveillance_project_directory, "/", ecraster_fns)
-    if(sum(!file.exists(ecraster_fns)) > 0){stop(paste("Incomplete model outputs for expected cases rasters for country", country_list[i]))}
+    if(sum(!file.exists(ecraster_fns)) > 0){
+      message(paste0("Cannot find the following files: ", ecraster_fns[!file.exists(ecraster_fns)]))
+      stop(paste("Incomplete model outputs for expected cases rasters for country", country_list[i]))
+    }
 
     ## expected cases table
     ectable_fns_camp <- apply(expand.grid(paste0("output_raw/", runname, "/campaign-default/", country_list[i]), 
@@ -307,8 +310,11 @@ combine_output <- function(cache, surveillance_project_directory, output_to_comb
 #' @return cached file names 
 plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccination_surveillance_scenario){
   
+  # Aviod the same name
+  chosen_threshold <- threshold
+
   # Restructure of the target table 
-  if(grepl("true", case_type) | grepl("clinical", case_type)){
+  if(grepl("true", case_type) | grepl("clinical", case_type) | grepl("confirmed", case_type)){
     if(!"target_table_long" %in% names(cache)){
       target_table <- cache$target_table %>% 
         rename(campaign_default = campaign_default_true_case) %>%
@@ -337,6 +343,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
         mutate(averted_true_case = no_vaccination_true_case - campaign_default_true_case, 
               averted_clinical_case = no_vaccination_clinical_case - campaign_default_clinical_case, 
               averted_confirmed_case = no_vaccination_confirmed_case - campaign_default_confirmed_case) 
+      cache$target_table_wide <- target_table
     }else{
       target_table <- cache$target_table_wide
     }
@@ -453,7 +460,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
   # First the by year figure -- true case (non-cumulative and country-level mean)
   if(grepl("non", cumulative_type) & grepl("true", case_type)){
     plt_table <- target_table_country %>% 
-      filter(threshold == threshold) %>%
+      filter(threshold == chosen_threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == no_vaccination_surveillance_scenario) 
     coeff <- max(plt_table$dose) / max(plt_table$true_case)
     plt <- plt_table %>% 
@@ -476,7 +483,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("non", cumulative_type) & grepl("clinical", case_type)){
     plt_table <- target_table_country %>% 
-      filter(threshold == threshold) %>%
+      filter(threshold == chosen_threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == no_vaccination_surveillance_scenario) 
     coeff <- max(plt_table$dose) / max(plt_table$clinical_case)
     plt <- plt_table %>% 
@@ -499,7 +506,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("non", cumulative_type) & grepl("confirmed", case_type)){
     plt_table <- target_table_country %>% 
-      filter(threshold == threshold) %>%
+      filter(threshold == chosen_threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == no_vaccination_surveillance_scenario) 
     coeff <- max(plt_table$dose) / max(plt_table$confirmed_case)
     plt <- plt_table %>% 
@@ -522,7 +529,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("non", cumulative_type) & grepl("averted_tr", case_type)){
     plt_table <- target_table_country %>% 
-      filter(threshold == threshold) 
+      filter(threshold == chosen_threshold) 
     coeff <- max(plt_table$dose) / max(plt_table$averted_true_case)
     plt <- plt_table %>% 
       ggplot(aes(x=year, y=averted_true_case, group=run_id)) +
@@ -544,7 +551,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("non", cumulative_type) & grepl("averted_cl", case_type)){
     plt_table <- target_table_country %>% 
-      filter(threshold == threshold)
+      filter(threshold == chosen_threshold)
     coeff <- max(plt_table$dose) / max(plt_table$averted_clinical_case)
     plt <- plt_table %>% 
       ggplot(aes(x=year, y=averted_clinical_case, group=run_id)) +
@@ -566,7 +573,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("non", cumulative_type) & grepl("averted_cf", case_type)){
     plt_table <- target_table_country %>% 
-      filter(threshold == threshold)
+      filter(threshold == chosen_threshold)
     coeff <- max(plt_table$dose) / max(plt_table$averted_confirmed_case)
     plt <- plt_table %>% 
       ggplot(aes(x=year, y=averted_confirmed_case, group=run_id)) +
@@ -592,7 +599,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
   # Second: country-level cumulative across years 
   if(grepl("country", cumulative_type) & grepl("true", case_type)){
     plt_table <- target_table_country %>% 
-      filter(threshold == threshold) %>%
+      filter(threshold == chosen_threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == no_vaccination_surveillance_scenario) %>% 
       group_by(ISO, admin_level, incid_trend, outbk_trend, general_scenario, surveillance_scenario, run_id) %>%
       mutate(true_case = cumsum(true_case))
@@ -611,7 +618,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("country", cumulative_type) & grepl("clinical", case_type)){
     plt_table <- target_table_country %>% 
-      filter(threshold == threshold) %>%
+      filter(threshold == chosen_threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == no_vaccination_surveillance_scenario) %>% 
       group_by(ISO, admin_level, incid_trend, outbk_trend, general_scenario, surveillance_scenario, run_id) %>%
       mutate(clinical_case = cumsum(clinical_case))
@@ -630,7 +637,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("country", cumulative_type) & grepl("confirmed", case_type)){
     plt_table <- target_table_country %>% 
-      filter(threshold == threshold) %>%
+      filter(threshold == chosen_threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == no_vaccination_surveillance_scenario) %>% 
       group_by(ISO, admin_level, incid_trend, outbk_trend, general_scenario, surveillance_scenario, run_id) %>%
       mutate(confirmed_case = cumsum(confirmed_case))
@@ -649,7 +656,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("country", cumulative_type) & grepl("averted_tr", case_type)){
     plt_table <- target_table_country %>% 
-      filter(threshold == threshold) %>% 
+      filter(threshold == chosen_threshold) %>% 
       group_by(ISO, admin_level, incid_trend, outbk_trend, surveillance_scenario, run_id) %>%
       mutate(averted_true_case = cumsum(averted_true_case))
     plt <- plt_table %>% 
@@ -667,7 +674,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("country", cumulative_type) & grepl("averted_cl", case_type)){
     plt_table <- target_table_country %>% 
-      filter(threshold == threshold) %>% 
+      filter(threshold == chosen_threshold) %>% 
       group_by(ISO, admin_level, incid_trend, outbk_trend, surveillance_scenario, run_id) %>%
       mutate(averted_clinical_case = cumsum(averted_clinical_case))
     plt <- plt_table %>% 
@@ -685,7 +692,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("country", cumulative_type) & grepl("averted_cf", case_type)){
     plt_table <- target_table_country %>% 
-      filter(threshold == threshold) %>% 
+      filter(threshold == chosen_threshold) %>% 
       group_by(ISO, admin_level, incid_trend, outbk_trend, surveillance_scenario, run_id) %>%
       mutate(averted_confirmed_case = cumsum(averted_confirmed_case))
     plt <- plt_table %>% 
@@ -707,7 +714,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
   # The third: cumulative histogram by districts 
   if(grepl("district", cumulative_type) & grepl("true", case_type)){
     plt_table <- target_table_mean_district_across_year %>% 
-      filter(threshold == threshold) %>%
+      filter(threshold == chosen_threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == no_vaccination_surveillance_scenario)
     plt <- plt_table %>% 
       ggplot() +
@@ -722,7 +729,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("district", cumulative_type) & grepl("clinical", case_type)){
     plt_table <- target_table_mean_district_across_year %>% 
-      filter(threshold == threshold) %>%
+      filter(threshold == chosen_threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == no_vaccination_surveillance_scenario)
     plt <- plt_table %>% 
       ggplot() +
@@ -737,7 +744,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("district", cumulative_type) & grepl("confirmed", case_type)){
     plt_table <- target_table_mean_district_across_year %>% 
-      filter(threshold == threshold) %>%
+      filter(threshold == chosen_threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == no_vaccination_surveillance_scenario)
     plt <- plt_table %>% 
       ggplot() +
@@ -752,7 +759,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("district", cumulative_type) & grepl("averted_tr", case_type)){
     plt_table <- target_table_mean_district_across_year %>% 
-      filter(threshold == threshold)
+      filter(threshold == chosen_threshold)
     plt <- plt_table %>% 
       ggplot() +
       geom_bar(data = plt_table, 
@@ -766,7 +773,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("district", cumulative_type) & grepl("averted_cl", case_type)){
     plt_table <- target_table_mean_district_across_year %>% 
-      filter(threshold == threshold)
+      filter(threshold == chosen_threshold)
     plt <- plt_table %>% 
       ggplot() +
       geom_bar(data = plt_table, 
@@ -780,7 +787,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     # dev.off()
   }else if(grepl("district", cumulative_type) & grepl("averted_cf", case_type)){
     plt_table <- target_table_mean_district_across_year %>% 
-      filter(threshold == threshold)
+      filter(threshold == chosen_threshold)
     plt <- plt_table %>% 
       ggplot() +
       geom_bar(data = plt_table, 
@@ -813,6 +820,9 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
 #' @return cached file names 
 plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
 
+  # Avoid using the same name for threshold
+  chosen_threshold <- threshold
+
   # Restructure of the target table -- no NA's originally because it's all true case
   if(!"target_table_eff_side" %in% names(cache)){
     target_table <- cache$target_table %>%
@@ -825,6 +835,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
             efficacy = averted_true_case / actual_fvp)
     target_table$efficacy[is.infinite(target_table$efficacy)] <- 0
     target_table$efficacy[is.na(target_table$efficacy)] <- 0
+    cache$target_table_eff_side <- target_table
   }else{
     target_table <- cache$target_table_eff_side
   }
@@ -838,6 +849,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
       target_table <- dplyr::left_join(target_table, table_no, by = c("ISO", "admin_level", "NAME_1", "NAME_2", "incid_trend", "outbk_trend", "threshold", "year", "run_id")) %>% 
         mutate(efficacy = efficacy - efficacy_no_estimate) %>% 
         select(- efficacy_no_estimate)
+      cache$target_table_eff_sub <- target_table
     }else{
       target_table <- cache$target_table_eff_sub
     }
@@ -902,7 +914,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
   # Plot
   if(grepl("side", compare_type) & grepl("non", cumulative_type)){
     plt_table <- target_table_total_country %>% 
-      filter(threshold == threshold) %>% 
+      filter(threshold == chosen_threshold) %>% 
       mutate(year = as.factor(year))
     plt <- plt_table %>% 
       ggplot(aes(x=year, y=efficacy * 1000, fill=year)) +
@@ -916,7 +928,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
     # dev.off()
   }else if(grepl("side", compare_type) & grepl("year", cumulative_type)){
     plt_table <- target_table_total_country %>% 
-      filter(threshold == threshold)
+      filter(threshold == chosen_threshold)
     plt <- plt_table %>% 
       ggplot(aes(x=ISO, y=efficacy * 1000, fill=ISO)) +
       geom_boxplot() + 
@@ -928,7 +940,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
     # dev.off()
   }else if(grepl("side", compare_type) & grepl("district", cumulative_type)){
     plt_table <- target_table_total_country %>% 
-      filter(threshold == threshold)
+      filter(threshold == chosen_threshold)
     plt <- plt_table %>% 
       ggplot(aes(x=NAME_1, y=efficacy * 1000, fill=ISO)) +
       geom_boxplot() + 
@@ -941,7 +953,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
     # dev.off()
   }else if(grepl("subtract", compare_type) & grepl("non", cumulative_type)){
     plt_table <- target_table_total_country %>% 
-      filter(threshold == threshold) %>% 
+      filter(threshold == chosen_threshold) %>% 
       mutate(year = as.factor(year))
     plt <- plt_table %>% 
       ggplot(aes(x=year, y=efficacy * 1000, fill=year)) +
@@ -955,7 +967,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
     # dev.off()
   }else if(grepl("subtract", compare_type) & grepl("year", cumulative_type)){
     plt_table <- target_table_total_country %>% 
-      filter(threshold == threshold)
+      filter(threshold == chosen_threshold)
     plt <- plt_table %>% 
       ggplot(aes(x=ISO, y=efficacy * 1000, fill=ISO)) +
       geom_boxplot() + 
@@ -967,7 +979,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
     # dev.off()
   }else if(grepl("subtract", compare_type) & grepl("district", cumulative_type)){
     plt_table <- target_table_total_country %>% 
-      filter(threshold == threshold)
+      filter(threshold == chosen_threshold)
     plt <- plt_table %>% 
       ggplot(aes(x=NAME_1, y=efficacy * 1000, fill=ISO)) +
       geom_boxplot() + 
@@ -1001,9 +1013,10 @@ plot_time_table <- function(cache){
                   update_save_sus_raster, create_expectedCases, add_new_row_to_target_list) 
   time_table %>% 
     # dplyr::mutate_if(is.numeric, function(x) {format(x , big.mark=",")}) %>%
-    kableExtra::kable_styling(bootstrap_options = c("striped")) %>%
+    kableExtra::kable(col.names = names(time_table)) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped"), fixed_thead = T) %>%
     kableExtra::kable_paper(full_width = F) %>%
-    kableExtra::row_spec(1, bold = T)
+    kableExtra::row_spec(0, bold = T)
 }
 
 
