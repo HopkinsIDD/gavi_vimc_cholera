@@ -721,7 +721,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
       geom_bar(data = plt_table, 
               aes(x=NAME_1, y=true_case), 
               stat = "identity", color = "black", size = 0.2, fill = "orange") +
-      facet_grid( ISO + admin_level ~ general_scenario + surveillance_scenario, scales = "free_x", space = "free_x") +
+      facet_grid( ISO + admin_level ~ general_scenario + surveillance_scenario, scales = "free", space = "free") +
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test9.pdf")
@@ -736,7 +736,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
       geom_bar(data = plt_table, 
               aes(x=NAME_1, y=clinical_case), 
               stat = "identity", color = "black", size = 0.2, fill = "orange") +
-      facet_grid( ISO + admin_level ~ general_scenario + surveillance_scenario, scales = "free_x", space = "free_x") +
+      facet_grid( ISO + admin_level ~ general_scenario + surveillance_scenario, scales = "free", space = "free") +
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test10.pdf")
@@ -751,7 +751,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
       geom_bar(data = plt_table, 
               aes(x=NAME_1, y=confirmed_case), 
               stat = "identity", color = "black", size = 0.2, fill = "orange") +
-      facet_grid( ISO + admin_level ~ general_scenario + surveillance_scenario, scales = "free_x", space = "free_x") +
+      facet_grid( ISO + admin_level ~ general_scenario + surveillance_scenario, scales = "free", space = "free") +
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test10.pdf")
@@ -765,7 +765,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
       geom_bar(data = plt_table, 
               aes(x=NAME_1, y=averted_true_case), 
               stat = "identity", color = "black", size = 0.2, fill = "orange") +
-      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free_x", space = "free_x") +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") +
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test11.pdf")
@@ -779,7 +779,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
       geom_bar(data = plt_table, 
               aes(x=NAME_1, y=averted_clinical_case, fill=ISO), 
               stat = "identity", color = "black", size = 0.2, fill = "orange") +
-      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free_x", space = "free_x") +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") +
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test12.pdf")
@@ -793,7 +793,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
       geom_bar(data = plt_table, 
               aes(x=NAME_1, y=averted_confirmed_case, fill=ISO), 
               stat = "identity", color = "black", size = 0.2, fill = "orange") +
-      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free_x", space = "free_x") +
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") +
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test12.pdf")
@@ -945,7 +945,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
       ggplot(aes(x=NAME_1, y=efficacy * 1000, fill=ISO)) +
       geom_boxplot() + 
       ylab("Averted true cases per 1000 fvps") + 
-      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free_x", space = "free_x") + 
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test17.pdf", height = 20, width = 15)
@@ -984,7 +984,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
       ggplot(aes(x=NAME_1, y=efficacy * 1000, fill=ISO)) +
       geom_boxplot() + 
       ylab("Averted true cases per 1000 fvps") + 
-      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free_x", space = "free_x") + 
+      facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") + 
       theme_minimal() + 
       coord_flip()
     # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/diagnostics/surveillance_project/test18.pdf", height = 20, width = 15)
