@@ -930,7 +930,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
     plt_table <- target_table_total_country %>% 
       filter(threshold == chosen_threshold)
     plt <- plt_table %>% 
-      ggplot(aes(x=ISO, y=efficacy * 1000, fill=ISO)) +
+      ggplot(aes(y=efficacy * 1000, fill=ISO)) +
       geom_boxplot() + 
       ylab("Averted true cases per 1000 fvps") + 
       facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") + 
@@ -969,7 +969,7 @@ plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
     plt_table <- target_table_total_country %>% 
       filter(threshold == chosen_threshold)
     plt <- plt_table %>% 
-      ggplot(aes(x=ISO, y=efficacy * 1000, fill=ISO)) +
+      ggplot(aes(y=efficacy * 1000, fill=ISO)) +
       geom_boxplot() + 
       ylab("Averted true cases per 1000 fvps") + 
       facet_grid( ISO + admin_level ~ surveillance_scenario, scales = "free", space = "free") + 

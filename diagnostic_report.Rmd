@@ -30,7 +30,7 @@ setwd(params$surveillance_project_directory)
 ## The necessary packages 
 library(knitr)
 knitr::opts_chunk$set(
-  cache=TRUE,
+  cache=FALSE,
   cache.lazy = FALSE,
   echo = FALSE,
   dev="CairoPNG",
