@@ -165,8 +165,8 @@ load_baseline_incidence <- function(datapath,
 
   for(layer_idx in 1:nsamples){
     
-    # confirm_rate_value <- MCMCglmm::rtnorm(n = nrow(shp2), sd = omicron_dataset$sd, mean = omicron_dataset$mean, lower = 0, upper = 1)
-    confirm_rate_value <- rnorm(n = nrow(shp2), mean = omicron_dataset$mean, sd = omicron_dataset$sd)
+    confirm_rate_value <- MCMCglmm::rtnorm(n = nrow(shp2), mean = omicron_dataset$mean, sd = omicron_dataset$sd, lower = 0, upper = 1)
+    # confirm_rate_value <- rnorm(n = nrow(shp2), mean = omicron_dataset$mean, sd = omicron_dataset$sd)
     
     ## get one layer 
     country_baseline_single_layer <- country_baseline[[layer_idx]]
