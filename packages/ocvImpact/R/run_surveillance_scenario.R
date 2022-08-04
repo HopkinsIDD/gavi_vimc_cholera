@@ -39,6 +39,8 @@ run_surveillance_scenario <- function(
   vac_incid_threshold <- as.numeric(config$vacc$vac_incid_threshold)
   vac_unconstrained <- as.logical(config$vacc$vac_unconstrained)
   vac_admin_level <- tolower(config$vacc$vac_admin_level)
+  if(vac_admin_level == "both"){ rc_targeted <- c("rc1", "rc2")
+    }else{ rc_targeted <- c("rc1", "rc2")[grepl(stringr::str_extract(vac_admin_level, "[0-9]{1}"), c("rc1", "rc2"))] }                       
   vac_coverage <- as.numeric(config$vacc$vac_coverage)
   surveillance_scenario <- config$surveillance_scenario$surveillance_scenario
   vac_interval <- as.numeric(config$vacc$vac_interval)
@@ -66,7 +68,11 @@ run_surveillance_scenario <- function(
 
 
   ##### Initialize the campaign table and load the incidence rate raster 
-  if(vac_admin_level != "both"){stop("The only supported vaccination campagin administration level is 'both', please check the config. ")}
+  if(vac_admin_level != "both"){
+    message(paste0("Now running a single admin level scenario: ", vac_admin_level))
+  }else{
+    message(paste0("Now running both-admin-level scenario. "))
+  }
   shp0 <- load_shp0_by_country(datapath, country)
   shp1 <- load_shp1_by_country(datapath, country)
   shp2 <- load_shp2_by_country(datapath, country)
@@ -97,7 +103,7 @@ run_surveillance_scenario <- function(
                                                   surveillance_scenario = surveillance_scenario, 
                                                   vac_interval = vac_interval, 
                                                   vac_start_year = vac_start_year, vac_end_year = vac_end_year, 
-                                                  num_skip_years = num_skip_years)
+                                                  num_skip_years = num_skip_years, rc_targeted = rc_targeted)
     }
     end.time <- Sys.time()
     elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
@@ -122,7 +128,7 @@ run_surveillance_scenario <- function(
     for(layer_idx in 1:nsamples){
       input_list[[layer_idx]] <- update_vac_raster( datapath, modelpath, country, scenario, rawoutpath,
                                                     rc_list = rc_list[[layer_idx]], model_year = model_year, pop = pop,
-                                                    input_list = input_list[[layer_idx]], no_vacc_year = no_vacc_year)
+                                                    input_list = input_list[[layer_idx]], no_vacc_year = no_vacc_year, rc_targeted = rc_targeted)
     } 
     
     if(save_intermediate_raster){  
@@ -150,7 +156,8 @@ run_surveillance_scenario <- function(
                                                         baseline_year = sim_start_year,
                                                         model_year = model_year, 
                                                         input_list = input_list[[layer_idx]], # generated from update_input_rasterStack() function
-                                                        sus_list = sus_list[[layer_idx]] # rasterStack of proportion susceptible generated in last year
+                                                        sus_list = sus_list[[layer_idx]], # rasterStack of proportion susceptible generated in last year
+                                                        rc_targeted = rc_targeted
                                                         )
       }
     }else{
@@ -159,7 +166,8 @@ run_surveillance_scenario <- function(
                                                       pop = pop,
                                                       ve_direct = ve_direct,
                                                       baseline_year = sim_start_year,
-                                                      model_year = model_year
+                                                      model_year = model_year, 
+                                                      rc_targeted = rc_targeted
                                                     )
       }
       if(scenario == "campaign-default"){ #if campaign year, gen and save and use a new sus raster each year
@@ -189,7 +197,8 @@ run_surveillance_scenario <- function(
                                                   sus_list, 
                                                   pop, 
                                                   model_year,
-                                                  config)
+                                                  config, 
+                                                  rc_targeted)
     end.time <- Sys.time()
     elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
     time_table[time_tab_idx, ]$create_expectedCases <- elapsed_time
@@ -216,10 +225,7 @@ run_surveillance_scenario <- function(
 
 
   ##### Write output files and clean up 
-  # # save the time table
-  # readr::write_csv( time_table, paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
-  #                   vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_time_table_", ".csv"))
-
+  
   if(save_final_output_raster){
   # vaccination proportion and susceptible proportion rasterStack
     for(model_year in sim_start_year:sim_end_year){
@@ -253,9 +259,9 @@ run_surveillance_scenario <- function(
   }
   message(paste("Writing targeting tables of all the layers across all years for", country))
   if( !file.exists(rc1_out_fn) | (file.exists(rc1_out_fn)&clean) ){
-    readr::write_csv(rc1, rc1_out_fn)}
+    if("rc1" %in% rc_targeted){readr::write_csv(rc1, rc1_out_fn)}}
   if( !file.exists(rc2_out_fn) | (file.exists(rc2_out_fn)&clean) ){
-    readr::write_csv(rc2, rc2_out_fn)}
+    if("rc2" %in% rc_targeted){readr::write_csv(rc2, rc2_out_fn)}}
   
   
   message(paste("End of the simulation of", scenario, "scenario in", country, "from", sim_start_year, "to", sim_end_year))

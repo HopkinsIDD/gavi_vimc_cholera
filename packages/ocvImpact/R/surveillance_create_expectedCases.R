@@ -15,6 +15,7 @@
 #' @param pop
 #' @param model_year
 #' @param config
+#' @param rc_targeted
 #' @return
 #' @export
 #' @include utils.R utils_montagu.R create_incid_raster.R load_shapefile_by_country.R 
@@ -32,7 +33,8 @@ surveillance_create_expectedCases <- function(
   sus_list, 
   pop, 
   model_year,
-  config
+  config, 
+  rc_targeted
   ){
 
   message("Calculating expected cases now. ")
@@ -58,12 +60,16 @@ surveillance_create_expectedCases <- function(
   
   if(!save_intermediate_raster){
     sus_rasterLayer1 <- sus_list[[1]]$sus_rasterStack_admin1
-    for(layer_idx in 2:nsamples){
-      sus_rasterLayer1 <- raster::stack(sus_rasterLayer1, sus_list[[layer_idx]]$sus_rasterStack_admin1)
+    if(!is.null(sus_rasterLayer1)){
+      for(layer_idx in 2:nsamples){
+        sus_rasterLayer1 <- raster::stack(sus_rasterLayer1, sus_list[[layer_idx]]$sus_rasterStack_admin1)
+      }
     }
     sus_rasterLayer2 <- sus_list[[1]]$sus_rasterStack_admin2
-    for(layer_idx in 2:nsamples){
-      sus_rasterLayer2 <- raster::stack(sus_rasterLayer2, sus_list[[layer_idx]]$sus_rasterStack_admin2)
+    if(!is.null(sus_rasterLayer2)){
+      for(layer_idx in 2:nsamples){
+        sus_rasterLayer2 <- raster::stack(sus_rasterLayer2, sus_list[[layer_idx]]$sus_rasterStack_admin2)
+      }
     }
     rm(sus_list)
 
@@ -72,8 +78,8 @@ surveillance_create_expectedCases <- function(
       sus_admin1_fn <- paste0("intermediate_raster/", country, "_sus_admin1_", model_year, ".tif")
       sus_admin2_fn <- paste0("intermediate_raster/", country, "_sus_admin2_", model_year, ".tif")
     
-      sus_rasterLayer1 <- raster::stack(sus_admin1_fn)
-      sus_rasterLayer2 <- raster::stack(sus_admin2_fn)
+      if("rc1" %in% rc_targeted){sus_rasterLayer1 <- raster::stack(sus_admin1_fn)}else{sus_rasterLayer1 <- NULL}
+      if("rc2" %in% rc_targeted){sus_rasterLayer2 <- raster::stack(sus_admin2_fn)}else{sus_rasterLayer2 <- NULL}
     }else{
       sus_rasterLayer1 <- sus_list$sus_rasterStack_admin1 
       sus_rasterLayer2 <- sus_list$sus_rasterStack_admin2
@@ -149,61 +155,63 @@ surveillance_create_expectedCases <- function(
 
   ## admin1 first 
   # make new indirect effects template
-  indirect_rasterLayer <- sus_rasterLayer1
-  raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer1)))
+  if("rc1" %in% rc_targeted){
+    indirect_rasterLayer <- sus_rasterLayer1
+    raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer1)))
 
-  ec_rasterStack1 <- tryCatch(
-    if(!is.numeric(overall_multiplier) & class(overall_multiplier) == 'raster'){
-      raster::overlay(
-        sus_rasterLayer1,
-        pop_rasterLayer,
-        lambda,
-        indirect_rasterLayer,
-        overall_multiplier, 
-        fun = function(x, y, z, a, b){
-          x*y*z*a*b
-        },
-        recycle = TRUE, unstack = TRUE) 
-        
-    }else{
-      lambda * sus_rasterLayer1 * indirect_rasterLayer * pop_rasterLayer * overall_multiplier
-    },
+    ec_rasterStack1 <- tryCatch(
+      if(!is.numeric(overall_multiplier) & class(overall_multiplier) == 'raster'){
+        raster::overlay(
+          sus_rasterLayer1,
+          pop_rasterLayer,
+          lambda,
+          indirect_rasterLayer,
+          overall_multiplier, 
+          fun = function(x, y, z, a, b){
+            x*y*z*a*b
+          },
+          recycle = TRUE, unstack = TRUE) 
+          
+      }else{
+        lambda * sus_rasterLayer1 * indirect_rasterLayer * pop_rasterLayer * overall_multiplier
+      },
 
-    error = function(e){
-      print(paste0('The year when it goes wrong is ', oy))
-    }
-  )
-  ec_rasterStack1 <- raster::stack(ec_rasterStack1)
-
+      error = function(e){
+        print(paste0('The year when it goes wrong is ', oy))
+      }
+    )
+    ec_rasterStack1 <- raster::stack(ec_rasterStack1)
+  }else{ec_rasterStack1 <- NULL}
 
   ## admin2 then 
   # make new indirect effects template
-  indirect_rasterLayer <- sus_rasterLayer2
-  raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer2)))
+  if("rc2" %in% rc_targeted){
+    indirect_rasterLayer <- sus_rasterLayer2
+    raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer2)))
 
-  ec_rasterStack2 <- tryCatch(
-    if(!is.numeric(overall_multiplier) & class(overall_multiplier) == 'raster'){
-      raster::overlay(
-        sus_rasterLayer2,
-        pop_rasterLayer,
-        lambda,
-        indirect_rasterLayer,
-        overall_multiplier, 
-        fun = function(x, y, z, a, b){
-          x*y*z*a*b
-        },
-        recycle = TRUE, unstack = TRUE) 
-        
-    }else{
-      lambda * sus_rasterLayer2 * indirect_rasterLayer * pop_rasterLayer * overall_multiplier
-    },
+    ec_rasterStack2 <- tryCatch(
+      if(!is.numeric(overall_multiplier) & class(overall_multiplier) == 'raster'){
+        raster::overlay(
+          sus_rasterLayer2,
+          pop_rasterLayer,
+          lambda,
+          indirect_rasterLayer,
+          overall_multiplier, 
+          fun = function(x, y, z, a, b){
+            x*y*z*a*b
+          },
+          recycle = TRUE, unstack = TRUE) 
+          
+      }else{
+        lambda * sus_rasterLayer2 * indirect_rasterLayer * pop_rasterLayer * overall_multiplier
+      },
 
-    error = function(e){
-      print(paste0('The year when it goes wrong is ', oy))
-    }
-  )
-  ec_rasterStack2 <- raster::stack(ec_rasterStack2)
-
+      error = function(e){
+        print(paste0('The year when it goes wrong is ', oy))
+      }
+    )
+    ec_rasterStack2 <- raster::stack(ec_rasterStack2)
+  }else{ec_rasterStack2 <- NULL}
 
 
   ### Save the raster -- true cases ********************************************
@@ -216,9 +224,9 @@ surveillance_create_expectedCases <- function(
     message(paste("Writing expected true cases rasterStack for", country))
     dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
     if( !file.exists(ec1_out_fn) | (file.exists(ec1_out_fn)&clean) ){
-      raster::writeRaster(ec_rasterStack1, filename = ec1_out_fn, overwrite = TRUE)}
+      if(!is.null(ec_rasterStack1)){raster::writeRaster(ec_rasterStack1, filename = ec1_out_fn, overwrite = TRUE)}}
     if( !file.exists(ec2_out_fn) | (file.exists(ec2_out_fn)&clean) ){
-      raster::writeRaster(ec_rasterStack2, filename = ec2_out_fn, overwrite = TRUE)}
+      if(!is.null(ec_rasterStack2)){raster::writeRaster(ec_rasterStack2, filename = ec2_out_fn, overwrite = TRUE)}}
   
   }
 
@@ -234,69 +242,69 @@ surveillance_create_expectedCases <- function(
   gc()
 
 
-  ### Save the tables -- true cases here ********************************************
-  ec_yr1 <- exactextractr::exact_extract(ec_rasterStack1, shp0, fun = "sum", stack_apply = TRUE)
-  ec_yr2 <- exactextractr::exact_extract(ec_rasterStack2, shp0, fun = "sum", stack_apply = TRUE)
-  ec_vec1 <- as.numeric(ec_yr1)
-  ec_vec2 <- as.numeric(ec_yr2)
-  pop_total <- as.numeric(exactextractr::exact_extract(pop_rasterLayer, shp0, fun = "sum", stack_apply = TRUE))
-  mean_incid1 <- ec_vec1 / pop_total
-  mean_incid2 <- ec_vec2 / pop_total
+  # ### Save the tables -- true cases here ********************************************
+  # ec_yr1 <- exactextractr::exact_extract(ec_rasterStack1, shp0, fun = "sum", stack_apply = TRUE)
+  # ec_yr2 <- exactextractr::exact_extract(ec_rasterStack2, shp0, fun = "sum", stack_apply = TRUE)
+  # ec_vec1 <- as.numeric(ec_yr1)
+  # ec_vec2 <- as.numeric(ec_yr2)
+  # pop_total <- as.numeric(exactextractr::exact_extract(pop_rasterLayer, shp0, fun = "sum", stack_apply = TRUE))
+  # mean_incid1 <- ec_vec1 / pop_total
+  # mean_incid2 <- ec_vec2 / pop_total
 
-  mean_incid_vec1 <- as.numeric(mean_incid1)
-  mean_incid_vec2 <- as.numeric(mean_incid2)
-  rc1 <- tibble::tibble(country = country, incidence_rate_trend = incidence_rate_trend, outbreak_multiplier = outbreak_multiplier, 
-                        vac_incid_threshold = vac_incid_threshold, surveillance_scenario = surveillance_scenario, 
-                        year = oy, run_id = seq_along(ec_vec1), ec = ec_vec1, incid_rate = mean_incid_vec1)
-  rc2 <- tibble::tibble(country = country, incidence_rate_trend = incidence_rate_trend, outbreak_multiplier = outbreak_multiplier, 
-                        vac_incid_threshold = vac_incid_threshold, surveillance_scenario = surveillance_scenario, 
-                        year = oy, run_id = seq_along(ec_vec2), ec = ec_vec2, incid_rate = mean_incid_vec2)
+  # mean_incid_vec1 <- as.numeric(mean_incid1)
+  # mean_incid_vec2 <- as.numeric(mean_incid2)
+  # rc1 <- tibble::tibble(country = country, incidence_rate_trend = incidence_rate_trend, outbreak_multiplier = outbreak_multiplier, 
+  #                       vac_incid_threshold = vac_incid_threshold, surveillance_scenario = surveillance_scenario, 
+  #                       year = oy, run_id = seq_along(ec_vec1), ec = ec_vec1, incid_rate = mean_incid_vec1)
+  # rc2 <- tibble::tibble(country = country, incidence_rate_trend = incidence_rate_trend, outbreak_multiplier = outbreak_multiplier, 
+  #                       vac_incid_threshold = vac_incid_threshold, surveillance_scenario = surveillance_scenario, 
+  #                       year = oy, run_id = seq_along(ec_vec2), ec = ec_vec2, incid_rate = mean_incid_vec2)
 
-  ## External dataset 
-  dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
-  ec_out_fn1 <- paste0(rawoutpath, "/", scenario, "/", country, "_ec_admin1.csv")
-  ec_out_fn2 <- paste0(rawoutpath, "/", scenario, "/", country, "_ec_admin2.csv")
+  # ## External dataset 
+  # dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
+  # ec_out_fn1 <- paste0(rawoutpath, "/", scenario, "/", country, "_ec_admin1.csv")
+  # ec_out_fn2 <- paste0(rawoutpath, "/", scenario, "/", country, "_ec_admin2.csv")
   
-  if(file.exists(ec_out_fn1)){
-    ec_out1 <- readr::read_csv(ec_out_fn1)
-    if(nrow(ec_out1[ec_out1$country == country & ec_out1$incidence_rate_trend == incidence_rate_trend 
-                    & ec_out1$outbreak_multiplier == outbreak_multiplier 
-                    & ec_out1$vac_incid_threshold == vac_incid_threshold 
-                    & ec_out1$surveillance_scenario == surveillance_scenario 
-                    & ec_out1$year == oy, ])>0 & clean){
-      ec_out1 <- ec_out1[!(ec_out1$country == country & ec_out1$incidence_rate_trend == incidence_rate_trend 
-                          & ec_out1$outbreak_multiplier == outbreak_multiplier 
-                          & ec_out1$vac_incid_threshold == vac_incid_threshold 
-                          & ec_out1$surveillance_scenario == surveillance_scenario 
-                          & ec_out1$year == oy), ] 
-    }
-    ec_out1 <- rbind(ec_out1, rc1)
+  # if(file.exists(ec_out_fn1)){
+  #   ec_out1 <- readr::read_csv(ec_out_fn1)
+  #   if(nrow(ec_out1[ec_out1$country == country & ec_out1$incidence_rate_trend == incidence_rate_trend 
+  #                   & ec_out1$outbreak_multiplier == outbreak_multiplier 
+  #                   & ec_out1$vac_incid_threshold == vac_incid_threshold 
+  #                   & ec_out1$surveillance_scenario == surveillance_scenario 
+  #                   & ec_out1$year == oy, ])>0 & clean){
+  #     ec_out1 <- ec_out1[!(ec_out1$country == country & ec_out1$incidence_rate_trend == incidence_rate_trend 
+  #                         & ec_out1$outbreak_multiplier == outbreak_multiplier 
+  #                         & ec_out1$vac_incid_threshold == vac_incid_threshold 
+  #                         & ec_out1$surveillance_scenario == surveillance_scenario 
+  #                         & ec_out1$year == oy), ] 
+  #   }
+  #   ec_out1 <- rbind(ec_out1, rc1)
     
-  }else{
-    ec_out1 <- rc1
-  }
+  # }else{
+  #   ec_out1 <- rc1
+  # }
 
-  if(file.exists(ec_out_fn2)){
-    ec_out2 <- readr::read_csv(ec_out_fn2)
-    if(nrow(ec_out2[ec_out2$country == country & ec_out2$incidence_rate_trend == incidence_rate_trend 
-                    & ec_out2$outbreak_multiplier == outbreak_multiplier 
-                    & ec_out2$vac_incid_threshold == vac_incid_threshold 
-                    & ec_out2$surveillance_scenario == surveillance_scenario 
-                    & ec_out2$year == oy, ])>0 & clean){
-      ec_out2 <- ec_out2[!(ec_out2$country == country & ec_out2$incidence_rate_trend == incidence_rate_trend 
-                          & ec_out2$outbreak_multiplier == outbreak_multiplier 
-                          & ec_out2$vac_incid_threshold == vac_incid_threshold 
-                          & ec_out2$surveillance_scenario == surveillance_scenario 
-                          & ec_out2$year == oy), ]
-    }
-    ec_out2 <- rbind(ec_out2, rc2)
+  # if(file.exists(ec_out_fn2)){
+  #   ec_out2 <- readr::read_csv(ec_out_fn2)
+  #   if(nrow(ec_out2[ec_out2$country == country & ec_out2$incidence_rate_trend == incidence_rate_trend 
+  #                   & ec_out2$outbreak_multiplier == outbreak_multiplier 
+  #                   & ec_out2$vac_incid_threshold == vac_incid_threshold 
+  #                   & ec_out2$surveillance_scenario == surveillance_scenario 
+  #                   & ec_out2$year == oy, ])>0 & clean){
+  #     ec_out2 <- ec_out2[!(ec_out2$country == country & ec_out2$incidence_rate_trend == incidence_rate_trend 
+  #                         & ec_out2$outbreak_multiplier == outbreak_multiplier 
+  #                         & ec_out2$vac_incid_threshold == vac_incid_threshold 
+  #                         & ec_out2$surveillance_scenario == surveillance_scenario 
+  #                         & ec_out2$year == oy), ]
+  #   }
+  #   ec_out2 <- rbind(ec_out2, rc2)
 
-  }else{
-    ec_out2 <- rc2
-  }
+  # }else{
+  #   ec_out2 <- rc2
+  # }
 
-  readr::write_csv(ec_out1, ec_out_fn1)
-  readr::write_csv(ec_out2, ec_out_fn2)
+  # readr::write_csv(ec_out1, ec_out_fn1)
+  # readr::write_csv(ec_out2, ec_out_fn2)
   
 
   ### Return the list -- true cases ********************************************

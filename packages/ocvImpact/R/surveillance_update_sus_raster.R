@@ -11,6 +11,7 @@
 #' @param baseline_year
 #' @param model_year
 #' @param last_vac_ef_year the last year when vac is still effective after received 
+#' @param rc_targeted
 #' @return 
 #' @export
 #' @include
@@ -23,7 +24,8 @@ update_sus_rasterStack_optimized <- function( datapath,
                                               ve_direct,
                                               baseline_year,
                                               model_year,
-                                              last_vac_ef_year = 5   #only consider the vaccine effects from equal to or less than 5 years ago 
+                                              last_vac_ef_year = 5,   #only consider the vaccine effects from equal to or less than 5 years ago 
+                                              rc_targeted
                                               ){
   message(paste0("Stacking proportion susceptible raster layer of ", model_year, "."))
   message(Sys.time())
@@ -31,8 +33,8 @@ update_sus_rasterStack_optimized <- function( datapath,
 
   #### Quick exit for no vacc scenario 
   raster1_template <- raster::calc(pop, fun = function(x){ifelse(!is.na(x), 1, NA)})
-  tmp1 <- raster1_template
-  tmp2 <- raster1_template
+  if("rc1" %in% rc_targeted){tmp1 <- raster1_template}
+  if("rc2" %in% rc_targeted){tmp2 <- raster1_template}
 
   #### For the campaign scenario 
   if(scenario == 'campaign-default'){
@@ -58,8 +60,8 @@ update_sus_rasterStack_optimized <- function( datapath,
       vac_admin2_fn <- paste0("intermediate_raster/", country, "_vac_admin2_", year, ".tif")
       vac_pop_fn <- paste0("intermediate_raster/", country, "_vac_pop_", year, ".tif")
       popk <- raster::stack(vac_pop_fn)
-      vacck_admin1 <- raster::stack(vac_admin1_fn)
-      vacck_admin2 <- raster::stack(vac_admin2_fn)
+      if("rc1" %in% rc_targeted){vacck_admin1 <- raster::stack(vac_admin1_fn)}
+      if("rc2" %in% rc_targeted){vacck_admin2 <- raster::stack(vac_admin2_fn)}
         
       # population retention (measures turnover rate due to death) from years k into year j -- this assumes that the pop during one same year is constant**********
       # a fix for the 0's on both population rasters (0 -> 1), good thing is that the changed population rasters will not be used elsewhere 
@@ -68,12 +70,12 @@ update_sus_rasterStack_optimized <- function( datapath,
       pkj <- raster::overlay(popk, popj, fun = function(x, y){x*(1-((j-k)*mu))/y}) 
       ve_j_k <- as.numeric(ve_direct(j-k+1))
         
-      prob_still_protected_admin1 <- raster::overlay(vacck_admin1, pkj, fun = function(x, y){return(x*y*ve_j_k)}) 
-      prob_still_protected_admin2 <- raster::overlay(vacck_admin2, pkj, fun = function(x, y){return(x*y*ve_j_k)}) 
+      if("rc1" %in% rc_targeted){prob_still_protected_admin1 <- raster::overlay(vacck_admin1, pkj, fun = function(x, y){return(x*y*ve_j_k)})}
+      if("rc2" %in% rc_targeted)(prob_still_protected_admin2 <- raster::overlay(vacck_admin2, pkj, fun = function(x, y){return(x*y*ve_j_k)}))
         
       # get the new sus raster layer -- from protected to still susceptible 
-      tmp1 <- raster::stack(raster::overlay(tmp1, prob_still_protected_admin1, fun = function(x, y){x*(1-y)}))
-      tmp2 <- raster::stack(raster::overlay(tmp2, prob_still_protected_admin2, fun = function(x, y){x*(1-y)}))
+      if("rc1" %in% rc_targeted){tmp1 <- raster::stack(raster::overlay(tmp1, prob_still_protected_admin1, fun = function(x, y){x*(1-y)}))}else{tmp1<-NULL}
+      if("rc2" %in% rc_targeted){tmp2 <- raster::stack(raster::overlay(tmp2, prob_still_protected_admin2, fun = function(x, y){x*(1-y)}))}else{tmp2<-NULL}
         
       rm(popk, vacck_admin1, vacck_admin2, pkj, prob_still_protected_admin1, prob_still_protected_admin2)
       gc()
@@ -136,16 +138,16 @@ save_sus_raster <- function(datapath, modelpath, country, nsamples, model_year, 
     sus_admin2 <- sus_list[[1]]$sus_rasterStack_admin2
     
     for(layer_idx in 2:nsamples){
-      sus_admin1 <- raster::stack(sus_admin1, sus_list[[layer_idx]]$sus_rasterStack_admin1)
-      sus_admin2 <- raster::stack(sus_admin2, sus_list[[layer_idx]]$sus_rasterStack_admin2)
+      if(!is.null(sus_admin1)){sus_admin1 <- raster::stack(sus_admin1, sus_list[[layer_idx]]$sus_rasterStack_admin1)}
+      if(!is.null(sus_admin2)){sus_admin2 <- raster::stack(sus_admin2, sus_list[[layer_idx]]$sus_rasterStack_admin2)}
     }
 
     message(paste("Writing proportion susceptible rasterStack for", country))
     dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
     if( !file.exists(sus1_out_fn) | (file.exists(sus1_out_fn)&clean) ){
-      raster::writeRaster(sus_admin1, filename = sus1_out_fn, overwrite = TRUE)}
+      if(!is.null(sus_admin1)){raster::writeRaster(sus_admin1, filename = sus1_out_fn, overwrite = TRUE)}}
     if( !file.exists(sus2_out_fn) | (file.exists(sus2_out_fn)&clean) ){
-      raster::writeRaster(sus_admin2, filename = sus2_out_fn, overwrite = TRUE)}
+      if(!is.null(sus_admin2)){raster::writeRaster(sus_admin2, filename = sus2_out_fn, overwrite = TRUE)}}
 
     return(NULL)
   }
@@ -154,15 +156,15 @@ save_sus_raster <- function(datapath, modelpath, country, nsamples, model_year, 
   ### Save 
   if(is.null(rawoutpath)){ #must save the sus raster in the intermediate folder each year during the simulation
     dir.create(paste0("intermediate_raster/"), showWarnings = FALSE)
-    raster::writeRaster(sus_list$sus_rasterStack_admin1, filename = sus1_inter_fn, overwrite = TRUE)
-    raster::writeRaster(sus_list$sus_rasterStack_admin2, filename = sus2_inter_fn, overwrite = TRUE)
+    if(!is.null(sus_list$sus_rasterStack_admin1)){raster::writeRaster(sus_list$sus_rasterStack_admin1, filename = sus1_inter_fn, overwrite = TRUE)}
+    if(!is.null(sus_list$sus_rasterStack_admin2)){raster::writeRaster(sus_list$sus_rasterStack_admin2, filename = sus2_inter_fn, overwrite = TRUE)}
   }else{ #transfer the files from the intermediate to the final output folder
     message(paste("Writing proportion susceptible rasterStack for", country))
     dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
     if( !file.exists(sus1_out_fn) | (file.exists(sus1_out_fn)&clean) ){
-      file.rename(from=sus1_inter_fn, to=sus1_out_fn)}
+      if(file.exists(sus1_inter_fn)){file.rename(from=sus1_inter_fn, to=sus1_out_fn)}}
     if( !file.exists(sus2_out_fn) | (file.exists(sus2_out_fn)&clean) ){
-      file.rename(from=sus2_inter_fn, to=sus2_out_fn)}
+      if(file.exists(sus2_inter_fn)){file.rename(from=sus2_inter_fn, to=sus2_out_fn)}}
   }
   message("Finished saving the susceptible proportion raster now. ")
   message(Sys.time())
@@ -183,6 +185,7 @@ save_sus_raster <- function(datapath, modelpath, country, nsamples, model_year, 
 #' @param model_year
 #' @param input_list
 #' @param sus_list 
+#' @param rc_targeted
 #' @return 
 #' @export
 #' @include
@@ -196,8 +199,10 @@ update_sus_rasterStack <- function(datapath,
                                    baseline_year,
                                    model_year, 
                                    input_list, # generated from update_input_rasterStack() function
-                                   sus_list   # rasterStack of proportion susceptible generated in last year
+                                   sus_list,   # rasterStack of proportion susceptible generated in last year
+                                   rc_targeted
                                   ){
+  if(length(rc_targeted) != 2){stop("The previous version of the susceptible population raster generation function only works for both admin levels at the same time. ")}
   
   ### Get the rasters ready 
   pop_rasterStack <- input_list[["pop_rasterStack"]]
