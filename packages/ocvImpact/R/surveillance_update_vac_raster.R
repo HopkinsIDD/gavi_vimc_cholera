@@ -11,6 +11,7 @@
 #' @param pop
 #' @param input_list
 #' @param no_vacc_year
+#' @param rc_targeted
 #' @return 
 #' @export
 #' @include
@@ -23,7 +24,8 @@ update_vac_raster <- function(datapath,
                               model_year,
                               pop, # pop raster for the latest year
                               input_list, # input an empty list for the first year, for the following year, input is that list from last year
-                              no_vacc_year
+                              no_vacc_year, 
+                              rc_targeted
                               ){
 
   ## initiate the vac raster 
@@ -33,45 +35,56 @@ update_vac_raster <- function(datapath,
   ## quick exit if scenario == 'no-vaccination'
   if(scenario == 'no-vaccination' | no_vacc_year){
     # use the empty raster directly 
-    new_vacc_layer_admin1 <- raster0_template
-    new_vacc_layer_admin2 <- raster0_template
+    if("rc1" %in% rc_targeted){new_vacc_layer_admin1 <- raster0_template} else {new_vacc_layer_admin1 <- NULL}
+    if("rc2" %in% rc_targeted){new_vacc_layer_admin2 <- raster0_template} else {new_vacc_layer_admin2 <- NULL}
+    # new_vacc_layer_admin1 <- raster0_template
+    # new_vacc_layer_admin2 <- raster0_template
 
   }else{
     # use the table to guide vaccination 
-    shp1_targeted <- rc_list[[1]][rc_list[[1]]$year == model_year & rc_list[[1]]$is_target == 1, ]
-    shp2_targeted <- rc_list[[2]][rc_list[[2]]$year == model_year & rc_list[[2]]$is_target == 1, ]
+    if("rc1" %in% rc_targeted){shp1_targeted <- rc_list[[1]][rc_list[[1]]$year == model_year & rc_list[[1]]$is_target == 1, ]} else {shp1_targeted <- NULL}
+    if("rc2" %in% rc_targeted){shp2_targeted <- rc_list[[2]][rc_list[[2]]$year == model_year & rc_list[[2]]$is_target == 1, ]} else {shp2_targeted <- NULL}
     
     # check point: if there is not a single place targeted this year.
-    if(nrow(shp1_targeted) == 0){
+    if(!is.null(shp1_targeted)){
+
+      if(nrow(shp1_targeted) == 0){
+        message(paste("There is no admin 1 level areas vaccinated in", model_year, "in", country, "."))
+        new_vacc_layer_admin1 <- raster0_template
+      }else{
+        new_vacc_layer_admin1 <- fasterize::fasterize(
+          shp1_targeted,
+          raster0_template,
+          field = "actual_prop_vaccinated",
+          fun = "last",
+          background = 0
+        )
+        new_vacc_layer_admin1 <- raster::mask(new_vacc_layer_admin1, raster0_template, updatevalue = NA)
+      }
       
-      message(paste("There is no admin 1 level areas vaccinated in", model_year, "in", country, "."))
-      new_vacc_layer_admin1 <- raster0_template
-    
-    }else{
-      new_vacc_layer_admin1 <- fasterize::fasterize(
-        shp1_targeted,
-        raster0_template,
-        field = "actual_prop_vaccinated",
-        fun = "last",
-        background = 0
-      )
-      new_vacc_layer_admin1 <- raster::mask(new_vacc_layer_admin1, raster0_template, updatevalue = NA)
+    }else if(is.null(shp1_targeted)){
+      new_vacc_layer_admin1 <- NULL
     }
 
-    if(nrow(shp2_targeted) == 0){
+
+    if(!is.null(shp2_targeted)){
+
+      if(nrow(shp2_targeted) == 0){
+        message(paste("There is no admin 2 level areas vaccinated in", model_year, "in", country, "."))
+        new_vacc_layer_admin2 <- raster0_template
+      }else{
+        new_vacc_layer_admin2 <- fasterize::fasterize(
+          shp2_targeted,
+          raster0_template,
+          field = "actual_prop_vaccinated",
+          fun = "last",
+          background = 0
+        )
+        new_vacc_layer_admin2 <- raster::mask(new_vacc_layer_admin2, raster0_template, updatevalue = NA)
+      }
       
-      message(paste("There is no admin 2 level areas vaccinated in", model_year, "in", country, "."))
-      new_vacc_layer_admin2 <- raster0_template
-    
-    } else{
-      new_vacc_layer_admin2 <- fasterize::fasterize(
-        shp2_targeted,
-        raster0_template,
-        field = "actual_prop_vaccinated",
-        fun = "last",
-        background = 0
-      )
-      new_vacc_layer_admin2 <- raster::mask(new_vacc_layer_admin2, raster0_template, updatevalue = NA)
+    }else if(is.null(shp2_targeted)){
+      new_vacc_layer_admin2 <- NULL
     }
 
   }
@@ -83,8 +96,8 @@ update_vac_raster <- function(datapath,
     pop_rasterStack <- input_list[["pop_rasterStack"]]
     
     pop_rasterStack <- raster::addLayer(pop_rasterStack, pop)
-    vacc_rasterStack_admin1 <- raster::addLayer(vacc_rasterStack_admin1, new_vacc_layer_admin1)
-    vacc_rasterStack_admin2 <- raster::addLayer(vacc_rasterStack_admin2, new_vacc_layer_admin2)
+    if("rc1" %in% rc_targeted){vacc_rasterStack_admin1 <- raster::addLayer(vacc_rasterStack_admin1, new_vacc_layer_admin1)}
+    if("rc2" %in% rc_targeted){vacc_rasterStack_admin2 <- raster::addLayer(vacc_rasterStack_admin2, new_vacc_layer_admin2)}
   }else{
     pop_rasterStack <- pop
     vacc_rasterStack_admin1 <- new_vacc_layer_admin1
@@ -153,8 +166,8 @@ save_vac_raster <- function(datapath,
     vac_pop <- input_list[[1]]$pop_rasterStack #one layer is enough for population 
 
     for(layer_idx in 2:nsamples){
-      vac_admin1 <- raster::stack(vac_admin1, input_list[[layer_idx]]$vacc_rasterStack_admin1)
-      vac_admin2 <- raster::stack(vac_admin2, input_list[[layer_idx]]$vacc_rasterStack_admin2)
+      if(!is.null(vac_admin1)){vac_admin1 <- raster::stack(vac_admin1, input_list[[layer_idx]]$vacc_rasterStack_admin1)}
+      if(!is.null(vac_admin2)){vac_admin2 <- raster::stack(vac_admin2, input_list[[layer_idx]]$vacc_rasterStack_admin2)}
     }
 
   }else if(!is.null(rawoutpath)){ #this condition applies to when all the vac rasters have been saved in the intermediate folder waiting to be saved in the final output folder
@@ -169,16 +182,16 @@ save_vac_raster <- function(datapath,
   ### Save 
   if(is.null(rawoutpath)){ #if no raw output path is specified, just save the vac rasters in the intermediate folder
     dir.create(paste0("intermediate_raster/"), showWarnings = FALSE)
-    raster::writeRaster(vac_admin1, filename = vac1_inter_fn, overwrite = TRUE)
-    raster::writeRaster(vac_admin2, filename = vac2_inter_fn, overwrite = TRUE)
+    if(!is.null(vac_admin1)){raster::writeRaster(vac_admin1, filename = vac1_inter_fn, overwrite = TRUE)}
+    if(!is.null(vac_admin2))(raster::writeRaster(vac_admin2, filename = vac2_inter_fn, overwrite = TRUE))
     raster::writeRaster(vac_pop, filename = vac_pop_fn, overwrite = TRUE)
   }else{ #if raw output path is specified, then directly save them in the raw output folder
     message(paste("Writing proportion vaccinated rasterStack for", country))
     dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
     if( !file.exists(vac1_out_fn) | (file.exists(vac1_out_fn)&clean) ){
-      raster::writeRaster(vac_admin1, filename = vac1_out_fn, overwrite = TRUE)}
+      if(!is.null(vac_admin1)){raster::writeRaster(vac_admin1, filename = vac1_out_fn, overwrite = TRUE)}}
     if( !file.exists(vac2_out_fn) | (file.exists(vac2_out_fn)&clean) ){
-      raster::writeRaster(vac_admin2, filename = vac2_out_fn, overwrite = TRUE)}
+      if(!is.null(vac_admin2)){raster::writeRaster(vac_admin2, filename = vac2_out_fn, overwrite = TRUE)}}
   }
 
 }

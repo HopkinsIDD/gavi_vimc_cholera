@@ -10,7 +10,7 @@ vacc:
   targeting_strategy: 'threshold_unconstrained'
   vac_incid_threshold: 0.001
   vac_unconstrained: TRUE
-  vac_admin_level: 'both'
+  vac_admin_level: 'admin2'
   vac_coverage: 0.68
   num_skip_years: 3
   vac_interval: 1

@@ -2,7 +2,7 @@
 #SBATCH --job-name=diag
 #SBATCH --output=log/Diagnostic_report_output_log.txt
 #SBATCH --time=10000:00:00
-#SBATCH --mem=30G
+#SBATCH --mem=10G
 #SBATCH --nodelist=idmodeling2
 #SBATCH -c 4
 

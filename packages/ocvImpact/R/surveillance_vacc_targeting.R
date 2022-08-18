@@ -165,8 +165,8 @@ load_baseline_incidence <- function(datapath,
 
   for(layer_idx in 1:nsamples){
     
-    # confirm_rate_value <- MCMCglmm::rtnorm(n = nrow(shp2), sd = omicron_dataset$sd, mean = omicron_dataset$mean, lower = 0, upper = 1)
-    confirm_rate_value <- rnorm(n = nrow(shp2), mean = omicron_dataset$mean, sd = omicron_dataset$sd)
+    confirm_rate_value <- MCMCglmm::rtnorm(n = nrow(shp2), mean = omicron_dataset$mean, sd = omicron_dataset$sd, lower = 0, upper = 1)
+    # confirm_rate_value <- rnorm(n = nrow(shp2), mean = omicron_dataset$mean, sd = omicron_dataset$sd)
     
     ## get one layer 
     country_baseline_single_layer <- country_baseline[[layer_idx]]
@@ -305,6 +305,7 @@ load_baseline_incidence <- function(datapath,
 #' @param vac_start_year
 #' @param vac_end_year 
 #' @param num_skip_years district level skipped years 
+#' @param rc_targeted
 #' @return 
 #' @export
 #' @include
@@ -315,45 +316,73 @@ update_targets_list <- function(datapath, modelpath, country, scenario,
                                 surveillance_scenario, 
                                 vac_interval, #this is country level 
                                 vac_start_year, vac_end_year, 
-                                num_skip_years #this is district level 
+                                num_skip_years, #this is district level 
+                                rc_targeted
                                 ){
-  ### Assertain that this table has new empty rows to fill in and it's the model year 
-  if(max(rc_list$rc1$year) != model_year | max(rc_list$rc2$year) != model_year){
-    stop("Cannot update the rc list because the year with empty row does not agree with the model year. ")
+  # Decide if just target one admin level 
+  if(length(rc_targeted) == 2){
+    ### Assertain that this table has new empty rows to fill in and it's the model year 
+    if(max(rc_list$rc1$year) != model_year | max(rc_list$rc2$year) != model_year){
+      stop("Cannot update the rc list because the year with empty row does not agree with the model year. ")
+    }
+    
+    ### What is the vacc strategy? 
+    if(!vac_unconstrained){
+      stop("The constrained surveillance scenario is not developed yet. ") #future: maybe some years to skip the vacc(constrained in this sense)? 
+    }
+
+    ### What if this is no vac scenario or the vac_interval is larger than 1 year or the vacc is skipped for the year or the vacc has ended or not yet started?
+    if(
+        ( (!all(is.na(rc_list$rc1$latest_target_year)) & !all(is.na(rc_list$rc2$latest_target_year)))
+            & (model_year - max(rc_list$rc1$latest_target_year, na.rm = TRUE) < vac_interval 
+                & model_year - max(rc_list$rc2$latest_target_year, na.rm = TRUE) < vac_interval) )      | 
+        (scenario == "no-vaccination")                                                                  |
+        (model_year > vac_end_year)                                                                     |
+        (model_year < vac_start_year) ){
+      
+      message(paste("The vaccination campaign is skipped for year", model_year, "for the whole country", country))
+      
+      if( (max(rc_list$rc1$latest_target_year, na.rm = TRUE) != max(rc_list$rc2$latest_target_year, na.rm = TRUE)) & (model_year <= vac_end_year) &
+          (   (model_year - max(rc_list$rc1$latest_target_year, na.rm = TRUE) >= vac_interval) 
+            | (model_year - max(rc_list$rc2$latest_target_year, na.rm = TRUE) >= vac_interval)   ) ){
+        message("admin1 and admin2 do not agree on the latest target year in the rc list table, please check. ")
+        cat(paste("The country level vaccination elapse year for the admin1 scenario is", (model_year - max(rc_list$rc1$latest_target_year, na.rm = TRUE))))
+        cat(paste("The country level vaccination elapse year for the admin2 scenario is", (model_year - max(rc_list$rc2$latest_target_year, na.rm = TRUE))))
+        stop("Error: inconsistency between admin1 and admin2 regarding whether or not to carry out country-level campaign. ")
+      }
+      rc_list <- update_novacc_year(datapath, rc_list, model_year, surveillance_scenario = surveillance_scenario, rc_targeted)
+      
+    }else{
+      rc_list <- update_vacc_year(datapath, modelpath, country, rc_list, model_year, 
+                                  campaign_cov, threshold, surveillance_scenario, 
+                                  vac_start_year, vac_end_year, num_skip_years, rc_targeted)
+    }
+
+  # if just one admin level 
+  }else{
+    if(max(rc_list[[rc_targeted]]$year) != model_year){
+      stop("Cannot update the rc list because the year with empty row does not agree with the model year. ")
+    }
+    if(!vac_unconstrained){
+      stop("The constrained surveillance scenario is not developed yet. ") #future: maybe some years to skip the vacc(constrained in this sense)? 
+    }
+
+    if( ( (!all(is.na(rc_list[[rc_targeted]]$latest_target_year)))
+            & (model_year - max(rc_list[[rc_targeted]]$latest_target_year, na.rm = TRUE) < vac_interval) )         | 
+        (scenario == "no-vaccination")                                                                  |
+        (model_year > vac_end_year)                                                                     |
+        (model_year < vac_start_year) ){
+      
+      message(paste("The vaccination campaign is skipped for year", model_year, "for the whole country", country))
+      rc_list <- update_novacc_year(datapath, rc_list, model_year, surveillance_scenario = surveillance_scenario, rc_targeted)
+      
+    }else{
+      rc_list <- update_vacc_year(datapath, modelpath, country, rc_list, model_year, 
+                                  campaign_cov, threshold, surveillance_scenario, 
+                                  vac_start_year, vac_end_year, num_skip_years, rc_targeted)
+    }
   }
   
-  ### What is the vacc strategy? 
-  if(!vac_unconstrained){
-    stop("The constrained surveillance scenario is not developed yet. ") #future: maybe some years to skip the vacc(constrained in this sense)? 
-  }
-
-  ### What if this is no vac scenario or the vac_interval is larger than 1 year or the vacc is skipped for the year or the vacc has ended or not yet started?
-  if(
-      ( (!all(is.na(rc_list$rc1$latest_target_year)) & !all(is.na(rc_list$rc2$latest_target_year)))
-          & (model_year - max(rc_list$rc1$latest_target_year, na.rm = TRUE) < vac_interval 
-              & model_year - max(rc_list$rc2$latest_target_year, na.rm = TRUE) < vac_interval) )      | 
-      (scenario == "no-vaccination")                                                                  |
-      (model_year > vac_end_year)                                                                     |
-      (model_year < vac_start_year) ){
-    
-    message(paste("The vaccination campaign is skipped for year", model_year, "for the whole country", country))
-    
-    if( (max(rc_list$rc1$latest_target_year, na.rm = TRUE) != max(rc_list$rc2$latest_target_year, na.rm = TRUE)) & (model_year <= vac_end_year) &
-        (   (model_year - max(rc_list$rc1$latest_target_year, na.rm = TRUE) >= vac_interval) 
-          | (model_year - max(rc_list$rc2$latest_target_year, na.rm = TRUE) >= vac_interval)   ) ){
-      message("admin1 and admin2 do not agree on the latest target year in the rc list table, please check. ")
-      cat(paste("The country level vaccination elapse year for the admin1 scenario is", (model_year - max(rc_list$rc1$latest_target_year, na.rm = TRUE))))
-      cat(paste("The country level vaccination elapse year for the admin2 scenario is", (model_year - max(rc_list$rc2$latest_target_year, na.rm = TRUE))))
-      stop("Error: inconsistency between admin1 and admin2 regarding whether or not to carry out country-level campaign. ")
-    }
-    rc_list <- update_novacc_year(datapath, rc_list, model_year, surveillance_scenario = surveillance_scenario)
-    
-
-  }else{
-    rc_list <- update_vacc_year(datapath, modelpath, country, rc_list, model_year, 
-                                campaign_cov, threshold, surveillance_scenario, 
-                                vac_start_year, vac_end_year, num_skip_years) 
-  }
   
   return(rc_list) # updated with latest targets of this year
 }
@@ -361,31 +390,30 @@ update_targets_list <- function(datapath, modelpath, country, scenario,
 #' @name update_novacc_year
 #' @title update_novacc_year
 #' @description update the targets in the list if it's not a vaccination campaign year 
+#' @param datapath
 #' @param rc_list
 #' @param model_year
+#' @param surveillance_scenario
+#' @param rc_targeted
 #' @return 
 #' @export
 #' @include
-update_novacc_year <- function(datapath, rc_list, model_year, surveillance_scenario){
-  # Update the latest target year, if all NA's from last year or this is the first simulation year, no need to update
-  if(model_year > min(rc_list$rc1$year)){ 
-    if(!all(is.na(rc_list$rc1[rc_list$rc1$year == model_year-1, ]$latest_target_year))){
-      rc_list$rc1[rc_list$rc1$year == model_year, ]$latest_target_year <- rc_list$rc1[rc_list$rc1$year == model_year-1, ]$latest_target_year
+update_novacc_year <- function(datapath, rc_list, model_year, surveillance_scenario, rc_targeted){
+  for(rcs in rc_targeted){
+    # Update the latest target year, if all NA's from last year or this is the first simulation year, no need to update
+    if(model_year > min(rc_list[[rcs]]$year)){ 
+      if(!all(is.na(rc_list[[rcs]][rc_list[[rcs]]$year == model_year-1, ]$latest_target_year))){
+        rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$latest_target_year <- rc_list[[rcs]][rc_list[[rcs]]$year == model_year-1, ]$latest_target_year
+      }
     }
-    if(!all(is.na(rc_list$rc2[rc_list$rc2$year == model_year-1, ]$latest_target_year))){
-      rc_list$rc2[rc_list$rc2$year == model_year, ]$latest_target_year <- rc_list$rc2[rc_list$rc2$year == model_year-1, ]$latest_target_year
-    }
-  }
-  # Update the other variables 
-  omicron_dataset <- readr::read_csv(paste0(datapath, "/confirmation_rate/parameters.csv")) #the true confirmation rate 
-  rc_list <- get_confirmed_incidence_rate(rc_list, model_year, surveillance_scenario, omicron_dataset)
+    # Update the other variables 
+    omicron_dataset <- readr::read_csv(paste0(datapath, "/confirmation_rate/parameters.csv")) #the true confirmation rate 
+    rc_list <- get_confirmed_incidence_rate(rc_list, model_year, surveillance_scenario, omicron_dataset, rcs)
 
-  rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmation_lens <- surveillance_scenario
-  rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmation_lens <- surveillance_scenario
-  rc_list$rc1[rc_list$rc1$year == model_year, c("is_target", "actual_prop_vaccinated", "actual_fvp")] <- 0 
-  rc_list$rc2[rc_list$rc2$year == model_year, c("is_target", "actual_prop_vaccinated", "actual_fvp")] <- 0
+    rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmation_lens <- surveillance_scenario
+    rc_list[[rcs]][rc_list[[rcs]]$year == model_year, c("is_target", "actual_prop_vaccinated", "actual_fvp")] <- 0 
+  }
   return(rc_list)
-  ### this is where we might need to include the waning effects of vaccines, but we're not doing it for the time being
 }
 
 #' @name update_vacc_year
@@ -402,19 +430,13 @@ update_novacc_year <- function(datapath, rc_list, model_year, surveillance_scena
 #' @param vac_start_year
 #' @param vac_end_year
 #' @param num_skip_years
+#' @param rc_targeted
 #' @return 
 #' @export
 #' @include
 update_vacc_year <- function( datapath, modelpath, country, rc_list, model_year, 
                               campaign_cov, threshold, surveillance_scenario, 
-                              vac_start_year, vac_end_year, num_skip_years  ){
-  ### Put on the confirmation lens 
-  ## Read in
-  message(paste0("Loading ", datapath, "/confirmation_rate/parameters.csv"))
-  omicron_dataset <- readr::read_csv(paste0(datapath, "/confirmation_rate/parameters.csv")) #the true confirmation rate 
-  ## Assign
-  rc_list <- get_confirmed_incidence_rate(rc_list, model_year, surveillance_scenario, omicron_dataset)
-
+                              vac_start_year, vac_end_year, num_skip_years, rc_targeted){
   ### Only targeting the population above 1 year old
   if(!exists("pop_by_age")){
     source(paste0("scripts/montagu_handle.R"))
@@ -427,43 +449,41 @@ update_vacc_year <- function( datapath, modelpath, country, rc_list, model_year,
     group_by(above_1) %>% 
     summarise(prop = sum(prop_age))
   above_1_proportion <- pop_by_age_1[pop_by_age_1$above_1, ]$prop
-
-  ### Update the rest of the variables 
-  ## Update the target and vaccinated pop
-  #if there is no previous year
-  if(min(rc_list$rc1$year) == model_year){
-    rc_list$rc1[rc_list$rc1$year == model_year, ]$is_target <- ifelse(rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmed_incidence_rate >= threshold, 1, 0)
-    rc_list$rc2[rc_list$rc2$year == model_year, ]$is_target <- ifelse(rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmed_incidence_rate >= threshold, 1, 0)
-  #if there is previous year 
-  }else{
-    rc_list$rc1[rc_list$rc1$year == model_year, ]$is_target <- ifelse(  (!is.na(rc_list$rc1[rc_list$rc1$year == model_year-1, ]$latest_target_year)
-                                                                          & model_year - rc_list$rc1[rc_list$rc1$year == model_year-1, ]$latest_target_year >= num_skip_years
-                                                                          & rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmed_incidence_rate >= threshold)
-                                                                      | (is.na(rc_list$rc1[rc_list$rc1$year == model_year-1, ]$latest_target_year)
-                                                                          & rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmed_incidence_rate >= threshold), 1, 0)
-    rc_list$rc2[rc_list$rc2$year == model_year, ]$is_target <- ifelse(  (!is.na(rc_list$rc2[rc_list$rc2$year == model_year-1, ]$latest_target_year)
-                                                                          & model_year - rc_list$rc2[rc_list$rc2$year == model_year-1, ]$latest_target_year >= num_skip_years
-                                                                          & rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmed_incidence_rate >= threshold)
-                                                                      | (is.na(rc_list$rc2[rc_list$rc2$year == model_year-1, ]$latest_target_year)
-                                                                          & rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmed_incidence_rate >= threshold), 1, 0)
-  }
-  rc_list$rc1[rc_list$rc1$year == model_year, ]$actual_prop_vaccinated <- rc_list$rc1[rc_list$rc1$year == model_year, ]$is_target * campaign_cov * above_1_proportion
-  rc_list$rc1[rc_list$rc1$year == model_year, ]$actual_fvp <- rc_list$rc1[rc_list$rc1$year == model_year, ]$actual_prop_vaccinated * rc_list$rc1[rc_list$rc1$year == model_year, ]$pop_model
-  rc_list$rc2[rc_list$rc2$year == model_year, ]$actual_prop_vaccinated <- rc_list$rc2[rc_list$rc2$year == model_year, ]$is_target * campaign_cov * above_1_proportion
-  rc_list$rc2[rc_list$rc2$year == model_year, ]$actual_fvp <- rc_list$rc2[rc_list$rc2$year == model_year, ]$actual_prop_vaccinated * rc_list$rc2[rc_list$rc2$year == model_year, ]$pop_model
   
-  ## Update the latest target year
-  if(min(rc_list$rc1$year) == model_year){
-    rc_list$rc1[rc_list$rc1$year == model_year, ]$latest_target_year <- ifelse(rc_list$rc1[rc_list$rc1$year == model_year, ]$is_target, model_year, NA)
-    rc_list$rc2[rc_list$rc2$year == model_year, ]$latest_target_year <- ifelse(rc_list$rc2[rc_list$rc2$year == model_year, ]$is_target, model_year, NA)
-  }else{
-    rc_list$rc1[rc_list$rc1$year == model_year, ]$latest_target_year <- rc_list$rc1[rc_list$rc1$year == model_year-1, ]$latest_target_year
-    if(any(rc_list$rc1$year == model_year & rc_list$rc1$is_target)){
-      rc_list$rc1[rc_list$rc1$year == model_year & rc_list$rc1$is_target, ]$latest_target_year <- model_year}
+  ### Put on the confirmation lens 
+  ## Read in
+  message(paste0("Loading ", datapath, "/confirmation_rate/parameters.csv"))
+  omicron_dataset <- readr::read_csv(paste0(datapath, "/confirmation_rate/parameters.csv")) #the true confirmation rate 
+  
+  ### Loop through the targeted admin levels 
+  for (rcs in rc_targeted){
+    ## Assign
+    rc_list <- get_confirmed_incidence_rate(rc_list, model_year, surveillance_scenario, omicron_dataset, rcs)
 
-    rc_list$rc2[rc_list$rc2$year == model_year, ]$latest_target_year <- rc_list$rc2[rc_list$rc2$year == model_year-1, ]$latest_target_year
-    if(any(rc_list$rc2$year == model_year & rc_list$rc2$is_target)){
-      rc_list$rc2[rc_list$rc2$year == model_year & rc_list$rc2$is_target, ]$latest_target_year <- model_year}
+    ### Update the rest of the variables 
+    ## Update the target and vaccinated pop
+    #if there is no previous year
+    if(min(rc_list[[rcs]]$year) == model_year){
+      rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$is_target <- ifelse(rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmed_incidence_rate >= threshold, 1, 0)
+    #if there is previous year 
+    }else{
+      rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$is_target <- ifelse(  (!is.na(rc_list[[rcs]][rc_list[[rcs]]$year == model_year-1, ]$latest_target_year)
+                                                                                  & model_year - rc_list[[rcs]][rc_list[[rcs]]$year == model_year-1, ]$latest_target_year >= num_skip_years
+                                                                                  & rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmed_incidence_rate >= threshold)
+                                                                              | (is.na(rc_list[[rcs]][rc_list[[rcs]]$year == model_year-1, ]$latest_target_year)
+                                                                                  & rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmed_incidence_rate >= threshold), 1, 0)
+    }
+    rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$actual_prop_vaccinated <- rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$is_target * campaign_cov * above_1_proportion
+    rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$actual_fvp <- rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$actual_prop_vaccinated * rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$pop_model
+    
+    ## Update the latest target year
+    if(min(rc_list[[rcs]]$year) == model_year){
+      rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$latest_target_year <- ifelse(rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$is_target, model_year, NA)
+    }else{
+      rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$latest_target_year <- rc_list[[rcs]][rc_list[[rcs]]$year == model_year-1, ]$latest_target_year
+      if(any(rc_list[[rcs]]$year == model_year & rc_list[[rcs]]$is_target)){
+        rc_list[[rcs]][rc_list[[rcs]]$year == model_year & rc_list[[rcs]]$is_target, ]$latest_target_year <- model_year}
+    }
   }
 
   return(rc_list)               
@@ -472,66 +492,41 @@ update_vacc_year <- function( datapath, modelpath, country, rc_list, model_year,
 #' @name get_confirmed_incidence_rate
 #' @title get_confirmed_incidence_rate
 #' @description to get the confirmed incidence rate in the rc_list 
-#' @param datapath path to input data 
-#' @param country country code 
+#' @param rc_list
+#' @param model_year
+#' @param surveillance_scenario
+#' @param omicron_dataset
+#' @param rcs
 #' @return 
 #' @export
 #' @include
-get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scenario, omicron_dataset){
+get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scenario, omicron_dataset, rcs){
   ##### The same district/country can only use the same confirmation rate across years but different across layers 
 
   ### Get the confirmation rate
-  rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmation_lens <- surveillance_scenario
-  rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmation_lens <- surveillance_scenario
-
+  rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmation_lens <- surveillance_scenario
+  
   if(surveillance_scenario == "no-estimate"){ #clinical cases = confirmed cases
-    # rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmation_rate <- rc_list$rc1[rc_list$rc1$year == model_year, ]$true_confirm_rate
-    # rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmation_rate <- rc_list$rc2[rc_list$rc2$year == model_year, ]$true_confirm_rate
-    rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmation_rate <- 1
-    rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmation_rate <- 1
+    rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmation_rate <- 1
 
   }else if(surveillance_scenario == "global-estimate"){
     ## global estimate scenario 
-    if(all(is.na(rc_list$rc1$confirmation_rate))){
+    if(all(is.na(rc_list[[rcs]]$confirmation_rate))){
       # global_estimate <- rnorm(n = 1, mean = omicron_dataset$mean, sd = omicron_dataset$sd)
       global_estimate <- weighted.mean(rc_list$rc2[rc_list$rc2$year == model_year, ]$true_confirm_rate, 
         rc_list$rc2[rc_list$rc2$year == model_year, ]$true_incidence_rate * rc_list$rc2[rc_list$rc2$year == model_year, ]$pop_model / rc_list$rc2[rc_list$rc2$year == model_year, ]$true_confirm_rate) #just admin2 because the true confirm rate is at admin2 level, weighted on the observed cases
     }else{
-      global_estimate <- unique(rc_list$rc2$confirmation_rate)[1]
+      global_estimate <- unique(rc_list[[rcs]]$confirmation_rate)[1]
     }
-    rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmation_rate <- global_estimate
-    rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmation_rate <- global_estimate
+    rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmation_rate <- global_estimate
     
   }else if(surveillance_scenario == "district-estimate"){
     ## district estimate scenario 
-    rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmation_rate <- rc_list$rc1[rc_list$rc1$year == model_year, ]$true_confirm_rate
-    rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmation_rate <- rc_list$rc2[rc_list$rc2$year == model_year, ]$true_confirm_rate
-
-    # if(all(is.na(rc_list$rc1$confirmation_rate))){
-    #   district_estimate_rc1 <- rnorm(n = nrow(rc_list$rc1[rc_list$rc1$year == model_year, ]), mean = omicron_dataset$mean, sd = omicron_dataset$sd)
-    #   rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmation_rate <- district_estimate_rc1
-    #   district_estimate_rc2 <- rnorm(n = nrow(rc_list$rc2[rc_list$rc2$year == model_year, ]), mean = omicron_dataset$mean, sd = omicron_dataset$sd)
-    #   rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmation_rate <- district_estimate_rc2
-    # }else{
-    #   # Dist 1
-    #   for(dist1 in unique(rc_list$rc1[rc_list$rc1$year == model_year, ]$NAME_1)){
-    #     rc_list$rc1[rc_list$rc1$year == model_year & rc_list$rc1$NAME_1 == dist1, ]$confirmation_rate <- 
-    #       rc_list$rc1[rc_list$rc1$year == model_year-1 & rc_list$rc1$NAME_1 == dist1, ]$confirmation_rate
-    #   }
-    #   # Dist 2
-    #   for(dist1 in unique(rc_list$rc2[rc_list$rc2$year == model_year, ]$NAME_1)){
-    #     for(dist2 in unique(rc_list$rc2[rc_list$rc2$year == model_year & rc_list$rc2$NAME_1 == dist1, ]$NAME_2)){
-    #       rc_list$rc2[rc_list$rc2$year == model_year & rc_list$rc2$NAME_1 == dist1 & rc_list$rc2$NAME_2 == dist2, ]$confirmation_rate <- 
-    #         rc_list$rc2[rc_list$rc2$year == model_year-1 & rc_list$rc2$NAME_1 == dist1 & rc_list$rc2$NAME_2 == dist2, ]$confirmation_rate
-    #     }
-    #   }
-    # }
-
+    rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmation_rate <- rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$true_confirm_rate
   }
 
   ### Update the confirmed_incidence_rate
-  rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmed_incidence_rate <- rc_list$rc1[rc_list$rc1$year == model_year, ]$true_incidence_rate / rc_list$rc1[rc_list$rc1$year == model_year, ]$true_confirm_rate * rc_list$rc1[rc_list$rc1$year == model_year, ]$confirmation_rate
-  rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmed_incidence_rate <- rc_list$rc2[rc_list$rc2$year == model_year, ]$true_incidence_rate / rc_list$rc2[rc_list$rc2$year == model_year, ]$true_confirm_rate * rc_list$rc2[rc_list$rc2$year == model_year, ]$confirmation_rate
+  rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmed_incidence_rate <- rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$true_incidence_rate / rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$true_confirm_rate * rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmation_rate
   
   return(rc_list)
 }
@@ -554,12 +549,12 @@ get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scena
 surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_start_year, sim_end_year, shp1, shp2, nsamples){
 
   ## Prepare
-  admin1_lambda_list <- ec_list$ec_rasterStack_admin1 / pop
-  admin2_lambda_list <- ec_list$ec_rasterStack_admin2 / pop
+  if(!is.null(ec_list$ec_rasterStack_admin1)){admin1_lambda_list <- ec_list$ec_rasterStack_admin1 / pop}else{admin1_lambda_list <- NULL}
+  if(!is.null(ec_list$ec_rasterStack_admin2)){admin2_lambda_list <- ec_list$ec_rasterStack_admin2 / pop}else{admin2_lambda_list <- NULL}
   pop1 <- get_admin_population(pop, shp1) 
   pop2 <- get_admin_population(pop, shp2)
-  true_case1_all <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin1, shp1, 'sum')
-  true_case2_all <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin2, shp2, 'sum')
+  if(!is.null(ec_list$ec_rasterStack_admin1)){true_case1_all <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin1, shp1, 'sum')}else{true_case1_all <- NULL}
+  if(!is.null(ec_list$ec_rasterStack_admin2)){true_case2_all <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin2, shp2, 'sum')}else{true_case2_all <- NULL}
   rm(ec_list)
   
   # total population
@@ -571,72 +566,77 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
   ## loop through all the layers 
   for (layer_idx in 1:nsamples){
 
-    lambda1 <- admin1_lambda_list[[layer_idx]]
-    lambda2 <- admin2_lambda_list[[layer_idx]]
-    true_case1 <- true_case1_all[[layer_idx]]
-    true_case2 <- true_case2_all[[layer_idx]]
+    if(!is.null(admin1_lambda_list)){lambda1 <- admin1_lambda_list[[layer_idx]]}
+    if(!is.null(admin2_lambda_list)){lambda2 <- admin2_lambda_list[[layer_idx]]}
+    if(!is.null(true_case1_all)){true_case1 <- true_case1_all[[layer_idx]]}
+    if(!is.null(true_case2_all)){true_case2 <- true_case2_all[[layer_idx]]}
 
     ## fill in the true cases for the simulated year and end here if this is the last year of simulation 
-    rc_list[[layer_idx]]$rc1$true_case[rc_list[[layer_idx]]$rc1$year == model_year] <- true_case1
-    rc_list[[layer_idx]]$rc2$true_case[rc_list[[layer_idx]]$rc2$year == model_year] <- true_case2
-    if(model_year >= sim_end_year){next} #**************************************************************
+    if(!is.null(true_case1_all)){rc_list[[layer_idx]]$rc1$true_case[rc_list[[layer_idx]]$rc1$year == model_year] <- true_case1}
+    if(!is.null(true_case2_all)){rc_list[[layer_idx]]$rc2$true_case[rc_list[[layer_idx]]$rc2$year == model_year] <- true_case2}
+    if(model_year >= sim_end_year){next} #************************************************************** exit when all the simulations are done
     
-    ## summarize rasters to admin level 1 and copy the previous confirm rate
-    incid1 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = lambda1, pop_raster = pop, country, admin_shp = shp1)
-    true_confirm_rate_admin1 <- head(rc_list[[layer_idx]]$rc1, nrow(shp1))$true_confirm_rate 
 
-    ## summarize rasters to admin level 2 and copy the previous confirm rate
-    incid2 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = lambda2, pop_raster = pop, country, admin_shp = shp2)
-    true_confirm_rate_admin2 <- head(rc_list[[layer_idx]]$rc2, nrow(shp2))$true_confirm_rate
-    
-    # get incidence and pop table (admin 1 level)
-    rc1 <- dplyr::mutate(shp1, 
-                        true_incidence_rate = incid1,
-                        confirmation_lens = NA,
-                        confirmation_rate = NA, 
-                        confirmed_incidence_rate = NA,  
-                        pop_model = pop1,
-                        pop_prop = pop1/total_pop,
-                        year = model_year + 1, 
-                        latest_target_year = NA,
-                        is_target = NA,  # whether that place was target in this year
-                        actual_prop_vaccinated = NA,
-                        actual_fvp = NA, 
-                        true_confirm_rate = true_confirm_rate_admin1) %>% # fully vaccinated population
-      dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
-                      true_case = NA ) %>% 
-      dplyr::select(ISO, NAME_0, NAME_1, true_confirm_rate, true_incidence_rate, confirmation_lens, confirmation_rate, confirmed_incidence_rate, 
-                    pop_model, pop_prop, year, latest_target_year, is_target,
-                    actual_prop_vaccinated, actual_fvp, true_case)
-    
-    # get incidence and pop table (admin 2 level)
-    rc2 <- dplyr::mutate(shp2, 
-                        true_incidence_rate = incid2,
-                        confirmation_lens = NA,
-                        confirmation_rate = NA, 
-                        confirmed_incidence_rate = NA,  
-                        pop_model = pop2,
-                        pop_prop = pop2/total_pop,
-                        year = model_year + 1, 
-                        latest_target_year = NA, 
-                        is_target = NA,     # whether that place was target in this year
-                        actual_prop_vaccinated = NA,
-                        actual_fvp = NA, 
-                        true_confirm_rate = true_confirm_rate_admin2) %>% # fully vaccinated population
-      dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
-                      true_case = NA ) %>% 
-      dplyr::select(ISO, NAME_0, NAME_1, NAME_2, true_confirm_rate, true_incidence_rate, confirmation_lens, confirmation_rate, confirmed_incidence_rate, 
-                    pop_model, pop_prop, year, latest_target_year, is_target,
-                    actual_prop_vaccinated, actual_fvp, true_case)
-    
+    if(!is.null(admin1_lambda_list)){
+      ## summarize rasters to admin level 1 and copy the previous confirm rate
+      incid1 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = lambda1, pop_raster = pop, country, admin_shp = shp1)
+      true_confirm_rate_admin1 <- head(rc_list[[layer_idx]]$rc1, nrow(shp1))$true_confirm_rate 
+
+      # get incidence and pop table (admin 1 level)
+      rc1 <- dplyr::mutate(shp1, 
+                          true_incidence_rate = incid1,
+                          confirmation_lens = NA,
+                          confirmation_rate = NA, 
+                          confirmed_incidence_rate = NA,  
+                          pop_model = pop1,
+                          pop_prop = pop1/total_pop,
+                          year = model_year + 1, 
+                          latest_target_year = NA,
+                          is_target = NA,  # whether that place was target in this year
+                          actual_prop_vaccinated = NA,
+                          actual_fvp = NA, 
+                          true_confirm_rate = true_confirm_rate_admin1) %>% # fully vaccinated population
+        dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
+                        true_case = NA ) %>% 
+        dplyr::select(ISO, NAME_0, NAME_1, true_confirm_rate, true_incidence_rate, confirmation_lens, confirmation_rate, confirmed_incidence_rate, 
+                      pop_model, pop_prop, year, latest_target_year, is_target,
+                      actual_prop_vaccinated, actual_fvp, true_case)
+    }else{rc1 <- NULL}
+
+    if(!is.null(admin2_lambda_list)){
+      ## summarize rasters to admin level 2 and copy the previous confirm rate
+      incid2 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = lambda2, pop_raster = pop, country, admin_shp = shp2)
+      true_confirm_rate_admin2 <- head(rc_list[[layer_idx]]$rc2, nrow(shp2))$true_confirm_rate    
+      
+      # get incidence and pop table (admin 2 level)
+      rc2 <- dplyr::mutate(shp2, 
+                          true_incidence_rate = incid2,
+                          confirmation_lens = NA,
+                          confirmation_rate = NA, 
+                          confirmed_incidence_rate = NA,  
+                          pop_model = pop2,
+                          pop_prop = pop2/total_pop,
+                          year = model_year + 1, 
+                          latest_target_year = NA, 
+                          is_target = NA,     # whether that place was target in this year
+                          actual_prop_vaccinated = NA,
+                          actual_fvp = NA, 
+                          true_confirm_rate = true_confirm_rate_admin2) %>% # fully vaccinated population
+        dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
+                        true_case = NA ) %>% 
+        dplyr::select(ISO, NAME_0, NAME_1, NAME_2, true_confirm_rate, true_incidence_rate, confirmation_lens, confirmation_rate, confirmed_incidence_rate, 
+                      pop_model, pop_prop, year, latest_target_year, is_target,
+                      actual_prop_vaccinated, actual_fvp, true_case)
+    }else{rc2 <- NULL}
+
     # check on population proportion 
-    if (sum(rc1$pop_prop)!=1 | sum(rc2$pop_prop)!=1){
+    if ((!is.null(rc1) & !is.null(rc2)) & (sum(rc1$pop_prop)!=1 | sum(rc2$pop_prop)!=1)){
       warning(paste(" *** The population proportion calculation is incorrect for", country, ", they are", sum(rc1$pop_prop), "and", sum(rc2$pop_prop)))
     }
     
     # sometimes rc1 or rc2 has NA's for suspected_incidence due to disagreement about NA's in grid cells 
-    rc_list[[layer_idx]]$rc1 <- rbind(rc_list[[layer_idx]]$rc1, rc1)
-    rc_list[[layer_idx]]$rc2 <- rbind(rc_list[[layer_idx]]$rc2, rc2)
+    if(!is.null(rc1)){rc_list[[layer_idx]]$rc1 <- rbind(rc_list[[layer_idx]]$rc1, rc1)}
+    if(!is.null(rc2)){rc_list[[layer_idx]]$rc2 <- rbind(rc_list[[layer_idx]]$rc2, rc2)}
     rm(lambda1, lambda2, rc1, rc2, true_confirm_rate_admin1, true_confirm_rate_admin2)
   }
 
