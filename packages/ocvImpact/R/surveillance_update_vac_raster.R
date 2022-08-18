@@ -46,40 +46,43 @@ update_vac_raster <- function(datapath,
     if("rc2" %in% rc_targeted){shp2_targeted <- rc_list[[2]][rc_list[[2]]$year == model_year & rc_list[[2]]$is_target == 1, ]} else {shp2_targeted <- NULL}
     
     # check point: if there is not a single place targeted this year.
-    if(!is.null(shp1_targeted) & nrow(shp1_targeted) == 0){
+    if(!is.null(shp1_targeted)){
+
+      if(nrow(shp1_targeted) == 0){
+        message(paste("There is no admin 1 level areas vaccinated in", model_year, "in", country, "."))
+        new_vacc_layer_admin1 <- raster0_template
+      }else{
+        new_vacc_layer_admin1 <- fasterize::fasterize(
+          shp1_targeted,
+          raster0_template,
+          field = "actual_prop_vaccinated",
+          fun = "last",
+          background = 0
+        )
+        new_vacc_layer_admin1 <- raster::mask(new_vacc_layer_admin1, raster0_template, updatevalue = NA)
+      }
       
-      message(paste("There is no admin 1 level areas vaccinated in", model_year, "in", country, "."))
-      new_vacc_layer_admin1 <- raster0_template
-    
-    }else if(!is.null(shp1_targeted)){
-      new_vacc_layer_admin1 <- fasterize::fasterize(
-        shp1_targeted,
-        raster0_template,
-        field = "actual_prop_vaccinated",
-        fun = "last",
-        background = 0
-      )
-      new_vacc_layer_admin1 <- raster::mask(new_vacc_layer_admin1, raster0_template, updatevalue = NA)
-    
     }else if(is.null(shp1_targeted)){
       new_vacc_layer_admin1 <- NULL
     }
 
 
-    if(!is.null(shp2_targeted) & nrow(shp2_targeted) == 0){
+    if(!is.null(shp2_targeted)){
+
+      if(nrow(shp2_targeted) == 0){
+        message(paste("There is no admin 2 level areas vaccinated in", model_year, "in", country, "."))
+        new_vacc_layer_admin2 <- raster0_template
+      }else{
+        new_vacc_layer_admin2 <- fasterize::fasterize(
+          shp2_targeted,
+          raster0_template,
+          field = "actual_prop_vaccinated",
+          fun = "last",
+          background = 0
+        )
+        new_vacc_layer_admin2 <- raster::mask(new_vacc_layer_admin2, raster0_template, updatevalue = NA)
+      }
       
-      message(paste("There is no admin 2 level areas vaccinated in", model_year, "in", country, "."))
-      new_vacc_layer_admin2 <- raster0_template
-    
-    }else if(!is.null(shp2_targeted)){
-      new_vacc_layer_admin2 <- fasterize::fasterize(
-        shp2_targeted,
-        raster0_template,
-        field = "actual_prop_vaccinated",
-        fun = "last",
-        background = 0
-      )
-      new_vacc_layer_admin2 <- raster::mask(new_vacc_layer_admin2, raster0_template, updatevalue = NA)
     }else if(is.null(shp2_targeted)){
       new_vacc_layer_admin2 <- NULL
     }
