@@ -3,7 +3,7 @@
 #SBATCH --output=log/SOM_testing_run_1e-03.txt
 #SBATCH --time=10000:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem=20G
+#SBATCH --mem=15G
 #SBATCH --nodelist=idmodeling2
 
 echo "Beginning of script"

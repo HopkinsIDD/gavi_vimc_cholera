@@ -9,8 +9,8 @@ countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZ
 countries <- c("COD", "GHA", "MRT", "NGA", "TZA", "SOM", "SLE") #for testing, temporary 
 
 #====== Surveillance Project Specific ======#
-save_intermediate_raster <- TRUE
-save_final_output_raster <- TRUE
+save_intermediate_raster <- TRUE #if TRUE, this will save memory during the model run
+save_final_output_raster <- FALSE #if TRUE, all the raster files will be saved
 targeting_strategy <- "threshold_unconstrained" #c("threshold_unconstrained", "affected_pop", "incidence")
 vac_incid_thresholds <- c(1/1000, 1/5000, 1/10000) 
 vac_unconstrained <- TRUE #or refer to an external coverage dataset 

@@ -227,13 +227,27 @@ run_surveillance_scenario <- function(
   ##### Write output files and clean up 
   
   if(save_final_output_raster){
-  # vaccination proportion and susceptible proportion rasterStack
+  # vaccination proportion and susceptible proportion rasterStack (expected cases rasters have already been saved)
     for(model_year in sim_start_year:sim_end_year){
       save_vac_raster(datapath, modelpath, country, nsamples, model_year, input_list, 
                       rawoutpath, clean, scenario, incidence_rate_trend, outbreak_multiplier, vac_incid_threshold, surveillance_scenario)
       save_sus_raster(datapath, modelpath, country, nsamples, model_year, sus_list, 
                       rawoutpath, clean, scenario, incidence_rate_trend, outbreak_multiplier, vac_incid_threshold, surveillance_scenario)
     }
+  }else{
+    sus1_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+                          vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_sus_admin1_", model_year, ".tif")
+    sus2_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+                          vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_sus_admin2_", model_year, ".tif")
+    vac1_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+                          vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_vac_admin1_", model_year, ".tif")
+    vac2_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+                          vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_vac_admin2_", model_year, ".tif")
+    ec1_out_fn <-   paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+                          vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_ec_admin1_", model_year, ".tif")
+    ec2_out_fn <-   paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
+                          vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_ec_admin2_", model_year, ".tif")
+    file.remove(sus1_out_fn, sus2_out_fn, vac1_out_fn, vac2_out_fn, ec1_out_fn, ec2_out_fn)
   }
 
   # clean up the intermediate folder 
@@ -243,7 +257,7 @@ run_surveillance_scenario <- function(
   file.remove(paste0("intermediate_raster/", country, c("_vac_admin2_"), (sim_start_year:sim_end_year), ".tif"))
   file.remove(paste0("intermediate_raster/", country, c("_vac_pop_"), (sim_start_year:sim_end_year), ".tif"))
   
-  # rc_list with incidence and targeted area of each modeled year -- save all the years now
+  # rc_list with incidence and targeted area of each modeled year -- save all the layers now
   rc1_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 
                         vac_incid_threshold, surveillance_scenario, country, sep = "_"), "_rc_admin1.csv")
   rc2_out_fn <- paste0(rawoutpath, "/", scenario, "/", paste("incid", incidence_rate_trend, "outbk", outbreak_multiplier, 

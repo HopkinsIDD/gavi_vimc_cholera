@@ -168,7 +168,7 @@ get_filenames <- function(cache, surveillance_project_directory, pre_country, pr
                               "ec", paste0(admin_list, ".csv")), 1, paste, collapse = "_")                          
     ectable_fns <- c(ectable_fns_camp, ectable_fns_novac)
     ectable_fns <- paste0(surveillance_project_directory, "/", ectable_fns)
-    if(sum(!file.exists(ectable_fns)) > 0){stop(paste("Incomplete model outputs for expected cases table for country", country_list[i]))}
+    if(sum(!file.exists(ectable_fns)) > 0){warning(paste("Incomplete model outputs for expected cases table for country", country_list[i]))}
 
     ## target table
     targettable_fns_camp <- apply(expand.grid(paste0("output_raw/", runname, "/campaign-default/", "incid"), 

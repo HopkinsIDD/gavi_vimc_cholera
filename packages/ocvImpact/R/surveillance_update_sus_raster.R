@@ -33,8 +33,8 @@ update_sus_rasterStack_optimized <- function( datapath,
 
   #### Quick exit for no vacc scenario 
   raster1_template <- raster::calc(pop, fun = function(x){ifelse(!is.na(x), 1, NA)})
-  if("rc1" %in% rc_targeted){tmp1 <- raster1_template}
-  if("rc2" %in% rc_targeted){tmp2 <- raster1_template}
+  if("rc1" %in% rc_targeted){tmp1 <- raster1_template}else{tmp1 <- NULL}
+  if("rc2" %in% rc_targeted){tmp2 <- raster1_template}else{tmp2 <- NULL}
 
   #### For the campaign scenario 
   if(scenario == 'campaign-default'){
@@ -68,7 +68,7 @@ update_sus_rasterStack_optimized <- function( datapath,
       popk[popk == 0] <- 1
       popj[popj == 0] <- 1
       pkj <- raster::overlay(popk, popj, fun = function(x, y){x*(1-((j-k)*mu))/y}) 
-      ve_j_k <- as.numeric(ve_direct(j-k+1))
+      ve_j_k <- as.numeric(ve_direct(j-k)) #if same year, change it from 1 to 0
         
       if("rc1" %in% rc_targeted){prob_still_protected_admin1 <- raster::overlay(vacck_admin1, pkj, fun = function(x, y){return(x*y*ve_j_k)})}
       if("rc2" %in% rc_targeted)(prob_still_protected_admin2 <- raster::overlay(vacck_admin2, pkj, fun = function(x, y){return(x*y*ve_j_k)}))
