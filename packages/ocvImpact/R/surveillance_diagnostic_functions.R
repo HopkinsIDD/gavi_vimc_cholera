@@ -72,6 +72,7 @@ check_model_setting <- function(configpath = "configs/202110gavi-3",
 #' @param scenario takes value of either "campaign-default" or "no-vaccination"
 #' @param threshold threshold chosen for the diagnostic report, takes one of 1/1000, 1/5000, or 1/10,000
 #' @param surveillance_scenario scale of surveillance, takes "no-estimate", "global-estimate", or "district-estimate"
+#' @param admin_level the admin level to check for output
 #' @return TRUE or FALSE indicating whether the output files for the specified countries and scenarios exist in output folder, and also return warning messages to check output of which country is missing
 #' @export
 #' @include
@@ -81,6 +82,7 @@ check_outputs_availability <- function(rawoutpath = "output_raw/202110gavi-3",
                                         scenario,
                                         surveillance_scenario,
                                         threshold,
+                                        admin_level, 
                                         ...){
   
   df_setting <- check_model_setting(configpath = configpath, countries = countries,
@@ -99,7 +101,9 @@ check_outputs_availability <- function(rawoutpath = "output_raw/202110gavi-3",
     filename_admin1 <- paste0(output_path, "/", prefix, threshold, "_", surveillance_scenario, "_", country, "_rc_admin1.csv")
     filename_admin2 <- paste0(output_path, "/", prefix, threshold, "_", surveillance_scenario, "_", country, "_rc_admin2.csv")
     
-    if(!file.exists(filename_admin1) | !file.exists(filename_admin2)){
+    if(   ((admin_level == "both")&(!file.exists(filename_admin1) | !file.exists(filename_admin2)))   | 
+          (admin_level == "admin1"&!file.exists(filename_admin1))   | 
+          (admin_level == "admin2"&!file.exists(filename_admin2))   ){
       message(paste("Either admin1 or admin2 level output is missing for", country, "under scenario of", scenario, "with", surveillance_scenario, "of confirmation rate and threshold of", threshold, "."))
       log[which(countries == country)] <- FALSE
     }else{
@@ -156,10 +160,10 @@ get_filenames <- function(cache, surveillance_project_directory, pre_country, pr
                               country_list[i], "ec", admin_list, paste0(year_list, ".tif")), 1, paste, collapse = "_")
     ecraster_fns <- c(ec_filenames_camp, ec_filenames_novac)
     ecraster_fns <- paste0(surveillance_project_directory, "/", ecraster_fns)
-    if(sum(!file.exists(ecraster_fns)) > 0){
-      message(paste0("Cannot find the following files: ", ecraster_fns[!file.exists(ecraster_fns)]))
-      stop(paste("Incomplete model outputs for expected cases rasters for country", country_list[i]))
-    }
+    # if(sum(!file.exists(ecraster_fns)) > 0){
+    #   message(paste0("Cannot find the following files: ", ecraster_fns[!file.exists(ecraster_fns)]))
+    #   stop(paste("Incomplete model outputs for expected cases rasters for country", country_list[i]))
+    # }
 
     ## expected cases table
     ectable_fns_camp <- apply(expand.grid(paste0("output_raw/", runname, "/campaign-default/", country_list[i]), 
@@ -168,7 +172,7 @@ get_filenames <- function(cache, surveillance_project_directory, pre_country, pr
                               "ec", paste0(admin_list, ".csv")), 1, paste, collapse = "_")                          
     ectable_fns <- c(ectable_fns_camp, ectable_fns_novac)
     ectable_fns <- paste0(surveillance_project_directory, "/", ectable_fns)
-    if(sum(!file.exists(ectable_fns)) > 0){warning(paste("Incomplete model outputs for expected cases table for country", country_list[i]))}
+    # if(sum(!file.exists(ectable_fns)) > 0){stop(paste("Incomplete model outputs for expected cases table for country", country_list[i]))}
 
     ## target table
     targettable_fns_camp <- apply(expand.grid(paste0("output_raw/", runname, "/campaign-default/", "incid"), 
@@ -179,7 +183,7 @@ get_filenames <- function(cache, surveillance_project_directory, pre_country, pr
                               country_list[i], "rc", paste0(admin_list, ".csv")), 1, paste, collapse = "_")
     targettable_fns <- c(targettable_fns_camp, targettable_fns_novac)
     targettable_fns <- paste0(surveillance_project_directory, "/", targettable_fns)
-    if(sum(!file.exists(targettable_fns)) > 0){stop(paste("Incomplete model outputs for target tables for country", country_list[i]))}
+    # if(sum(!file.exists(targettable_fns)) > 0){stop(paste("Incomplete model outputs for target tables for country", country_list[i]))}
 
     ## time table
     timetable_fns_camp <- apply(expand.grid(paste0("output_raw/", runname, "/campaign-default/", "incid"), 
@@ -195,7 +199,7 @@ get_filenames <- function(cache, surveillance_project_directory, pre_country, pr
     ## true confirmation rate raster
     truecomfirmrate_fns <- paste0("intermediate_raster/", country_list[i], "_trueconfirmrate_admin2.tif")  
     truecomfirmrate_fns <- paste0(surveillance_project_directory, "/", truecomfirmrate_fns)
-    if(sum(!file.exists(truecomfirmrate_fns)) > 0){stop(paste("Incomplete model outputs for true confirmation rate raster for country", country_list[i]))}                        
+    # if(sum(!file.exists(truecomfirmrate_fns)) > 0){stop(paste("Incomplete model outputs for true confirmation rate raster for country", country_list[i]))}                        
 
     ## cache all the filenames
     cache[[country_list[i]]]$cases_raster_fns <- ecraster_fns
@@ -1233,11 +1237,12 @@ get_inc_tp_doses <- function(rawoutpath = "output_raw/202110gavi-3",
                              scenario,
                              surveillance_scenario,
                              threshold,
+                             admin_level, 
                              ...){
     
     # first, check whether desired output files are all in the output_raw folder 
     outputs_availability <- check_outputs_availability(rawoutpath = rawoutpath ,configpath = configpath, countries = countries,
-                               scenario = scenario, surveillance_scenario = surveillance_scenario, threshold = threshold)
+                               scenario = scenario, surveillance_scenario = surveillance_scenario, threshold = threshold, admin_level = admin_level)
     if(outputs_availability == FALSE){
         stop(paste("Stop calculating target population as not all the required output files are available in", rawoutpath, "folder."))
     }else{
@@ -1257,30 +1262,43 @@ get_inc_tp_doses <- function(rawoutpath = "output_raw/202110gavi-3",
             vax_cov <- df_setting[which(df_setting$country == country), ]$vac_coverage
             surveillance_scenario <- df_setting[which(df_setting$country == country), ]$surveillance_scenario
             prefix <- paste0("incid_", incid, "_outbk_", outbk, "_")
-            filename_admin1 <- paste0(output_path, "/", prefix, threshold, "_", surveillance_scenario, "_", country, "_rc_admin1.csv")
-            filename_admin2 <- paste0(output_path, "/", prefix, threshold, "_", surveillance_scenario, "_", country, "_rc_admin2.csv")
+            if(admin_level %in% c("both", "admin1")){filename_admin1 <- paste0(output_path, "/", prefix, threshold, "_", surveillance_scenario, "_", country, "_rc_admin1.csv")}
+            if(admin_level %in% c("both", "admin2")){filename_admin2 <- paste0(output_path, "/", prefix, threshold, "_", surveillance_scenario, "_", country, "_rc_admin2.csv")}
 
             # read in csv files
-            df_admin1 <- read.csv(filename_admin1)
-            df_admin2 <- read.csv(filename_admin2)
+            if(admin_level %in% c("both", "admin1")){df_admin1 <- read.csv(filename_admin1)}
+            if(admin_level %in% c("both", "admin2")){df_admin2 <- read.csv(filename_admin2)}
 
             # if this is the first country, make new tables of target pop and doses administered
             if(which(countries == country) == 1){
                 # when doing admin1 level OCV targeting
-                df_admin1_sumadmins <- get_inc_tp_doses_helper(rc = df_admin1, sum_level = "country", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario) # sum all admins together
-                df_admin1_byadmin <- get_inc_tp_doses_helper(rc = df_admin1, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario) # by admin
+                if(admin_level %in% c("both", "admin1")){
+                  df_admin1_sumadmins <- get_inc_tp_doses_helper(rc = df_admin1, sum_level = "country", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario) # sum all admins together
+                  df_admin1_byadmin <- get_inc_tp_doses_helper(rc = df_admin1, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario) # by admin
+                }
                 # when doing admin2 level OCV targeting
-                df_admin2_sumadmins <- get_inc_tp_doses_helper(rc = df_admin2, sum_level = "country", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario) # sum all admins together
-                df_admin2_byadmin <- get_inc_tp_doses_helper(rc = df_admin2, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario) # by admin
+                if(admin_level %in% c("both", "admin2")){
+                  df_admin2_sumadmins <- get_inc_tp_doses_helper(rc = df_admin2, sum_level = "country", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario) # sum all admins together
+                  df_admin2_byadmin <- get_inc_tp_doses_helper(rc = df_admin2, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario) # by admin
+                }
             }else{ # else, append to existing result tables
-                df_admin1_sumadmins <- rbind(df_admin1_sumadmins, get_inc_tp_doses_helper(rc = df_admin1, sum_level = "country", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario))
-                df_admin1_byadmin <- rbind(df_admin1_byadmin, get_inc_tp_doses_helper(rc = df_admin1, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario))
-                df_admin2_sumadmins <- rbind(df_admin2_sumadmins, get_inc_tp_doses_helper(rc = df_admin2, sum_level = "country", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario))
-                df_admin2_byadmin <- rbind(df_admin2_byadmin, get_inc_tp_doses_helper(rc = df_admin2, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario))
+                if(admin_level %in% c("both", "admin1")){
+                  df_admin1_sumadmins <- rbind(df_admin1_sumadmins, get_inc_tp_doses_helper(rc = df_admin1, sum_level = "country", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario))
+                  df_admin1_byadmin <- rbind(df_admin1_byadmin, get_inc_tp_doses_helper(rc = df_admin1, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario))
+                }
+                if(admin_level %in% c("both", "admin2")){
+                  df_admin2_sumadmins <- rbind(df_admin2_sumadmins, get_inc_tp_doses_helper(rc = df_admin2, sum_level = "country", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario))
+                  df_admin2_byadmin <- rbind(df_admin2_byadmin, get_inc_tp_doses_helper(rc = df_admin2, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario))
+                }
             }
         }
     }
     # make a list storing all 4 result tables
+    if(!exists("df_admin1_sumadmins")){df_admin1_sumadmins <- NULL}
+    if(!exists("df_admin1_byadmin")){df_admin1_byadmin <- NULL}
+    if(!exists("df_admin2_sumadmins")){df_admin2_sumadmins <- NULL}
+    if(!exists("df_admin2_byadmin")){df_admin2_byadmin <- NULL}
+    
     list_inc_tp_doses <- list("df_admin1_sumadmins" = df_admin1_sumadmins,
                               "df_admin1_byadmin" = df_admin1_byadmin,
                               "df_admin2_sumadmins" = df_admin2_sumadmins,
@@ -1290,3 +1308,87 @@ get_inc_tp_doses <- function(rawoutpath = "output_raw/202110gavi-3",
 }
 
 
+
+#' @name omega_alpha_distribution
+#' @title omega_alpha_distribution
+#' @description plot the distribution of omega d
+#' @param countries vector of all the countries included the diagnostic report
+#' @param surveillance_scenario_chosen scale of surveillance, takes "no-estimate", "global-estimate", or "district-estimate"
+#' @param admins admin levels to include
+#' @param year_chosen 
+#' @param threshold_chosen 
+#' @param cache where the filenames and files are saved 
+#' @return two distribution plots cached 
+#' @export
+#' @include
+omega_alpha_distribution <- function( countries,
+                                      surveillance_scenario_chosen = "global-estimate",   
+                                      admins = "both", 
+                                      year_chosen = 2022, 
+                                      threshold_chosen = 0.001, 
+                                      cache, 
+                                      ...){   
+  # Get the distribution table
+  omega_dist <- cache$target_table %>%
+    filter(ISO %in% countries, confirmation_lens == surveillance_scenario_chosen, year == year_chosen, threshold == threshold_chosen) %>%
+    {if(admins != "both") filter(., admin_level == admins)} %>%
+    select(ISO, admin_level, run_id, true_confirm_rate)
+  alpha_dist <- cache$target_table %>%
+    filter(ISO %in% countries, confirmation_lens == surveillance_scenario_chosen, year == year_chosen, threshold == threshold_chosen) %>%
+    {if(admins != "both") filter(., admin_level == admins)} %>%
+    group_by(ISO, admin_level, run_id) %>% 
+    summarize(confirmation_rate = confirmation_rate[1]) %>% 
+    select(ISO, admin_level, run_id, confirmation_rate)
+  cache$alpha_table <- alpha_dist
+  
+  # Plot them
+  plt_omega <- omega_dist %>% 
+    ggplot(aes(x=true_confirm_rate)) +
+    geom_histogram(fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+    facet_grid( ISO ~ admin_level ) + 
+    theme_minimal() + 
+    xlim(0, 1) + 
+    labs(x = "omega_d")
+  # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/test_omega.pdf")
+  # plt_omega
+  # dev.off()
+
+  plt_alpha <- alpha_dist %>% 
+    ggplot(aes(x=confirmation_rate)) +
+    geom_histogram(fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+    facet_grid( ISO ~ admin_level ) + 
+    theme_minimal() + 
+    xlim(0, 1) + 
+    labs(x = "alpha")
+  # pdf("/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera/test_alpha.pdf")
+  # plt_alpha
+  # dev.off()
+
+  # Cache them 
+  cache$plt_omega <- plt_omega
+  cache$plt_alpha <- plt_alpha
+
+}
+
+
+
+#' @name alpha_table
+#' @title alpha_table
+#' @description make a table of alpha
+#' @param cache where the filenames and files are saved 
+#' @return alpha table
+#' @export
+#' @include
+alpha_table <- function(cache){   
+  alpha_table <- cache$alpha_table %>% 
+    mutate(run_id = paste0("run ", run_id)) %>% 
+    tidyr::spread(run_id, confirmation_rate)
+
+  alpha_table %>% 
+    dplyr::mutate_if(is.numeric, function(x) {round(x, 3)}) %>%
+    kableExtra::kable(col.names = names(alpha_table)) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped"), fixed_thead = T) %>%
+    kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::row_spec(0, bold = T)
+
+}
