@@ -128,10 +128,11 @@ check_outputs_availability <- function(rawoutpath = "output_raw/202110gavi-3",
 #' @param cache the cached environment
 #' @param surveillance_project_directory surveillance project directory
 #' @param pre_country countries specified in the parameters 
-#' @param pre_vac_incid_thresholds incidence rate threshold specified in the parameters 
+#' @param pre_vac_incid_thresholds incidence rate threshold specified in the parameters
+#' @param pre_admin_levels admin levels specified in the parameters
 #' @param no_vaccination_surveillance_scenario the surveillance scenario specified for the no vaccination simulation 
 #' @return cached file names 
-get_filenames <- function(cache, surveillance_project_directory, pre_country, pre_vac_incid_thresholds, 
+get_filenames <- function(cache, surveillance_project_directory, pre_country = NULL, pre_vac_incid_thresholds = NULL, pre_admin_levels = NULL, 
                           no_vaccination_surveillance_scenario){
   
   # Get the set_all_parameters.R to have the context first
@@ -139,12 +140,17 @@ get_filenames <- function(cache, surveillance_project_directory, pre_country, pr
 
   
   # Get the correct version of country list and threshold list
-  country_list <- ifelse(pre_country %in% countries, pre_country, countries)  
-  rm(pre_country)
+  if(is.null(pre_country)){
+    country_list <- ifelse(pre_country %in% countries, pre_country, countries)  
+    rm(pre_country)
+  }else{country_list <- pre_country}
 
-  threshold_list <- ifelse(as.numeric(pre_vac_incid_thresholds) %in% vac_incid_thresholds, pre_vac_incid_thresholds, vac_incid_thresholds)
-  rm(pre_vac_incid_thresholds)
+  if(is.null(pre_vac_incid_thresholds)){
+    threshold_list <- ifelse(as.numeric(pre_vac_incid_thresholds) %in% vac_incid_thresholds, pre_vac_incid_thresholds, vac_incid_thresholds)
+    rm(pre_vac_incid_thresholds)
+  }else{threshold_list <- pre_vac_incid_thresholds}
 
+  if(!is.null(pre_admin_levels)){vac_admin_level <- pre_admin_levels}
   if(identical(vac_admin_level, "both")) {admin_list <- c("admin1", "admin2")} else {admin_list <- vac_admin_level}
   year_list <- sim_start_year:sim_end_year
 
@@ -183,7 +189,7 @@ get_filenames <- function(cache, surveillance_project_directory, pre_country, pr
                               country_list[i], "rc", paste0(admin_list, ".csv")), 1, paste, collapse = "_")
     targettable_fns <- c(targettable_fns_camp, targettable_fns_novac)
     targettable_fns <- paste0(surveillance_project_directory, "/", targettable_fns)
-    # if(sum(!file.exists(targettable_fns)) > 0){stop(paste("Incomplete model outputs for target tables for country", country_list[i]))}
+    if(sum(!file.exists(targettable_fns)) > 0){stop(paste("Incomplete model outputs for target tables for country", country_list[i]))}
 
     ## time table
     timetable_fns_camp <- apply(expand.grid(paste0("output_raw/", runname, "/campaign-default/", "incid"), 

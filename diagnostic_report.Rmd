@@ -134,7 +134,7 @@ cache <- new.env()
 
 # Function that helps get the names of all files
 ocvImpact::get_filenames(cache = cache, surveillance_project_directory = params$surveillance_project_directory, 
-    pre_country = params$country, pre_vac_incid_thresholds = params$vac_incid_thresholds, 
+    pre_country = params$country, pre_vac_incid_thresholds = params$vac_incid_thresholds, pre_admin_levels = params$admin_level, 
     no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 
 # Functions that aggregate the output across countries
