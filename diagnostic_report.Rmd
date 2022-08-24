@@ -6,8 +6,8 @@ output:
     toc: true
     toc_float: true
 params: 
-  surveillance_project_directory: "/home/hanmeng/VIMC/gavi_vimc_cholera"
-  country: ["SLE"] #country code specified or all the countries will be used for the diagnostic report
+  surveillance_project_directory: "/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera"
+  country: ["SOM"] #country code specified or all the countries will be used for the diagnostic report
   admin_level: ["admin2"] #either "both", "admin1", or "admin2"
   vac_incid_thresholds: ["0.001", "2e-04", "1e-04"] #["0.001", "2e-04", "1e-04"] if to plot all thresholds 
   no_vaccination_surveillance_scenario: "district-estimate" #depending on what type of no vaccination scenario has been simulated 
@@ -936,13 +936,13 @@ plt
 
 
 
-# Efficacy figures {.tabset}
-## Efficacy side-by-side comparison {.tabset}
-### Efficacy side-by-side comparison by year {.tabset}
-#### Efficacy side-by-side comparison by year at threshold 1/1000
-```{r Efficacy side-by-side comparison by year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy side-by-side comparison by year")}
+# Efficiency  figures {.tabset}
+## Efficiency  side-by-side comparison {.tabset}
+### Efficiency  side-by-side comparison by year {.tabset}
+#### Efficiency  side-by-side comparison by year at threshold 1/1000
+```{r Efficiency  side-by-side comparison by year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  side-by-side comparison by year")}
 if((1/1000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "side-by-side", threshold = 1/1000, cumulative_type = "non_cumulative")
+  plt <- plot_efficiency (cache = cache, compare_type = "side-by-side", threshold = 1/1000, cumulative_type = "non_cumulative")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -953,10 +953,10 @@ plt
 
 ```
 
-#### Efficacy side-by-side comparison by year at threshold 1/5000
-```{r Efficacy side-by-side comparison by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy side-by-side comparison by year")}
+#### Efficiency  side-by-side comparison by year at threshold 1/5000
+```{r Efficiency  side-by-side comparison by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  side-by-side comparison by year")}
 if((1/5000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "side-by-side", threshold = 1/5000, cumulative_type = "non_cumulative")
+  plt <- plot_efficiency (cache = cache, compare_type = "side-by-side", threshold = 1/5000, cumulative_type = "non_cumulative")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -967,10 +967,10 @@ plt
 
 ```
 
-#### Efficacy side-by-side comparison by year at threshold 1/10000
-```{r Efficacy side-by-side comparison by year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy side-by-side comparison by year")}
+#### Efficiency  side-by-side comparison by year at threshold 1/10000
+```{r Efficiency  side-by-side comparison by year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  side-by-side comparison by year")}
 if((1/10000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "side-by-side", threshold = 1/10000, cumulative_type = "non_cumulative")
+  plt <- plot_efficiency (cache = cache, compare_type = "side-by-side", threshold = 1/10000, cumulative_type = "non_cumulative")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -981,11 +981,11 @@ plt
 
 ```
 
-### Efficacy side-by-side comparison by district {.tabset}
-#### Efficacy side-by-side comparison by district at threshold 1/1000
-```{r Efficacy side-by-side comparison by district 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy side-by-side comparison by district")}
+### Efficiency  side-by-side comparison by district {.tabset}
+#### Efficiency  side-by-side comparison by district at threshold 1/1000
+```{r Efficiency  side-by-side comparison by district 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  side-by-side comparison by district")}
 if((1/1000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "side-by-side", threshold = 1/1000, cumulative_type = "within_district")
+  plt <- plot_efficiency (cache = cache, compare_type = "side-by-side", threshold = 1/1000, cumulative_type = "within_district")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -996,10 +996,10 @@ plt
 
 ```
 
-#### Efficacy side-by-side comparison by district at threshold 1/5000
-```{r Efficacy side-by-side comparison by district 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy side-by-side comparison by district")}
+#### Efficiency  side-by-side comparison by district at threshold 1/5000
+```{r Efficiency  side-by-side comparison by district 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  side-by-side comparison by district")}
 if((1/5000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "side-by-side", threshold = 1/5000, cumulative_type = "within_district")
+  plt <- plot_efficiency (cache = cache, compare_type = "side-by-side", threshold = 1/5000, cumulative_type = "within_district")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -1010,10 +1010,10 @@ plt
 
 ```
 
-#### Efficacy side-by-side comparison by district at threshold 1/10000
-```{r Efficacy side-by-side comparison by district 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy side-by-side comparison by district")}
+#### Efficiency  side-by-side comparison by district at threshold 1/10000
+```{r Efficiency  side-by-side comparison by district 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  side-by-side comparison by district")}
 if((1/10000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "side-by-side", threshold = 1/10000, cumulative_type = "within_district")
+  plt <- plot_efficiency (cache = cache, compare_type = "side-by-side", threshold = 1/10000, cumulative_type = "within_district")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -1024,11 +1024,11 @@ plt
 
 ```
 
-### Efficacy side-by-side comparison all-year {.tabset}
-#### Efficacy side-by-side comparison all-year at threshold 1/1000
-```{r Efficacy side-by-side comparison all-year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy side-by-side comparison all-year")}
+### Efficiency  side-by-side comparison all-year {.tabset}
+#### Efficiency  side-by-side comparison all-year at threshold 1/1000
+```{r Efficiency  side-by-side comparison all-year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  side-by-side comparison all-year")}
 if((1/1000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "side-by-side", threshold = 1/1000, cumulative_type = "across_year")
+  plt <- plot_efficiency (cache = cache, compare_type = "side-by-side", threshold = 1/1000, cumulative_type = "across_year")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -1039,10 +1039,10 @@ plt
 
 ```
 
-#### Efficacy side-by-side comparison all-year at threshold 1/5000
-```{r Efficacy side-by-side comparison all-year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy side-by-side comparison all-year")}
+#### Efficiency  side-by-side comparison all-year at threshold 1/5000
+```{r Efficiency  side-by-side comparison all-year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  side-by-side comparison all-year")}
 if((1/5000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "side-by-side", threshold = 1/5000, cumulative_type = "across_year")
+  plt <- plot_efficiency (cache = cache, compare_type = "side-by-side", threshold = 1/5000, cumulative_type = "across_year")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -1053,10 +1053,10 @@ plt
 
 ```
 
-#### Efficacy side-by-side comparison all-year at threshold 1/10000
-```{r Efficacy side-by-side comparison all-year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy side-by-side comparison all-year")}
+#### Efficiency  side-by-side comparison all-year at threshold 1/10000
+```{r Efficiency  side-by-side comparison all-year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  side-by-side comparison all-year")}
 if((1/10000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "side-by-side", threshold = 1/10000, cumulative_type = "across_year")
+  plt <- plot_efficiency (cache = cache, compare_type = "side-by-side", threshold = 1/10000, cumulative_type = "across_year")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -1068,12 +1068,12 @@ plt
 ```
 
 
-## Efficacy subtraction comparison {.tabset}
-### Efficacy subtraction comparison by year {.tabset}
-#### Efficacy subtraction comparison by year at threshold 1/1000
-```{r Efficacy subtraction comparison by year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy subtraction comparison by year")}
+## Efficiency  subtraction comparison {.tabset}
+### Efficiency  subtraction comparison by year {.tabset}
+#### Efficiency  subtraction comparison by year at threshold 1/1000
+```{r Efficiency  subtraction comparison by year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  subtraction comparison by year")}
 if((1/1000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "subtraction", threshold = 1/1000, cumulative_type = "non_cumulative")
+  plt <- plot_efficiency (cache = cache, compare_type = "subtraction", threshold = 1/1000, cumulative_type = "non_cumulative")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -1084,10 +1084,10 @@ plt
 
 ```
 
-#### Efficacy subtraction comparison by year at threshold 1/5000
-```{r Efficacy subtraction comparison by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy subtraction comparison by year")}
+#### Efficiency  subtraction comparison by year at threshold 1/5000
+```{r Efficiency  subtraction comparison by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  subtraction comparison by year")}
 if((1/5000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "subtraction", threshold = 1/5000, cumulative_type = "non_cumulative")
+  plt <- plot_efficiency (cache = cache, compare_type = "subtraction", threshold = 1/5000, cumulative_type = "non_cumulative")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -1098,10 +1098,10 @@ plt
 
 ```
 
-#### Efficacy subtraction comparison by year at threshold 1/10000
-```{r Efficacy subtraction comparison by year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy subtraction comparison by year")}
+#### Efficiency  subtraction comparison by year at threshold 1/10000
+```{r Efficiency  subtraction comparison by year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  subtraction comparison by year")}
 if((1/10000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "subtraction", threshold = 1/10000, cumulative_type = "non_cumulative")
+  plt <- plot_efficiency (cache = cache, compare_type = "subtraction", threshold = 1/10000, cumulative_type = "non_cumulative")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -1112,11 +1112,11 @@ plt
 
 ```
 
-### Efficacy subtraction comparison by district {.tabset}
-#### Efficacy subtraction comparison by district at threshold 1/1000
-```{r Efficacy subtraction comparison by district 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy subtraction comparison by district")}
+### Efficiency  subtraction comparison by district {.tabset}
+#### Efficiency  subtraction comparison by district at threshold 1/1000
+```{r Efficiency  subtraction comparison by district 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  subtraction comparison by district")}
 if((1/1000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "subtraction", threshold = 1/1000, cumulative_type = "within_district")
+  plt <- plot_efficiency (cache = cache, compare_type = "subtraction", threshold = 1/1000, cumulative_type = "within_district")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -1127,10 +1127,10 @@ plt
 
 ```
 
-#### Efficacy subtraction comparison by district at threshold 1/5000
-```{r Efficacy subtraction comparison by district 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy subtraction comparison by district")}
+#### Efficiency  subtraction comparison by district at threshold 1/5000
+```{r Efficiency  subtraction comparison by district 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  subtraction comparison by district")}
 if((1/5000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "subtraction", threshold = 1/5000, cumulative_type = "within_district")
+  plt <- plot_efficiency (cache = cache, compare_type = "subtraction", threshold = 1/5000, cumulative_type = "within_district")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -1141,10 +1141,10 @@ plt
 
 ```
 
-#### Efficacy subtraction comparison by district at threshold 1/10000
-```{r Efficacy subtraction comparison by district 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy subtraction comparison by district")}
+#### Efficiency  subtraction comparison by district at threshold 1/10000
+```{r Efficiency  subtraction comparison by district 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  subtraction comparison by district")}
 if((1/10000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "subtraction", threshold = 1/10000, cumulative_type = "within_district")
+  plt <- plot_efficiency (cache = cache, compare_type = "subtraction", threshold = 1/10000, cumulative_type = "within_district")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -1155,11 +1155,11 @@ plt
 
 ```
 
-### Efficacy subtraction comparison all-year {.tabset}
-#### Efficacy subtraction comparison all-year at threshold 1/1000
-```{r Efficacy subtraction comparison all-year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy subtraction comparison all-year")}
+### Efficiency  subtraction comparison all-year {.tabset}
+#### Efficiency  subtraction comparison all-year at threshold 1/1000
+```{r Efficiency  subtraction comparison all-year 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  subtraction comparison all-year")}
 if((1/1000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "subtraction", threshold = 1/1000, cumulative_type = "across_year")
+  plt <- plot_efficiency (cache = cache, compare_type = "subtraction", threshold = 1/1000, cumulative_type = "across_year")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -1170,10 +1170,10 @@ plt
 
 ```
 
-#### Efficacy subtraction comparison all-year at threshold 1/5000
-```{r Efficacy subtraction comparison all-year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy subtraction comparison all-year")}
+#### Efficiency  subtraction comparison all-year at threshold 1/5000
+```{r Efficiency  subtraction comparison all-year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  subtraction comparison all-year")}
 if((1/5000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "subtraction", threshold = 1/5000, cumulative_type = "across_year")
+  plt <- plot_efficiency (cache = cache, compare_type = "subtraction", threshold = 1/5000, cumulative_type = "across_year")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -1184,10 +1184,10 @@ plt
 
 ```
 
-#### Efficacy subtraction comparison all-year at threshold 1/10000
-```{r Efficacy subtraction comparison all-year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficacy subtraction comparison all-year")}
+#### Efficiency  subtraction comparison all-year at threshold 1/10000
+```{r Efficiency  subtraction comparison all-year 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Efficiency  subtraction comparison all-year")}
 if((1/10000) %in% vac_incid_thresholds){
-  plt <- plot_efficacy(cache = cache, compare_type = "subtraction", threshold = 1/10000, cumulative_type = "across_year")
+  plt <- plot_efficiency (cache = cache, compare_type = "subtraction", threshold = 1/10000, cumulative_type = "across_year")
 }else{
   plt <- ggplot() +
     theme_void() +
@@ -1205,8 +1205,10 @@ plt
 ### By year {.tabset}
 #### Threshold 1/1000
 ```{r echo=FALSE}
-if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/1000)$df_admin2_sumadmins
+}else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/1000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1219,8 +1221,10 @@ table %>%
 ```
 #### Threshold 1/5000
 ```{r echo=FALSE}
-if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/5000)$df_admin2_sumadmins
+}else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/5000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1233,8 +1237,10 @@ table %>%
 ```
 #### Threshold 1/10000
 ```{r echo=FALSE}
-if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/10000)$df_admin2_sumadmins
+}else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/10000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1248,8 +1254,10 @@ table %>%
 ### By admin {.tabset}
 #### Threshold 1/1000
 ```{r echo=FALSE}
-if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/1000)$df_admin2_byadmin
+}else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/1000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1262,8 +1270,10 @@ table %>%
 ```
 #### Threshold 1/5000
 ```{r echo=FALSE}
-if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/5000)$df_admin2_byadmin
+}else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/5000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1276,8 +1286,10 @@ table %>%
 ```
 #### Threshold 1/10000
 ```{r echo=FALSE}
-if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/10000)$df_admin2_byadmin
+}else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/10000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1294,8 +1306,10 @@ table %>%
 ### By year {.tabset}
 #### Threshold 1/1000
 ```{r echo=FALSE}
-if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/1000)$df_admin2_sumadmins
+}else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/1000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1308,8 +1322,10 @@ table %>%
 ```
 #### Threshold 1/5000
 ```{r echo=FALSE}
-if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/5000)$df_admin2_sumadmins
+}else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/5000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1322,8 +1338,10 @@ table %>%
 ```
 #### Threshold 1/10000
 ```{r echo=FALSE}
-if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/10000)$df_admin2_sumadmins
+}else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/10000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1337,8 +1355,10 @@ table %>%
 ### By admin {.tabset}
 #### Threshold 1/1000
 ```{r echo=FALSE}
-if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/1000)$df_admin2_byadmin
+}else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/1000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1351,8 +1371,10 @@ table %>%
 ```
 #### Threshold 1/5000
 ```{r echo=FALSE}
-if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/5000)$df_admin2_byadmin
+}else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/5000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1365,8 +1387,10 @@ table %>%
 ```
 #### Threshold 1/10000
 ```{r echo=FALSE}
-if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/10000)$df_admin2_byadmin
+}else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/10000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1383,8 +1407,10 @@ table %>%
 ### By year {.tabset}
 #### Threshold 1/1000
 ```{r echo=FALSE}
-if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/1000)$df_admin2_sumadmins
+}else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/1000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1397,8 +1423,10 @@ table %>%
 ```
 #### Threshold 1/5000
 ```{r echo=FALSE}
-if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/5000)$df_admin2_sumadmins
+}else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/5000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1411,8 +1439,10 @@ table %>%
 ```
 #### Threshold 1/10000
 ```{r echo=FALSE}
-if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/10000)$df_admin2_sumadmins
+}else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/10000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1426,8 +1456,10 @@ table %>%
 ### By admin {.tabset}
 #### Threshold 1/1000
 ```{r echo=FALSE}
-if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/1000)$df_admin2_byadmin
+}else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/1000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1440,8 +1472,10 @@ table %>%
 ```
 #### Threshold 1/5000
 ```{r echo=FALSE}
-if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/5000)$df_admin2_byadmin
+}else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/5000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1454,8 +1488,10 @@ table %>%
 ```
 #### Threshold 1/10000
 ```{r echo=FALSE}
-if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/10000)$df_admin2_byadmin
+}else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/10000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1472,8 +1508,10 @@ table %>%
 ### By year {.tabset}
 #### Threshold 1/1000
 ```{r echo=FALSE}
-if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/1000)$df_admin2_sumadmins
+}else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/1000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1486,8 +1524,10 @@ table %>%
 ```
 #### Threshold 1/5000
 ```{r echo=FALSE}
-if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/5000)$df_admin2_sumadmins
+}else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/5000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1500,8 +1540,10 @@ table %>%
 ```
 #### Threshold 1/10000
 ```{r echo=FALSE}
-if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/10000)$df_admin2_sumadmins
+}else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/10000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1515,8 +1557,10 @@ table %>%
 ### By admin {.tabset}
 #### Threshold 1/1000
 ```{r echo=FALSE}
-if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/1000)$df_admin2_byadmin
+}else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/1000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1529,8 +1573,10 @@ table %>%
 ```
 #### Threshold 1/5000
 ```{r echo=FALSE}
-if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/5000)$df_admin2_byadmin
+}else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/5000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1543,8 +1589,10 @@ table %>%
 ```
 #### Threshold 1/10000
 ```{r echo=FALSE}
-if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("both", "admin2")){
+if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
   table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/10000)$df_admin2_byadmin
+}else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
+  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/10000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1592,8 +1640,8 @@ alpha_table(cache)
 # # Function that returns cases plots (case type: true_case, clinical_case, confirmed_case, averted_tr_case, averted_cl_case, averted_cf_case) (cumulative_type: non_cumulative, district_level, country_level)
 # plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 0.001, cumulative_type = "district_level", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 
-# # Function that returns efficacy plots (compare_type: side-by-side, subtraction) (cumulative_type: non_cumulative, across_year, within_district)
-# plt <- plot_efficacy(cache = cache, compare_type = "side-by-side", threshold = 0.001, cumulative_type = "non_cumulative")
+# # Function that returns Efficiency plots (compare_type: side-by-side, subtraction) (cumulative_type: non_cumulative, across_year, within_district)
+# plt <- plot_efficiency (cache = cache, compare_type = "side-by-side", threshold = 0.001, cumulative_type = "non_cumulative")
 
 #The district issue
 https://www.datacamp.com/tutorial/facets-ggplot-r 

@@ -814,15 +814,15 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
 
 
 #' @export
-#' @name plot_efficacy
-#' @title plot_efficacy
+#' @name plot_efficiency 
+#' @title plot_efficiency 
 #' @description plot the efficacy and return the ggplot object
 #' @param cache the cached environment
 #' @param compare_type type of the comparison
 #' @param threshold threshold to plot  
 #' @param cumulative_type either by year (non_cumulative) or cumulated across years
 #' @return cached file names 
-plot_efficacy <- function(cache, compare_type, threshold, cumulative_type){
+plot_efficiency  <- function(cache, compare_type, threshold, cumulative_type){
 
   # Avoid using the same name for threshold
   chosen_threshold <- threshold
@@ -1274,21 +1274,25 @@ get_inc_tp_doses <- function(rawoutpath = "output_raw/202110gavi-3",
                 # when doing admin1 level OCV targeting
                 if(admin_level %in% c("both", "admin1")){
                   df_admin1_sumadmins <- get_inc_tp_doses_helper(rc = df_admin1, sum_level = "country", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario) # sum all admins together
-                  df_admin1_byadmin <- get_inc_tp_doses_helper(rc = df_admin1, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario) # by admin
+                  df_admin1_byadmin <- get_inc_tp_doses_helper(rc = df_admin1, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario) %>% 
+                    dplyr::arrange(admin1, year) # by admin
                 }
                 # when doing admin2 level OCV targeting
                 if(admin_level %in% c("both", "admin2")){
                   df_admin2_sumadmins <- get_inc_tp_doses_helper(rc = df_admin2, sum_level = "country", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario) # sum all admins together
-                  df_admin2_byadmin <- get_inc_tp_doses_helper(rc = df_admin2, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario) # by admin
+                  df_admin2_byadmin <- get_inc_tp_doses_helper(rc = df_admin2, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario) %>% 
+                    dplyr::arrange(admin2, year) # by admin
                 }
             }else{ # else, append to existing result tables
                 if(admin_level %in% c("both", "admin1")){
                   df_admin1_sumadmins <- rbind(df_admin1_sumadmins, get_inc_tp_doses_helper(rc = df_admin1, sum_level = "country", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario))
-                  df_admin1_byadmin <- rbind(df_admin1_byadmin, get_inc_tp_doses_helper(rc = df_admin1, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario))
+                  df_admin1_byadmin <- rbind(df_admin1_byadmin, get_inc_tp_doses_helper(rc = df_admin1, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario)) %>% 
+                    dplyr::arrange(admin1, year)
                 }
                 if(admin_level %in% c("both", "admin2")){
                   df_admin2_sumadmins <- rbind(df_admin2_sumadmins, get_inc_tp_doses_helper(rc = df_admin2, sum_level = "country", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario))
-                  df_admin2_byadmin <- rbind(df_admin2_byadmin, get_inc_tp_doses_helper(rc = df_admin2, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario))
+                  df_admin2_byadmin <- rbind(df_admin2_byadmin, get_inc_tp_doses_helper(rc = df_admin2, sum_level = "admin", vax_cov = vax_cov, surveillance_scenario = surveillance_scenario)) %>% 
+                    dplyr::arrange(admin2, year)
                 }
             }
         }
