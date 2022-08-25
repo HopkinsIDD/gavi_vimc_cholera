@@ -6,9 +6,9 @@ output:
     toc: true
     toc_float: true
 params: 
-  surveillance_project_directory: "/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera"
-  country: ["SOM"] #country code specified or all the countries will be used for the diagnostic report
-  admin_level: ["admin2"] #either "both", "admin1", or "admin2"
+  surveillance_project_directory: "/home/hanmeng/VIMC/gavi_vimc_cholera"
+  country: ["GHA"] #country code specified or all the countries will be used for the diagnostic report
+  admin_level: ["both"] #either "both", "admin1", or "admin2"
   vac_incid_thresholds: ["0.001", "2e-04", "1e-04"] #["0.001", "2e-04", "1e-04"] if to plot all thresholds 
   no_vaccination_surveillance_scenario: "district-estimate" #depending on what type of no vaccination scenario has been simulated 
   args: 'myarg'
@@ -50,6 +50,7 @@ library(readr)
 library(ggplot2)
 library(kableExtra)
 library(Cairo)
+library(reactable)
 sf::sf_use_s2(FALSE)
 # ocvImpact package
 if (!require('ocvImpact', character.only = T)) {
@@ -1633,6 +1634,44 @@ alpha_table(cache)
 
 ```
 
+# Target population and efficiency table
+```{r}
+# loop through each country 
+
+countries <- params$country
+
+# access the target table
+df_target <- cache$target_table
+  
+# calculate the averted true cases
+df_target <- df_target %>%
+  mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+
+df_comb_eff <- combine_eff_table(countries = countries, rc = df_target, admin_level = params$admin_level)
+
+# format eff_table
+df_comb_eff %>%
+    pivot_wider(names_from = "confirmation_lens", values_from = c("tp_cumu", "efficiency")) %>%
+    arrange(desc(threshold)) %>%
+    reactable(
+      columns = list(
+        `tp_cumu_no-estimate` = colDef(name = "no-estimate", minWidth = 180),
+        `efficiency_no-estimate` = colDef(name = "no-estimate", minWidth = 180),
+        `tp_cumu_global-estimate` = colDef(name = "global-estimate", minWidth = 180),
+        `efficiency_global-estimate` = colDef(name = "global-estimate", minWidth = 180),
+        `tp_cumu_district-estimate` = colDef(name = "district-estimate", minWidth = 180),
+        `efficiency_district-estimate` = colDef(name = "district-estimate", minWidth = 180)
+      ),
+      columnGroups = list(
+        colGroup(name = "target pop (million)", columns = c("tp_cumu_no-estimate", "tp_cumu_global-estimate", "tp_cumu_district-estimate")),
+        colGroup(name = "efficiency", columns = c("efficiency_no-estimate", "efficiency_global-estimate", "efficiency_district-estimate"))
+      ),
+      groupBy = c("ISO", "threshold"),
+      style = list(color = "black",`font-family` = "Georgia", `font-size` = "11px"),
+      defaultExpanded = TRUE
+    )
+```
+
 
 
 ```{r eval=FALSE, include=FALSE, message=FALSE}
@@ -1650,3 +1689,5 @@ https://www.datacamp.com/tutorial/facets-ggplot-r
 https://r-graph-gallery.com/line-chart-dual-Y-axis-ggplot2.html 
 
 ```
+
+
