@@ -167,9 +167,11 @@ load_baseline_incidence <- function(datapath,
     
     ## get the right distribution 
     # confirm_rate_value <- MCMCglmm::rtnorm(n = nrow(shp2), mean = omicron_dataset$mean, sd = omicron_dataset$sd, lower = 0, upper = 1) #truncated normal distribution
-    confirm_rate_value <- runif(n = nrow(shp2), min = 0, max = 1) #uniform distribution 
+    # confirm_rate_value <- runif(n = nrow(shp2), min = 0, max = 1) #uniform distribution 
     # confirm_rate_value <- rnorm(n = nrow(shp2), mean = omicron_dataset$mean, sd = omicron_dataset$sd) #discarded function
-    
+    # updated 8/30/22 using the predictive distribution
+    confirm_rate_value <- rbeta(n = nrow(shp2), shape1 = shape1, shape2 = shape2) 
+
     ## get one layer 
     country_baseline_single_layer <- country_baseline[[layer_idx]]
     ## summarize rasters to admin level 1
