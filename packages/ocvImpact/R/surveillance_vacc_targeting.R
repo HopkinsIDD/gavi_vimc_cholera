@@ -170,7 +170,7 @@ load_baseline_incidence <- function(datapath,
     # confirm_rate_value <- runif(n = nrow(shp2), min = 0, max = 1) #uniform distribution 
     # confirm_rate_value <- rnorm(n = nrow(shp2), mean = omicron_dataset$mean, sd = omicron_dataset$sd) #discarded function
     # updated 8/30/22 using the predictive distribution
-    confirm_rate_value <- rbeta(n = nrow(shp2), shape1 = shape1, shape2 = shape2) 
+    confirm_rate_value <- rbeta(n = nrow(shp2), shape1 = omicron_dataset$shape1, shape2 = omicron_dataset$shape2) 
 
     ## get one layer 
     country_baseline_single_layer <- country_baseline[[layer_idx]]
