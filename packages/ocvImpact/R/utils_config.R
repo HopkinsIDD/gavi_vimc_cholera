@@ -65,7 +65,8 @@ prepare_config <- function(p, configpath){
       "  random_seed: ", p$random_seed, "\n", 
       "optimize:\n",
       "  save_intermediate_raster: ", p$save_intermediate_raster, "\n", 
-      "  save_final_output_raster: ", p$save_final_output_raster, "\n"
+      "  save_final_output_raster: ", p$save_final_output_raster, "\n", 
+      "  ir_pre_screening: ", p$ir_pre_screening, "\n"
     ))
 
     sink()

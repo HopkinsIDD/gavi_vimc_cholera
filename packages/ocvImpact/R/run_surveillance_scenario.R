@@ -114,6 +114,13 @@ run_surveillance_scenario <- function(
     gc()
 
 
+    #### Stage 2 Screening
+    if(config$optimize$ir_pre_screening & !cache$ir_pre_screening_pass){
+      message(paste(" -- Stage 2 Screening for", country))
+      update_table_screening(datapath, modelpath, country, scenario, threshold = vac_incid_threshold, vac_start_year, vac_end_year, rc_list, rc_targeted, nsamples)
+    }
+
+
     #### Update the vaccinated proportion raster 
     ### Read in pop raster for this year
     pop <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, model_year)
@@ -277,6 +284,9 @@ run_surveillance_scenario <- function(
   if( !file.exists(rc2_out_fn) | (file.exists(rc2_out_fn)&clean) ){
     if("rc2" %in% rc_targeted){readr::write_csv(rc2, rc2_out_fn)}}
   
+  if(config$optimize$ir_pre_screening & cache$novacc_campde_transfer){
+    novacc_campde_transfer(rawoutpath, config)
+  }
   
   message(paste("End of the simulation of", scenario, "scenario in", country, "from", sim_start_year, "to", sim_end_year))
   rm(rc_list, rc1, rc2, shp1, shp2, pop)

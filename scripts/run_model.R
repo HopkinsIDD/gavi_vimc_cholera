@@ -107,10 +107,12 @@ cln <- config$clean
 #### Create paths
 mpathname <- file.path("montagu", runname)
 dpathname <- file.path("input_data")
+spathname <- file.path("input_data", "incidence")
 ropathname <- file.path("output_raw", runname)
 opathname <- file.path("output_final", runname)
 dir.create(mpathname, showWarnings = FALSE)
 dir.create(dpathname, showWarnings = FALSE)
+dir.create(spathname, showWarnings = FALSE)
 dir.create(ropathname, showWarnings = FALSE)
 dir.create(file.path(ropathname, scenario), showWarnings = FALSE)
 dir.create(opathname, showWarnings = FALSE)
@@ -118,7 +120,21 @@ dir.create(opathname, showWarnings = FALSE)
 #### Run model -- where different projects diverge 
 if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
   ### The surveillance project
-  message(paste0(" --- Running Surveillance Project: ", country)) #needs to add more
+  
+  ## Screening
+  if(config$optimize$ir_pre_screening){
+    message(paste(" -- Stage 1 Screening for", country))
+    cache <- new.env()
+    cache$rawoutpath <- ropathname
+    cache$config <- config
+    cache$ir_pre_screening_pass <- check_table_screening(spathname, country, scenario, as.numeric(config$vacc$vac_incid_threshold), tolower(config$vacc$vac_admin_level))
+  }
+
+  ## If the stage 1 screening process has been passed 
+  message(paste(" --- Running Surveillance Project:", country, "for scenario combination:", 
+                config$surveillance_scenario$surveillance_scenario, 
+                scenario, as.numeric(config$vacc$vac_incid_threshold), 
+                tolower(config$vacc$vac_admin_level), nsamples)) #needs to add more
   run_surveillance_scenario( 
     datapath = dpathname,
     modelpath = mpathname,

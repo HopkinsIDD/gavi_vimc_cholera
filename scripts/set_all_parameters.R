@@ -6,15 +6,25 @@ countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZ
               "AFG", "HTI", "IRN", "IRQ", "NPL", "PAK", "PHL", "THA", "YEM", "IND", "BGD") #will likely to only include the countries in sub-Saharan Africa
 countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
               "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE") # now only includes the countries in Africa
+
+### Countries included in the mapping project
+ids <- readr::read_csv("input_data/locations_todeletelater.csv") # location ids
+cw <- readr::read_csv("input_data/region_country.csv")
+locs <- dplyr::right_join(cw, ids, by = c("country" = "region")) ## region & country grouping
+locs <- dplyr::filter(locs, !is.na(region))
+countries <- unique(locs$country)
+
+### Just for testing 
 countries <- c("COD", "GHA", "MRT", "NGA", "TZA", "SOM", "SLE") #for testing, temporary 
 
 #====== Surveillance Project Specific ======#
 save_intermediate_raster <- TRUE #if TRUE, this will save memory during the model run
 save_final_output_raster <- FALSE #if TRUE, all the raster files will be saved
+ir_pre_screening <- TRUE #if TRUE, countries with low ir where no vacc will happen will be skipped 
 targeting_strategy <- "threshold_unconstrained" #c("threshold_unconstrained", "affected_pop", "incidence")
 vac_incid_thresholds <- c(1/1000, 1/5000, 1/10000) 
 vac_unconstrained <- TRUE #or refer to an external coverage dataset 
-vac_admin_level <- "admin2" #c("both", "admin1", "admin2"), running both admin levels for now, running a single one when issues occur 
+vac_admin_level <- "both" #c("both", "admin1", "admin2"), running both admin levels for now, running a single one when issues occur 
 vac_coverage <- 0.68 #borrowed from the method section of the previous study (https://doi.org/10.1371/journal.pmed.1003003) 
 surveillance_scenarios <- c("no-estimate", "global-estimate", "district-estimate") #use all three at the same time for now; the estimates can be drawn from the external dataset instead of being teemed in the config 
 vac_interval <- 1 #country level, unit: years

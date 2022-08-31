@@ -96,6 +96,7 @@ for(scn in scenarios){
       # the followings are specific to the surveillance project
       pars$save_intermediate_raster <- save_intermediate_raster
       pars$save_final_output_raster <- save_final_output_raster
+      pars$ir_pre_screening <- ir_pre_screening
       pars$vac_incid_threshold <- vac_incid_threshold
       pars$vac_unconstrained <- vac_unconstrained  
       pars$vac_admin_level <- vac_admin_level
