@@ -110,7 +110,7 @@ update_table_screening <- function(datapath, modelpath, country, scenario, thres
   # Compare
   if(all(c("rc1", "rc2") %in% rc_targeted)){ vac_admin_level <- "both"
     }else{ vac_admin_level <- c("admin1", "admin2")[grepl(stringr::str_extract(rc_targeted, "[0-9]{1}"), c("admin1", "admin2"))] }       
-  cache$ir_pre_screening_pass <- check_table_screening(spathname = paste(datapath, "incidence"), country, scenario, threshold, vac_admin_level)
+  cache$ir_pre_screening_pass <- check_table_screening(spathname = file.path(datapath, "incidence"), country, scenario, threshold, vac_admin_level)
 
 }
 
