@@ -1071,9 +1071,9 @@ get_inc_tp_doses_helper <- function(rc,
       group_by(year, run_id) %>%
       summarize(target_pop = sum(pop_model)) %>%
       group_by(year) %>%
-      summarize(tp_lb = quantile(target_pop, 0.025), # lower 95%CI
-                tp_median = median(target_pop),
-                tp_ub = quantile(target_pop, 0.975)) %>% # upper 95%CI
+      summarize(tp_lb = quantile(target_pop, 0.025, na.rm = TRUE), # lower 95%CI
+                tp_median = median(target_pop, , na.rm = TRUE),
+                tp_ub = quantile(target_pop, 0.975, na.rm = TRUE)) %>% # upper 95%CI
       mutate(ISO = country) %>%
       dplyr::select(ISO, year, tp_lb, tp_median, tp_ub)
     
@@ -1087,9 +1087,9 @@ get_inc_tp_doses_helper <- function(rc,
       mutate(target_pop_cumu = cumsum(target_pop)) %>%
       dplyr::select(-target_pop) %>%
       group_by(year) %>%
-      summarize(tp_cumu_lb = quantile(target_pop_cumu, 0.025), # lower 95%CI
-                tp_cumu_median = median(target_pop_cumu),
-                tp_cumu_ub = quantile(target_pop_cumu, 0.975)) %>% # upper 95%CI
+      summarize(tp_cumu_lb = quantile(target_pop_cumu, 0.025, na.rm = TRUE), # lower 95%CI
+                tp_cumu_median = median(target_pop_cumu, na.rm = TRUE),
+                tp_cumu_ub = quantile(target_pop_cumu, 0.975, na.rm = TRUE)) %>% # upper 95%CI
       mutate(ISO = country) %>%
       dplyr::select(ISO, year, tp_cumu_lb, tp_cumu_median, tp_cumu_ub)
     
@@ -1110,12 +1110,12 @@ get_inc_tp_doses_helper <- function(rc,
       summarize(observed_case = sum(observed_case),
                 true_case = sum(true_case)) %>%
       group_by(year) %>%
-      summarize(observed_case_lb = quantile(observed_case, 0.025),
-                observed_case_median = median(observed_case),
-                observed_case_ub = quantile(observed_case, 0.975),
-                true_case_lb = quantile(true_case, 0.025),
-                true_case_median = median(true_case),
-                true_case_ub = quantile(true_case, 0.975))
+      summarize(observed_case_lb = quantile(observed_case, 0.025, na.rm = TRUE),
+                observed_case_median = median(observed_case, na.rm = TRUE),
+                observed_case_ub = quantile(observed_case, 0.975, na.rm = TRUE),
+                true_case_lb = quantile(true_case, 0.025, na.rm = TRUE),
+                true_case_median = median(true_case, na.rm = TRUE),
+                true_case_ub = quantile(true_case, 0.975, na.rm = TRUE))
     
     pop_by_year <- rc %>%
       group_by(year, run_id) %>%
@@ -1158,9 +1158,9 @@ get_inc_tp_doses_helper <- function(rc,
     df_tp_byyear <- rc %>% 
       filter(is_target == 1) %>%
       group_by(admin_name, year) %>% 
-      summarize(tp_lb = quantile(pop_model, 0.025), # lower 95%CI
-                tp_median = median(pop_model),
-                tp_ub = quantile(pop_model, 0.975)) %>% # upper 95%CI
+      summarize(tp_lb = quantile(pop_model, 0.025, na.rm = TRUE), # lower 95%CI
+                tp_median = median(pop_model, na.rm = TRUE),
+                tp_ub = quantile(pop_model, 0.975, na.rm = TRUE)) %>% # upper 95%CI
       mutate(ISO = country) %>%
       dplyr::select(ISO, admin_name, year, tp_lb, tp_median, tp_ub) 
 
@@ -1174,9 +1174,9 @@ get_inc_tp_doses_helper <- function(rc,
       mutate(target_pop_cumu = cumsum(target_pop)) %>%
       dplyr::select(-target_pop) %>%
       group_by(admin_name, year) %>%
-      summarize(tp_cumu_lb = quantile(target_pop_cumu, 0.025), # lower 95%CI
-                tp_cumu_median = median(target_pop_cumu),
-                tp_cumu_ub = quantile(target_pop_cumu, 0.975)) %>% # upper 95%CI
+      summarize(tp_cumu_lb = quantile(target_pop_cumu, 0.025, na.rm = TRUE), # lower 95%CI
+                tp_cumu_median = median(target_pop_cumu, na.rm = TRUE),
+                tp_cumu_ub = quantile(target_pop_cumu, 0.975, na.rm = TRUE)) %>% # upper 95%CI
       mutate(ISO = country) %>%
       dplyr::select(ISO, admin_name, year, tp_cumu_lb, tp_cumu_median, tp_cumu_ub)
       
@@ -1198,12 +1198,12 @@ get_inc_tp_doses_helper <- function(rc,
     ## add incidence columns
     df_inc <- rc %>%
       group_by(admin_name, year) %>%
-      summarize(true_inc_rate_lb = quantile(true_incidence_rate, 0.025), 
-                true_inc_rate_median = median(true_incidence_rate),
-                true_inc_rate_ub = quantile(true_incidence_rate, 0.975),
-                obs_inc_rate_lb = quantile(observed_incidence_rate, 0.025), 
-                obs_inc_rate_median = median(observed_incidence_rate),
-                obs_inc_rate_ub = quantile(observed_incidence_rate, 0.975))
+      summarize(true_inc_rate_lb = quantile(true_incidence_rate, 0.025, na.rm = TRUE), 
+                true_inc_rate_median = median(true_incidence_rate, na.rm = TRUE),
+                true_inc_rate_ub = quantile(true_incidence_rate, 0.975, na.rm = TRUE),
+                obs_inc_rate_lb = quantile(observed_incidence_rate, 0.025, na.rm = TRUE), 
+                obs_inc_rate_median = median(observed_incidence_rate, na.rm = TRUE),
+                obs_inc_rate_ub = quantile(observed_incidence_rate, 0.975, na.rm = TRUE))
     
     # join df_inc and df_tp
     df_result <- df_inc %>%
@@ -1422,9 +1422,9 @@ make_eff_table <- function(rc,
       mutate(target_pop_cumu = cumsum(target_pop)) %>%
       dplyr::select(-target_pop) %>%
       group_by(year, threshold, confirmation_lens) %>%
-      summarize(tp_cumu_lb = quantile(target_pop_cumu, 0.025), # lower 95%CI
-                tp_cumu_median = median(target_pop_cumu),
-                tp_cumu_ub = quantile(target_pop_cumu, 0.975)) %>% # upper 95%CI
+      summarize(tp_cumu_lb = quantile(target_pop_cumu, 0.025, na.rm = TRUE), # lower 95%CI
+                tp_cumu_median = median(target_pop_cumu, na.rm = TRUE),
+                tp_cumu_ub = quantile(target_pop_cumu, 0.975, na.rm = TRUE)) %>% # upper 95%CI
       mutate(ISO = country) %>%
       dplyr::select(ISO, year, threshold, confirmation_lens, tp_cumu_lb, tp_cumu_median, tp_cumu_ub) %>%
       group_by(ISO, threshold, confirmation_lens) %>%
@@ -1456,9 +1456,9 @@ make_eff_table <- function(rc,
       # calculate efficiency
       mutate(efficiency = true_ac_cumu / fvp_cumu * 1000) %>%
       group_by(threshold, confirmation_lens) %>%
-      summarize(efficiency_lb = quantile(efficiency, 0.025), # lower 95%CI
-                efficiency_median = median(efficiency),
-                efficiency_ub = quantile(efficiency, 0.975)) %>% # upper 95%CI
+      summarize(efficiency_lb = quantile(efficiency, 0.025, na.rm = TRUE), # lower 95%CI
+                efficiency_median = median(efficiency, na.rm = TRUE),
+                efficiency_ub = quantile(efficiency, 0.975, na.rm = TRUE)) %>% # upper 95%CI
       mutate(ISO = country) %>%
       dplyr::select(ISO, threshold, confirmation_lens, efficiency_lb, efficiency_median, efficiency_ub)
     
