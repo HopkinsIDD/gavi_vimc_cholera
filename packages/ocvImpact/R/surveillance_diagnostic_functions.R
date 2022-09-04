@@ -1519,3 +1519,109 @@ combine_eff_table <- function(countries,
     return(df_eff_comb)
 }
 
+
+
+#' @name plot_incid
+#' @title plot_incid
+#' @description Plot incidence rate trend for one chosen threshold
+#' @param df_target input dataset derived from cache$target_table
+#' @param threshold_chosen one threshold chosen to plot incidence
+#' @return faceted plots of incidence rate for one chosen threshold
+#' @export
+plot_incid <- function(df_target,
+                       threshold_chosen,
+                       ...){
+  
+  # (Note that in the target table if the targeting is done at admin1 level, the NAME_2 column is then missing, with value of NA)
+  ## campaign-default scenarios
+  # calculate incidence of each year for each run
+  df_inc_campaign <- df_target %>% 
+    filter(threshold == threshold_chosen) %>%
+    group_by(ISO, confirmation_lens, run_id, year, admin_level) %>%
+    summarize(ec = sum(campaign_default_true_case),
+              pop = sum(pop_model)) %>%
+    group_by(ISO, confirmation_lens, run_id, admin_level) %>%
+    mutate(incid = ec / lead(pop)) %>%
+    mutate(general_scenario = "campaign-default")
+  
+  # no-vax scenarios
+  # calculate incidence of each year for each run
+  df_inc_novax <- df_target %>%
+    filter(threshold == threshold_chosen) %>%
+    group_by(ISO, confirmation_lens, run_id, year, admin_level) %>%
+    summarize(ec = sum(no_vaccination_true_case),
+              pop = sum(pop_model)) %>%
+    group_by(ISO, confirmation_lens, run_id, admin_level) %>%
+    mutate(incid = ec / lead(pop)) %>%
+    filter(confirmation_lens == "district-estimate") %>%
+    mutate(general_scenario = "no-vaccination")
+  
+  # combine campaign-default and no-vaccination scenario into one data frame
+  df_inc <- rbind(df_inc_campaign, df_inc_novax)
+ 
+  # get mean inc
+  df_inc_mean <- df_inc %>%
+    group_by(ISO, admin_level, confirmation_lens, general_scenario, year) %>% 
+    summarise(incid = median(incid, na.rm = TRUE)) %>% 
+    mutate(run_id = "median")
+  
+  inc_table <- plyr::rbind.fill(df_inc, df_inc_mean)
+
+  # plot incidence trend over years
+  plt <- inc_table %>% 
+    filter(!is.na(incid)) %>%
+    ggplot(aes(x=year, y=incid, group=run_id)) +
+    geom_line(data = inc_table[inc_table$run_id != "median" & !is.na(inc_table$incid), ], 
+            aes(x=year, y=incid, group=run_id), 
+            color = "lightblue", size = 0.05) +
+    geom_line(data = inc_table[inc_table$run_id == "median" & !is.na(inc_table$incid), ], 
+            aes(x=year , y=incid, group=run_id), 
+            color = "orange", size = 0.3) +
+    scale_y_continuous(name = "Incidence Rate") + 
+    facet_grid(ISO + admin_level ~  general_scenario + confirmation_lens, scales = "free", space = "free") + 
+    theme_minimal()
+  
+  return(plt)
+}
+
+#plot_incid(df_target, threshold_chosen = 1e-04)
+
+#' @name tab_incid
+#' @title tab_incid
+#' @description make a table of median of incidence rate across all runs
+#' @param df_target input dataset derived from cache$target_table
+#' @return 
+#' @export
+tab_incid <- function(df_target){
+  
+  df_inc_campaign <- df_target %>% 
+    group_by(ISO, confirmation_lens, run_id, year, admin_level, threshold) %>%
+    summarize(ec = sum(campaign_default_true_case),
+              pop = sum(pop_model)) %>%
+    group_by(ISO, confirmation_lens, run_id, admin_level, threshold) %>%
+    mutate(incid = ec / lead(pop)) %>%
+    mutate(general_scenario = "campaign-default")
+  
+  df_inc_novax <- df_target %>%
+    group_by(ISO, confirmation_lens, threshold, run_id, year, admin_level) %>%
+    summarize(ec = sum(no_vaccination_true_case),
+              pop = sum(pop_model)) %>%
+    group_by(ISO, confirmation_lens, run_id, admin_level, threshold) %>%
+    mutate(incid = ec / lead(pop)) %>%
+    filter(confirmation_lens == "district-estimate") %>%
+    mutate(general_scenario = "no-vaccination")
+  
+  df_inc <- rbind(df_inc_campaign, df_inc_novax)
+ 
+  # get mean inc
+  df_inc_mean <- df_inc %>%
+    group_by(ISO, admin_level, confirmation_lens, general_scenario, year, threshold) %>% 
+    summarise(incid = median(incid, na.rm = TRUE)) %>% 
+    mutate(run_id = "median") %>%
+    mutate(confirmation_lens = case_when(general_scenario == "no-vaccination" ~ "no-vaccination",
+                                         TRUE ~ confirmation_lens)) %>%
+    ungroup() %>%
+    dplyr::select(-general_scenario)
+  
+  return(df_inc_mean)
+}

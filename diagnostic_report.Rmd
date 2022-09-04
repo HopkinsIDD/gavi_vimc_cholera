@@ -7,7 +7,7 @@ output:
     toc_float: true
 params: 
   surveillance_project_directory: "/home/hanmeng/VIMC/gavi_vimc_cholera"
-  country: ["GHA"] #country code specified or all the countries will be used for the diagnostic report
+  country: ["SLE"] #country code specified or all the countries will be used for the diagnostic report
   admin_level: ["both"] #either "both", "admin1", or "admin2"
   vac_incid_thresholds: ["0.001", "2e-04", "1e-04"] #["0.001", "2e-04", "1e-04"] if to plot all thresholds 
   no_vaccination_surveillance_scenario: "district-estimate" #depending on what type of no vaccination scenario has been simulated 
@@ -936,6 +936,71 @@ plt
 ```
 
 
+
+# Inicidence rate trend over time {.tabset}
+## Inicidence rate trend over time at threshold 1/1000
+```{r Incidence rate trend 1/1000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Incidence Rate Trend")}
+df_target <- cache$target_table
+
+if((1/1000) %in% vac_incid_thresholds){
+  plt <- plot_incid(df_target = df_target, threshold_chosen = 1/1000)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL) #optional, but safer in case another theme is applied later
+}
+plt
+```
+
+## Inicidence rate trend over time at threshold 1/5000
+```{r Incidence rate trend 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Incidence Rate Trend")}
+df_target <- cache$target_table
+
+if((1/5000) %in% vac_incid_thresholds){
+  plt <- plot_incid(df_target = df_target, threshold_chosen = 1/5000)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL) #optional, but safer in case another theme is applied later
+}
+plt
+```
+
+## Inicidence rate trend over time at threshold 1/10000
+```{r Incidence rate trend 1/10000, fig.height=fig_height, fig.width=15, fig.cap=capFig("Incidence Rate Trend")}
+df_target <- cache$target_table
+
+if((1/10000) %in% vac_incid_thresholds){
+  plt <- plot_incid(df_target = df_target, threshold_chosen = 1/10000)
+}else{
+  plt <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='N/A')) +
+    xlab(NULL) #optional, but safer in case another theme is applied later
+}
+plt
+
+```
+
+## Incidence rate median table
+Median incidence of all runs over time.
+```{r}
+df_target <- cache$target_table
+
+tab_incid(df_target) %>%
+  arrange(admin_level, threshold) %>%
+  reactable(
+    columns = list(
+      incid = colDef(name = "Incidence rate", minWidth = 250),
+      confirmation_lens = colDef(name = "Scenario", minWidth = 300)
+    ),
+    groupBy = c("ISO", "confirmation_lens"),
+    style = list(color = "black",`font-family` = "Georgia", `font-size` = "11px"),
+    defaultExpanded = TRUE
+  )
+```
 
 # Efficiency  figures {.tabset}
 ## Efficiency  side-by-side comparison {.tabset}
