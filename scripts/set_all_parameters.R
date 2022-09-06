@@ -15,7 +15,7 @@ locs <- dplyr::filter(locs, !is.na(region))
 countries <- unique(locs$country)
 
 ### Just for testing 
-countries <- c("COD", "GHA", "MRT", "NGA", "TZA", "SOM", "SLE") #for testing, temporary 
+#countries <- c("COD", "GHA", "MRT", "NGA", "TZA", "SOM", "SLE") #for testing, temporary 
 
 #====== Surveillance Project Specific ======#
 save_intermediate_raster <- TRUE #if TRUE, this will save memory during the model run
@@ -35,7 +35,7 @@ sim_end_year <- 2035
 
 #====== Other Parameters ======#
 num_skip_years <- 3 #district level, relevant to the surveillance project
-num_samples <- 50 #relevant to the surveillance project
+num_samples <- 200 #relevant to the surveillance project
 use_random_seed <- TRUE #whether or not to have a random seed that governs the stochasticity 
 self_random_seed <- NULL #for now, just use the random seed specified by the setting
 clean_outputs <- TRUE

@@ -1,0 +1,30 @@
+runname: '202110gavi-3'
+country: 'GIN'
+scenario: 'no-vaccination'
+clean: TRUE
+incid:
+  num_samples: 200
+  redraw: FALSE
+  use_country_incid_trend: TRUE
+vacc:
+  targeting_strategy: 'threshold_unconstrained'
+  vac_incid_threshold: 0.001
+  vac_unconstrained: TRUE
+  vac_admin_level: 'both'
+  vac_coverage: 0.68
+  num_skip_years: 3
+  vac_interval: 1
+  sim_start_year: 2022
+  vac_start_year: 2022
+  vac_end_year: 2030
+  sim_end_year: 2035
+surveillance_scenario:
+  surveillance_scenario: 'no-estimate'
+setting:
+  incidence_rate_trend: FALSE
+  outbreak_multiplier: FALSE
+  random_seed: 1
+optimize:
+  save_intermediate_raster: TRUE
+  save_final_output_raster: FALSE
+  ir_pre_screening: TRUE
