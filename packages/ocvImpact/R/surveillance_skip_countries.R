@@ -42,9 +42,9 @@ check_table_screening <- function(spathname, country, scenario, threshold, vac_a
           }
           
         }
-      }
-    }
-  
+      }else{return(TRUE)}
+    
+    }else{return(FALSE)}
   }
 }
 
