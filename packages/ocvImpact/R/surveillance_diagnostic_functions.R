@@ -1406,18 +1406,19 @@ alpha_table <- function(cache){
 #' @name make_eff_table
 #' @title make_eff_table
 #' @description make a table summarizing (total) target population and ocv efficiency (at country level)
+#' @param rc target table of one country at one admin level
 #' @return a table summarizing target population and ocv efficiency for one country at one admin_level (either admin1 or admin2)
 #' @export
 #' @include
-make_eff_table <- function(rc,
-                           vax_cov = 0.68){
+make_eff_table <- function(rc){
   
   country <- rc$ISO[1]
 
     df_tp_cumu <- rc %>% 
       filter(is_target == 1) %>%
       group_by(year, run_id, threshold, confirmation_lens) %>%
-      summarize(target_pop = sum(pop_model)) %>%
+      #summarize(target_pop = sum(pop_model)) %>% # change this to "targeted pop", which is fvp
+      summarize(target_pop = sum(actual_fvp)) %>%
       group_by(run_id, threshold, confirmation_lens) %>%
       mutate(target_pop_cumu = cumsum(target_pop)) %>%
       dplyr::select(-target_pop) %>%
@@ -1486,12 +1487,15 @@ make_eff_table <- function(rc,
 
 #' @name combine_eff_table
 #' @title combine_eff_table
-#' @description combine tables from multiple countries
+#' @description combine tables from multiple countries and both admin levels
+#' @param countries a vector contains all the countries included in the diagnostic report 
+#' @param df_target target_table generated and saved in cache
+#' @param admin_level admin level(s) selected for the diagnostic report
 #' @return a table summarizing target population and ocv efficiency for one or more countries (at country level)
 #' @export
 #' @include
 combine_eff_table <- function(countries, 
-                              rc,
+                              df_target,
                               admin_level){
     
     for(country in countries){
@@ -1517,6 +1521,112 @@ combine_eff_table <- function(countries,
     }
 
     return(df_eff_comb)
+}
+
+
+#' @name make_eff_table_allISOs
+#' @title make_eff_table_allISOs
+#' @description make a table summarizing (total) target population and ocv efficiency, combining all the countries all at once
+#' @param rc target table all countries at one admin level
+#' @return a table summarizing target population and ocv efficiency for all countries at one admin_level (either admin1 or admin2)
+#' @export
+#' @include
+make_eff_table_allISOs <- function(rc){
+  
+    df_tp_cumu <- rc %>% 
+      filter(is_target == 1) %>%
+      group_by(year, run_id, threshold, confirmation_lens) %>%
+      summarize(target_pop = sum(actual_fvp)) %>%
+      group_by(run_id, threshold, confirmation_lens) %>%
+      mutate(target_pop_cumu = cumsum(target_pop)) %>%
+      dplyr::select(-target_pop) %>%
+      group_by(year, threshold, confirmation_lens) %>%
+      summarize(tp_cumu_lb = quantile(target_pop_cumu, 0.025, na.rm = TRUE), # lower 95%CI
+                tp_cumu_median = median(target_pop_cumu, na.rm = TRUE),
+                tp_cumu_ub = quantile(target_pop_cumu, 0.975, na.rm = TRUE)) %>% # upper 95%CI
+      dplyr::select(year, threshold, confirmation_lens, tp_cumu_lb, tp_cumu_median, tp_cumu_ub) %>%
+      group_by(threshold, confirmation_lens) %>%
+      summarize(tp_cumu_lb = max(tp_cumu_lb),
+                tp_cumu_median = max(tp_cumu_median),
+                tp_cumu_ub = max(tp_cumu_ub))
+  
+    # averted true cases per 1000 fvp 
+    df_eff <- rc %>% 
+      group_by(year, run_id, threshold, confirmation_lens) %>%
+      summarize(true_ac = sum(true_averted_cases)) %>%
+      group_by(run_id, threshold, confirmation_lens) %>%
+      mutate(true_ac_cumu = cumsum(true_ac)) %>%
+      dplyr::select(-true_ac) %>%
+      # filter(year == max_year)
+      group_by(run_id, threshold, confirmation_lens) %>%
+      summarize(true_ac_cumu = max(true_ac_cumu)) %>%
+      right_join(
+        rc %>% 
+          group_by(year, run_id, threshold, confirmation_lens) %>%
+          summarize(fvp = sum(actual_fvp)) %>%
+          group_by(run_id, threshold, confirmation_lens) %>%
+          mutate(fvp_cumu = cumsum(fvp)) %>%
+          dplyr::select(-fvp) %>%
+          group_by(run_id, threshold, confirmation_lens) %>%
+          summarize(fvp_cumu = max(fvp_cumu)) ,
+        by = c("run_id", "threshold", "confirmation_lens")
+      )%>%
+      # calculate efficiency
+      mutate(efficiency = true_ac_cumu / fvp_cumu * 1000) %>%
+      group_by(threshold, confirmation_lens) %>%
+      summarize(efficiency_lb = quantile(efficiency, 0.025, na.rm = TRUE), # lower 95%CI
+                efficiency_median = median(efficiency, na.rm = TRUE),
+                efficiency_ub = quantile(efficiency, 0.975, na.rm = TRUE)) %>% # upper 95%CI
+      dplyr::select(threshold, confirmation_lens, efficiency_lb, efficiency_median, efficiency_ub)
+    
+    
+    # join two tables and round up numbers
+    df_result <- df_tp_cumu %>%
+      left_join(df_eff, by = c("threshold", "confirmation_lens")) %>%
+      # convert unit of tp to "million"
+      mutate(tp_cumu_lb = round(tp_cumu_lb/1000000, 2),
+             tp_cumu_median = round(tp_cumu_median/1000000, 2),
+             tp_cumu_ub = round(tp_cumu_ub/1000000, 2),
+             efficiency_lb = round(efficiency_lb, 2),
+             efficiency_median = round(efficiency_median, 2),
+             efficiency_ub = round(efficiency_ub, 2))
+    
+    # format df_result to "median(lb-ub)" format
+    df_result <- df_result %>%
+      mutate(tp_cumu = paste0(tp_cumu_median, " (", tp_cumu_lb, "-", tp_cumu_ub, ")"),
+             efficiency = paste0(efficiency_median, " (", efficiency_lb, "-", efficiency_ub, ")")) %>%
+      select(threshold, confirmation_lens, tp_cumu, efficiency)
+  
+  return(df_result)
+}
+
+#' @name combine_eff_table_allISOs
+#' @title combine_eff_table_allISOs
+#' @description combine tables from different admin level(s)
+#' @param countries a vector contains all the countries included in the diagnostic report 
+#' @param df_target target_table generated and saved in cache
+#' @param admin_level admin level(s) selected for the diagnostic report
+#' @return a table summarizing target population and ocv efficiency for one or more countries (at country level)
+#' @export
+#' @include
+combine_eff_table_allISOs <- function(df_target,
+                                      admin_level){
+    
+      if(admin_level %in% c("both", "admin1")){
+        df_admin1 <- df_target %>% filter(admin_level == "admin1")
+        eff_table_admin1 <- make_eff_table_allISOs(df_admin1) %>% mutate(admin_level = "admin1")
+      }
+      if(admin_level %in% c("both", "admin2")){
+        df_admin2 <- df_target %>% filter(admin_level == "admin2")
+        eff_table_admin2 <- make_eff_table_allISOs(df_admin2) %>% mutate(admin_level = "admin2")
+      }
+
+      # combine results
+      if(admin_level == "admin1"){eff_table <- eff_table_admin1}
+      if(admin_level == "admin2"){eff_table <- eff_table_admin2}
+      if(admin_level == "both"){eff_table <- rbind(eff_table_admin1, eff_table_admin2)}
+      
+    return(eff_table)
 }
 
 
@@ -1625,3 +1735,5 @@ tab_incid <- function(df_target){
   
   return(df_inc_mean)
 }
+
+
