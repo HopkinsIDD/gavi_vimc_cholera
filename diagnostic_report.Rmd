@@ -1699,7 +1699,7 @@ alpha_table(cache)
 
 ```
 
-# Target population and efficiency table
+# Targeted population and efficiency table
 ```{r}
 # loop through each country 
 
@@ -1712,7 +1712,7 @@ df_target <- cache$target_table
 df_target <- df_target %>%
   mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
 
-df_comb_eff <- combine_eff_table(countries = countries, rc = df_target, admin_level = params$admin_level)
+df_comb_eff <- combine_eff_table(countries = countries, df_target = df_target, admin_level = params$admin_level)
 
 # format eff_table
 df_comb_eff %>%
@@ -1728,7 +1728,7 @@ df_comb_eff %>%
         `efficiency_district-estimate` = colDef(name = "district-estimate", minWidth = 180)
       ),
       columnGroups = list(
-        colGroup(name = "target pop (million)", columns = c("tp_cumu_no-estimate", "tp_cumu_global-estimate", "tp_cumu_district-estimate")),
+        colGroup(name = "targeted pop (million)", columns = c("tp_cumu_no-estimate", "tp_cumu_global-estimate", "tp_cumu_district-estimate")),
         colGroup(name = "efficiency", columns = c("efficiency_no-estimate", "efficiency_global-estimate", "efficiency_district-estimate"))
       ),
       groupBy = c("ISO", "threshold"),
