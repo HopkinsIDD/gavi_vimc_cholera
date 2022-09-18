@@ -442,9 +442,12 @@ update_vacc_year <- function( datapath, modelpath, country, rc_list, model_year,
                               campaign_cov, threshold, surveillance_scenario, 
                               vac_start_year, vac_end_year, num_skip_years, rc_targeted){
   ### Only targeting the population above 1 year old
-  if(!exists("pop_by_age")){
+  if(!"pop_by_age" %in% names(cache)){
     source(paste0("scripts/montagu_handle.R"))
     pop_by_age <- ocvImpact::import_country_agePop(modelpath, country, redownload = FALSE)
+    cache$pop_by_age <- pop_by_age
+  }else{
+    pop_by_age <- cache$pop_by_age
   }
   pop_by_age_1 <- pop_by_age %>% 
     filter(year == model_year) %>% 
@@ -553,12 +556,31 @@ get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scena
 surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_start_year, sim_end_year, shp1, shp2, nsamples){
 
   ## Prepare
+  message("Start adding new rows now. ")
   if(!is.null(ec_list$ec_rasterStack_admin1)){admin1_lambda_list <- ec_list$ec_rasterStack_admin1 / pop}else{admin1_lambda_list <- NULL}
   if(!is.null(ec_list$ec_rasterStack_admin2)){admin2_lambda_list <- ec_list$ec_rasterStack_admin2 / pop}else{admin2_lambda_list <- NULL}
   pop1 <- get_admin_population(pop, shp1) 
   pop2 <- get_admin_population(pop, shp2)
-  if(!is.null(ec_list$ec_rasterStack_admin1)){true_case1_all <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin1, shp1, 'sum')}else{true_case1_all <- NULL}
-  if(!is.null(ec_list$ec_rasterStack_admin2)){true_case2_all <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin2, shp2, 'sum')}else{true_case2_all <- NULL}
+  
+  # if(!is.null(ec_list$ec_rasterStack_admin1)){
+  #   true_case1_all <- list()
+  #   for(ly_idx in 1:nsamples){
+  #     true_case1_single <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin1[[ly_idx]], shp1, 'sum')
+  #     true_case1_all <- append(true_case1_all, true_case1_single)
+  #   }
+  # }else{true_case1_all <- NULL}
+
+  # if(!is.null(ec_list$ec_rasterStack_admin2)){
+  #   true_case2_all <- list()
+  #   for(ly_idx in 1:nsamples){
+  #     true_case2_single <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin2[[ly_idx]], shp2, 'sum')
+  #     true_case2_all <- append(true_case2_all, true_case2_single)
+  #   }
+  # }else{true_case2_all <- NULL}
+  if(!is.null(ec_list$ec_rasterStack_admin1)){true_case1_all <- raster::extract(ec_list$ec_rasterStack_admin1, shp1, method = 'bilinear', fun = sum, na.rm = TRUE)}else{true_case1_all <- NULL}
+  if(!is.null(ec_list$ec_rasterStack_admin2)){true_case2_all <- raster::extract(ec_list$ec_rasterStack_admin2, shp2, method = 'bilinear', fun = sum, na.rm = TRUE)}else{true_case2_all <- NULL}
+  # if(!is.null(ec_list$ec_rasterStack_admin1)){true_case1_all <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin1, shp1, 'sum')}else{true_case1_all <- NULL}
+  # if(!is.null(ec_list$ec_rasterStack_admin2)){true_case2_all <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin2, shp2, 'sum')}else{true_case2_all <- NULL}
   rm(ec_list)
   
   # total population

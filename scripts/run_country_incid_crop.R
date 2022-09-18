@@ -1,5 +1,3 @@
-# roxygen2::roxygenise("packages/ocvImpact")
-# install.packages("packages/ocvImpact", type = "source", repos = NULL)
 
 ### Set Error Handling
 if (Sys.getenv("INTERACTIVE_RUN", FALSE)) {
@@ -13,65 +11,108 @@ if (Sys.getenv("INTERACTIVE_RUN", FALSE)) {
   )
 }
 
-#### Libraries -- using the consistent one 7/2021
-#######Kaiyue Added on 7/21/2021#######
-#======Use other packages needed======#
-chooseCRANmirror(ind = 77) #specify the mirror so that the packages can be successfully installed in the non-interactive way
+### Libraries -- depending on which server the model is being run on
+if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
+  r_lib <- Sys.getenv("R_LIBRARY_DIRECTORY", FALSE)
+  library(remotes, lib=r_lib)
+  library(sp, lib=r_lib)
+  library(classInt, lib=r_lib)
+  library(sf, lib=r_lib)
+  library(rgdal, lib=r_lib)
+  library(GADMTools, lib=r_lib)
+  library(raster, lib=r_lib)
+  library(coda, lib=r_lib)
+  library(ape, lib=r_lib)
+  library(storr, lib=r_lib)
 
-package_list <- c(
-  "GADMTools", 
-  "rgdal", 
-  "drat", 
-  "roxygen2", 
-  "data.table",
-  "dplyr",
-  "exactextractr",
-  "fasterize",
-  "optparse",
-  "purrr",
-  "raster",
-  "readr",
-  "sf",
-  "stringr",
-  "tibble",
-  "tidyr",
-  "yaml"
-)
+  library(drat, lib=r_lib)
+  library(roxygen2, lib=r_lib)
+  library(data.table, lib=r_lib)
+  library(exactextractr, lib=r_lib)
+  library(fasterize, lib=r_lib)
+  library(truncnorm, lib=r_lib)
+  library(MCMCglmm, lib=r_lib)
 
-for (package in package_list) {
-  if (!require(package = package, character.only = T)) {
-    install.packages(pkgs = package)
-    library(package = package, character.only = T)
+  # library(tibble)
+  # library(withr)
+  # library(processx)
+  # library(optparse)
+  # library(yaml)
+  # library(purrr)
+  # library(dplyr)
+  # library(tidyverse)
+  # library(stringi)
+  # library(readr)
+  # library(stringr)
+  # library(tidyr)
+
+  library('montagu', character.only = T, lib = r_lib)
+  library('ocvImpact', character.only = T, lib = r_lib)
+  source("scripts/montagu_handle.R")
+
+
+} else {
+  #======Use other packages needed======#
+  chooseCRANmirror(ind = 77) #specify the mirror so that the packages can be successfully installed in the non-interactive way
+
+  package_list <- c(
+    "GADMTools", 
+    "rgdal", 
+    "drat", 
+    "roxygen2", 
+    "data.table",
+    "dplyr",
+    "exactextractr",
+    "fasterize",
+    "optparse",
+    "purrr",
+    "raster",
+    "readr",
+    "sf",
+    "stringr",
+    "tibble",
+    "tidyr",
+    "yaml", 
+    "truncnorm", 
+    "MCMCglmm"
+  )
+
+  for (package in package_list) {
+    if (!require(package = package, character.only = T)) {
+      install.packages(pkgs = package, lib.loc=Sys.getenv("R_LIBRARY_DIRECTORY", NULL))
+      library(package = package, character.only = T, lib.loc=Sys.getenv("R_LIBRARY_DIRECTORY", NULL))
+    }
+    detach(pos = which(grepl(package, search())))
   }
-  detach(pos = which(grepl(package, search())))
-}
 
-#======Initialize Montagu package======#
-if (!require('montagu', character.only = T)) {
-  drat:::add("vimc")
-  install.packages('montagu')
-  library('montagu', character.only = T)
-}
-source("scripts/montagu_handle.R")
+  #======Initialize Montagu package======#
+  if (!require('montagu', character.only = T)) {
+    drat:::add("vimc")
+    install.packages('montagu')
+    library('montagu', character.only = T)
+  }
+  source("scripts/montagu_handle.R")
 
-#======Use the ocvImpact package======#
-if (!require('ocvImpact', character.only = T)) {
+  #======Use the ocvImpact package======#
+  if (!require('ocvImpact', character.only = T)) {
+    roxygen2::roxygenise("packages/ocvImpact")
+    install.packages("packages/ocvImpact", type = "source", repos = NULL)
+    library('ocvImpact', character.only = T)
+  }
+
+  #======For the convenience of debugging======#
+  ###These a few lines can be deleted safely after the model can run smoothly on the server. 
+  library(raster)
   roxygen2::roxygenise("packages/ocvImpact")
   install.packages("packages/ocvImpact", type = "source", repos = NULL)
   library('ocvImpact', character.only = T)
 }
 
-#======For the convenience of debugging======#
-###These a few lines can be deleted safely after the model can run smoothly on the server. 
-library(raster)
-roxygen2::roxygenise("packages/ocvImpact")
-install.packages("packages/ocvImpact", type = "source", repos = NULL)
-library('ocvImpact', character.only = T)
-
-###########Comment completed###########
 
 
 
+
+#======================================== the start of the run ========================================#
 ### Run options
 option_list <- list(
   optparse::make_option(
@@ -116,7 +157,6 @@ incid <- ocvImpact::create_incid_raster(
     )
 
 
-###########Comment completed###########
 
 rm(incid)
 gc()
