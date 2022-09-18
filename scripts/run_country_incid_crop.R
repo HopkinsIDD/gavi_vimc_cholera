@@ -39,7 +39,7 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   # library(optparse)
   # library(yaml)
   # library(purrr)
-  # library(dplyr)
+  library(dplyr)
   # library(tidyverse)
   # library(stringi)
   # library(readr)
