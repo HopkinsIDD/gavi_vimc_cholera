@@ -14,9 +14,10 @@ export R_VERSION=4.0.2
 ## Local R libraries and reset
 export CHOLERA_DIRECTORY=/data/aazman1/$USER/gavi-modeling/gavi_vimc_cholera
 export R_LIBRARY_DIRECTORY=$HOME/rlibs/gcm/$R_VERSION/gcc/$GCC_VERSION/
-mkdir -p $R_LIBRARY_DIRECTORY
-cd $HOME/rlibs/gcm
-rm -r *
+## whether to erase all installed pacakges
+# mkdir -p $R_LIBRARY_DIRECTORY
+# cd $HOME/rlibs/gcm
+# rm -r *
 
 ## Set up modules
 module purge
@@ -48,20 +49,33 @@ ml r-stringi
 mkdir -p $R_LIBRARY_DIRECTORY \
  && cd $CHOLERA_DIRECTORY \
  && Rscript -e "options(error=quit, status = 1); 
-                install.packages('remotes', lib='$R_LIBRARY_DIRECTORY'); 
+                if (!require(package = 'remotes', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install.packages('remotes', lib='$R_LIBRARY_DIRECTORY') }; 
                 require(remotes, lib='$R_LIBRARY_DIRECTORY'); 
-                install_version('sf', version = '1.0.8', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY', dependencies = TRUE); 
-                install_version('GADMTools', version = '3.9.1', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY');
-                install_version('exactextractr', version = '0.9.0', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY');  
-                install_version('raster', version = '3.4.13', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY'); 
+                if (!require(package = 'sf', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install_version('sf', version = '1.0.8', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY', dependencies = TRUE) }; 
+                if (!require(package = 'GADMTools', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install_version('GADMTools', version = '3.9.1', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY') }; 
+                if (!require(package = 'exactextractr', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install_version('exactextractr', version = '0.9.0', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY') }; 
+                if (!require(package = 'raster', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install_version('raster', version = '3.4.13', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY') }; 
 
-                install.packages('drat', lib='$R_LIBRARY_DIRECTORY'); 
-                install.packages('roxygen2', lib='$R_LIBRARY_DIRECTORY'); 
-                install.packages('data.table', lib='$R_LIBRARY_DIRECTORY'); 
-                install.packages('fasterize', lib='$R_LIBRARY_DIRECTORY'); 
-                install.packages('truncnorm', lib='$R_LIBRARY_DIRECTORY'); 
-                install.packages('MCMCglmm', lib='$R_LIBRARY_DIRECTORY'); 
-                install.packages('codetools', lib='$R_LIBRARY_DIRECTORY'); 
+                if (!require(package = 'drat', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install.packages('drat', lib='$R_LIBRARY_DIRECTORY') }; 
+                if (!require(package = 'roxygen2', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install.packages('roxygen2', lib='$R_LIBRARY_DIRECTORY') }; 
+                if (!require(package = 'data.table', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install.packages('data.table', lib='$R_LIBRARY_DIRECTORY') }; 
+                if (!require(package = 'fasterize', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install.packages('fasterize', lib='$R_LIBRARY_DIRECTORY') }; 
+                if (!require(package = 'truncnorm', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install.packages('truncnorm', lib='$R_LIBRARY_DIRECTORY') }; 
+                if (!require(package = 'MCMCglmm', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install.packages('MCMCglmm', lib='$R_LIBRARY_DIRECTORY') }; 
+                if (!require(package = 'codetools', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install.packages('codetools', lib='$R_LIBRARY_DIRECTORY') }; 
+                
                 library(drat, lib='$R_LIBRARY_DIRECTORY'); 
                 drat:::add('vimc'); 
                 install.packages('montagu', lib='$R_LIBRARY_DIRECTORY'); 
