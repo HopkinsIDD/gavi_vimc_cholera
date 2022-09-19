@@ -79,13 +79,13 @@ mkdir -p $R_LIBRARY_DIRECTORY \
                 library(drat, lib='$R_LIBRARY_DIRECTORY'); 
                 drat:::add('vimc'); 
                 install.packages('montagu', lib='$R_LIBRARY_DIRECTORY'); 
-                library(montagu, character.only = T, lib='$R_LIBRARY_DIRECTORY'); 
+                library(montagu, lib='$R_LIBRARY_DIRECTORY'); 
                 
                 library(desc, lib='$R_LIBRARY_DIRECTORY'); 
                 library(pkgload, lib='$R_LIBRARY_DIRECTORY'); 
                 roxygen2::roxygenise('$CHOLERA_DIRECTORY/packages/ocvImpact');
                 install.packages('$CHOLERA_DIRECTORY/packages/ocvImpact', type='source', repos = NULL, lib='$R_LIBRARY_DIRECTORY'); 
-                library('ocvImpact', character.only = T, lib='$R_LIBRARY_DIRECTORY')" 
+                library(ocvImpact, lib='$R_LIBRARY_DIRECTORY')" 
 
 echo "DONE"
 

@@ -46,8 +46,8 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   # library(stringr)
   # library(tidyr)
 
-  library('montagu', character.only = T, lib = r_lib)
-  library('ocvImpact', character.only = T, lib = r_lib)
+  library(montagu, lib = r_lib)
+  library(ocvImpact, lib = r_lib)
   source("scripts/montagu_handle.R")
 
 

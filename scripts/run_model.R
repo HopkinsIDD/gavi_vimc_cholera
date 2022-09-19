@@ -53,8 +53,8 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   # roxygen2::roxygenise('packages/ocvImpact')
   # install.packages('packages/ocvImpact', type='source', repos = NULL, lib=r_lib)
 
-  library('montagu', character.only = T, lib = r_lib)
-  library('ocvImpact', character.only = T, lib = r_lib)
+  library(montagu, lib = r_lib)
+  library(ocvImpact, lib = r_lib)
   source("scripts/montagu_handle.R")
 
 
