@@ -54,6 +54,8 @@ mkdir -p $R_LIBRARY_DIRECTORY \
                 install_version('GADMTools', version = '3.9.1', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY');
                 install_version('exactextractr', version = '0.9.0', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY');  
                 install_version('raster', version = '3.4.13', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY'); 
+                install_version('Rcpp', version = '1.0.9', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY'); 
+                install_version('terra', version = '1.4.22', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY'); 
 
                 install.packages('drat', lib='$R_LIBRARY_DIRECTORY'); 
                 install.packages('roxygen2', lib='$R_LIBRARY_DIRECTORY'); 

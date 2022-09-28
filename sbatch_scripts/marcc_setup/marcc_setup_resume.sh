@@ -60,6 +60,10 @@ mkdir -p $R_LIBRARY_DIRECTORY \
                     install_version('exactextractr', version = '0.9.0', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY') }; 
                 if (!require(package = 'raster', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
                     install_version('raster', version = '3.4.13', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY') }; 
+                if (!require(package = 'Rcpp', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install_version('Rcpp', version = '1.0.9', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY') }; 
+                if (!require(package = 'terra', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install_version('terra', version = '1.4.22', repos = 'http://cran.us.r-project.org', lib='$R_LIBRARY_DIRECTORY') }; 
 
                 if (!require(package = 'drat', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
                     install.packages('drat', lib='$R_LIBRARY_DIRECTORY') }; 

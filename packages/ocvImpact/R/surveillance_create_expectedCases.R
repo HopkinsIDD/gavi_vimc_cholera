@@ -87,15 +87,15 @@ surveillance_create_expectedCases <- function(
 
   }
   
-  #fixing the MRT issue
-  if(country == 'MRT'){
-    lambda <- raster::setExtent(lambda, raster::extent(shp0), keepres=FALSE, snap=FALSE)
-    pop_rasterLayer <- raster::setExtent(pop_rasterLayer, raster::extent(shp0), keepres=FALSE, snap=FALSE)
-  }
-  #fixing the BGD issue
-  if(country == 'BGD'){
-    lambda <- raster::resample(lambda, pop_rasterStack, method = "ngb")
-  }
+  # #fixing the MRT issue
+  # if(country == 'MRT'){
+  #   lambda <- raster::setExtent(lambda, raster::extent(shp0), keepres=FALSE, snap=FALSE)
+  #   pop_rasterLayer <- raster::setExtent(pop_rasterLayer, raster::extent(shp0), keepres=FALSE, snap=FALSE)
+  # }
+  # #fixing the BGD issue
+  # if(country == 'BGD'){
+  #   lambda <- raster::resample(lambda, pop_rasterLayer, method = "ngb")
+  # }
   
 
   ### The incidence rate trend multiplier 
@@ -160,7 +160,7 @@ surveillance_create_expectedCases <- function(
     raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer1)))
 
     ec_rasterStack1 <- tryCatch(
-      if(!is.numeric(overall_multiplier) & class(overall_multiplier) == 'raster'){
+      if(!is.numeric(overall_multiplier) & class(overall_multiplier) %in% c('raster', 'RasterBrick', 'RasterLayer', 'RasterStack')){
         raster::overlay(
           sus_rasterLayer1,
           pop_rasterLayer,
@@ -190,7 +190,7 @@ surveillance_create_expectedCases <- function(
     raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer2)))
 
     ec_rasterStack2 <- tryCatch(
-      if(!is.numeric(overall_multiplier) & class(overall_multiplier) == 'raster'){
+      if(!is.numeric(overall_multiplier) & class(overall_multiplier) %in% c('raster', 'RasterBrick', 'RasterLayer', 'RasterStack')){
         raster::overlay(
           sus_rasterLayer2,
           pop_rasterLayer,

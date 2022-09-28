@@ -577,10 +577,14 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
   #     true_case2_all <- append(true_case2_all, true_case2_single)
   #   }
   # }else{true_case2_all <- NULL}
-  if(!is.null(ec_list$ec_rasterStack_admin1)){true_case1_all <- raster::extract(ec_list$ec_rasterStack_admin1, shp1, method = 'bilinear', fun = sum, na.rm = TRUE)}else{true_case1_all <- NULL}
-  if(!is.null(ec_list$ec_rasterStack_admin2)){true_case2_all <- raster::extract(ec_list$ec_rasterStack_admin2, shp2, method = 'bilinear', fun = sum, na.rm = TRUE)}else{true_case2_all <- NULL}
+  # if(!is.null(ec_list$ec_rasterStack_admin1)){true_case1_all <- raster::extract(ec_list$ec_rasterStack_admin1, shp1, method = 'bilinear', fun = sum, na.rm = TRUE) %>% as.data.frame()}else{true_case1_all <- NULL}
+  # if(!is.null(ec_list$ec_rasterStack_admin2)){true_case2_all <- raster::extract(ec_list$ec_rasterStack_admin2, shp2, method = 'bilinear', fun = sum, na.rm = TRUE) %>% as.data.frame()}else{true_case2_all <- NULL}
   # if(!is.null(ec_list$ec_rasterStack_admin1)){true_case1_all <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin1, shp1, 'sum')}else{true_case1_all <- NULL}
   # if(!is.null(ec_list$ec_rasterStack_admin2)){true_case2_all <- exactextractr::exact_extract(ec_list$ec_rasterStack_admin2, shp2, 'sum')}else{true_case2_all <- NULL}
+
+  # new try
+  if(!is.null(ec_list$ec_rasterStack_admin1)){true_case1_all <- case_by_district(ec_list$ec_rasterStack_admin1, shp1)}else{true_case1_all <- NULL}
+  if(!is.null(ec_list$ec_rasterStack_admin2)){true_case2_all <- case_by_district(ec_list$ec_rasterStack_admin2, shp2)}else{true_case2_all <- NULL}
   rm(ec_list)
   
   # total population
