@@ -79,6 +79,8 @@ mkdir -p $R_LIBRARY_DIRECTORY \
                     install.packages('MCMCglmm', lib='$R_LIBRARY_DIRECTORY') }; 
                 if (!require(package = 'codetools', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
                     install.packages('codetools', lib='$R_LIBRARY_DIRECTORY') }; 
+                if (!require(package = 'gert', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install.packages('gert', lib='$R_LIBRARY_DIRECTORY') }; 
                 
                 library(drat, lib='$R_LIBRARY_DIRECTORY'); 
                 drat:::add('vimc'); 

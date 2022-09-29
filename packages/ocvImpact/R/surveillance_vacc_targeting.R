@@ -153,6 +153,9 @@ load_baseline_incidence <- function(datapath,
   if(file.exists(confirm_rate_fn)){
     message("The true confirm rate rasters have already been in place, they will not be replaced. ")
     confirm_rate_raster <- raster::stack(confirm_rate_fn)
+    if(raster::nlayers(confirm_rate_raster) != nsamples){
+      stop("The number of layers of the true confirm rate raster in the intermediate folder is wrong, run killed, please delete the wrong raster. ")
+    }
   }else{
     message("Generating the new true confirm rate rasters and saving them after. ")
   }

@@ -10,6 +10,37 @@ if (Sys.getenv("INTERACTIVE_RUN", FALSE)) {
   )
 }
 
+### Formal run checks
+if (as.logical(Sys.getenv("RUN_ON_MARCC",FALSE)) && (nrow(gert::git_status(repo=getwd())) != 0)) {
+  r_lib <- Sys.getenv("R_LIBRARY_DIRECTORY", FALSE)
+  library(gert, lib=r_lib)
+
+  mod_fns <- gert::git_status(repo=getwd())$file
+  checklist <- c("^configs/", "^packages/ocvImpact/R/", "^scripts/")
+  for (itm in checklist) {
+    if(any(grepl(itm, mod_fns))){
+      if(mod_fns[grepl(itm, mod_fns)] != "scripts/montagu_handle.R"){
+        stop(paste0("There are local changes that will affect formal run, please check: ", mod_fns[grepl(itm, mod_fns)]))
+      }
+    }
+  }
+
+}
+
+if (as.logical(Sys.getenv("RUN_ON_MARCC",FALSE))){
+  r_lib <- Sys.getenv("R_LIBRARY_DIRECTORY", FALSE)
+  if(packageVersion("sf", lib=r_lib) != "1.0.8"
+    |packageVersion("GADMTools", lib=r_lib) != "3.9.1"
+    |packageVersion("exactextractr", lib=r_lib) != "0.9.0"
+    |packageVersion("raster", lib=r_lib) != "3.4.13"
+    |packageVersion("Rcpp", lib=r_lib) != "1.0.9"
+    |packageVersion("terra", lib=r_lib) != "1.4.22"){
+    stop("The important R packages do not have the correct versions, please check. ")
+  }
+}
+
+
+
 ### Libraries -- using the consistent one 7/2021
 if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   r_lib <- Sys.getenv("R_LIBRARY_DIRECTORY", FALSE)
