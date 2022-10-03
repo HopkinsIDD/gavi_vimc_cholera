@@ -27,4 +27,4 @@ setting:
 optimize:
   save_intermediate_raster: TRUE
   save_final_output_raster: FALSE
-  ir_pre_screening: TRUE
+  ir_pre_screening: FALSE
