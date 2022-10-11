@@ -11,6 +11,43 @@ if (Sys.getenv("INTERACTIVE_RUN", FALSE)) {
   )
 }
 
+### Formal run checks (only for MARCC for now)
+if (as.logical(Sys.getenv("RUN_ON_MARCC",FALSE))) {
+
+  r_lib <- Sys.getenv("R_LIBRARY_DIRECTORY", FALSE)
+  library(gert, lib=r_lib)
+
+  #### Check local changes 
+  if((nrow(gert::git_status(repo=getwd())) != 0)){
+    mod_fns <- gert::git_status(repo=getwd())$file
+    checklist <- c("^configs/", "^packages/ocvImpact/R/", "^scripts/")
+    ignorelist <- c(".DS_Store$", "run_model.R$", "run_country_incid_crop.R$")
+    for (itm in checklist) {
+      for (ign in ignorelist){
+        if(any(grepl(itm, mod_fns))){
+          if(mod_fns[grepl(itm, mod_fns)] != "scripts/montagu_handle.R" & !all( grepl(ign, mod_fns[grepl(itm, mod_fns)]) )){
+            stop(paste0("There are local changes that will affect formal run, please check: ", 
+                        mod_fns[grepl(itm, mod_fns)][!grepl(ign, mod_fns[grepl(itm, mod_fns)])], "\n"))
+          }
+        }
+      }
+    }
+  }
+
+  #### Check package versions 
+  if(packageVersion("sf", lib=r_lib) != "1.0.8"
+    |packageVersion("GADMTools", lib=r_lib) != "3.9.1"
+    |packageVersion("exactextractr", lib=r_lib) != "0.9.0"
+    |packageVersion("raster", lib=r_lib) != "3.4.13"
+    |packageVersion("Rcpp", lib=r_lib) != "1.0.9"
+    |packageVersion("terra", lib=r_lib) != "1.4.22"){
+    stop("The important R packages do not have the correct versions, please check. ")
+  }
+
+}
+
+
+
 ### Libraries -- depending on which server the model is being run on
 if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   r_lib <- Sys.getenv("R_LIBRARY_DIRECTORY", FALSE)
@@ -45,6 +82,12 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   # library(readr)
   # library(stringr)
   # library(tidyr)
+
+  ###comment out the following lines when launch formal runs (no need if on MARCC)
+  # library(desc, lib=r_lib)
+  # library(pkgload, lib=r_lib)
+  # roxygen2::roxygenise('packages/ocvImpact')
+  # install.packages('packages/ocvImpact', type='source', repos = NULL, lib=r_lib)
 
   library(montagu, lib = r_lib)
   library(ocvImpact, lib = r_lib)
