@@ -84,7 +84,7 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   # library(stringr)
   # library(tidyr)
 
-  ###comment out the following lines when launch formal runs (no need if on MARCC)
+  ###comment out the following lines when launch formal runs (no need to comment out if on MARCC)
   library(desc, lib=r_lib)
   library(pkgload, lib=r_lib)
   roxygen2::roxygenise('packages/ocvImpact')
