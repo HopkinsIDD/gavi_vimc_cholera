@@ -6,10 +6,10 @@ output:
     toc: true
     toc_float: true
 params: 
-  surveillance_project_directory: "/home/hanmeng/VIMC/gavi_vimc_cholera"
-  country: ["SLE"] #country code specified or all the countries will be used for the diagnostic report
+  surveillance_project_directory: "/Users/kaiyuezou/Desktop/diag_tmp/gavi_vimc_cholera"
+  country: ["BEN"] #country code specified or all the countries will be used for the diagnostic report
   admin_level: ["both"] #either "both", "admin1", or "admin2"
-  vac_incid_thresholds: ["0.001", "2e-04", "1e-04"] #["0.001", "2e-04", "1e-04"] if to plot all thresholds 
+  vac_incid_thresholds: ["0.001"] #["0.001", "2e-04", "1e-04"] if to plot all thresholds 
   no_vaccination_surveillance_scenario: "district-estimate" #depending on what type of no vaccination scenario has been simulated 
   args: 'myarg'
 ---
@@ -17,10 +17,10 @@ params:
 ```{r setup, include=FALSE, dev="CairoPNG", message=FALSE}
 # ## For development only 
 # params <- new.env()
-# params$surveillance_project_directory <- "/home/kaiyuezou/VIMC_Model/surveillance_project/gavi_vimc_cholera"
-# params$country <- c("SOM") #country code specified or all the countries will be used for the diagnostic report
-# params$admin_level <- c("admin2")
-# params$vac_incid_thresholds <- c("0.001", "2e-04", "1e-04")
+# params$surveillance_project_directory <- "/Users/kaiyuezou/Desktop/diag_tmp/gavi_vimc_cholera"
+# params$country <- c("AGO") #country code specified or all the countries will be used for the diagnostic report
+# params$admin_level <- c("both")
+# params$vac_incid_thresholds <- c("0.001")
 # params$no_vaccination_surveillance_scenario <- c("district-estimate")
 
 ## Adjust the parameters
@@ -166,7 +166,7 @@ plt
 ```
 
 #### True case by year at threshold 1/5000
-```{r true case by year 1/5000, fig.height=fig_height, fig.width=15, fig.cap=capFig("True cases by year")}
+```{r true case by year 1/5000, fig.cap=capFig("True cases by year"), fig.height=fig_height, fig.width=15, include=FALSE}
 if((1/5000) %in% vac_incid_thresholds){
   plt <- plot_cases(cache = cache, case_type = "true_case", threshold = 1/5000, cumulative_type = "non_cumulative", no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
 }else{
@@ -1715,26 +1715,31 @@ df_target <- df_target %>%
 df_comb_eff <- combine_eff_table(countries = countries, df_target = df_target, admin_level = params$admin_level)
 
 # format eff_table
-df_comb_eff %>%
-    pivot_wider(names_from = "confirmation_lens", values_from = c("tp_cumu", "efficiency")) %>%
-    arrange(desc(threshold)) %>%
-    reactable(
-      columns = list(
-        `tp_cumu_no-estimate` = colDef(name = "no-estimate", minWidth = 180),
-        `efficiency_no-estimate` = colDef(name = "no-estimate", minWidth = 180),
-        `tp_cumu_global-estimate` = colDef(name = "global-estimate", minWidth = 180),
-        `efficiency_global-estimate` = colDef(name = "global-estimate", minWidth = 180),
-        `tp_cumu_district-estimate` = colDef(name = "district-estimate", minWidth = 180),
-        `efficiency_district-estimate` = colDef(name = "district-estimate", minWidth = 180)
-      ),
-      columnGroups = list(
-        colGroup(name = "targeted pop (million)", columns = c("tp_cumu_no-estimate", "tp_cumu_global-estimate", "tp_cumu_district-estimate")),
-        colGroup(name = "efficiency", columns = c("efficiency_no-estimate", "efficiency_global-estimate", "efficiency_district-estimate"))
-      ),
-      groupBy = c("ISO", "threshold"),
-      style = list(color = "black",`font-family` = "Georgia", `font-size` = "11px"),
-      defaultExpanded = TRUE
-    )
+tryCatch(
+  df_comb_eff %>%
+      pivot_wider(names_from = "confirmation_lens", values_from = c("tp_cumu", "efficiency")) %>%
+      arrange(desc(threshold)) %>%
+      reactable(
+        columns = list(
+          `tp_cumu_no-estimate` = colDef(name = "no-estimate", minWidth = 180),
+          `efficiency_no-estimate` = colDef(name = "no-estimate", minWidth = 180),
+          `tp_cumu_global-estimate` = colDef(name = "global-estimate", minWidth = 180),
+          `efficiency_global-estimate` = colDef(name = "global-estimate", minWidth = 180),
+          `tp_cumu_district-estimate` = colDef(name = "district-estimate", minWidth = 180),
+          `efficiency_district-estimate` = colDef(name = "district-estimate", minWidth = 180)
+        ),
+        columnGroups = list(
+          colGroup(name = "targeted pop (million)", columns = c("tp_cumu_no-estimate", "tp_cumu_global-estimate", "tp_cumu_district-estimate")),
+          colGroup(name = "efficiency", columns = c("efficiency_no-estimate", "efficiency_global-estimate", "efficiency_district-estimate"))
+        ),
+        groupBy = c("ISO", "threshold"),
+        style = list(color = "black",`font-family` = "Georgia", `font-size` = "11px"),
+        defaultExpanded = TRUE
+      ), 
+  error = function(e) {
+    df_comb_eff
+  }
+)
 ```
 
 

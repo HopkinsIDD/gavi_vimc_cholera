@@ -36,7 +36,7 @@ check_model_setting <- function(configpath = "configs/202110gavi-3",
       if(length(list.files(path = config_file_path, pattern = paste0("^", config_file_name))) == 0){
         message(paste("The configuration file for", country, "under scenario of", scenario, "using", surveillance_scenario, "for confirmation rate and a threshold of", threshold, "doesn't exist in", config_file_path, "."))
       }else{
-        config <- yaml::read_yaml(paste0(config_file_path, "/", config_file_name, "_50.yml"))
+        config <- yaml::read_yaml(paste0(config_file_path, "/", config_file_name, "_200.yml"))
         df_setting[which(df_setting$country == country),]$scenario <- config$scenario
         df_setting[which(df_setting$country == country),]$num_samples <- as.numeric(config$vacc$num_skip_years) 
         df_setting[which(df_setting$country == country),]$threshold <- as.numeric(config$vacc$vac_incid_threshold)
@@ -87,7 +87,7 @@ check_outputs_availability <- function(rawoutpath = "output_raw/202110gavi-3",
   
   df_setting <- check_model_setting(configpath = configpath, countries = countries,
                                 scenario = scenario, surveillance_scenario = surveillance_scenario, 
-                                threshold = threshold)
+                                thresholds = threshold)
 
   log <- rep(NA, length(countries))
   output_path <- paste0(rawoutpath, "/", scenario)
@@ -472,7 +472,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     plt_table <- target_table_country %>% 
       filter(threshold == chosen_threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == no_vaccination_surveillance_scenario) 
-    coeff <- max(plt_table$dose) / max(plt_table$true_case)
+    coeff <- ifelse( max(plt_table$dose) == 0, 1, (max(plt_table$dose) / max(plt_table$true_case)) )
     plt <- plt_table %>% 
       ggplot(aes(x=year, y=true_case, group=run_id)) +
       geom_line(data = plt_table[grepl("total_country", plt_table$run_id), ], 
@@ -495,7 +495,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     plt_table <- target_table_country %>% 
       filter(threshold == chosen_threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == no_vaccination_surveillance_scenario) 
-    coeff <- max(plt_table$dose) / max(plt_table$clinical_case)
+    coeff <- ifelse( max(plt_table$dose) == 0, 1, (max(plt_table$dose) / max(plt_table$clinical_case)) )
     plt <- plt_table %>% 
       ggplot(aes(x=year, y=clinical_case, group=run_id)) +
       geom_line(data = plt_table[grepl("total_country", plt_table$run_id), ], 
@@ -518,7 +518,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
     plt_table <- target_table_country %>% 
       filter(threshold == chosen_threshold) %>%
       filter(general_scenario == "campaign_default" | surveillance_scenario == no_vaccination_surveillance_scenario) 
-    coeff <- max(plt_table$dose) / max(plt_table$confirmed_case)
+    coeff <- ifelse( max(plt_table$dose) == 0, 1, (max(plt_table$dose) / max(plt_table$confirmed_case)) )
     plt <- plt_table %>% 
       ggplot(aes(x=year, y=confirmed_case, group=run_id)) +
       geom_line(data = plt_table[grepl("total_country", plt_table$run_id), ], 
@@ -540,7 +540,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
   }else if(grepl("non", cumulative_type) & grepl("averted_tr", case_type)){
     plt_table <- target_table_country %>% 
       filter(threshold == chosen_threshold) 
-    coeff <- max(plt_table$dose) / max(plt_table$averted_true_case)
+    coeff <- ifelse( max(plt_table$dose) == 0, 1, (max(plt_table$dose) / max(plt_table$averted_true_case)) )
     plt <- plt_table %>% 
       ggplot(aes(x=year, y=averted_true_case, group=run_id)) +
       geom_line(data = plt_table[grepl("total_country", plt_table$run_id), ], 
@@ -562,7 +562,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
   }else if(grepl("non", cumulative_type) & grepl("averted_cl", case_type)){
     plt_table <- target_table_country %>% 
       filter(threshold == chosen_threshold)
-    coeff <- max(plt_table$dose) / max(plt_table$averted_clinical_case)
+    coeff <- ifelse( max(plt_table$dose) == 0, 1, (max(plt_table$dose) / max(plt_table$averted_clinical_case)) )
     plt <- plt_table %>% 
       ggplot(aes(x=year, y=averted_clinical_case, group=run_id)) +
       geom_line(data = plt_table[grepl("total_country", plt_table$run_id), ], 
@@ -584,7 +584,7 @@ plot_cases <- function(cache, case_type, threshold, cumulative_type, no_vaccinat
   }else if(grepl("non", cumulative_type) & grepl("averted_cf", case_type)){
     plt_table <- target_table_country %>% 
       filter(threshold == chosen_threshold)
-    coeff <- max(plt_table$dose) / max(plt_table$averted_confirmed_case)
+    coeff <- ifelse( max(plt_table$dose) == 0, 1, (max(plt_table$dose) / max(plt_table$averted_confirmed_case)) )
     plt <- plt_table %>% 
       ggplot(aes(x=year, y=averted_confirmed_case, group=run_id)) +
       geom_line(data = plt_table[grepl("total_country", plt_table$run_id), ], 
