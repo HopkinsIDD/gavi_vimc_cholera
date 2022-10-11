@@ -1454,6 +1454,9 @@ make_eff_table <- function(rc){
           summarize(fvp_cumu = max(fvp_cumu)) ,
         by = c("run_id", "threshold", "confirmation_lens")
       )%>%
+      # added 10/11:
+      # filter out all those fvp == 0 rows to get rid of Inf
+      filter(fvp_cumu != 0) %>%
       # calculate efficiency
       mutate(efficiency = true_ac_cumu / fvp_cumu * 1000) %>%
       group_by(threshold, confirmation_lens) %>%
@@ -1571,6 +1574,9 @@ make_eff_table_allISOs <- function(rc){
           summarize(fvp_cumu = max(fvp_cumu)) ,
         by = c("run_id", "threshold", "confirmation_lens")
       )%>%
+      # added on 10/11:
+      # filter out all those fvp == 0 rows to get rid of Inf
+      filter(fvp_cumu != 0) %>%
       # calculate efficiency
       mutate(efficiency = true_ac_cumu / fvp_cumu * 1000) %>%
       group_by(threshold, confirmation_lens) %>%
