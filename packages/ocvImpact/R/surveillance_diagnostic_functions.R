@@ -14,11 +14,13 @@
 #' @return table with model settings & scenario parameters
 #' @export
 #' @include
-check_model_setting <- function(configpath = "configs/202110gavi-3", 
+check_model_setting <- function(working_dir = NULL, 
+                                configpath = "configs/202110gavi-3", 
                                 countries,
                                 scenario,   
                                 surveillance_scenario, 
                                 thresholds, 
+                                nsamples, 
                                 ...){   
   
   # make a table for the output
@@ -30,13 +32,13 @@ check_model_setting <- function(configpath = "configs/202110gavi-3",
   for (threshold in thresholds){
 
     for(country in countries){
-      config_file_path <- paste0(configpath, "/", scenario, "/", surveillance_scenario, "/", threshold)
-      config_file_name <- paste0(country, "_", scenario, "_", surveillance_scenario)
+      config_file_path <- paste0(ifelse(is.null(working_dir), "", paste0(working_dir, "/")), configpath, "/", scenario, "/", surveillance_scenario, "/", threshold)
+      config_file_name <- paste0(country, "_", scenario, "_", surveillance_scenario, "_", nsamples, ".yml")
       
       if(length(list.files(path = config_file_path, pattern = paste0("^", config_file_name))) == 0){
         message(paste("The configuration file for", country, "under scenario of", scenario, "using", surveillance_scenario, "for confirmation rate and a threshold of", threshold, "doesn't exist in", config_file_path, "."))
       }else{
-        config <- yaml::read_yaml(paste0(config_file_path, "/", config_file_name, "_200.yml"))
+        config <- yaml::read_yaml(paste0(config_file_path, "/", config_file_name))
         df_setting[which(df_setting$country == country),]$scenario <- config$scenario
         df_setting[which(df_setting$country == country),]$num_samples <- as.numeric(config$vacc$num_skip_years) 
         df_setting[which(df_setting$country == country),]$threshold <- as.numeric(config$vacc$vac_incid_threshold)
@@ -76,7 +78,8 @@ check_model_setting <- function(configpath = "configs/202110gavi-3",
 #' @return TRUE or FALSE indicating whether the output files for the specified countries and scenarios exist in output folder, and also return warning messages to check output of which country is missing
 #' @export
 #' @include
-check_outputs_availability <- function(rawoutpath = "output_raw/202110gavi-3",
+check_outputs_availability <- function(working_dir = NULL, 
+                                        rawoutpath = "output_raw/202110gavi-3",
                                         configpath = "configs/202110gavi-3",
                                         countries,
                                         scenario,
@@ -85,9 +88,9 @@ check_outputs_availability <- function(rawoutpath = "output_raw/202110gavi-3",
                                         admin_level, 
                                         ...){
   
-  df_setting <- check_model_setting(configpath = configpath, countries = countries,
-                                scenario = scenario, surveillance_scenario = surveillance_scenario, 
-                                thresholds = threshold)
+  df_setting <- check_model_setting(working_dir = working_dir, configpath = configpath, countries = countries,
+                                    scenario = scenario, surveillance_scenario = surveillance_scenario, 
+                                    thresholds = threshold, ...)
 
   log <- rep(NA, length(countries))
   output_path <- paste0(rawoutpath, "/", scenario)
@@ -131,9 +134,10 @@ check_outputs_availability <- function(rawoutpath = "output_raw/202110gavi-3",
 #' @param pre_vac_incid_thresholds incidence rate threshold specified in the parameters
 #' @param pre_admin_levels admin levels specified in the parameters
 #' @param no_vaccination_surveillance_scenario the surveillance scenario specified for the no vaccination simulation 
+#' @param no_vaccination_threshold
 #' @return cached file names 
 get_filenames <- function(cache, surveillance_project_directory, pre_country = NULL, pre_vac_incid_thresholds = NULL, pre_admin_levels = NULL, 
-                          no_vaccination_surveillance_scenario){
+                          no_vaccination_surveillance_scenario, no_vaccination_threshold){
   
   # Get the set_all_parameters.R to have the context first
   source(file.path(surveillance_project_directory, "scripts/set_all_parameters.R"))
@@ -162,7 +166,7 @@ get_filenames <- function(cache, surveillance_project_directory, pre_country = N
                               incidence_rate_trend, "outbk", outbreak_multiplier, threshold_list, surveillance_scenarios, 
                               country_list[i], "ec", admin_list, paste0(year_list, ".tif")), 1, paste, collapse = "_")
     ec_filenames_novac <- apply(expand.grid(paste0("output_raw/", runname, "/no-vaccination/", "incid"), 
-                              incidence_rate_trend, "outbk", outbreak_multiplier, threshold_list, no_vaccination_surveillance_scenario, 
+                              incidence_rate_trend, "outbk", outbreak_multiplier, no_vaccination_threshold, no_vaccination_surveillance_scenario, 
                               country_list[i], "ec", admin_list, paste0(year_list, ".tif")), 1, paste, collapse = "_")
     ecraster_fns <- c(ec_filenames_camp, ec_filenames_novac)
     ecraster_fns <- paste0(surveillance_project_directory, "/", ecraster_fns)
@@ -185,23 +189,49 @@ get_filenames <- function(cache, surveillance_project_directory, pre_country = N
                               incidence_rate_trend, "outbk", outbreak_multiplier, threshold_list, surveillance_scenarios, 
                               country_list[i], "rc", paste0(admin_list, ".csv")), 1, paste, collapse = "_")
     targettable_fns_novac <- apply(expand.grid(paste0("output_raw/", runname, "/no-vaccination/", "incid"), 
-                              incidence_rate_trend, "outbk", outbreak_multiplier, threshold_list, no_vaccination_surveillance_scenario, 
+                              incidence_rate_trend, "outbk", outbreak_multiplier, no_vaccination_threshold, no_vaccination_surveillance_scenario, 
                               country_list[i], "rc", paste0(admin_list, ".csv")), 1, paste, collapse = "_")
+    
+    targettable_fns_novac_exist <- targettable_fns_novac
+    targettable_fns_novac_all <- apply(expand.grid(paste0("output_raw/", runname, "/no-vaccination/", "incid"), 
+                                                   incidence_rate_trend, "outbk", outbreak_multiplier, threshold_list, no_vaccination_surveillance_scenario, 
+                                                   country_list[i], "rc", paste0(admin_list, ".csv")), 1, paste, collapse = "_")
+    #file.copy(targettable_fns_novac_exist, targettable_fns_novac_all, overwrite = FALSE)
+    targettable_fns_novac <- targettable_fns_novac_all
+    
     targettable_fns <- c(targettable_fns_camp, targettable_fns_novac)
     targettable_fns <- paste0(surveillance_project_directory, "/", targettable_fns)
-    if(sum(!file.exists(targettable_fns)) > 0){stop(paste("Incomplete model outputs for target tables for country", country_list[i]))}
+    #if(sum(!file.exists(targettable_fns)) > 0){stop(paste("Incomplete model outputs for target tables for country", country_list[i]))}
 
     ## time table
     timetable_fns_camp <- apply(expand.grid(paste0("output_raw/", runname, "/campaign-default/", "incid"), 
                               incidence_rate_trend, "outbk", outbreak_multiplier, threshold_list, surveillance_scenarios, 
                               country_list[i], "time_table.csv"), 1, paste, collapse = "_")
     timetable_fns_novac <- apply(expand.grid(paste0("output_raw/", runname, "/no-vaccination/", "incid"), 
-                              incidence_rate_trend, "outbk", outbreak_multiplier, threshold_list, no_vaccination_surveillance_scenario, 
+                              incidence_rate_trend, "outbk", outbreak_multiplier, no_vaccination_threshold, no_vaccination_surveillance_scenario, 
                               country_list[i], "time_table.csv"), 1, paste, collapse = "_")
+    
+    timetable_fns_novac_exist <- timetable_fns_novac
+    timetable_fns_novac_all <- apply(expand.grid(paste0("output_raw/", runname, "/no-vaccination/", "incid"), 
+                                                 incidence_rate_trend, "outbk", outbreak_multiplier, threshold_list, no_vaccination_surveillance_scenario, 
+                                                 country_list[i], "time_table.csv"), 1, paste, collapse = "_")
+    #file.copy(timetable_fns_novac_exist, timetable_fns_novac_all, overwrite = FALSE)
+    timetable_fns_novac <- timetable_fns_novac_all
+    
     timetable_fns <- c(timetable_fns_camp, timetable_fns_novac)
     timetable_fns <- paste0(surveillance_project_directory, "/", timetable_fns)
-    if(sum(!file.exists(timetable_fns)) > 0){stop(paste("Incomplete model outputs for time tables for country", country_list[i]))}
+    #if(sum(!file.exists(timetable_fns)) > 0){stop(paste("Incomplete model outputs for time tables for country", country_list[i]))}
 
+    ##### copy and test files -- only for target table and time table for now 
+    files_exist <- sort(c(targettable_fns_novac_exist, timetable_fns_novac_exist))
+    files_all <- sort(c(targettable_fns_novac_all, timetable_fns_novac_all))
+    file.copy(files_exist, files_all, overwrite = FALSE)
+    
+    if(sum(!file.exists(targettable_fns)) > 0){stop(paste("Incomplete model outputs for target tables for country", country_list[i]))}
+    if(sum(!file.exists(timetable_fns)) > 0){stop(paste("Incomplete model outputs for time tables for country", country_list[i]))}
+    
+    
+    
     ## true confirmation rate raster
     truecomfirmrate_fns <- paste0("intermediate_raster/", country_list[i], "_trueconfirmrate_admin2.tif")  
     truecomfirmrate_fns <- paste0(surveillance_project_directory, "/", truecomfirmrate_fns)
@@ -1248,7 +1278,7 @@ get_inc_tp_doses <- function(rawoutpath = "output_raw/202110gavi-3",
     
     # first, check whether desired output files are all in the output_raw folder 
     outputs_availability <- check_outputs_availability(rawoutpath = rawoutpath ,configpath = configpath, countries = countries,
-                               scenario = scenario, surveillance_scenario = surveillance_scenario, threshold = threshold, admin_level = admin_level)
+                               scenario = scenario, surveillance_scenario = surveillance_scenario, threshold = threshold, admin_level = admin_level, nsamples = params$num_samples)
     if(outputs_availability == FALSE){
         stop(paste("Stop calculating target population as not all the required output files are available in", rawoutpath, "folder."))
     }else{
@@ -1257,7 +1287,7 @@ get_inc_tp_doses <- function(rawoutpath = "output_raw/202110gavi-3",
         output_path <- paste0(rawoutpath, "/", scenario)
         df_setting <- check_model_setting(configpath = configpath, countries = countries,
                                           scenario = scenario, surveillance_scenario = surveillance_scenario, 
-                                          threshold = threshold)
+                                          threshold = threshold, nsamples = params$num_samples)
         
         # loop through countries
         for(country in countries){

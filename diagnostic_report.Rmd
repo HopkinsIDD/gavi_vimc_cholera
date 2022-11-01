@@ -7,21 +7,25 @@ output:
     toc_float: true
 params: 
   surveillance_project_directory: "/Users/kaiyuezou/Desktop/diag_tmp/gavi_vimc_cholera"
-  country: ["BEN"] #country code specified or all the countries will be used for the diagnostic report
+  country: ["ETH"] #country code specified or all the countries will be used for the diagnostic report
+  num_samples: ["200"]
   admin_level: ["both"] #either "both", "admin1", or "admin2"
-  vac_incid_thresholds: ["0.001"] #["0.001", "2e-04", "1e-04"] if to plot all thresholds 
+  vac_incid_thresholds: ["0.001", "2e-04", "1e-04"] #["0.001", "2e-04", "1e-04"] if to plot all thresholds 
   no_vaccination_surveillance_scenario: "district-estimate" #depending on what type of no vaccination scenario has been simulated 
+  no_vaccination_threshold: "0.001"
   args: 'myarg'
 ---
 
 ```{r setup, include=FALSE, dev="CairoPNG", message=FALSE}
 # ## For development only 
-# params <- new.env()
-# params$surveillance_project_directory <- "/Users/kaiyuezou/Desktop/diag_tmp/gavi_vimc_cholera"
-# params$country <- c("AGO") #country code specified or all the countries will be used for the diagnostic report
-# params$admin_level <- c("both")
-# params$vac_incid_thresholds <- c("0.001")
-# params$no_vaccination_surveillance_scenario <- c("district-estimate")
+#params <- new.env()
+#params$surveillance_project_directory <- "/Users/kaiyuezou/Desktop/diag_tmp/gavi_vimc_cholera"
+#params$country <- c("ETH") #country code specified or all the countries will be used for the diagnostic report
+#params$num_samples <- c("200")
+#params$admin_level <- c("both")
+#params$vac_incid_thresholds <- c("0.001", "2e-04", "1e-04")
+#params$no_vaccination_surveillance_scenario <- c("district-estimate")
+#params$no_vaccination_threshold <- "0.001"
 
 ## Adjust the parameters
 vac_incid_thresholds <- as.numeric(params$vac_incid_thresholds)
@@ -103,10 +107,11 @@ capFig = function(x){
 
 # Model Settings 
 ```{r echo=FALSE}
-camp_d <- check_model_setting(countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", thresholds = params$vac_incid_thresholds)
-camp_g <- check_model_setting(countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", thresholds = params$vac_incid_thresholds)
-camp_n <- check_model_setting(countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", thresholds = params$vac_incid_thresholds)
-no_vac <- check_model_setting(countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, thresholds = params$vac_incid_thresholds)
+camp_d <- check_model_setting(countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", thresholds = params$vac_incid_thresholds, nsamples = params$num_samples)
+camp_g <- check_model_setting(countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", thresholds = params$vac_incid_thresholds, nsamples = params$num_samples)
+camp_n <- check_model_setting(countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", thresholds = params$vac_incid_thresholds, nsamples = params$num_samples)
+no_vac <- check_model_setting(countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, thresholds = params$vac_incid_thresholds, nsamples = params$num_samples)
+
 all_set <- rbind(camp_d, camp_g, camp_n, no_vac) %>% 
   arrange(country) 
 all_set %>% 
@@ -120,10 +125,10 @@ all_set %>%
 ```{r include=FALSE, message=FALSE}
 # Check whether the output is available to be read in and used 
 for(threshold in params$vac_incid_thresholds){
-  camp_d <- check_outputs_availability(countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = threshold, admin_level = params$admin_level)
-  camp_g <- check_outputs_availability(countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = threshold, admin_level = params$admin_level)
-  camp_n <- check_outputs_availability(countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = threshold, admin_level = params$admin_level)
-  no_vac <- check_outputs_availability(countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = threshold, admin_level = params$admin_level)
+  camp_d <- check_outputs_availability(working_dir = params$surveillance_project_directory, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = threshold, admin_level = params$admin_level, nsamples = params$num_samples)
+  camp_g <- check_outputs_availability(working_dir = params$surveillance_project_directory, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = threshold, admin_level = params$admin_level, nsamples = params$num_samples)
+  camp_n <- check_outputs_availability(working_dir = params$surveillance_project_directory, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = threshold, admin_level = params$admin_level, nsamples = params$num_samples)
+  no_vac <- check_outputs_availability(working_dir = params$surveillance_project_directory, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = params$no_vaccination_threshold, admin_level = params$admin_level, nsamples = params$num_samples)
   if(!all(camp_d & camp_g & camp_n & no_vac)){
     unavailable <- c("campaign-district estimate", "campaign-global estimate", "campaign-no estimate", "no vaccination")[c(camp_d, camp_g, camp_n, no_vac)]
     stop(paste0("For threshold ", threshold, ", the following scenario(s) does not have the corresponding model output: ", unavailable))
@@ -136,7 +141,7 @@ cache <- new.env()
 # Function that helps get the names of all files
 ocvImpact::get_filenames(cache = cache, surveillance_project_directory = params$surveillance_project_directory, 
     pre_country = params$country, pre_vac_incid_thresholds = params$vac_incid_thresholds, pre_admin_levels = params$admin_level, 
-    no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario)
+    no_vaccination_surveillance_scenario = params$no_vaccination_surveillance_scenario, no_vaccination_threshold = params$no_vaccination_threshold)
 
 # Functions that aggregate the output across countries
 ocvImpact::combine_output(cache = cache, surveillance_project_directory = params$surveillance_project_directory, 
