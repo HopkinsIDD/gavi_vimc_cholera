@@ -249,6 +249,27 @@ n_targeted_admins <-
 write.csv(n_targeted_admins, "output_final/202110gavi-3/eff_table/n_targeted_admins_allISOs.csv", row.names = F)
 
 
+# added on 11/9/22 --------------------------------------------------
+# to look at how many of places are missed by the fasterize() function
+library(dplyr)
+library(stringr)
+output_final_path <- "output_final/202110gavi-3"
+all_countries <- c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI", "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE")
+
+for(country in all_countries){
+    
+    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+    temp <- filter(df_tt, is_target == 1 & true_averted_cases == 0)
+    
+    if(which(all_countries == country) == 1){df_problem <- temp}
+    if(which(all_countries == country) != 1){df_problem <- rbind(df_problem, temp)}
+
+}
+
+write.csv(df_problem, "output_final/202110gavi-3/debug/df_small_targets.csv", row.names = F)
+
+
 # added on 11/10: numbers runs with targeting going on
 for(country in all_countries){
     
