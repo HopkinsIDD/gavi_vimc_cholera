@@ -3,6 +3,7 @@
 # set up
 library(dplyr)
 library(stringr)
+library(tidyr)
 source("packages/ocvImpact/R/utils_sum_output_median.R")
 output_final_path <- "output_final/202110gavi-3"
 
@@ -294,3 +295,92 @@ for(country in all_countries){
 
 write.csv(df_n_targeted_runs, "output_final/202110gavi-3/eff_table/n_targeted_runs.csv", row.names = F)
 
+
+
+## (11/16) Look into what might be the main reason for high variability in 10/10,000 scenario
+
+# select one country as an example 
+country <- "SOM"
+df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+df_tt <- df_tt %>% filter(threshold == 1e-04) %>% filter(is_target == 1)
+
+# Two possible scenarios to cause the variability:
+# 1. the incidence rate raster are on different ends, when incidence rates happen to be at lower end - targets a lot of places, vice verse;
+# 2. has many variability in the incidence rate  - different targets every layer
+
+# look at number of targets, and targets of in a certain year, under certain threshold 
+temp <- df_tt %>% filter(year == 2022) %>%
+    filter(confirmation_lens == "district-estimate" & admin_level == "admin2") %>%
+    group_by(run_id) %>%
+    arrange(confirmed_incidence_rate) %>%
+    summarize(n = n(), targets = paste(NAME_2, collapse = ", "))
+
+write.csv(temp, paste0("targets_2022_", country, ".csv"), row.names = F)
+
+
+## 11/17 Answering Elizabeth's comment:
+# Could I see "proportion of country-simulations with no targets" and 
+# associated number of unique countries with no targets by scenario? 
+# Essentially collapsing the country stratification for that Table S2?
+setwd("/home/hanmeng/VIMC/gavi_vimc_cholera")
+library(tidyr)
+all_countries <- c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI", "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE")
+
+df_result <- expand_grid(
+    threshold = c(1e-04, 2e-04, 1e-03),
+    confirmation_lens = c("district-estimate", "global-estimate", "no-estimate"),
+    admin_level = c("admin1", "admin2")
+)
+
+## look at whether a country has any targeting going on by scenario
+for(country in all_countries){
+    # read in target table 
+    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+
+    # added on 11/10: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
+    df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
+
+    # see if this country has any targeting going on for all the 18 scenarios
+    temp <- df_tt %>% filter(is_target == 1) %>% group_by(threshold, confirmation_lens, admin_level) %>% count() %>%
+        right_join(df_result, by = c("threshold", "confirmation_lens", "admin_level")) %>%
+        mutate(n = ifelse(!is.na(n), 1, 0))
+    colnames(temp)[4] <- country
+
+    if(which(all_countries == country) == 1){df_targeted <- temp}
+    if(which(all_countries == country) != 1){df_targeted <- df_targeted %>% left_join(temp,  by = c("threshold", "confirmation_lens", "admin_level"))}
+
+}
+## if there is no targeting going on in this country for all the simulations (for a given scenario), then noted as 0, otherwise 1.
+write.csv(df_targeted, paste0(output_final_path, "/eff_table/ind_targeted.csv"), row.names = FALSE)
+
+
+## Then look at for each simulation, whether a country has been targeted
+df_result <- expand_grid(
+    run_id = 1:200,
+    threshold = c(1e-04, 2e-04, 1e-03),
+    confirmation_lens = c("district-estimate", "global-estimate", "no-estimate"),
+    admin_level = c("admin1", "admin2")
+)
+
+for(country in all_countries){
+     # read in target table 
+    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+
+    # added on 11/10: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
+    df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
+
+    temp <- df_tt %>% filter(is_target == 1) %>% group_by(run_id, threshold, confirmation_lens, admin_level) %>%
+        count() %>%
+        full_join(df_result, by = c("run_id", "threshold", "confirmation_lens", "admin_level")) %>%
+        mutate(ind_targeted = ifelse(!is.na(n), 1, 0)) %>%
+        select(-n)
+    colnames(temp)[5] <- country
+    
+    if(which(all_countries == country) == 1){df_targeted_byrun <- temp}
+    if(which(all_countries == country) != 1){df_targeted_byrun <- df_targeted_byrun %>% left_join(temp,  by = c("run_id", "threshold", "confirmation_lens", "admin_level"))}
+
+}
+write.csv(df_targeted_byrun, paste0(output_final_path, "/eff_table/ind_targeted_byrun.csv"), row.names = FALSE)
