@@ -91,8 +91,8 @@ df_fvp <- df_tt_allISOs %>%
     
 df_temp <- df_tp %>% 
     full_join(df_ac, by = c("year", "run_id", "threshold", "confirmation_lens", "admin_level")) %>%
-    full_join(df_fvp, by = c("year", "run_id", "threshold", "confirmation_lens", "admin_level")) %>%
-    filter(year <= 2030)
+    full_join(df_fvp, by = c("year", "run_id", "threshold", "confirmation_lens", "admin_level"))
+
 
 write.csv(df_temp, paste0(output_final_path, "/temp_table/df_temp_7.csv"), row.names = F)
 
@@ -133,7 +133,7 @@ df_tp <- df_temp %>%
     dplyr::select(threshold, confirmation_lens, admin_level, tp_cumu_lb, tp_cumu_median, tp_cumu_ub)
     
 df_eff <- df_temp %>%
-   filter(year == 2030) %>%
+   filter(year == 2035) %>%
    mutate(efficiency = true_ac_cumu / fvp_cumu * 1000) %>%
    group_by(threshold, confirmation_lens, admin_level) %>%
    #summarize(efficiency_mean = mean(efficiency, na.rm = TRUE),
@@ -149,7 +149,7 @@ df_eff <- df_temp %>%
 
 
 df_ac <- df_temp %>%
-    filter(year == 2030) %>%
+    filter(year == 2035) %>%
     group_by(threshold, confirmation_lens, admin_level) %>%
     #summarize(ac_mean = mean(true_ac_cumu, na.rm = TRUE),
     #            ac_sd = sd(true_ac_cumu, na.rm = TRUE),
@@ -384,3 +384,26 @@ for(country in all_countries){
 
 }
 write.csv(df_targeted_byrun, paste0(output_final_path, "/eff_table/ind_targeted_byrun.csv"), row.names = FALSE)
+
+
+## (11/22) Number of unique countries targeted
+setwd(paste0(output_final_path, "/eff_table"))
+ind_targeted_byrun <- read.csv("ind_targeted_byrun.csv")
+n_targeted_ISOs <- ind_targeted_byrun %>%
+  pivot_longer(cols = 5:39, names_to = "ISO", values_to = "ind_targeted") %>%
+  group_by(confirmation_lens, threshold, admin_level, run_id) %>%
+  summarize(n_targeted_ISO = sum(ind_targeted))  %>%
+  group_by(confirmation_lens, threshold, admin_level) %>%
+  summarize(n_targeted_ISO_lb = quantile(n_targeted_ISO, 0.025, na.rm = T),
+            n_targeted_ISO_median = quantile(n_targeted_ISO, 0.5, na.rm = T),
+            n_targeted_ISO_ub = quantile(n_targeted_ISO, 0.975, na.rm = T)) %>%
+  mutate(n_targeted_ISO_lb = round(n_targeted_ISO_lb),
+         n_targeted_ISO_median = round(n_targeted_ISO_median),
+         n_targeted_ISO_ub = round(n_targeted_ISO_ub))
+
+# combine with targeted admin units 
+n_targeted_admins_allISOs <- read.csv("n_targeted_admins_allISOs.csv")
+n_targeted_admins_ISOs <- n_targeted_admins_allISOs %>%
+    left_join(n_targeted_ISOs, by = c("confirmation_lens", "threshold", "admin_level"))
+
+write.csv(n_targeted_admins_ISOs, "n_targeted_admins_ISOs.csv", row.names = FALSE)
