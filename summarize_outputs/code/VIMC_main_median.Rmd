@@ -345,6 +345,17 @@ ggsave(plot = figS3, filename = "figures/figS3.jpg", height = 12, width = 14)
 
 <br>
 
+### Figure S4 OCV Efficiency over national baseline incidence
+```{r fig.height = 6, fig.width = 8}
+figS4 <- plot_eff_over_inc(df_sum = df_dose_eff_median, df_incidence = df_incid0)
+figS4 
+
+ggsave(plot = figS4, filename = "figures/figS4.jpg", height = 6, width = 8)
+```
+
+
+<br>
+
 ### Table S1 Full table of FVP, averted cases, efficiency, and targeted admin units.
 ```{r full table}
 tableS1 <- tab %>%
@@ -500,16 +511,4 @@ save_as_docx(tab_byISO, path = "tables/tableS3.docx")
 ```
 
 <br>
-
-```{r fig.height = 6, fig.width = 8, eval = FALSE}
-### Figure S Efficiency over incidence
-eff_over_inc <- plot_eff_over_inc(df_sum = df_dose_eff_median, df_incidence = df_incid0)
-ggsave(plot = eff_over_inc, filename = "figures/figS5.jpg", height = 6, width = 8)
-
-# limited to only to those under 0.0005
-eff_over_inc_zoom <- plot_eff_over_inc(df_sum = df_dose_eff_median, df_incidence = df_incid0 %>% filter(baseline_incidence < 0.0005))
-ggsave(plot = eff_over_inc, filename = "figures/figS5.jpg", height = 6, width = 8)
-```
-
-
 

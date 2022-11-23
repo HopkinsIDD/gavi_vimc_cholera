@@ -247,18 +247,18 @@ plot_eff_over_inc <- function(df_sum,
     mutate(confirmation_lens = case_when(confirmation_lens == "district-estimate" ~ "District labs",
                                          confirmation_lens == "global-estimate" ~ "National lab",
                                          confirmation_lens == "no-estimate" ~ "Clinical definition")) %>%
-    mutate(threshold = case_when(threshold == 1e-03 ~ "10/10,000",
-                                 threshold == 2e-04 ~ "2/10,000",
-                                 threshold == 1e-04 ~ "1/10,000")) %>%
-    mutate(threshold = factor(threshold, levels = c("10/10,000", "2/10,000", "1/10,000"))) %>%
-    mutate(admin_level = case_when(admin_level == "admin1" ~ "Province-level campaigns",
-                                   admin_level == "admin2" ~ "District-level campaigns ")) %>%
+    mutate(threshold = case_when(threshold == 1e-03 ~ "10 per 10,000",
+                                 threshold == 2e-04 ~ "2 per 10,000",
+                                 threshold == 1e-04 ~ "1 per 10,000")) %>%
+    mutate(threshold = factor(threshold, levels = c("10 per 10,000", "2 per 10,000", "1 per 10,000"))) %>%
+    mutate(admin_level = case_when(admin_level == "admin1" ~ "Province-level targeting",
+                                   admin_level == "admin2" ~ "District-level targeting ")) %>%
     ggplot(aes(x = baseline_incidence, y = efficiency, color = as.factor(threshold))) +
     geom_point() + 
     geom_smooth(alpha = 0.3) + 
     facet_grid(confirmation_lens ~ admin_level, scales = "free", space = "free") + 
     theme_bw() +
-    xlab("Incidence rate of clinical cases") + 
+    xlab("Country-level mean annual incidence rate") + 
     ylab("OCV Efficiency") +
     labs(color = "Threshold") +
     scale_color_brewer(palette="Set2")
