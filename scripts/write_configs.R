@@ -106,7 +106,9 @@ for(scn in scenarios){
       pars$sim_start_year <- sim_start_year
       pars$vac_start_year <- vac_start_year
       pars$vac_end_year <- vac_end_year
-      pars$sim_end_year <- sim_end_year           
+      pars$sim_end_year <- sim_end_year   
+      pars$use_mean_ir <- use_mean_ir
+      pars$mean_ir_span <- mean_ir_span       
 
       lapply(1:nrow(pars), function(i){
         par_row <- pars[i,]

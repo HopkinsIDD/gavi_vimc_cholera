@@ -48,6 +48,8 @@ run_surveillance_scenario <- function(
   vac_start_year <- as.numeric(config$vacc$vac_start_year)
   vac_end_year <- as.numeric(config$vacc$vac_end_year)
   sim_end_year <- as.numeric(config$vacc$sim_end_year)
+  use_mean_ir <- as.logical(config$vacc$use_mean_ir)
+  mean_ir_span <- as.numeric(config$vacc$mean_ir_span)
   num_skip_years <- as.numeric(config$vacc$num_skip_years)
 
   incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
@@ -103,7 +105,8 @@ run_surveillance_scenario <- function(
                                                   surveillance_scenario = surveillance_scenario, 
                                                   vac_interval = vac_interval, 
                                                   vac_start_year = vac_start_year, vac_end_year = vac_end_year, 
-                                                  num_skip_years = num_skip_years, rc_targeted = rc_targeted)
+                                                  num_skip_years = num_skip_years, rc_targeted = rc_targeted, 
+                                                  use_mean_ir = use_mean_ir, mean_ir_span = mean_ir_span)
     }
     end.time <- Sys.time()
     elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
@@ -216,7 +219,7 @@ run_surveillance_scenario <- function(
     #### Get ready for the next year -- the ec_list is deleted from within
     start.time <- Sys.time()
     pop_plus_1 <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, (model_year + 1))
-    rc_list <- surveillance_add_rc_new_row(rc_list, ec_list, pop_plus_1, model_year, sim_start_year, sim_end_year, shp1, shp2, nsamples)
+    rc_list <- surveillance_add_rc_new_row(rc_list, ec_list, pop_plus_1, model_year, sim_start_year, sim_end_year, shp1, shp2, nsamples, mean_ir_span)
     
     if(exists("sus_list") & scenario == "campaign-default"){sus_list <- NULL}
     if(exists("ec_list")){rm(ec_list)}

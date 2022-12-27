@@ -32,6 +32,8 @@ sim_start_year <- 2022
 vac_start_year <- 2022 #we assume that vaccination campaign starts and ends at the beginning of each year 
 vac_end_year <- 2030
 sim_end_year <- 2035 
+use_mean_ir <- TRUE
+mean_ir_span <- 5
 
 #====== Other Parameters ======#
 num_skip_years <- 3 #district level, relevant to the surveillance project

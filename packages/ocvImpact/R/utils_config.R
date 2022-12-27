@@ -57,6 +57,8 @@ prepare_config <- function(p, configpath){
       "  vac_start_year: ", p$vac_start_year, "\n",
       "  vac_end_year: ", p$vac_end_year, "\n",
       "  sim_end_year: ", p$sim_end_year, "\n",
+      "  use_mean_ir: ", p$use_mean_ir, "\n",
+      "  mean_ir_span: ", p$mean_ir_span, "\n",
       "surveillance_scenario:\n",
       "  surveillance_scenario: '", p$surveillance_scenario, "'\n",
       "setting:\n",
