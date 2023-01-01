@@ -677,9 +677,9 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
         if(i == 1){
           mean_true_incidence_rate_tmp <- rc1$true_incidence_rate
         }else if(model_year - sim_start_year + 1 >= i){
-          mean_true_incidence_rate_tmp <- cbind( mean_true_incidence_rate_tmp, rc_list[[layer_idx]]$rc1[year = model_year-(i-2), ]$true_incidence_rate )
+          mean_true_incidence_rate_tmp <- cbind( mean_true_incidence_rate_tmp, rc_list[[layer_idx]]$rc1[rc_list[[layer_idx]]$rc1$year == model_year-(i-2), ]$true_incidence_rate )
         }else{
-          mean_true_incidence_rate_tmp <- cbind( mean_true_incidence_rate_tmp, rc_list[[layer_idx]]$rc1[year = sim_start_year, ]$true_incidence_rate )
+          mean_true_incidence_rate_tmp <- cbind( mean_true_incidence_rate_tmp, rc_list[[layer_idx]]$rc1[rc_list[[layer_idx]]$rc1$year == sim_start_year, ]$true_incidence_rate )
         }
       }
       mean_true_incidence_rate_tmp <- apply(mean_true_incidence_rate_tmp, 1, mean)
@@ -725,9 +725,9 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
         if(i == 1){
           mean_true_incidence_rate_tmp <- rc2$true_incidence_rate
         }else if(model_year - sim_start_year + 1 >= i){
-          mean_true_incidence_rate_tmp <- cbind( mean_true_incidence_rate_tmp, rc_list[[layer_idx]]$rc2[year = model_year-(i-2), ]$true_incidence_rate )
+          mean_true_incidence_rate_tmp <- cbind( mean_true_incidence_rate_tmp, rc_list[[layer_idx]]$rc2[rc_list[[layer_idx]]$rc2$year == model_year-(i-2), ]$true_incidence_rate )
         }else{
-          mean_true_incidence_rate_tmp <- cbind( mean_true_incidence_rate_tmp, rc_list[[layer_idx]]$rc2[year = sim_start_year, ]$true_incidence_rate )
+          mean_true_incidence_rate_tmp <- cbind( mean_true_incidence_rate_tmp, rc_list[[layer_idx]]$rc2[rc_list[[layer_idx]]$rc2$year == sim_start_year, ]$true_incidence_rate )
         }
       }
       mean_true_incidence_rate_tmp <- apply(mean_true_incidence_rate_tmp, 1, mean)

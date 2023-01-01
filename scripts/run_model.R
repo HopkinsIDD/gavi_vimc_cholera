@@ -14,10 +14,11 @@ if (Sys.getenv("INTERACTIVE_RUN", FALSE)) {
 if (as.logical(Sys.getenv("RUN_ON_MARCC",FALSE))) {
 
   r_lib <- Sys.getenv("R_LIBRARY_DIRECTORY", FALSE)
+  skip_checks <- as.logical(Sys.getenv("TESTING_RUN", FALSE))
   library(gert, lib=r_lib)
 
   #### Check local changes 
-  if((nrow(gert::git_status(repo=getwd())) != 0)){
+  if((nrow(gert::git_status(repo=getwd())) != 0) & !skip_checks){
     mod_fns <- gert::git_status(repo=getwd())$file
     checklist <- c("^configs/", "^packages/ocvImpact/R/", "^scripts/")
     ignorelist <- c(".DS_Store$")
