@@ -81,6 +81,10 @@ mkdir -p $R_LIBRARY_DIRECTORY \
                     install.packages('codetools', lib='$R_LIBRARY_DIRECTORY') }; 
                 if (!require(package = 'gert', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
                     install.packages('gert', lib='$R_LIBRARY_DIRECTORY') }; 
+                if (!require(package = 'vctrs', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install.packages('vctrs', lib='$R_LIBRARY_DIRECTORY') }; 
+                if (!require(package = 'lifecycle', character.only = T, lib='$R_LIBRARY_DIRECTORY')) {
+                    install.packages('lifecycle', lib='$R_LIBRARY_DIRECTORY') }; 
                 
                 library(drat, lib='$R_LIBRARY_DIRECTORY'); 
                 drat:::add('vimc'); 

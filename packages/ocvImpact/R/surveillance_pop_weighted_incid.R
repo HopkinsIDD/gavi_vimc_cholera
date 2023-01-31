@@ -13,8 +13,11 @@
 pop_weighted_admin_mean_incid <- function(datapath, modelpath, incidence_rate_raster, pop_raster, country, admin_shp){
   
   pop_for_weights <- raster::resample(pop_raster, incidence_rate_raster)
-  
   case_raster <- incidence_rate_raster * pop_for_weights
+  
+  # pop_for_weights <- pop_raster
+  # case_raster <- raster::overlay(incidence_rate_raster, pop_for_weights, fun = function(x, y){ x*y },
+  #                               recycle = TRUE, unstack = TRUE) 
   # case_vector <- raster::extract(case_raster, admin_shp, method = 'bilinear', fun = sum, na.rm = TRUE)
   # pop_vector <- raster::extract(pop_for_weights, admin_shp, method = 'bilinear', fun = sum, na.rm = TRUE)
   case_vector <- exactextractr::exact_extract(case_raster, admin_shp, 'sum')

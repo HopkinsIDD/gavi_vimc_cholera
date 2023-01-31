@@ -125,6 +125,9 @@ load_baseline_incidence <- function(datapath,
   ## load population data of the first year 
   pop_baseline <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, baseline_year)
   
+  ## mask the incidence raster to population raster first 
+  country_baseline <- raster::mask(country_baseline, pop_baseline)
+
   ## if the incidence rate trend should be implemented 
   if(incidence_rate_trend){
     incid_trend_function <- ocvImpact::generate_flatline_multiplier(
@@ -168,26 +171,24 @@ load_baseline_incidence <- function(datapath,
 
   for(layer_idx in 1:nsamples){
     
-    ## get the right distribution 
+    ### get the right distribution 
     # confirm_rate_value <- MCMCglmm::rtnorm(n = nrow(shp2), mean = omicron_dataset$mean, sd = omicron_dataset$sd, lower = 0, upper = 1) #truncated normal distribution
     # confirm_rate_value <- runif(n = nrow(shp2), min = 0, max = 1) #uniform distribution 
     # confirm_rate_value <- rnorm(n = nrow(shp2), mean = omicron_dataset$mean, sd = omicron_dataset$sd) #discarded function
     # updated 8/30/22 using the predictive distribution
     confirm_rate_value <- rbeta(n = nrow(shp2), shape1 = omicron_dataset$shape1, shape2 = omicron_dataset$shape2) 
 
-    ## get one layer 
+
+    ### get clinical incid2 first to get the true confirm rate raster and clinical case raster 
     country_baseline_single_layer <- country_baseline[[layer_idx]]
-    ## summarize rasters to admin level 1
-    incid1 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = country_baseline_single_layer, pop_raster = pop_baseline, country, admin_shp = shp1)
-    ## summarize rasters to admin level 2
     incid2 <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = country_baseline_single_layer, pop_raster = pop_baseline, country, admin_shp = shp2)
 
     confirm_rate_df <- dplyr::mutate(shp2, 
                                     true_confirm_rate = confirm_rate_value, 
-                                    true_incidence_rate = incid2 * true_confirm_rate, 
-                                    pop_model = pop2,
-                                    confirmed_incidence_rate = incid2, 
-                                    observed_case = confirmed_incidence_rate * pop_model) 
+                                    # true_incidence_rate = incid2 * true_confirm_rate, 
+                                    # pop_model = pop2,
+                                    # confirmed_incidence_rate = incid2, 
+                                    observed_case = incid2 * pop2) 
     
     ## rasterize
     if(!file.exists(confirm_rate_fn)){
@@ -213,12 +214,20 @@ load_baseline_incidence <- function(datapath,
     )
     observed_case_raster <- raster::mask(observed_case_raster, raster1_template, updatevalue = NA)
     confirm_rate_value_for_admin1 <- pop_weighted_admin_mean_incid(datapath, modelpath, confirm_rate_raster_one_layer, observed_case_raster, country, admin_shp = shp1)
-    rm(confirm_rate_raster_one_layer, observed_case_raster)
+    
 
-    ## make the df
+    ### Get the true incidence rates
+    country_baseline_single_layer_true <- country_baseline_single_layer * confirm_rate_raster_one_layer
+    incid1_true <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = country_baseline_single_layer_true, pop_raster = pop_baseline, country, admin_shp = shp1)
+    incid2_true <- pop_weighted_admin_mean_incid(datapath, modelpath, incidence_rate_raster = country_baseline_single_layer_true, pop_raster = pop_baseline, country, admin_shp = shp2)
+    ## clean up
+    rm(confirm_rate_raster_one_layer, observed_case_raster, country_baseline_single_layer, confirm_rate_raster_one_layer, country_baseline_single_layer_true)
+
+
+    ### Make the df
     # get incidence and pop table (admin 1 level)
     rc1 <- dplyr::mutate(shp1, 
-                        true_incidence_rate = incid1 * confirm_rate_value_for_admin1,
+                        true_incidence_rate = incid1_true,
                         confirmation_lens = NA,
                         confirmation_rate = NA, 
                         confirmed_incidence_rate = NA,  
@@ -241,7 +250,7 @@ load_baseline_incidence <- function(datapath,
     
     # get incidence and pop table (admin 2 level)
     rc2 <- dplyr::mutate(shp2, 
-                        true_incidence_rate = incid2 * confirm_rate_value,
+                        true_incidence_rate = incid2_true,
                         confirmation_lens = NA,
                         confirmation_rate = NA, 
                         confirmed_incidence_rate = NA,  
@@ -634,8 +643,8 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
   ## loop through all the layers 
   for (layer_idx in 1:nsamples){
 
-    if(!is.null(admin1_lambda_list)){lambda1 <- admin1_lambda_list[[layer_idx]]}
-    if(!is.null(admin2_lambda_list)){lambda2 <- admin2_lambda_list[[layer_idx]]}
+    if(!is.null(admin1_lambda_list)){lambda1 <- admin1_lambda_list[[layer_idx]]; lambda1[is.infinite(lambda1)] <- 0}
+    if(!is.null(admin2_lambda_list)){lambda2 <- admin2_lambda_list[[layer_idx]]; lambda2[is.infinite(lambda2)] <- 0}
     if(!is.null(true_case1_all)){true_case1 <- true_case1_all[[layer_idx]]}
     if(!is.null(true_case2_all)){true_case2 <- true_case2_all[[layer_idx]]}
 

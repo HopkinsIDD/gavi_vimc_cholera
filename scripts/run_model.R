@@ -15,6 +15,7 @@ if (as.logical(Sys.getenv("RUN_ON_MARCC",FALSE))) {
 
   r_lib <- Sys.getenv("R_LIBRARY_DIRECTORY", FALSE)
   skip_checks <- as.logical(Sys.getenv("TESTING_RUN", FALSE))
+  print(paste0("Whether to skip checks: ", skip_checks))
   library(gert, lib=r_lib)
 
   #### Check local changes 
@@ -51,6 +52,8 @@ if (as.logical(Sys.getenv("RUN_ON_MARCC",FALSE))) {
 ### Libraries -- using the consistent one 7/2021
 if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   r_lib <- Sys.getenv("R_LIBRARY_DIRECTORY", FALSE)
+  library(vctrs, lib=r_lib)
+  library(lifecycle, lib=r_lib)
   library(codetools, lib=r_lib)
   library(remotes, lib=r_lib)
   library(sp, lib=r_lib)

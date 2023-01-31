@@ -65,6 +65,7 @@ mkdir -p $R_LIBRARY_DIRECTORY \
                 install.packages('MCMCglmm', lib='$R_LIBRARY_DIRECTORY'); 
                 install.packages('codetools', lib='$R_LIBRARY_DIRECTORY'); 
                 install.packages('gert', lib='$R_LIBRARY_DIRECTORY'); 
+                install.packages(c('vctrs', 'lifecycle'), lib='$R_LIBRARY_DIRECTORY'); 
                 library(drat, lib='$R_LIBRARY_DIRECTORY'); 
                 drat:::add('vimc'); 
                 install.packages('montagu', lib='$R_LIBRARY_DIRECTORY'); 
