@@ -22,6 +22,7 @@ vacc:
   mean_ir_span: 5
 surveillance_scenario:
   surveillance_scenario: 'global-estimate'
+  testing_sensitivity: 0.8
 setting:
   incidence_rate_trend: FALSE
   outbreak_multiplier: FALSE

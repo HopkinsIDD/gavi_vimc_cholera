@@ -102,6 +102,7 @@ for(scn in scenarios){
       pars$vac_admin_level <- vac_admin_level
       pars$vac_coverage <- vac_coverage
       pars$surveillance_scenario <- surveillance_scenario 
+      pars$testing_sensitivity <- testing_sensitivity[[surveillance_scenario]]
       pars$vac_interval <- vac_interval
       pars$sim_start_year <- sim_start_year
       pars$vac_start_year <- vac_start_year

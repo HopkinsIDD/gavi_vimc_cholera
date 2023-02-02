@@ -61,6 +61,7 @@ prepare_config <- function(p, configpath){
       "  mean_ir_span: ", p$mean_ir_span, "\n",
       "surveillance_scenario:\n",
       "  surveillance_scenario: '", p$surveillance_scenario, "'\n",
+      "  testing_sensitivity: ", p$testing_sensitivity, "\n",
       "setting:\n",
       "  incidence_rate_trend: ", p$incidence_rate_trend, "\n",
       "  outbreak_multiplier: ", p$outbreak_multiplier, "\n", 

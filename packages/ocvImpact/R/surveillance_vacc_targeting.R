@@ -330,6 +330,7 @@ load_baseline_incidence <- function(datapath,
 #' @param rc_targeted
 #' @param use_mean_ir
 #' @param mean_ir_span
+#' @param testing_sensitivity true sensitivity of testing 
 #' @return 
 #' @export
 #' @include
@@ -343,7 +344,8 @@ update_targets_list <- function(datapath, modelpath, country, scenario,
                                 num_skip_years, #this is district level 
                                 rc_targeted, 
                                 use_mean_ir,  #whether use the mean true ir averaged across years 
-                                mean_ir_span  #how many years to average upon 
+                                mean_ir_span,  #how many years to average upon 
+                                testing_sensitivity
                                 ){
   # Decide if just target one admin level 
   if(length(rc_targeted) == 2){
@@ -376,12 +378,13 @@ update_targets_list <- function(datapath, modelpath, country, scenario,
         cat(paste("The country level vaccination elapse year for the admin2 scenario is", (model_year - max(rc_list$rc2$latest_target_year, na.rm = TRUE))))
         stop("Error: inconsistency between admin1 and admin2 regarding whether or not to carry out country-level campaign. ")
       }
-      rc_list <- update_novacc_year(datapath, rc_list, model_year, surveillance_scenario = surveillance_scenario, rc_targeted, use_mean_ir, mean_ir_span)
+      rc_list <- update_novacc_year(datapath, rc_list, model_year, surveillance_scenario = surveillance_scenario, rc_targeted, use_mean_ir, mean_ir_span, testing_sensitivity)
       
     }else{
       rc_list <- update_vacc_year(datapath, modelpath, country, rc_list, model_year, 
                                   campaign_cov, threshold, surveillance_scenario, 
-                                  vac_start_year, vac_end_year, num_skip_years, rc_targeted, use_mean_ir, mean_ir_span)
+                                  vac_start_year, vac_end_year, num_skip_years, rc_targeted, 
+                                  use_mean_ir, mean_ir_span, testing_sensitivity)
     }
 
   # if just one admin level 
@@ -400,12 +403,13 @@ update_targets_list <- function(datapath, modelpath, country, scenario,
         (model_year < vac_start_year) ){
       
       message(paste("The vaccination campaign is skipped for year", model_year, "for the whole country", country))
-      rc_list <- update_novacc_year(datapath, rc_list, model_year, surveillance_scenario = surveillance_scenario, rc_targeted, use_mean_ir, mean_ir_span)
+      rc_list <- update_novacc_year(datapath, rc_list, model_year, surveillance_scenario = surveillance_scenario, rc_targeted, use_mean_ir, mean_ir_span, testing_sensitivity)
       
     }else{
       rc_list <- update_vacc_year(datapath, modelpath, country, rc_list, model_year, 
                                   campaign_cov, threshold, surveillance_scenario, 
-                                  vac_start_year, vac_end_year, num_skip_years, rc_targeted, use_mean_ir, mean_ir_span)
+                                  vac_start_year, vac_end_year, num_skip_years, rc_targeted, 
+                                  use_mean_ir, mean_ir_span, testing_sensitivity)
     }
   }
   
@@ -423,10 +427,11 @@ update_targets_list <- function(datapath, modelpath, country, scenario,
 #' @param rc_targeted
 #' @param use_mean_ir
 #' @param mean_ir_span
+#' @param testing_sensitivity
 #' @return 
 #' @export
 #' @include
-update_novacc_year <- function(datapath, rc_list, model_year, surveillance_scenario, rc_targeted, use_mean_ir, mean_ir_span){
+update_novacc_year <- function(datapath, rc_list, model_year, surveillance_scenario, rc_targeted, use_mean_ir, mean_ir_span, testing_sensitivity){
   for(rcs in rc_targeted){
     # Update the latest target year, if all NA's from last year or this is the first simulation year, no need to update
     if(model_year > min(rc_list[[rcs]]$year)){ 
@@ -436,7 +441,7 @@ update_novacc_year <- function(datapath, rc_list, model_year, surveillance_scena
     }
     # Update the other variables 
     omicron_dataset <- readr::read_csv(paste0(datapath, "/confirmation_rate/parameters.csv")) #the true confirmation rate 
-    rc_list <- get_confirmed_incidence_rate(rc_list, model_year, surveillance_scenario, omicron_dataset, rcs, use_mean_ir, mean_ir_span)
+    rc_list <- get_confirmed_incidence_rate(rc_list, model_year, surveillance_scenario, omicron_dataset, rcs, use_mean_ir, mean_ir_span, testing_sensitivity)
 
     rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmation_lens <- surveillance_scenario
     rc_list[[rcs]][rc_list[[rcs]]$year == model_year, c("is_target", "actual_prop_vaccinated", "actual_fvp")] <- 0 
@@ -461,12 +466,14 @@ update_novacc_year <- function(datapath, rc_list, model_year, surveillance_scena
 #' @param rc_targeted
 #' @param use_mean_ir
 #' @param mean_ir_span
+#' @param testing_sensitivity
 #' @return 
 #' @export
 #' @include
 update_vacc_year <- function( datapath, modelpath, country, rc_list, model_year, 
                               campaign_cov, threshold, surveillance_scenario, 
-                              vac_start_year, vac_end_year, num_skip_years, rc_targeted, use_mean_ir, mean_ir_span){
+                              vac_start_year, vac_end_year, num_skip_years, rc_targeted, 
+                              use_mean_ir, mean_ir_span, testing_sensitivity){
   ### Only targeting the population above 1 year old
   if(!"pop_by_age" %in% names(cache)){
     source(paste0("scripts/montagu_handle.R"))
@@ -494,7 +501,7 @@ update_vacc_year <- function( datapath, modelpath, country, rc_list, model_year,
   ### Loop through the targeted admin levels 
   for (rcs in rc_targeted){
     ## Assign
-    rc_list <- get_confirmed_incidence_rate(rc_list, model_year, surveillance_scenario, omicron_dataset, rcs, use_mean_ir, mean_ir_span)
+    rc_list <- get_confirmed_incidence_rate(rc_list, model_year, surveillance_scenario, omicron_dataset, rcs, use_mean_ir, mean_ir_span, testing_sensitivity)
 
     ### Update the rest of the variables 
     ## Update the target and vaccinated pop
@@ -535,17 +542,19 @@ update_vacc_year <- function( datapath, modelpath, country, rc_list, model_year,
 #' @param rcs
 #' @param use_mean_ir 
 #' @param mean_ir_span
+#' @param testing_sensitivity
 #' @return 
 #' @export
 #' @include
-get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scenario, omicron_dataset, rcs, use_mean_ir, mean_ir_span){
+get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scenario, omicron_dataset, rcs, use_mean_ir, mean_ir_span, testing_sensitivity){
   ##### The same district/country can only use the same confirmation rate across years but different across layers 
 
   ### Get the confirmation rate
   rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmation_lens <- surveillance_scenario
   
   if(surveillance_scenario == "no-estimate"){ #clinical cases = confirmed cases
-    rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmation_rate <- 1
+    no_estimate <- testing_sensitivity * 1
+    rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmation_rate <- no_estimate
 
   }else if(surveillance_scenario == "global-estimate"){
     ## global estimate scenario 
@@ -553,6 +562,7 @@ get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scena
       # global_estimate <- rnorm(n = 1, mean = omicron_dataset$mean, sd = omicron_dataset$sd)
       global_estimate <- weighted.mean(rc_list$rc2[rc_list$rc2$year == model_year, ]$true_confirm_rate, 
         rc_list$rc2[rc_list$rc2$year == model_year, ]$true_incidence_rate * rc_list$rc2[rc_list$rc2$year == model_year, ]$pop_model / rc_list$rc2[rc_list$rc2$year == model_year, ]$true_confirm_rate) #just admin2 because the true confirm rate is at admin2 level, weighted on the observed cases
+      global_estimate <- testing_sensitivity * global_estimate
     }else{
       global_estimate <- unique(rc_list[[rcs]]$confirmation_rate)[1]
     }
@@ -560,7 +570,8 @@ get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scena
     
   }else if(surveillance_scenario == "district-estimate"){
     ## district estimate scenario 
-    rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmation_rate <- rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$true_confirm_rate
+    district_estimate <- testing_sensitivity * rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$true_confirm_rate
+    rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$confirmation_rate <- district_estimate
   }
 
   ### Update the confirmed_incidence_rate

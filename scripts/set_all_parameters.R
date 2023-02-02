@@ -27,6 +27,7 @@ vac_unconstrained <- TRUE #or refer to an external coverage dataset
 vac_admin_level <- "both" #c("both", "admin1", "admin2"), running both admin levels for now, running a single one when issues occur 
 vac_coverage <- 0.68 #borrowed from the method section of the previous study (https://doi.org/10.1371/journal.pmed.1003003) 
 surveillance_scenarios <- c("no-estimate", "global-estimate", "district-estimate") #use all three at the same time for now; the estimates can be drawn from the external dataset instead of being teemed in the config 
+testing_sensitivity <- list("no-estimate" = 1, "global-estimate" = 0.8, "district-estimate" = 1)
 vac_interval <- 1 #country level, unit: years
 sim_start_year <- 2022
 vac_start_year <- 2022 #we assume that vaccination campaign starts and ends at the beginning of each year 

@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=camp_df
-#SBATCH --time=2-23:59:00
+#SBATCH --job-name=camp_df1
+#SBATCH --time=3-00:00:00
 #SBATCH --mem=30G
 #SBATCH --array=0-43%44
 #SBATCH --partition=defq
@@ -37,7 +37,7 @@ echo "Beginning of script"
 date
 
 export CHOLERA_DIRECTORY=/data/aazman1/$USER/gavi-modeling/gavi_vimc_cholera/
-export CHOLERA_CONFIG_DIRECTORY=/data/aazman1/$USER/gavi-modeling/gavi_vimc_cholera/configs/202110gavi-3/campaign-default/global-estimate/0.001
+export CHOLERA_CONFIG_DIRECTORY=/data/aazman1/$USER/gavi-modeling/gavi_vimc_cholera/configs/202110gavi-3/campaign-default/global-estimate/2e-04
 export R_LIBRARY_DIRECTORY=$HOME/rlibs/gcm/$R_VERSION/gcc/$GCC_VERSION/
 export CONFIGNAMES=($(ls $CHOLERA_CONFIG_DIRECTORY | tr ' ' '\n'))
 

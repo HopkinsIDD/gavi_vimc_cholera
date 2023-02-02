@@ -43,6 +43,7 @@ run_surveillance_scenario <- function(
     }else{ rc_targeted <- c("rc1", "rc2")[grepl(stringr::str_extract(vac_admin_level, "[0-9]{1}"), c("rc1", "rc2"))] }                       
   vac_coverage <- as.numeric(config$vacc$vac_coverage)
   surveillance_scenario <- config$surveillance_scenario$surveillance_scenario
+  testing_sensitivity <- as.numeric(config$surveillance_scenario$testing_sensitivity)
   vac_interval <- as.numeric(config$vacc$vac_interval)
   sim_start_year <- as.numeric(config$vacc$sim_start_year)
   vac_start_year <- as.numeric(config$vacc$vac_start_year)
@@ -106,7 +107,8 @@ run_surveillance_scenario <- function(
                                                   vac_interval = vac_interval, 
                                                   vac_start_year = vac_start_year, vac_end_year = vac_end_year, 
                                                   num_skip_years = num_skip_years, rc_targeted = rc_targeted, 
-                                                  use_mean_ir = use_mean_ir, mean_ir_span = mean_ir_span)
+                                                  use_mean_ir = use_mean_ir, mean_ir_span = mean_ir_span, 
+                                                  testing_sensitivity = testing_sensitivity)
     }
     end.time <- Sys.time()
     elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
