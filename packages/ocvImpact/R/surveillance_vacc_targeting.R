@@ -127,6 +127,7 @@ load_baseline_incidence <- function(datapath,
   
   ## mask the incidence raster to population raster first 
   country_baseline <- raster::mask(country_baseline, pop_baseline)
+  pop_baseline <- raster::mask(pop_baseline, country_baseline)[[1]]
 
   ## if the incidence rate trend should be implemented 
   if(incidence_rate_trend){
