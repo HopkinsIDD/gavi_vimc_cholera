@@ -61,6 +61,8 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   library(classInt, lib=r_lib)
   library(sf, lib=r_lib)
   library(rgdal, lib=r_lib)
+  library(tidyverse)
+  library(dplyr, lib=r_lib)
   library(GADMTools, lib=r_lib)
   library(raster, lib=r_lib)
   library(terra, lib=r_lib)
