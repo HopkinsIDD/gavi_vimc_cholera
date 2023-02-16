@@ -219,6 +219,9 @@ if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
   if(config$optimize$ir_pre_screening){
     message(paste(" -- Stage 1 Screening for", country))
     cache$ir_pre_screening_pass <- check_table_screening(spathname, country, scenario, as.numeric(config$vacc$vac_incid_threshold), tolower(config$vacc$vac_admin_level))
+  }else{
+    cache$ir_pre_screening_pass <- TRUE
+    cache$novacc_campde_transfer <- FALSE
   }
 
   ## If the stage 1 screening process has been passed 
