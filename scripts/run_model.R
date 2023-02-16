@@ -26,7 +26,8 @@ if (as.logical(Sys.getenv("RUN_ON_MARCC",FALSE))) {
     for (itm in checklist) {
       for (ign in ignorelist){
         if(any(grepl(itm, mod_fns))){
-          if(mod_fns[grepl(itm, mod_fns)] != "scripts/montagu_handle.R" & !all( grepl(ign, mod_fns[grepl(itm, mod_fns)]) )){
+          if(any(mod_fns[grepl(itm, mod_fns)] != "scripts/montagu_handle.R") & !all( grepl(ign, mod_fns[grepl(itm, mod_fns)]) )){
+            mod_fns <- mod_fns[mod_fns != "scripts/montagu_handle.R"]
             stop(paste0("There are local changes that will affect formal run, please check: ", 
                         mod_fns[grepl(itm, mod_fns)][!grepl(ign, mod_fns[grepl(itm, mod_fns)])], "\n"))
           }
@@ -36,12 +37,12 @@ if (as.logical(Sys.getenv("RUN_ON_MARCC",FALSE))) {
   }
 
   #### Check package versions 
-  if(packageVersion("sf", lib=r_lib) != "1.0.8"
+  if(packageVersion("sf", lib=r_lib) != "1.0.8" 
     |packageVersion("GADMTools", lib=r_lib) != "3.9.1"
     |packageVersion("exactextractr", lib=r_lib) != "0.9.0"
-    |packageVersion("raster", lib=r_lib) != "3.4.13"
-    |packageVersion("Rcpp", lib=r_lib) != "1.0.9"
-    |packageVersion("terra", lib=r_lib) != "1.4.22"){
+    |packageVersion("raster", lib=r_lib) != "3.4.13" 
+    |packageVersion("Rcpp", lib=r_lib) != "1.0.9" 
+    |packageVersion("terra", lib=r_lib) != "1.4.22"){ 
     stop("The important R packages do not have the correct versions, please check. ")
   }
 
@@ -54,8 +55,8 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   r_lib <- Sys.getenv("R_LIBRARY_DIRECTORY", FALSE)
   library(vctrs, lib=r_lib)
   library(lifecycle, lib=r_lib)
-  library(codetools, lib=r_lib)
-  library(remotes, lib=r_lib)
+  # library(codetools, lib=r_lib)
+  # library(remotes, lib=r_lib)
   library(sp, lib=r_lib)
   library(classInt, lib=r_lib)
   library(sf, lib=r_lib)
@@ -210,13 +211,13 @@ dir.create(opathname, showWarnings = FALSE)
 #### Run model -- where different projects diverge 
 if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
   ### The surveillance project
-  
+  cache <- new.env()
+  cache$rawoutpath <- ropathname
+  cache$config <- config
+
   ## Screening
   if(config$optimize$ir_pre_screening){
     message(paste(" -- Stage 1 Screening for", country))
-    cache <- new.env()
-    cache$rawoutpath <- ropathname
-    cache$config <- config
     cache$ir_pre_screening_pass <- check_table_screening(spathname, country, scenario, as.numeric(config$vacc$vac_incid_threshold), tolower(config$vacc$vac_admin_level))
   }
 

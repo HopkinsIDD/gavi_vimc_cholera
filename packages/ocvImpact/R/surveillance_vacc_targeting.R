@@ -201,6 +201,7 @@ load_baseline_incidence <- function(datapath,
           background = 1
       )
       confirm_rate_raster <- raster::mask(confirm_rate_raster, raster1_template, updatevalue = NA)
+      confirm_rate_raster <- raster::mask(confirm_rate_raster, pop_baseline, updatevalue = NA)
       confirm_rate_raster_one_layer <- confirm_rate_raster
     }else{
       confirm_rate_raster_one_layer <- confirm_rate_raster[[layer_idx]]

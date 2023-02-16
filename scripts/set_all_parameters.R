@@ -20,7 +20,7 @@ countries <- unique(locs$country)
 #====== Surveillance Project Specific ======#
 save_intermediate_raster <- TRUE #if TRUE, this will save memory during the model run
 save_final_output_raster <- FALSE #if TRUE, all the raster files will be saved
-ir_pre_screening <- TRUE #if TRUE, countries with low ir where no vacc will happen will be skipped 
+ir_pre_screening <- FALSE #if TRUE, countries with low ir where no vacc will happen will be skipped 
 targeting_strategy <- "threshold_unconstrained" #c("threshold_unconstrained", "affected_pop", "incidence")
 vac_incid_thresholds <- c(1/1000, 1/5000, 1/10000) 
 vac_unconstrained <- TRUE #or refer to an external coverage dataset 
