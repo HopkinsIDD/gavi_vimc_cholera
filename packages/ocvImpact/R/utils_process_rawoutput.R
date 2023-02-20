@@ -1,16 +1,15 @@
-#' @export
 #' @name make_target_table
 #' @title make_target_table
 #' @description combine all raw outputs from selected countries to make a combined target table
-#' @param countries the cached environment
-#' @param thresholds selected thresholds, all thresholds: thresholds = c(0.001, 2e-04, 1e-04)
-#' @param surveillance_scenarios selected scenarios, all scenarios: surveillance_scenarios = c("no-estimate", "global-estimate", "district-estimate")
+#' @param countries vector of ISO country code(s)
+#' @param thresholds selected thresholds, e.g. all thresholds: thresholds = c(0.001, 2e-04, 1e-04)
+#' @param surveillance_scenarios selected scenarios, e.g. all scenarios: surveillance_scenarios = c("no-estimate", "global-estimate", "district-estimate")
 #' @param output_raw_path path to the folders where raw output dataframes are stored
-#' @return a combined target_table for selected countries (that includes all the threshold and all the scenarios)
+#' @return a combined target_table for selected countries (with true cases number of different scenarios)
 make_target_table <- function(countries, 
-                                   thresholds,
-                                   surveillance_scenarios = c("no-estimate", "global-estimate", "district-estimate"),
-                                   output_raw_path = "output_raw/202110gavi-3"){
+                              thresholds,
+                              surveillance_scenarios = c("no-estimate", "global-estimate", "district-estimate"),
+                              output_raw_path = "output_raw/202302_survms"){
   
     # loop through all the countries 
     for(country in countries){
