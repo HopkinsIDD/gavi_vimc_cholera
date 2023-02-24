@@ -68,6 +68,7 @@ check_model_setting <- function(working_dir = NULL,
 #' @name check_outputs_availability
 #' @title check_outputs_availability
 #' @description function to check if all the output files are there 
+#' @param working_dir
 #' @param rawoutpath path of output_raw in which all the model output files are stored
 #' @param configpath path of configuration files
 #' @param countries vector of all the countries included the diagnostic report
@@ -78,7 +79,7 @@ check_model_setting <- function(working_dir = NULL,
 #' @return TRUE or FALSE indicating whether the output files for the specified countries and scenarios exist in output folder, and also return warning messages to check output of which country is missing
 #' @export
 #' @include
-check_outputs_availability <- function(working_dir = NULL, 
+check_outputs_availability <- function( working_dir = NULL, 
                                         rawoutpath = "output_raw/202110gavi-3",
                                         configpath = "configs/202110gavi-3",
                                         countries,
@@ -101,8 +102,8 @@ check_outputs_availability <- function(working_dir = NULL,
     outbk <- df_setting[which(df_setting$country == country), ]$outbreak_multiplier 
     prefix <- paste0("incid_", incid, "_outbk_", outbk, "_")
     
-    filename_admin1 <- paste0(output_path, "/", prefix, threshold, "_", surveillance_scenario, "_", country, "_rc_admin1.csv")
-    filename_admin2 <- paste0(output_path, "/", prefix, threshold, "_", surveillance_scenario, "_", country, "_rc_admin2.csv")
+    filename_admin1 <- paste0(working_dir, "/", output_path, "/", prefix, threshold, "_", surveillance_scenario, "_", country, "_rc_admin1.csv")
+    filename_admin2 <- paste0(working_dir, "/", output_path, "/", prefix, threshold, "_", surveillance_scenario, "_", country, "_rc_admin2.csv")
     
     if(   ((admin_level == "both")&(!file.exists(filename_admin1) | !file.exists(filename_admin2)))   | 
           (admin_level == "admin1"&!file.exists(filename_admin1))   | 
@@ -1267,7 +1268,8 @@ get_inc_tp_doses_helper <- function(rc,
 #' @return 
 #' @export
 #' @include
-get_inc_tp_doses <- function(rawoutpath = "output_raw/202110gavi-3",
+get_inc_tp_doses <- function(working_dir, 
+                             rawoutpath = "output_raw/202110gavi-3",
                              configpath = "configs/202110gavi-3",
                              countries,
                              scenario,
@@ -1277,7 +1279,7 @@ get_inc_tp_doses <- function(rawoutpath = "output_raw/202110gavi-3",
                              ...){
     
     # first, check whether desired output files are all in the output_raw folder 
-    outputs_availability <- check_outputs_availability(rawoutpath = rawoutpath ,configpath = configpath, countries = countries,
+    outputs_availability <- check_outputs_availability(working_dir = working_dir, rawoutpath = rawoutpath ,configpath = configpath, countries = countries,
                                scenario = scenario, surveillance_scenario = surveillance_scenario, threshold = threshold, admin_level = admin_level, nsamples = params$num_samples)
     if(outputs_availability == FALSE){
         stop(paste("Stop calculating target population as not all the required output files are available in", rawoutpath, "folder."))
@@ -1772,4 +1774,112 @@ tab_incid <- function(df_target){
   return(df_inc_mean)
 }
 
+#' @name temporal_incid_trend
+#' @title temporal_incid_trend
+#' @description make figures of incidence rate trend at the district level 
+#' @param cache
+#' @param random_seed
+#' @param sample_size
+#' @param iso_code
+#' @param admin_level
+#' @param threshold
+#' @param surv_scenario
+#' @param simu_id
+#' @return 
+#' @export
+temporal_incid_trend <- function(
+    cache, 
+    random_seed = 1,  #this is default
+    sample_size = 20, #this is default
+    iso_code, 
+    admin_level, 
+    threshold, 
+    surv_scenario = c("no-estimate", "global-estimate", "district-estimate"), #this is default
+    simu_id, 
+    skip_nonvacc = TRUE
+){
+  
+  ### First get a random checklist 
+  set.seed(random_seed)
+  t_admin_level <- case_when(
+    admin_level == "both" ~ c("admin1", "admin2"), 
+    TRUE ~ admin_level)
+  t_admin_level = sample(t_admin_level, sample_size*5, replace = T)
+  
+  check_list <- data.frame(
+    r_country = sample(iso_code, sample_size*5, replace = T), 
+    r_admin_level = t_admin_level, 
+    r_admin = unlist(lapply(t_admin_level, function(x){
+      case_when(x == "admin1" ~ sample(unique(cache$target_table$NAME_1), 1), 
+                x == "admin2" ~ sample(unique(cache$target_table$NAME_2), 1)
+      )
+    })), 
+    r_threshold = sample(threshold, sample_size*5, replace = T),
+    r_surveillance_scenario = sample(surv_scenario, sample_size*5, replace = T),
+    r_run_id = sample(simu_id, sample_size*5, replace = T)
+  )
+  
+  ### Generate figures
+  count <- 0
+  for (idx in seq_len(nrow(check_list))) {
+    
+    ## filter and get the dist
+    dist <- cache$target_table %>% 
+      filter(ISO == check_list$r_country[idx], 
+             admin_level == check_list$r_admin_level[idx], 
+             {if(check_list$r_admin_level[idx] == "admin1") NAME_1 == check_list$r_admin[idx] 
+              else NAME_2 == check_list$r_admin[idx]}, 
+             threshold == check_list$r_threshold[idx], 
+             surveillance_scenario == check_list$r_surveillance_scenario[idx], 
+             run_id == check_list$r_run_id[idx]
+             )
+    if(skip_nonvacc & sum(dist$is_target) == 0){
+      if((nrow(check_list)-idx) >= (sample_size-count)){
+        next
+        }
+      }
+    count <- count + 1
+    
+    ## combine two tables together 
+    dist_cnf_mean <- dist %>% 
+      rename(target_ir = mean_confirmed_incidence_rate) %>% 
+      mutate(baseline_ir = ifelse(year == 2022, confirmed_incidence_rate, NA)) %>% 
+      select(run_id, ISO, NAME_0, NAME_1, NAME_2, year, baseline_ir, target_ir, is_target) %>% 
+      mutate(simulation = "MeanConfirmedIR")
+    dist_cnf <- dist %>% 
+      mutate(target_ir = confirmed_incidence_rate) %>% 
+      mutate(baseline_ir = ifelse(year == 2022, confirmed_incidence_rate, NA)) %>% 
+      select(run_id, ISO, NAME_0, NAME_1, NAME_2, year, baseline_ir, target_ir, is_target) %>% 
+      mutate(simulation = "RawConfirmedIR")
+    rbinded <- rbind(dist_cnf, dist_cnf_mean)
+    
+    ## Plotting 
+    plt <- rbinded %>% 
+      ggplot(aes(x = year, y = target_ir, group = simulation, color = simulation, linetype = simulation)) +
+      geom_hline(yintercept = as.numeric(check_list$r_threshold[idx]), color = "purple", size = 1.5) + 
+      geom_line() +
+      geom_vline(xintercept = rbinded$year[rbinded$is_target == 1 & rbinded$simulation == "RawConfirmedIR"], linetype = 8, color = "#619CFF", alpha = 1.0) + 
+      geom_vline(xintercept = rbinded$year[rbinded$is_target == 1 & rbinded$simulation == "MeanConfirmedIR"], linetype = 1, color = "#F8766D", alpha = 0.5) + 
+      geom_hline(yintercept = rbinded$baseline_ir[rbinded$simulation == "RawConfirmedIR"], linetype = 8, color = "#619CFF") + 
+      geom_hline(yintercept = rbinded$baseline_ir[rbinded$simulation == "MeanConfirmedIR"], linetype = 1, color = "#F8766D", alpha = 0.5) +
+      geom_point(shape=21, color="black", fill="#69b3a2", size=2) + 
+      labs(title = paste0('Simulation: ', check_list$r_run_id[idx], 
+                          ' Admin Level: ', check_list$r_admin_level[idx], 
+                          ' Admin Name: ', check_list$r_admin[idx]), 
+           subtitle = "-- Raw and Mean Confirmed IR Comparison") + 
+      xlab("Year") + 
+      scale_x_continuous(breaks=seq(2021, 2036, 1)) + 
+      ylab("Confirmed IR") + 
+      theme_minimal()  
+    
+    assign(paste0("fig_", count), plt)
+  }
+  
+  figure_exp <- paste0("fig_", seq_len(nrow(check_list)), collapse = ", ")
+  figure <- ggpubr::ggarrange(fig_1, fig_2, fig_3, fig_4, fig_5, fig_6, fig_7, fig_8, fig_9, fig_10, fig_11, fig_12, fig_13, fig_14, fig_15, fig_16, fig_17, fig_18, fig_19, fig_20, 
+                              labels = seq_len(nrow(check_list)),
+                              ncol = 1, nrow = 20)
+  figure
+}
 
+  

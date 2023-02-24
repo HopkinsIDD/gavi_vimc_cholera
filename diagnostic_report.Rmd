@@ -7,7 +7,7 @@ output:
     toc_float: true
 params: 
   surveillance_project_directory: "/Users/kaiyuezou/Desktop/diag_tmp/gavi_vimc_cholera"
-  country: ["ETH"] #country code specified or all the countries will be used for the diagnostic report
+  country: ["CMR"] #country code specified or all the countries will be used for the diagnostic report
   num_samples: ["200"]
   admin_level: ["both"] #either "both", "admin1", or "admin2"
   vac_incid_thresholds: ["0.001", "2e-04", "1e-04"] #["0.001", "2e-04", "1e-04"] if to plot all thresholds 
@@ -130,7 +130,7 @@ for(threshold in params$vac_incid_thresholds){
   camp_n <- check_outputs_availability(working_dir = params$surveillance_project_directory, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = threshold, admin_level = params$admin_level, nsamples = params$num_samples)
   no_vac <- check_outputs_availability(working_dir = params$surveillance_project_directory, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = params$no_vaccination_threshold, admin_level = params$admin_level, nsamples = params$num_samples)
   if(!all(camp_d & camp_g & camp_n & no_vac)){
-    unavailable <- c("campaign-district estimate", "campaign-global estimate", "campaign-no estimate", "no vaccination")[c(camp_d, camp_g, camp_n, no_vac)]
+    unavailable <- c("campaign-district estimate", "campaign-global estimate", "campaign-no estimate", "no vaccination")[!c(camp_d, camp_g, camp_n, no_vac)]
     stop(paste0("For threshold ", threshold, ", the following scenario(s) does not have the corresponding model output: ", unavailable))
   }
 }
@@ -151,7 +151,19 @@ ocvImpact::combine_output(cache = cache, surveillance_project_directory = params
 fig_height <- 5 * length(params$country)
 ```
 
-
+# Confirmed IR Check
+```{r Temporal IR, fig.height=100, fig.width=10}
+temporal_incid_trend(
+    cache, 
+    random_seed = 1,  #this is default
+    sample_size = 20, #this is default
+    iso_code = params$country, 
+    admin_level = params$admin_level, 
+    threshold = params$vac_incid_thresholds, 
+    surv_scenario = c("no-estimate", "global-estimate", "district-estimate"), #this is default
+    simu_id = 1:as.numeric(params$num_samples)
+)
+```
 
 # Case figures {.tabset}
 ## True case {.tabset}
@@ -1277,9 +1289,9 @@ plt
 #### Threshold 1/1000
 ```{r echo=FALSE}
 if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/1000)$df_admin2_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/1000)$df_admin2_sumadmins
 }else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/1000)$df_admin1_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/1000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1293,9 +1305,9 @@ table %>%
 #### Threshold 1/5000
 ```{r echo=FALSE}
 if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/5000)$df_admin2_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/5000)$df_admin2_sumadmins
 }else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/5000)$df_admin1_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/5000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1309,9 +1321,9 @@ table %>%
 #### Threshold 1/10000
 ```{r echo=FALSE}
 if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/10000)$df_admin2_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/10000)$df_admin2_sumadmins
 }else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/10000)$df_admin1_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/10000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1326,9 +1338,9 @@ table %>%
 #### Threshold 1/1000
 ```{r echo=FALSE}
 if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/1000)$df_admin2_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/1000)$df_admin2_byadmin
 }else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/1000)$df_admin1_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/1000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1342,9 +1354,9 @@ table %>%
 #### Threshold 1/5000
 ```{r echo=FALSE}
 if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/5000)$df_admin2_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/5000)$df_admin2_byadmin
 }else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/5000)$df_admin1_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/5000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1358,9 +1370,9 @@ table %>%
 #### Threshold 1/10000
 ```{r echo=FALSE}
 if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/10000)$df_admin2_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/10000)$df_admin2_byadmin
 }else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/10000)$df_admin1_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "district-estimate", threshold = 1/10000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1378,9 +1390,9 @@ table %>%
 #### Threshold 1/1000
 ```{r echo=FALSE}
 if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/1000)$df_admin2_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/1000)$df_admin2_sumadmins
 }else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/1000)$df_admin1_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/1000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1394,9 +1406,9 @@ table %>%
 #### Threshold 1/5000
 ```{r echo=FALSE}
 if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/5000)$df_admin2_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/5000)$df_admin2_sumadmins
 }else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/5000)$df_admin1_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/5000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1410,9 +1422,9 @@ table %>%
 #### Threshold 1/10000
 ```{r echo=FALSE}
 if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/10000)$df_admin2_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/10000)$df_admin2_sumadmins
 }else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/10000)$df_admin1_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/10000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1427,9 +1439,9 @@ table %>%
 #### Threshold 1/1000
 ```{r echo=FALSE}
 if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/1000)$df_admin2_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/1000)$df_admin2_byadmin
 }else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/1000)$df_admin1_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/1000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1443,9 +1455,9 @@ table %>%
 #### Threshold 1/5000
 ```{r echo=FALSE}
 if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/5000)$df_admin2_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/5000)$df_admin2_byadmin
 }else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/5000)$df_admin1_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/5000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1459,9 +1471,9 @@ table %>%
 #### Threshold 1/10000
 ```{r echo=FALSE}
 if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/10000)$df_admin2_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/10000)$df_admin2_byadmin
 }else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/10000)$df_admin1_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "global-estimate", threshold = 1/10000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1479,9 +1491,9 @@ table %>%
 #### Threshold 1/1000
 ```{r echo=FALSE}
 if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/1000)$df_admin2_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/1000)$df_admin2_sumadmins
 }else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/1000)$df_admin1_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/1000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1495,9 +1507,9 @@ table %>%
 #### Threshold 1/5000
 ```{r echo=FALSE}
 if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/5000)$df_admin2_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/5000)$df_admin2_sumadmins
 }else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/5000)$df_admin1_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/5000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1511,9 +1523,9 @@ table %>%
 #### Threshold 1/10000
 ```{r echo=FALSE}
 if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/10000)$df_admin2_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/10000)$df_admin2_sumadmins
 }else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/10000)$df_admin1_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/10000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1528,9 +1540,9 @@ table %>%
 #### Threshold 1/1000
 ```{r echo=FALSE}
 if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/1000)$df_admin2_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/1000)$df_admin2_byadmin
 }else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/1000)$df_admin1_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/1000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1544,9 +1556,9 @@ table %>%
 #### Threshold 1/5000
 ```{r echo=FALSE}
 if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/5000)$df_admin2_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/5000)$df_admin2_byadmin
 }else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/5000)$df_admin1_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/5000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1560,9 +1572,9 @@ table %>%
 #### Threshold 1/10000
 ```{r echo=FALSE}
 if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/10000)$df_admin2_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/10000)$df_admin2_byadmin
 }else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/10000)$df_admin1_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "campaign-default", surveillance_scenario = "no-estimate", threshold = 1/10000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1580,9 +1592,9 @@ table %>%
 #### Threshold 1/1000
 ```{r echo=FALSE}
 if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/1000)$df_admin2_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/1000)$df_admin2_sumadmins
 }else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/1000)$df_admin1_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/1000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1596,9 +1608,9 @@ table %>%
 #### Threshold 1/5000
 ```{r echo=FALSE}
 if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/5000)$df_admin2_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/5000)$df_admin2_sumadmins
 }else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/5000)$df_admin1_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/5000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1612,9 +1624,9 @@ table %>%
 #### Threshold 1/10000
 ```{r echo=FALSE}
 if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/10000)$df_admin2_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/10000)$df_admin2_sumadmins
 }else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/10000)$df_admin1_sumadmins
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/10000)$df_admin1_sumadmins
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1629,9 +1641,9 @@ table %>%
 #### Threshold 1/1000
 ```{r echo=FALSE}
 if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/1000)$df_admin2_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/1000)$df_admin2_byadmin
 }else if((1/1000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/1000)$df_admin1_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/1000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1645,9 +1657,9 @@ table %>%
 #### Threshold 1/5000
 ```{r echo=FALSE}
 if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/5000)$df_admin2_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/5000)$df_admin2_byadmin
 }else if((1/5000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/5000)$df_admin1_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/5000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
@@ -1661,9 +1673,9 @@ table %>%
 #### Threshold 1/10000
 ```{r echo=FALSE}
 if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin2")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/10000)$df_admin2_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/10000)$df_admin2_byadmin
 }else if((1/10000) %in% vac_incid_thresholds & params$admin_level %in% c("admin1", "both")){
-  table <- get_inc_tp_doses(admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/10000)$df_admin1_byadmin
+  table <- get_inc_tp_doses(working_dir = params$surveillance_project_directory, admin_level = params$admin_level, countries = params$country, scenario = "no-vaccination", surveillance_scenario = params$no_vaccination_surveillance_scenario, threshold = 1/10000)$df_admin1_byadmin
 }else{
   table <- tibble::tibble(ISO = as.character())
 }
