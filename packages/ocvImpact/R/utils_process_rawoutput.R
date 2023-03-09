@@ -9,15 +9,15 @@
 make_target_table <- function(countries, 
                               thresholds,
                               surveillance_scenarios = c("no-estimate", "global-estimate", "district-estimate"),
-                              output_raw_path = "output_raw/202302_survms"){
+                              output_raw_path = "output_raw/202110gavi-3"){
   
     # loop through all the countries 
     for(country in countries){
       
       # make an empty table to store all output from one single country
-      df_country <- as.data.frame(matrix(NA, ncol = 21))
-      colnames(df_country) <- c("ISO", "NAME_0", "NAME_1", "NAME_2", "confirmation_lens", "admin_level", "threshold", "year","run_id", "true_confirm_rate", "true_incidence_rate",
-                                "confirmation_rate", "confirmed_incidence_rate", "pop_model", "pop_prop", "latest_target_year", "is_target",
+      df_country <- as.data.frame(matrix(NA, ncol = 23))
+      colnames(df_country) <- c("ISO", "NAME_0", "NAME_1", "NAME_2", "confirmation_lens", "admin_level", "threshold", "year","run_id", "true_confirm_rate", "true_incidence_rate", "mean_true_incidence_rate",
+                                "confirmation_rate", "confirmed_incidence_rate", "mean_confirmed_incidence_rate", "pop_model", "pop_prop", "latest_target_year", "is_target",
                                 "actual_prop_vaccinated", "actual_fvp", "campaign_default_true_case", "no_vaccination_true_case")
 
       ## first, get the names of the files (in format: incid_FALSE_outbk_FALSE_0.001_district-estimate_BEN_rc_admin1)

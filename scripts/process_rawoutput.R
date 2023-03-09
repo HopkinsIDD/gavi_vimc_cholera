@@ -2,6 +2,9 @@
 # the intermediate datasets are then to be used in the rmd to make the manuscript figures/tables
 
 # set up =======================================================
+r_lib <- Sys.getenv("R_LIBRARY_DIRECTORY", FALSE)
+# r_lib <- "/home/hxu70/rlibs/gcm/4.0.2/gcc/9.3.0/"
+
 library(dplyr, lib = r_lib)
 library(stringr)
 library(tidyr)
@@ -14,52 +17,117 @@ library(GADMTools, lib = r_lib)
 library(raster, lib=r_lib)
 library(exactextractr, lib=r_lib)
 library(s2, lib=r_lib)
-source("packages/ocvImpact/R/utils_new_op.R")
-output_final_path <- "output_final/202302_survms"
+source("packages/ocvImpact/R/utils_process_rawoutput.R")
+output_final_path <- "output_final/202110gavi-3"
 all_countries <- c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI", "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE")
-# r_lib <- "/home/hxu70/rlibs/gcm/4.0.2/gcc/9.3.0/"
+
+# set output paths ===========
+int_path <- paste0(output_final_path, "/intermediate_table/")
+cost_path <- paste0(output_final_path, "/cost_table/")
+tt_path <- paste0(output_final_path, "/target_table/")
+
+
 
 # check directory status =======================================================
 if(!file.exists(paste0(output_final_path, "/", "target_table"))){
     dir.create(paste0(output_final_path, "/", "target_table"))
-}else{
-    if(length(dir(all.files=TRUE)) != 0){
-        message("Directory output_final/202302_survms/target_table is not empty and target tables have already been made.")
-    }
 }
-
+if(!file.exists(paste0(output_final_path, "/", "intermediate_table"))){
+    dir.create(paste0(output_final_path, "/", "intermediate_table"))
+}
 
 # OUTPUT 1: target_table =======================================================
-# make target_table for each country and store them separately (one country per csv) into "output_final/202302_survms/target_table", this table combines all scenarios together for each country
-for(country in all_countries){
-    
-    fn <- paste0("target_table_", country, ".csv")
-    target_table  <- make_target_table(countries = country, thresholds = c("1e-04", "2e-04", "0.001"), output_raw_path = "output_raw/202302_survms")
-    write.csv(target_table, paste0(output_final_path, "/target_table/", fn), row.names = F)
-    
-}
+# make target_table for each country and store them separately (one country per csv) into "output_final/202110gavi-3/target_table", this table combines all scenarios together for each country
+#for(country in all_countries){
+#    
+#    fn <- paste0("target_table_", country, ".csv")
+#    target_table  <- make_target_table(countries = country, thresholds = c("1e-04", "2e-04", "0.001"), output_raw_path = "output_raw/202110gavi-3")
+#    write.csv(target_table, paste0(output_final_path, "/target_table/", fn), row.names = F)
+#    
+#}
 
 
 # OUTPUT 2: tp_eff_ac_byISO_medianCI table =======================================================
 # make table of median and CI of targeted population, OCV efficiency and averted true cases by country
+df_result <- expand_grid( # for output 10
+    threshold = c(1e-04, 2e-04, 1e-03),
+    confirmation_lens = c("district-estimate", "global-estimate", "no-estimate"),
+    admin_level = c("admin1", "admin2")
+)
+df_result_byrun <- expand_grid( # for output 11
+    run_id = 1:200,
+    threshold = c(1e-04, 2e-04, 1e-03),
+    confirmation_lens = c("district-estimate", "global-estimate", "no-estimate"),
+    admin_level = c("admin1", "admin2")
+)
+
 for(country in all_countries){
     
     # read in target table 
     df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
     df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
 
+    # OUTPUT 7:
+    temp <- filter(df_tt, is_target == 1 & true_averted_cases == 0)
+    if(which(all_countries == country) == 1){df_problem <- temp}
+    if(which(all_countries == country) != 1){df_problem <- rbind(df_problem, temp)}
+
     # added on 11/10/2022: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
     df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
     
+    # OUTPUT 2:
     # get targeted pop and efficiency table for this one country
     df_tp_eff <- combine_eff_table_median(countries = country, df_target = df_tt, admin_level = "both")
-    
-    # rbind all countries
     if(which(all_countries == country) == 1){df_tp_eff_byISO_medianCI <- df_tp_eff}
     if(which(all_countries == country) != 1){df_tp_eff_byISO_medianCI <- rbind(df_tp_eff_byISO_medianCI, df_tp_eff)}
 
+    # OUTPUT 3:
+    if(which(all_countries == country) == 1){df_tt_allISOs <- df_tt}
+    if(which(all_countries == country) != 1){df_tt_allISOs <- rbind(df_tt_allISOs, df_tt)}
+
+    # OUTPUT 9
+    temp_runs <- df_tt %>%
+        group_by(ISO, confirmation_lens, threshold, admin_level, run_id) %>%
+        summarize(sum_target = sum(is_target)) %>%
+        group_by(ISO, confirmation_lens, threshold, admin_level) %>%
+        count(sum_target != 0) %>%
+        filter(`sum_target != 0` == TRUE) %>%
+        rename(n_runs_targeted = n) %>%
+        dplyr::select(ISO, threshold, confirmation_lens, admin_level, n_runs_targeted)
+
+    if(which(all_countries == country) == 1){n_targeted_runs <- temp_runs}
+    if(which(all_countries == country) != 1){n_targeted_runs <- rbind(n_targeted_runs, temp_runs)}
+
+    # OUTPUT 10: 
+    # see if this country has any targeting going on for all the 18 scenarios
+    targeted_scenarios_temp <- df_tt %>% filter(is_target == 1) %>% group_by(threshold, confirmation_lens, admin_level) %>% count() %>%
+        right_join(df_result, by = c("threshold", "confirmation_lens", "admin_level")) %>%
+        mutate(n = ifelse(!is.na(n), 1, 0))
+    colnames(targeted_scenarios_temp)[4] <- country
+
+    if(which(all_countries == country) == 1){df_targeted_scenarios <- targeted_scenarios_temp}
+    if(which(all_countries == country) != 1){df_targeted_scenarios <- df_targeted_scenarios %>% left_join(targeted_scenarios_temp,  by = c("threshold", "confirmation_lens", "admin_level"))}
+
+    # OUTPUT 11:
+    targeted_runs_temp <- df_tt %>% filter(is_target == 1) %>% group_by(run_id, threshold, confirmation_lens, admin_level) %>%
+        count() %>%
+        full_join(df_result_byrun, by = c("run_id", "threshold", "confirmation_lens", "admin_level")) %>%
+        mutate(ind_targeted = ifelse(!is.na(n), 1, 0)) %>%
+        dplyr::select(-n)
+    colnames(targeted_runs_temp)[5] <- country
+    
+    if(which(all_countries == country) == 1){df_targeted_by_run <- targeted_runs_temp}
+    if(which(all_countries == country) != 1){df_targeted_by_run <- df_targeted_by_run %>% left_join(targeted_runs_temp,  by = c("run_id", "threshold", "confirmation_lens", "admin_level"))}
+
 }
 
+# OUTPUT 5:
+df_target <- df_tt_allISOs
+
+# write output 7
+write.csv(df_problem, "output_final/202110gavi-3/intermediate_table/df_small_targets.csv", row.names = F)
+
+# write output 2
 if(!file.exists(paste0(output_final_path, "/intermediate_table"))){
     dir.create(paste0(output_final_path, "/intermediate_table"))
     write.csv(df_tp_eff_byISO_medianCI, paste0(output_final_path, "/intermediate_table/tp_eff_ac_byISO_medianCI.csv"), row.names = F)
@@ -67,17 +135,28 @@ if(!file.exists(paste0(output_final_path, "/intermediate_table"))){
     write.csv(df_tp_eff_byISO_medianCI, paste0(output_final_path, "/intermediate_table/tp_eff_ac_byISO_medianCI.csv"), row.names = F)
 }
 
+# write output 9
+write.csv(n_targeted_runs, "output_final/202110gavi-3/intermediate_table/n_targeted_runs.csv", row.names = F)
+
+# write output 10
+write.csv(df_targeted_scenarios, paste0(output_final_path, "/intermediate_table/ind_targeted_by_scenario.csv"), row.names = FALSE)
+
+# write output 11
+write.csv(df_targeted_by_run, paste0(output_final_path, "/intermediate_table/ind_targeted_by_run.csv"), row.names = FALSE)
+
 
 # OUTPUT 3: tp_ac_allISOs =======================================================
 # make table of targeted population, efficiency and averted true cases for all countries combined together (summarize across Africa)
-for(country in all_countries){ # stack target tables of all countries
+# SEE ABOVE (combined processing in one for loop)
+#for(country in all_countries){ # stack target tables of all countries
+#
+#    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+#    if(which(all_countries == country) == 1){df_tt_allISOs <- df_tt}
+#    if(which(all_countries == country) != 1){df_tt_allISOs <- rbind(df_tt_allISOs, df_tt)}
+#
+#}
 
-    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
-    if(which(all_countries == country) == 1){df_tt_allISOs <- df_tt}
-    if(which(all_countries == country) != 1){df_tt_allISOs <- rbind(df_tt_allISOs, df_tt)}
-
-}
-
+# write output 3:
 df_tt_allISOs <- df_tt_allISOs %>%  mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
 
 # added on 11/10/2022: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
@@ -102,6 +181,8 @@ tp_ac_allISOs <- df_tp %>%
     full_join(df_ac, by = c("year", "run_id", "threshold", "confirmation_lens", "admin_level")) 
 
 write.csv(tp_ac_allISOs, paste0(output_final_path, "/intermediate_table/tp_ac_allISOs.csv"), row.names = F)
+# note the target_pop_cumu and true_ac_cumu columns in tp_ac_allISOs.csv are already cumulative by year (rather than value of that year), e.g. if year == 2023, then target_pop_cumu is the target_pop of 2022+2023.
+
 
 
 # OUTPUT 4: tp_eff_ac_allISOs_medianCI =======================================================
@@ -150,19 +231,21 @@ tp_eff_ac_allISOs_medianCI <- df_tp %>%
 write.csv(tp_eff_ac_allISOs_medianCI, paste0(output_final_path, "/intermediate_table/tp_eff_ac_allISOs_medianCI.csv"), row.names = F)
 
 
+# SEE ABOVE (combined processing in one for loop)
 # OUTPUT 5 n_targeted_admins_byISO =======================================================
 # get number of targets (by country), aiming to get numbers (across all years) of 1) total targets and 2) unique targets:
-for(country in all_countries){
-    
-    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
-    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
-    temp <- df_tt %>% filter(is_target == 1 & true_averted_cases != 0)
+# for(country in all_countries){
+#    
+#    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+#    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+#    temp <- df_tt %>% filter(is_target == 1 & true_averted_cases != 0)
+#
+#    if(which(all_countries == country) == 1){df_target <- temp}
+#    if(which(all_countries == country) != 1){df_target <- rbind(df_target, temp)}
+#    
+#}
 
-    if(which(all_countries == country) == 1){df_target <- temp}
-    if(which(all_countries == country) != 1){df_target <- rbind(df_target, temp)}
-    
-}
-
+# write ouput 5
 df_target <- df_target %>%
         mutate(NAME = case_when(admin_level == "admin1" ~ NAME_1,
                                 admin_level == "admin2" ~ NAME_2)) 
@@ -188,7 +271,7 @@ n_targeted_admins_byISO <-
     full_join(n_total_targets, n_unique_targets,
               by = c("ISO", "confirmation_lens", "admin_level", "threshold"))
 
-write.csv(n_targeted_admins_byISO, "output_final/202302_survms/intermediate_table/n_targeted_admins_byISO.csv", row.names = F)
+write.csv(n_targeted_admins_byISO, "output_final/202110gavi-3/intermediate_table/n_targeted_admins_byISO.csv", row.names = F)
 
 
 # OUTPUT 6 n_targeted_admins_allISOs =======================================================
@@ -213,23 +296,23 @@ n_targeted_admins_allISOs <-
     full_join(n_total_targets, n_unique_targets,
               by = c("confirmation_lens", "admin_level", "threshold"))
 
-write.csv(n_targeted_admins_allISOs, "output_final/202302_survms/intermediate_table/n_targeted_admins_allISOs.csv", row.names = F)
+write.csv(n_targeted_admins_allISOs, "output_final/202110gavi-3/intermediate_table/n_targeted_admins_allISOs.csv", row.names = F)
 
 
 # OUTPUT 7: df_small_targets =======================================================
 # table of small admins (containing 0 full 5*5 grid) are missed by the fasterize() function, like we discussed before
-for(country in all_countries){
-    
-    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
-    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
-    temp <- filter(df_tt, is_target == 1 & true_averted_cases == 0)
-    
-    if(which(all_countries == country) == 1){df_problem <- temp}
-    if(which(all_countries == country) != 1){df_problem <- rbind(df_problem, temp)}
-
-}
-
-write.csv(df_problem, "output_final/202302_survms/intermediate_table/df_small_targets.csv", row.names = F)
+# SEE ABOVE (combined processing in one for loop)
+#for(country in all_countries){
+#    
+#    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+#    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+#    temp <- filter(df_tt, is_target == 1 & true_averted_cases == 0)
+#    
+#    if(which(all_countries == country) == 1){df_problem <- temp}
+#    if(which(all_countries == country) != 1){df_problem <- rbind(df_problem, temp)}
+#
+#}
+# write.csv(df_problem, "output_final/202110gavi-3/intermediate_table/df_small_targets.csv", row.names = F)
 
 
 # OUTPUT 8: df_small_targets_summary =======================================================
@@ -287,99 +370,101 @@ df_small_targets_summary <- df_confirmation %>%
   left_join(df_demo, by = c("ISO", "NAME_1", "NAME_2")) %>%
   dplyr::select(1:3, 11, 13, 12, 10, 4:9)
 
-write.csv(df_small_targets_summary, "output_final/202302_survms/intermediate_table/df_small_targets_summary.csv", row.names = FALSE)
+write.csv(df_small_targets_summary, "output_final/202110gavi-3/intermediate_table/df_small_targets_summary.csv", row.names = FALSE)
 
 
 # OUTPUT 9: n_targeted_runs =======================================================
 # number of runs with targeting going on for each scenario by country
-for(country in all_countries){
-    
-    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
-    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
-    # remove those small districts that were targeted
-    df_tt <- df_tt %>% filter(is_target != 1 | true_averted_cases != 0)
-    
-    temp_runs <- df_tt %>%
-        group_by(ISO, confirmation_lens, threshold, admin_level, run_id) %>%
-        summarize(sum_target = sum(is_target)) %>%
-        group_by(ISO, confirmation_lens, threshold, admin_level) %>%
-        count(sum_target != 0) %>%
-        filter(`sum_target != 0` == TRUE) %>%
-        rename(n_runs_targeted = n) %>%
-        dplyr::select(ISO, threshold, confirmation_lens, admin_level, n_runs_targeted)
-
-    if(which(all_countries == country) == 1){n_targeted_runs <- temp_runs}
-    if(which(all_countries == country) != 1){n_targeted_runs <- rbind(n_targeted_runs, temp_runs)}
-    
-}
-
-write.csv(n_targeted_runs, "output_final/202302_survms/intermediate_table/n_targeted_runs.csv", row.names = F)
+# SEE ABOVE (combine processing in one for loop)
+#for(country in all_countries){
+#    
+#    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+#    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+#    # remove those small districts that were targeted
+#    df_tt <- df_tt %>% filter(is_target != 1 | true_averted_cases != 0)
+#    
+#    temp_runs <- df_tt %>%
+#        group_by(ISO, confirmation_lens, threshold, admin_level, run_id) %>%
+#        summarize(sum_target = sum(is_target)) %>%
+#        group_by(ISO, confirmation_lens, threshold, admin_level) %>%
+#        count(sum_target != 0) %>%
+#        filter(`sum_target != 0` == TRUE) %>%
+#        rename(n_runs_targeted = n) %>%
+#        dplyr::select(ISO, threshold, confirmation_lens, admin_level, n_runs_targeted)
+#
+#    if(which(all_countries == country) == 1){n_targeted_runs <- temp_runs}
+#    if(which(all_countries == country) != 1){n_targeted_runs <- rbind(n_targeted_runs, temp_runs)}
+#    
+#}
+#write.csv(n_targeted_runs, "output_final/202110gavi-3/intermediate_table/n_targeted_runs.csv", row.names = F)
 
 
 # OUTPUT 10: ind_targeted_by_scenario =======================================================
 # look at whether a country has any targeting going on by scenario
-df_result <- expand_grid(
-    threshold = c(1e-04, 2e-04, 1e-03),
-    confirmation_lens = c("district-estimate", "global-estimate", "no-estimate"),
-    admin_level = c("admin1", "admin2")
-)
+# SEE ABOVE (combine processing code together)
+#df_result <- expand_grid(
+#    threshold = c(1e-04, 2e-04, 1e-03),
+#    confirmation_lens = c("district-estimate", "global-estimate", "no-estimate"),
+#    admin_level = c("admin1", "admin2")
+#)
 
-for(country in all_countries){
-    # read in target table 
-    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
-    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
-
-    # added on 11/10: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
-    df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
-
-    # see if this country has any targeting going on for all the 18 scenarios
-    temp <- df_tt %>% filter(is_target == 1) %>% group_by(threshold, confirmation_lens, admin_level) %>% count() %>%
-        right_join(df_result, by = c("threshold", "confirmation_lens", "admin_level")) %>%
-        mutate(n = ifelse(!is.na(n), 1, 0))
-    colnames(temp)[4] <- country
-
-    if(which(all_countries == country) == 1){df_targeted <- temp}
-    if(which(all_countries == country) != 1){df_targeted <- df_targeted %>% left_join(temp,  by = c("threshold", "confirmation_lens", "admin_level"))}
-
-}
+#for(country in all_countries){
+#    # read in target table 
+#    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+#    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+#
+#    # added on 11/10: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
+#    df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
+#
+#    # see if this country has any targeting going on for all the 18 scenarios
+#    targeted_scenarios_temp <- df_tt %>% filter(is_target == 1) %>% group_by(threshold, confirmation_lens, admin_level) %>% count() %>%
+#        right_join(df_result, by = c("threshold", "confirmation_lens", "admin_level")) %>%
+#        mutate(n = ifelse(!is.na(n), 1, 0))
+#    colnames(targeted_scenarios_temp)[4] <- country
+#
+#    if(which(all_countries == country) == 1){df_targeted_scenarios <- targeted_scenarios_temp}
+#    if(which(all_countries == country) != 1){df_targeted_scenarios <- df_targeted_scenarios %>% left_join(targeted_scenarios_temp,  by = c("threshold", "confirmation_lens", "admin_level"))}
+#
+#}
 
 # if there is no targeting going on in this country for all the simulations (for a given scenario), then noted as 0, otherwise 1.
-write.csv(df_targeted, paste0(output_final_path, "/intermediate_table/ind_targeted_by_scenario.csv"), row.names = FALSE)
+# write.csv(df_targeted_scenarios, paste0(output_final_path, "/intermediate_table/ind_targeted_by_scenario.csv"), row.names = FALSE)
 
 
 # OUTPUT 11: ind_targeted_by_run =======================================================
+# SEE ABOVE(combine processing code in one for loop)
 ## Then look at for each simulation (run + scenario), whether a country has been targeted
-df_result <- expand_grid(
-    run_id = 1:200,
-    threshold = c(1e-04, 2e-04, 1e-03),
-    confirmation_lens = c("district-estimate", "global-estimate", "no-estimate"),
-    admin_level = c("admin1", "admin2")
-)
-
-for(country in all_countries){
-     # read in target table 
-    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
-    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
-
-    # added on 11/10: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
-    df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
-
-    temp <- df_tt %>% filter(is_target == 1) %>% group_by(run_id, threshold, confirmation_lens, admin_level) %>%
-        count() %>%
-        full_join(df_result, by = c("run_id", "threshold", "confirmation_lens", "admin_level")) %>%
-        mutate(ind_targeted = ifelse(!is.na(n), 1, 0)) %>%
-        dplyr::select(-n)
-    colnames(temp)[5] <- country
-    
-    if(which(all_countries == country) == 1){df_targeted_by_run <- temp}
-    if(which(all_countries == country) != 1){df_targeted_by_run <- df_targeted_by_run %>% left_join(temp,  by = c("run_id", "threshold", "confirmation_lens", "admin_level"))}
-}
-
-write.csv(df_targeted_by_run, paste0(output_final_path, "/intermediate_table/ind_targeted_by_run.csv"), row.names = FALSE)
+#df_result <- expand_grid(
+#    run_id = 1:200,
+#    threshold = c(1e-04, 2e-04, 1e-03),
+#    confirmation_lens = c("district-estimate", "global-estimate", "no-estimate"),
+#    admin_level = c("admin1", "admin2")
+#)
+#
+#for(country in all_countries){
+#     # read in target table 
+#    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+#    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+#
+#    # added on 11/10: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
+#    df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
+#
+#    targeted_runs_temp <- df_tt %>% filter(is_target == 1) %>% group_by(run_id, threshold, confirmation_lens, admin_level) %>%
+#        count() %>%
+#        full_join(df_result, by = c("run_id", "threshold", "confirmation_lens", "admin_level")) %>%
+#        mutate(ind_targeted = ifelse(!is.na(n), 1, 0)) %>%
+#        dplyr::select(-n)
+#    colnames(targeted_runs_temp)[5] <- country
+#    
+#    if(which(all_countries == country) == 1){df_targeted_by_run <- targeted_runs_temp}
+#    if(which(all_countries == country) != 1){df_targeted_by_run <- df_targeted_by_run %>% left_join(targeted_runs_temp,  by = c("run_id", "threshold", "confirmation_lens", "admin_level"))}
+#}
+#
+#write.csv(df_targeted_by_run, paste0(output_final_path, "/intermediate_table/ind_targeted_by_run.csv"), row.names = FALSE)
 
 
 # OUTPUT 12: n_targeted_admins_ISOs =======================================================
-# Number of admins and ISO targeted by scenario 
+# Number of admins and ISO targeted by scenario (as well as the number of countries targeted in each scenario)
 n_targeted_ISOs <- df_targeted_by_run %>%
   pivot_longer(cols = 5:39, names_to = "ISO", values_to = "ind_targeted") %>%
   group_by(confirmation_lens, threshold, admin_level, run_id) %>%
@@ -396,5 +481,256 @@ n_targeted_ISOs <- df_targeted_by_run %>%
 n_targeted_admins_ISOs <- n_targeted_admins_allISOs %>%
     left_join(n_targeted_ISOs, by = c("confirmation_lens", "threshold", "admin_level"))
 
-write.csv(n_targeted_admins_ISOs, "output_final/202302_survms/intermediate_table/n_targeted_admins_ISOs.csv", row.names = FALSE)
+write.csv(n_targeted_admins_ISOs, "output_final/202110gavi-3/intermediate_table/n_targeted_admins_ISOs.csv", row.names = FALSE)
+
+
+
+# OUTPUT 24: mean_ir_targeted
+# mean true baseline IR among admins that were vaccinated at least once in that scenario
+for(country in all_countries){
+    
+    # read in target table 
+    message(paste0("For making dataframe of mean IR, reading the target table of ", country))
+    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+
+    # added on 11/10/2022: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
+    df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
+
+    # admins targeted in each scenario
+    unique_targeted_admins_temp <- df_tt %>% 
+        mutate(NAME = ifelse(admin_level == "admin1", NAME_1, NAME_2)) %>%
+        filter(is_target == 1) %>%
+        group_by(ISO, confirmation_lens, admin_level, threshold) %>% # targeted admins in all runs
+        summarize(targeted_admins = paste0(unique(NAME), collapse = ", ")) %>%
+        mutate(mean_true_ir = NA, mean_confirmed_ir = NA)
+
+    if(nrow(unique_targeted_admins_temp) != 0){
+
+        df_base_inc <- df_tt %>% 
+        filter(year == 2022 & run_id == 1) %>%
+        mutate(NAME = ifelse(admin_level == "admin1", NAME_1, NAME_2)) %>%
+        dplyr::select(ISO, admin_level, NAME, confirmation_lens, threshold, true_incidence_rate, confirmed_incidence_rate)
+
+
+        for(i in 1:nrow(unique_targeted_admins_temp)){
+        
+            admin_level_temp <- unique_targeted_admins_temp$admin_level[i]
+            confirmation_lens_temp <- unique_targeted_admins_temp$confirmation_lens[i]
+            threshold_temp <- unique_targeted_admins_temp$threshold[i]
+        
+            targeted_admins <- unlist(strsplit(unique_targeted_admins_temp$targeted_admins[i], ", "))
+            mean_ir_temp <- df_base_inc %>%
+                filter(confirmation_lens == confirmation_lens_temp, admin_level == admin_level_temp, threshold == threshold_temp) %>%
+                filter(NAME %in% targeted_admins) %>%
+                group_by(admin_level, confirmation_lens, threshold) %>%
+                summarize(mean_true_ir = mean(true_incidence_rate, na.rm = T),
+                        mean_confirmed_ir = mean(confirmed_incidence_rate, na.rm = T))
+        
+            # fill in the table 
+            unique_targeted_admins_temp$mean_true_ir[i] <- mean_ir_temp$mean_true_ir 
+            unique_targeted_admins_temp$mean_confirmed_ir[i] <- mean_ir_temp$mean_confirmed_ir
+        }
+
+        # unique_targeted_admins
+        if(which(all_countries == country) == 1){unique_targeted_admins <- unique_targeted_admins_temp}
+        if(which(all_countries == country) != 1){unique_targeted_admins <- rbind(unique_targeted_admins, unique_targeted_admins_temp)}
+    
+    }
+    
+}
+write.csv(unique_targeted_admins, "output_final/202110gavi-3/intermediate_table/mean_ir_targeted.csv", row.names = FALSE)
+
+
+
+### OUTPUT 25: ir_eff_byISO.csv
+# Average district-level baseline observed IR ~ efficiency (for all districts targeted at least once)
+if(!file.exists(paste0(output_final_path, "/intermediate_table/mean_ir_targeted.csv"))){
+    message("Data file mean_ir_targeted.csv does not exist in the intermediate_table folder.")
+}else{
+    df_targeted_admins <- read.csv(paste0(output_final_path, "/intermediate_table/mean_ir_targeted.csv"))
+}
+
+# make a folder for ir_eff tables
+if(!file.exists(paste0(output_final_path, "/", "ir_eff_table"))){
+    dir.create(paste0(output_final_path, "/", "ir_eff_table"))
+}
+
+
+# remove SEN and ZAF (without targeting in all scenarios)
+all_countries <- c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI", "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZMB", "ZWE")
+
+
+for(country in all_countries){
+    
+    df_targeted_admins_temp <- df_targeted_admins %>% filter(country == ISO)
+    
+    # read in target table 
+    message(paste0("Reading the target table of ", country))
+    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+
+    # added on 11/10/2022: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
+    df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
+
+    df_tt <- df_tt %>%
+        mutate(NAME = ifelse(admin_level == "admin1", NAME_1, NAME_2))
+    
+    for(i in 1:nrow(df_targeted_admins_temp)){
+        
+        message(paste0("Reading in line ", i, " of ", country, " targeted admin table."))
+        admins <- c(unlist(strsplit(df_targeted_admins_temp$targeted_admins[i], ", ")))
+        n_admins <- length(admins)
+        
+        threshold_temp <- df_targeted_admins_temp$threshold[i]
+        admin_level_temp <- df_targeted_admins_temp$admin_level[i]
+        confirmation_lens_temp <- df_targeted_admins_temp$confirmation_lens[i]
+        
+        df_tt_temp <- df_tt %>%
+            filter(threshold == threshold_temp & admin_level == admin_level_temp & confirmation_lens == confirmation_lens_temp) %>%
+            filter(NAME %in% admins)
+
+        # baseline observed and clinical incidence rate (average across runs) for each admin
+        df_inc <- df_tt_temp %>%
+            filter(year == 2022) %>%
+            group_by(NAME) %>%
+            summarize(mean_observed_ir = mean(confirmed_incidence_rate, na.rm = T),
+                      mean_clinical_ir = mean(confirmed_incidence_rate / confirmation_rate, na.rm = T))
+        
+        # averted cases and FVP for each admin
+        df_fvp_ac_eff <- df_tt_temp %>%
+            group_by(run_id, NAME) %>% 
+            mutate(fvp_cumu = cumsum(actual_fvp), ac_cumu = cumsum(true_averted_cases)) %>%
+            filter(year == 2035) %>%
+            mutate(eff = ac_cumu / fvp_cumu * 1000) %>%
+            filter(fvp_cumu != 0) %>% # filter out eff == Inf 
+            group_by(NAME) %>% 
+            summarize(eff = median(eff, na.rm = TRUE)) %>%
+            as.data.frame()
+        
+        # combine
+        df_inc_eff_temp <- df_inc %>% left_join(df_fvp_ac_eff, by = "NAME") %>%
+            mutate(ISO = country, threshold = threshold_temp, confirmation_lens = confirmation_lens_temp, admin_level = admin_level_temp) %>%
+            dplyr::select(ISO, threshold, confirmation_lens, admin_level, NAME, mean_observed_ir, mean_clinical_ir, eff)
+        
+        # rbind for one country
+        if(i == 1){df_inc_eff_oneISO <- df_inc_eff_temp}
+        if(i != 1){df_inc_eff_oneISO <- rbind(df_inc_eff_oneISO, df_inc_eff_temp)}
+    }
+    # write data for one country
+    message(paste0("Writing ir_eff table for ", "country."))
+    write.csv(df_inc_eff_oneISO, paste0(output_final_path, "/ir_eff_table/ir_eff_", country, ".csv"), row.names = FALSE)
+    
+    message(paste0("Rbinding the ir_eff table of ", country, " to byISO table."))
+    if(which(all_countries == country) == 1){ir_eff_byISO <- df_inc_eff_oneISO}
+    if(which(all_countries == country) != 1){ir_eff_byISO <- rbind(ir_eff_byISO, df_inc_eff_oneISO)}
+    
+    # rm
+    rm(df_tt, df_tt_temp, df_inc, df_fvp_ac_eff, df_inc_eff_temp, df_inc_eff_oneISO)
+
+}
+write.csv(ir_eff_byISO, paste0(int_path, "ir_eff_byISO.csv"), row.names = F)
+
+
+
+## OUTPUT 26: py_vaxed_byISO
+# Number and proportion of population-year getting vaccinated among districts where true IR exceeds the targeting threshold
+if(!file.exists(paste0(output_final_path, "/intermediate_table/", "py_vaxed_table"))){
+    dir.create(paste0(output_final_path, "/intermediate_table/", "py_vaxed_table"))
+}
+
+for(country in all_countries){
+    
+    # read in target table 
+    message(paste0("For making py_vaxed_byISO, reading the target table of ", country))
+    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+
+    # added on 11/10/2022: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
+    df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
+    
+    df_py_vaccinated <- df_tt %>% 
+        filter(is_target == 1 & true_incidence_rate > threshold) %>%
+        group_by(confirmation_lens, admin_level, threshold, run_id) %>%
+        summarize(py_vaccinated = sum(actual_fvp))
+    
+    df_prop_py_vaccinated <- df_tt %>%
+        filter(true_incidence_rate > threshold) %>%
+        group_by(confirmation_lens, admin_level, threshold, run_id) %>%
+        summarize(py = sum(pop_model))
+    rm(df_tt)
+
+    # join 
+    py_vaccinated_temp <- df_py_vaccinated %>%
+        left_join(df_prop_py_vaccinated, by = c("confirmation_lens", "admin_level", "threshold", "run_id")) %>%
+        mutate(prop_py_vaccinated = py_vaccinated / py) %>%
+        group_by(confirmation_lens, admin_level, threshold) %>%
+        summarize(py_vaxed_lb = quantile(py_vaccinated, 0.025, na.rm = T),
+                  py_vaxed_median = quantile(py_vaccinated, 0.5, na.rm = T),
+                  py_vaxed_ub = quantile(py_vaccinated, 0.975, na.rm = T),
+                  prop_py_vaxed_lb = quantile(prop_py_vaccinated, 0.025, na.rm = T),
+                  prop_py_vaxed_median = quantile(prop_py_vaccinated, 0.5, na.rm = T),
+                  prop_py_vaxed_ub = quantile(prop_py_vaccinated, 0.975, na.rm = T)) %>%
+        mutate(ISO = country)
+    rm(df_py_vaccinated, df_prop_py_vaccinated)
+    
+    # save the df for a single country
+    write.csv(py_vaccinated_temp, paste0(output_final_path, "/intermediate_table/py_vaxed_table/py_vaxed_", country, ".csv"), row.names = F)
+
+    message("Rbinding py_vaccinated_temp of ", country, " to existing py_vaxed_byISO.")
+    if(which(all_countries == country) == 1){py_vaxed_byISO <- py_vaccinated_temp}
+    if(which(all_countries == country) != 1){py_vaxed_byISO <- rbind(py_vaxed_byISO, py_vaccinated_temp)}
+}
+write.csv(py_vaxed_byISO, paste0(output_final_path, "/intermediate_table/py_vaxed_byISO.csv"), row.names = F)
+
+
+## OUTPUT 27: py_vaxed_allISOs
+# Number and proportion of population-year getting vaccinated among districts where true IR exceeds the targeting threshold (summarized across all countries)
+for(country in all_countries){
+    
+    # read in target table 
+    message(paste0("For making py_vaxed_allISOs, reading the target table of ", country))
+    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+
+    # added on 11/10/2022: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
+    df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
+
+    # summarize the py_vaxed for each run & scenario
+    df_py_vaxed <- df_tt %>%
+        filter(is_target == 1 & true_incidence_rate > threshold) %>%
+        group_by(confirmation_lens, threshold, admin_level, run_id) %>%
+        summarize(py_vaxed = sum(actual_fvp))
+    
+    df_py <- df_tt %>%
+        filter(true_incidence_rate > threshold) %>%
+        group_by(confirmation_lens, threshold, admin_level, run_id) %>%
+        summarize(py = sum(pop_model))
+    rm(df_tt)
+    
+    py_vaxed_temp <- df_py_vaxed %>%
+        left_join(df_py, by = c("confirmation_lens", "threshold", "admin_level", "run_id")) %>%
+        mutate(ISO = country)
+    write.csv(py_vaxed_temp, paste0(output_final_path, "/intermediate_table/py_vaxed_table/py_vaxed_allISOs_", country, ".csv"), row.names = F)
+    
+    message("Rbinding py_vaxed_temp of ", country, " to existing py_vaxed_allISOs.")
+    if(which(all_countries == country) == 1){py_vaxed_allISOs_temp <- py_vaxed_temp}
+    if(which(all_countries == country) != 1){py_vaxed_allISOs_temp <- rbind(py_vaxed_allISOs_temp, py_vaxed_temp)}
+    rm(py_vaxed_temp)
+}
+py_vaxed_allISOs <- py_vaxed_allISOs_temp %>%
+    group_by(confirmation_lens, threshold, admin_level, run_id) %>%
+    summarize(py_vaxed = sum(py_vaxed),
+              py = sum(py)) %>%
+    mutate(prop_py_vaxed = py_vaxed / py) %>%
+    group_by(confirmation_lens, threshold, admin_level) %>%
+    summarize(py_vaxed_lb = quantile(py_vaxed, 0.025, na.rm = T),
+                  py_vaxed_median = quantile(py_vaxed, 0.5, na.rm = T),
+                  py_vaxed_ub = quantile(py_vaxed, 0.975, na.rm = T),
+                  prop_py_vaxed_lb = quantile(prop_py_vaxed, 0.025, na.rm = T),
+                  prop_py_vaxed_median = quantile(prop_py_vaxed, 0.5, na.rm = T),
+                  prop_py_vaxed_ub = quantile(prop_py_vaxed, 0.975, na.rm = T))
+write.csv(py_vaxed_allISOs, paste0(output_final_path, "/intermediate_table/py_vaxed_allISOs.csv"), row.names = F)
+
+
 
