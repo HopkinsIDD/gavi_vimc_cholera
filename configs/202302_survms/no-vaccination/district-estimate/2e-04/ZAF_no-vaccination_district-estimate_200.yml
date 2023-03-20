@@ -29,5 +29,5 @@ setting:
   random_seed: 1
 optimize:
   save_intermediate_raster: TRUE
-  save_final_output_raster: FALSE
+  save_final_output_raster: TRUE
   ir_pre_screening: FALSE
