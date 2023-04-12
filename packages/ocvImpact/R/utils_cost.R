@@ -55,7 +55,7 @@ calc_costeff_ocv_test <- function(df_tt){
                                     confirmation_lens == "district-estimate" ~ cumu_clinical_cases * prop_sus_rdt_tested * cost_per_rdt)) %>%
         mutate(culture_cost = case_when(confirmation_lens == "no-estimate" ~ 0,
                                         confirmation_lens == "global-estimate" ~ cumu_clinical_cases * prop_sus_cultured * cost_per_culture,
-                                        confirmation_lens == "district-estimate" ~ cumu_clinical_cases * rdt_pos_rate * prop_rdt_positive_cultured * cost_per_culture)) %>%
+                                        confirmation_lens == "district-estimate" ~ cumu_clinical_cases * prop_sus_rdt_tested * rdt_pos_rate * prop_rdt_positive_cultured * cost_per_culture)) %>%
         mutate(test_cost = rdt_cost + culture_cost) %>%
         mutate(costeff_ocv_only = ocv_cost / cumu_ac) %>%
         mutate(costeff_ocv_test = (ocv_cost + test_cost) / cumu_ac) %>% 

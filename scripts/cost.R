@@ -22,15 +22,20 @@ all_countries <- c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG"
 # set parameters (exact values pending) =================
 cost_per_ocv_procure <- 1.65
 cost_per_ocv_deliver <- 0.65
-cost_per_ocv_shipping <- 0.1
+cost_per_ocv_shipping <- 0.06
 cost_per_ocv <- cost_per_ocv_procure + cost_per_ocv_deliver + cost_per_ocv_shipping
 cost_per_rdt <- 1.9
-cost_per_culture <- 12.84
+cost_per_culture <- 13
 rdt_pos_rate <- 0.56
 prop_sus_rdt_tested <- 0.74 # proportion of suspected (clinical) cases tested by RDT at district confirmation capacity
 prop_rdt_positive_cultured <- 0.48 # proportion of RDT+ cases tested by culture at district confirmation capacity
 prop_sus_cultured <- 0.3 # proportion of suspected (clinical cases) tested by culture at national confirmation capacity
 dose_regimen <- 2
+
+# set output paths ===========
+int_path <- paste0(output_final_path, "/intermediate_table/")
+cost_path <- paste0(output_final_path, "/cost_table/")
+tt_path <- paste0(output_final_path, "/target_table/")
 
 
 # check directory status =====================
@@ -42,16 +47,12 @@ if(!file.exists(paste0(output_final_path, "/", "cost_table"))){
     }
 }
 
-# set output paths ===========
-int_path <- paste0(output_final_path, "/intermediate_table/")
-cost_path <- paste0(output_final_path, "/cost_table/")
-tt_path <- paste0(output_final_path, "/target_table/")
-
 
 # ===============================================
 # PREP: Extract clinical cases from target tables 
 # ===============================================
-# OUTPUT 13A clinical cases by country
+# OUTPUT 13A clinical_cases_byISO_medianCI
+# clinical cases by country
 for(country in all_countries){
     
     # read in target table 
@@ -74,7 +75,8 @@ rm(df_tt, df_clinical_medianCI)
 write.csv(clinical_cases_byISO_medianCI, paste0(int_path, "clinical_cases_byISO_medianCI.csv"), row.names = F)
 
 
-# OUTPUT 13B clinical cases across countries
+# OUTPUT 13B clinical_cases_allISOs
+# clinical cases across countries
 for(country in all_countries){
     
     # read in target table 
@@ -207,6 +209,7 @@ ocv_costeff_byISO_medianCI <- tp_eff_ac_byISO_medianCI %>%
 
 write.csv(ocv_costeff_byISO_medianCI, paste0(cost_path, "ocv_costeff_byISO_medianCI.csv"), row.names = F)
 
+
 # OUTPUT 19: ocv_costeff_allISOs_medianCI 
 ocv_costeff_allISOs_medianCI <- tp_eff_ac_allISOs_medianCI %>%
     mutate(ocv_costeff_lb = 1000 * dose_regimen * cost_per_ocv / efficiency_ub,
@@ -265,7 +268,7 @@ total_costeff_allISOs_medianCI <- tp_ac_allISOs %>%
                                 confirmation_lens == "district-estimate" ~ cumu_clinical_cases * prop_sus_rdt_tested * cost_per_rdt)) %>%
     mutate(culture_cost = case_when(confirmation_lens == "no-estimate" ~ 0,
                                     confirmation_lens == "global-estimate" ~ cumu_clinical_cases * prop_sus_cultured * cost_per_culture,
-                                    confirmation_lens == "district-estimate" ~ cumu_clinical_cases * rdt_pos_rate * prop_rdt_positive_cultured * cost_per_culture)) %>%
+                                    confirmation_lens == "district-estimate" ~ cumu_clinical_cases * prop_sus_rdt_tested * rdt_pos_rate * prop_rdt_positive_cultured * cost_per_culture)) %>%
     mutate(test_cost = rdt_cost + culture_cost) %>%
     mutate(costeff_ocv_test = (ocv_cost + test_cost) / true_ac_cumu) %>% 
     group_by(confirmation_lens, admin_level, threshold) %>%
@@ -292,7 +295,7 @@ status_quo_confirmation_lens <- "no-estimate"
 status_quo_admin_level <- "admin2"
 status_quo_threshold <- 2e-04 # should be 2e-04
 
-# OUTPUT 22: ICER_allISOs (ICER summarizing all countries)
+# OUTPUT 22: icer_allISOs_medianCI (ICER summarizing all countries)
 if(!file.exists(paste0(int_path, "tp_ac_allISOs.csv")) |
    !file.exists(paste0(int_path, "clinical_cases_allISOs.csv"))){
     message("At least one of tp_ac_allISOs.csv or clinical_cases_allISOs.csv doesn't exist in the intermediate_table folder, please check." )
@@ -309,7 +312,7 @@ df_cost_ac <- tp_ac_allISOs %>%
                                 confirmation_lens == "district-estimate" ~ cumu_clinical_cases * prop_sus_rdt_tested * cost_per_rdt)) %>%
     mutate(culture_cost = case_when(confirmation_lens == "no-estimate" ~ 0,
                                     confirmation_lens == "global-estimate" ~ cumu_clinical_cases * prop_sus_cultured * cost_per_culture,
-                                    confirmation_lens == "district-estimate" ~ cumu_clinical_cases * rdt_pos_rate * prop_rdt_positive_cultured * cost_per_culture)) %>%
+                                    confirmation_lens == "district-estimate" ~ cumu_clinical_cases * prop_sus_rdt_tested * rdt_pos_rate * prop_rdt_positive_cultured * cost_per_culture)) %>%
     mutate(test_cost = rdt_cost + culture_cost) %>%
     mutate(total_cost = ocv_cost + test_cost)
 
@@ -374,7 +377,7 @@ for(country in all_countries){
                                     confirmation_lens == "district-estimate" ~ cumu_clinical_cases * prop_sus_rdt_tested * cost_per_rdt)) %>%
         mutate(culture_cost = case_when(confirmation_lens == "no-estimate" ~ 0,
                                         confirmation_lens == "global-estimate" ~ cumu_clinical_cases * prop_sus_cultured * cost_per_culture,
-                                        confirmation_lens == "district-estimate" ~ cumu_clinical_cases * rdt_pos_rate * prop_rdt_positive_cultured * cost_per_culture)) %>%
+                                        confirmation_lens == "district-estimate" ~ cumu_clinical_cases * prop_sus_rdt_tested * rdt_pos_rate * prop_rdt_positive_cultured * cost_per_culture)) %>%
         mutate(test_cost = rdt_cost + culture_cost) %>%
         mutate(total_cost = ocv_cost + test_cost)
     
@@ -412,7 +415,7 @@ for(country in all_countries){
     if(which(all_countries == country) != 1){icer_byISO_medianCI <- rbind(icer_byISO_medianCI, icer_byISO_medianCI_temp)}
 }
 rm(icer_byISO_medianCI_temp)
-write(icer_byISO_medianCI, paste0(cost_path, "icer_byISO_medianCI.csv"), row.names = F)
+write.csv(icer_byISO_medianCI, paste0(cost_path, "icer_byISO_medianCI.csv"), row.names = F)
 
 
 ## OUTPUT 28: n_tested_byISO 
@@ -432,15 +435,339 @@ n_tested_byISO <- clinical_cases_byISO_medianCI %>%
                                        confirmation_lens == "district-estimate" ~ cumu_clinical_cases_ub * prop_sus_rdt_tested)) %>%
     mutate(n_culture_tested_lb = case_when(confirmation_lens == "no-estimate" ~ 0,
                                            confirmation_lens == "global-estimate" ~ cumu_clinical_cases_lb * prop_sus_cultured,
-                                           confirmation_lens == "district-estimate" ~ cumu_clinical_cases_lb * rdt_pos_rate * prop_rdt_positive_cultured)) %>%
+                                           confirmation_lens == "district-estimate" ~ cumu_clinical_cases_lb * prop_sus_rdt_tested * rdt_pos_rate * prop_rdt_positive_cultured)) %>%
     mutate(n_culture_tested_median = case_when(confirmation_lens == "no-estimate" ~ 0,
                                                confirmation_lens == "global-estimate" ~ cumu_clinical_cases_median * prop_sus_cultured,
-                                               confirmation_lens == "district-estimate" ~ cumu_clinical_cases_median * rdt_pos_rate * prop_rdt_positive_cultured)) %>%
+                                               confirmation_lens == "district-estimate" ~ cumu_clinical_cases_median * prop_sus_rdt_tested * rdt_pos_rate * prop_rdt_positive_cultured)) %>%
     mutate(n_culture_tested_ub = case_when(confirmation_lens == "no-estimate" ~ 0,
                                            confirmation_lens == "global-estimate" ~ cumu_clinical_cases_ub * prop_sus_cultured,
-                                           confirmation_lens == "district-estimate" ~ cumu_clinical_cases_ub * rdt_pos_rate * prop_rdt_positive_cultured))
+                                           confirmation_lens == "district-estimate" ~ cumu_clinical_cases_ub * prop_sus_rdt_tested * rdt_pos_rate * prop_rdt_positive_cultured))
 write.csv(n_tested_byISO, paste0(cost_path, "n_tested_byISO.csv"), row.names = F)
 
 
+# Added on 3/10/2023
+## OUTPUT 29: cost_allISOs_medianCI
+# cost for each scenario (summarize across countries), separately for ocv and testing, or combined
+if(!file.exists(paste0(output_final_path, "/cost_table/ocv_cost_allISOs_medianCI.csv"))){
+    message("Data file ocv_cost_allISOs_medianCI.csv does not exist in the cost_table folder.")
+}else{
+    ocv_cost_allISOs_medianCI <- read.csv(paste0(output_final_path, "/cost_table/ocv_cost_allISOs_medianCI.csv"))
+}
+if(!file.exists(paste0(output_final_path, "/cost_table/test_cost_allISOs_medianCI.csv"))){
+    message("Data file test_cost_allISOs_medianCI.csv does not exist in the cost_table folder.")
+}else{
+    test_cost_allISOs_medianCI <- read.csv(paste0(output_final_path, "/cost_table/test_cost_allISOs_medianCI.csv"))
+}
+
+test_cost_allISOs_medianCI[is.na(test_cost_allISOs_medianCI)] <- 0
+
+cost_allISOs_medianCI <- ocv_cost_allISOs_medianCI %>%
+    left_join(
+        test_cost_allISOs_medianCI %>% 
+            dplyr::select(confirmation_lens, admin_level, threshold, test_cost_lb, test_cost_median, test_cost_ub),
+        by = c("confirmation_lens", "admin_level", "threshold")
+    ) %>%
+    mutate(total_cost_lb = ocv_cost_lb + test_cost_lb, 
+           total_cost_median = ocv_cost_median + test_cost_median,
+           total_cost_ub = ocv_cost_ub + test_cost_ub)
+write.csv(cost_allISOs_medianCI, paste0(cost_path, "cost_allISOs_medianCI.csv"), row.names = F)
+
+
+
+## OUTPUT 30: costeff_allISOs_medianCI
+# cost per averted true case (ocv cost only; test cost only; total cost)
+if(!file.exists(paste0(output_final_path, "/intermediate_table/clinical_cases_allISOs.csv")) |
+   !file.exists(paste0(output_final_path, "/intermediate_table/tp_ac_allISOs.csv"))){
+    message("Data file clinical_cases_allISOs.csv or tp_ac_allISOs.csv does not exist in the intermediate_table folder.")
+}else{
+    clinical_cases_allISOs <- read.csv(paste0(output_final_path, "/intermediate_table/clinical_cases_allISOs.csv"))
+    tp_ac_allISOs <- read.csv(paste0(output_final_path, "/intermediate_table/tp_ac_allISOs.csv"))
+}
+if(!file.exists(paste0(output_final_path, "/cost_table/ocv_costeff_allISOs_medianCI.csv")) |
+   !file.exists(paste0(output_final_path, "/cost_table/total_costeff_allISOs_medianCI.csv"))){
+    message("Data file ocv_costeff_allISOs_medianCI.csv or total_costeff_allISOs_medianCI.csv does not exist in the cost_table folder.")
+}else{
+    ocv_costeff_allISOs_medianCI <- read.csv(paste0(output_final_path, "/cost_table/ocv_costeff_allISOs_medianCI.csv"))
+    total_costeff_allISOs_medianCI <- read.csv(paste0(output_final_path, "/cost_table/total_costeff_allISOs_medianCI.csv"))
+}
+
+test_costeff <- tp_ac_allISOs %>%
+    filter(year == 2035) %>% dplyr::select(confirmation_lens, admin_level, threshold, run_id, true_ac_cumu) %>%
+    left_join(clinical_cases_allISOs, by = c("confirmation_lens", "admin_level", "threshold", "run_id")) %>%
+    mutate(rdt_cost = case_when(confirmation_lens == "global-estimate" | confirmation_lens == "no-estimate" ~ 0,
+                                confirmation_lens == "district-estimate" ~ cumu_clinical_cases * prop_sus_rdt_tested * cost_per_rdt)) %>%
+    mutate(culture_cost = case_when(confirmation_lens == "no-estimate" ~ 0,
+                                    confirmation_lens == "global-estimate" ~ cumu_clinical_cases * prop_sus_cultured * cost_per_culture,
+                                    confirmation_lens == "district-estimate" ~ cumu_clinical_cases * prop_sus_rdt_tested * rdt_pos_rate * prop_rdt_positive_cultured * cost_per_culture)) %>%
+    mutate(test_cost = rdt_cost + culture_cost) %>% dplyr::select(-rdt_cost, -culture_cost) %>%
+    mutate(test_costeff = test_cost / true_ac_cumu) %>%
+    group_by(confirmation_lens, admin_level, threshold) %>%
+    summarize(test_costeff_lb = quantile(test_costeff, 0.025, na.rm = T),
+              test_costeff_median = quantile(test_costeff, 0.5, na.rm = T),
+              test_costeff_ub = quantile(test_costeff, 0.975, na.rm = T)) %>%
+    dplyr::select(confirmation_lens, admin_level, threshold, test_costeff_lb, test_costeff_median, test_costeff_ub)
+
+#join 
+costeff_allISOs_medianCI <- ocv_costeff_allISOs_medianCI %>%
+    left_join(test_costeff, by = c("confirmation_lens", "threshold", "admin_level")) %>%
+    left_join(total_costeff_allISOs_medianCI, by = c("confirmation_lens", "threshold", "admin_level"))
+
+write.csv(costeff_allISOs_medianCI, paste0(cost_path, "costeff_allISOs_medianCI.csv"), row.names = F)
+
+
+
+## OUTPUT 31: n_prop_tested_allISOs_medianCI
+# Number of tested, and proportion of tested out of all clinical cases
+clinical_cases_allISOs <- read.csv(paste0(output_final_path, "/intermediate_table/clinical_cases_allISOs.csv"))
+
+n_prop_tested <- clinical_cases_allISOs %>%
+    mutate(n_rdt = case_when(confirmation_lens == "global-estimate" | confirmation_lens == "no-estimate" ~ 0,
+                             confirmation_lens == "district-estimate" ~ cumu_clinical_cases * prop_sus_rdt_tested)) %>%
+    mutate(n_culture = case_when(confirmation_lens == "no-estimate" ~ 0,
+                                 confirmation_lens == "global-estimate" ~ cumu_clinical_cases * prop_sus_cultured,
+                                 confirmation_lens == "district-estimate" ~ cumu_clinical_cases * prop_sus_rdt_tested * rdt_pos_rate * prop_rdt_positive_cultured)) %>%
+    mutate(n_tested = case_when(confirmation_lens == "no-estimate" ~ 0,
+                                confirmation_lens == "global-estimate" ~ n_culture,
+                                confirmation_lens == "district-estimate" ~ n_rdt)) %>%
+    mutate(prop_tested = n_tested / cumu_clinical_cases) %>%
+    group_by(confirmation_lens, admin_level, threshold) %>%
+    summarize(n_rdt_lb = quantile(n_rdt, 0.025, na.rm = T),
+              n_rdt_median = quantile(n_rdt, 0.5, na.rm = T),
+              n_rdt_ub = quantile(n_rdt, 0.975, na.rm = T),
+              n_culture_lb = quantile(n_culture, 0.025, na.rm = T),
+              n_culture_median = quantile(n_culture, 0.5, na.rm = T),
+              n_culture_ub = quantile(n_culture, 0.975, na.rm = T),
+              n_tested_lb = quantile(n_tested, 0.025, na.rm = T),
+              n_tested_median = quantile(n_tested, 0.5, na.rm = T),
+              n_tested_ub = quantile(n_tested, 0.975, na.rm = T),
+              prop_tested_lb = quantile(prop_tested, 0.025, na.rm = T),
+              prop_tested_median = quantile(prop_tested, 0.5, na.rm = T),
+              prop_tested_ub = quantile(prop_tested, 0.975, na.rm = T))
+write.csv(n_prop_tested, paste0(cost_path, "n_prop_tested_allISOs_medianCI.csv"), row.names = F)
+
+
+## OUTPUT 34 prop_tested_in_highIR_byISO_medianCI
+## OUTPUT 35 prop_tested_in_highIR_allISOs_medianCI
+# proportion of number of people living in high burden areas (exceed threshold) that get tested out of all clinical cases
+prop_tested_path <- paste0(cost_path, "prop_tested_in_highIR_table")
+
+for(country in all_countries){
     
+    # read in target table 
+    message(paste0("For calculating %tested in high incidence rate areas of ", country))
+    df_tt <- read.csv(paste0(tt_path, "target_table_", country, ".csv" ))
+    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+
+    # added on 11/10/2022: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
+    df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
+    
+    n_tested_in_highIR_oneISO <- df_tt %>%
+        filter(true_incidence_rate > threshold) %>%
+        mutate(clinical_cases = confirmed_incidence_rate / confirmation_rate * pop_model) %>%
+        # calculate number of people tested in these high burden areas (true IR > threshold)
+        mutate(n_rdt = case_when(confirmation_lens == "global-estimate" | confirmation_lens == "no-estimate" ~ 0,
+                                 confirmation_lens == "district-estimate" ~ clinical_cases * prop_sus_rdt_tested)) %>%
+        mutate(n_culture = case_when(confirmation_lens == "no-estimate" ~ 0,
+                                     confirmation_lens == "global-estimate" ~ clinical_cases * prop_sus_cultured,
+                                     confirmation_lens == "district-estimate" ~ clinical_cases * prop_sus_rdt_tested * rdt_pos_rate * prop_rdt_positive_cultured)) %>%
+        mutate(n_tested = case_when(confirmation_lens == "no-estimate" ~ 0,
+                                    confirmation_lens == "global-estimate" ~ n_culture,
+                                    confirmation_lens == "district-estimate" ~ n_rdt)) %>%
+        group_by(ISO, confirmation_lens, threshold, admin_level, run_id) %>%
+        summarize(n_tested = sum(n_tested)) # cumulative person-year
+
+    n_clinical_cases_oneISO <- get_clinical_cases(df_tt)
+    
+    prop_tested_in_highIR_oneISO <- n_tested_in_highIR_oneISO %>%
+        left_join(n_clinical_cases_oneISO, by = c("ISO", "confirmation_lens", "threshold", "admin_level", "run_id"))
+
+    rm(df_tt)
+    write.csv(prop_tested_in_highIR_oneISO, paste0(prop_tested_path, "/prop_tested_in_highIR_", country, ".csv"), row.names = F)
+    
+    message(paste0("Rbinding prop_tested table of ", country, " to existing prop_tested_in_highIR table."))
+    if(which(all_countries == country) == 1){prop_tested_in_highIR <- prop_tested_in_highIR_oneISO}
+    if(which(all_countries == country) != 1){prop_tested_in_highIR <- rbind(prop_tested_in_highIR, prop_tested_in_highIR_oneISO)}
+
+}
+prop_tested_in_highIR_byISO_medianCI <- prop_tested_in_highIR %>%
+        mutate(prop_tested = n_tested / cumu_clinical_cases) %>%
+        group_by(ISO, confirmation_lens, threshold, admin_level) %>%
+        summarize(prop_tested_lb = quantile(prop_tested, 0.025, na.rm = T),
+                  prop_tested_median = quantile(prop_tested, 0.5, na.rm = T),
+                  prop_tested_ub = quantile(prop_tested, 0.975, na.rm = T))
+
+prop_tested_in_highIR_allISOs_medianCI <- prop_tested_in_highIR %>%
+    group_by(confirmation_lens, threshold, admin_level, run_id) %>%
+    summarize(n_tested = sum(n_tested), cumu_clinical_cases = sum(cumu_clinical_cases)) %>%
+    mutate(prop_tested = n_tested / cumu_clinical_cases) %>%
+    group_by(confirmation_lens, threshold, admin_level) %>%
+    summarize(prop_tested_lb = quantile(prop_tested, 0.025, na.rm = T),
+              prop_tested_median = quantile(prop_tested, 0.5, na.rm = T),
+              prop_tested_ub = quantile(prop_tested, 0.975, na.rm = T))
+
+write.csv(prop_tested_in_highIR_byISO_medianCI, paste0(cost_path, "prop_tested_in_highIR_byISO_medianCI.csv"), row.names = F)
+write.csv(prop_tested_in_highIR_allISOs_medianCI, paste0(cost_path, "prop_tested_in_highIR_allISOs_medianCI.csv"), row.names = F)
+
+
+## OUTPUT 36 cost_spend_save_per_ac_byISO
+# test cost added per case averted & OCV cost saved per averted case (from clinical def --> district labs)
+cost_ac_path <- paste0(cost_path, "cost_ac_table")
+for(country in all_countries){
+    
+    # read in target table 
+    message(paste0("For calculating cost spent (test) and saved (ocv) of ", country))
+    df_tt <- read.csv(paste0(tt_path, "target_table_", country, ".csv" ))
+    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+
+    # added on 11/10/2022: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
+    df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
+    
+    df_test_cost <- df_tt %>%
+        filter(confirmation_lens == "district-estimate" | confirmation_lens == "no-estimate") %>%
+        mutate(clinical_cases = confirmed_incidence_rate / confirmation_rate * pop_model) %>%
+        mutate(cost_rdt = case_when(confirmation_lens == "no-estimate" ~ 0,
+                                    confirmation_lens == "district-estimate" ~ clinical_cases * prop_sus_rdt_tested * cost_per_rdt)) %>%
+        mutate(cost_culture = case_when(confirmation_lens == "no-estimate" ~ 0,
+                                        confirmation_lens == "district-estimate" ~ clinical_cases * prop_sus_rdt_tested * rdt_pos_rate * prop_rdt_positive_cultured * cost_per_culture)) %>%
+        mutate(cost_test = cost_rdt + cost_culture) %>%
+        group_by(ISO, run_id, confirmation_lens, threshold, admin_level) %>%
+        summarize(cost_test = sum(cost_test))
+    
+    df_ocv_cost <- df_tt %>%
+        filter(confirmation_lens == "district-estimate" | confirmation_lens == "no-estimate") %>%
+        group_by(ISO, run_id, confirmation_lens, threshold, admin_level) %>%
+        summarize(fvp = sum(actual_fvp), ac = sum(true_averted_cases)) %>%
+        mutate(cost_ocv = dose_regimen * fvp * cost_per_ocv)
+    rm(df_tt)
+    
+    df_cost_ac_temp <- df_test_cost %>%
+        left_join(df_ocv_cost, by = c("ISO", "confirmation_lens", "threshold", "admin_level", "run_id"))
+    rm(df_ocv_cost, df_test_cost)
+    write.csv(df_cost_ac_temp, paste0(cost_ac_path, "/cost_ac_", country, ".csv"), row.names = F)
+    
+    message(paste0("Rbinding cost_ac_temp table of ", country, " to existing cost_ac table."))
+    if(which(all_countries == country) == 1){df_cost_ac <- df_cost_ac_temp}
+    if(which(all_countries == country) != 1){df_cost_ac <- rbind(df_cost_ac, df_cost_ac_temp)}
+
+}
+
+# by country
+ocv_cost_per_ac_byISO <- df_cost_ac %>%
+    filter(ac > 1) %>%
+    mutate(ocv_cost_per_ac = cost_ocv / ac) %>% dplyr::select(-fvp, -ac, -cost_ocv, -cost_test) %>%
+    group_by(ISO, run_id, threshold, admin_level) %>%
+    tidyr::pivot_wider(names_from = "confirmation_lens", values_from = "ocv_cost_per_ac") %>%
+    dplyr::rename(ocv_cost_per_ac_district_estimate = `district-estimate`, ocv_cost_per_ac_no_estimate = `no-estimate`)
+
+test_cost_per_ac_byISO <- df_cost_ac %>% 
+    filter(confirmation_lens == "district-estimate") %>% 
+    filter(ac > 1) %>%
+    ungroup() %>% mutate(test_cost_per_ac = cost_test / ac) %>% 
+    dplyr::select(-confirmation_lens, -fvp, -ac, -cost_test, -cost_ocv)
+  
+cost_per_ac_byISO <- ocv_cost_per_ac_byISO %>%
+    left_join(test_cost_per_ac_byISO, by = c("ISO", "run_id", "threshold", "admin_level")) %>%
+    mutate(ocv_cost_saved_per_ac = ocv_cost_per_ac_no_estimate - ocv_cost_per_ac_district_estimate,
+           spend_cost_ratio = ocv_cost_saved_per_ac / test_cost_per_ac) %>%
+    group_by(ISO, threshold, admin_level) %>%
+    summarize(ocv_cost_per_ac_district_estimate_median = median(ocv_cost_per_ac_district_estimate, na.rm = T),
+              ocv_cost_per_ac_no_estimate_median = median(ocv_cost_per_ac_no_estimate, na.rm = T),
+              test_cost_per_ac_median = median(test_cost_per_ac, na.rm = T),
+              ocv_cost_saved_per_ac_median = median(ocv_cost_saved_per_ac, na.rm = T),
+              spend_cost_ratio_median = median(spend_cost_ratio, na.rm = T))
+
+# all countries
+#df_cost_ac_allISOs <- df_cost_ac %>%
+#    group_by(run_id, confirmation_lens, threshold, admin_level) %>%
+#    summarize(cost_test = sum(cost_test), fvp = sum(fvp), ac = sum(ac), cost_ocv = sum(cost_ocv))
+    
+#ocv_cost_per_ac_allISOs <- df_cost_ac_allISOs %>%
+#    filter(ac > 1) %>%
+#    mutate(ocv_cost_per_ac = cost_ocv / ac) %>% dplyr::select(-fvp, -ac, -cost_ocv, -cost_test) %>%
+#    group_by(run_id, threshold, admin_level) %>%
+#    tidyr::pivot_wider(names_from = "confirmation_lens", values_from = "ocv_cost_per_ac") %>%
+#    dplyr::rename(ocv_cost_per_ac_district_estimate = `district-estimate`, ocv_cost_per_ac_no_estimate = `no-estimate`)
+
+#test_cost_per_ac_allISOs <- df_cost_ac_allISOs %>% 
+#    filter(confirmation_lens == "district-estimate") %>% 
+#    filter(ac > 1) %>%
+#    ungroup() %>% mutate(test_cost_per_ac = cost_test / ac) %>% 
+#    dplyr::select(-confirmation_lens, -fvp, -ac, -cost_test, -cost_ocv)
+  
+#cost_per_ac_allISOs <- ocv_cost_per_ac_allISOs %>%
+#    left_join(test_cost_per_ac_allISOs, by = c("run_id", "threshold", "admin_level")) %>%
+#    mutate(ocv_cost_saved_per_ac = ocv_cost_per_ac_no_estimate - ocv_cost_per_ac_district_estimate,
+#           spend_cost_ratio = ocv_cost_saved_per_ac / test_cost_per_ac) %>%
+#    group_by(threshold, admin_level) %>%
+#    summarize(ocv_cost_per_ac_district_estimate_median = median(ocv_cost_per_ac_district_estimate, na.rm = T),
+#              ocv_cost_per_ac_no_estimate_median = median(ocv_cost_per_ac_no_estimate, na.rm = T),
+#              test_cost_per_ac_median = median(test_cost_per_ac, na.rm = T),
+#              ocv_cost_saved_per_ac_median = median(ocv_cost_saved_per_ac, na.rm = T),
+#              spend_cost_ratio_median = median(spend_cost_ratio, na.rm = T))
+
+cost_per_ac_byISO <- read.csv(paste0(cost_path, "cost_spend_save_per_ac_byISO.csv"))
+cost_per_ac_byISO <- cost_per_ac_byISO %>%
+    mutate(ocv_cost_saved_per_ac_median = ocv_cost_per_ac_no_estimate_median - ocv_cost_per_ac_district_estimate_median,
+           spend_cost_ratio_median = ocv_cost_saved_per_ac_median / test_cost_per_ac_median)
+
+write.csv(cost_per_ac_byISO, paste0(cost_path, "cost_spend_save_per_ac_byISO.csv"), row.names = F)
+#write.csv(cost_per_ac_allISOs, paste0(cost_path, "cost_spend_save_per_ac_allISOs.csv"), row.names = F)
+ 
+
+
+## OUTPUT 37 cost_spend_save_per_ac_allISOs
+# test cost added per case averted & OCV cost saved per averted case (from clinical def --> district labs)
+clinical_cases_allISOs <- read.csv(paste0(int_path, "clinical_cases_allISOs.csv"))
+tp_ac_allISOs <- read.csv(paste0(int_path, "tp_ac_allISOs.csv"))
+
+temp <- tp_ac_allISOs %>% filter(year == 2035) %>% dplyr::select(-year) %>%
+    left_join(clinical_cases_allISOs, by = c("confirmation_lens", "run_id", "threshold", "admin_level"))
+
+df_cost_ac <- temp %>%
+        filter(confirmation_lens == "district-estimate" | confirmation_lens == "no-estimate") %>%
+        mutate(cost_rdt = case_when(confirmation_lens == "no-estimate" ~ 0,
+                                    confirmation_lens == "district-estimate" ~ cumu_clinical_cases * prop_sus_rdt_tested * cost_per_rdt)) %>%
+        mutate(cost_culture = case_when(confirmation_lens == "no-estimate" ~ 0,
+                                        confirmation_lens == "district-estimate" ~ cumu_clinical_cases * prop_sus_rdt_tested * rdt_pos_rate * prop_rdt_positive_cultured * cost_per_culture)) %>%
+        mutate(cost_test = cost_rdt + cost_culture) %>%
+        mutate(cost_ocv = dose_regimen * target_pop_cumu * cost_per_ocv)
+
+# all countries
+ocv_cost_per_ac_allISOs <- df_cost_ac %>%
+    filter(true_ac_cumu > 1) %>%
+    mutate(ocv_cost_per_ac = cost_ocv / true_ac_cumu) %>% dplyr::select(-target_pop_cumu, -true_ac_cumu, -cumu_clinical_cases, -cost_ocv, -cost_test, -cost_rdt, -cost_culture) %>%
+    group_by(run_id, threshold, admin_level) %>%
+    tidyr::pivot_wider(names_from = "confirmation_lens", values_from = "ocv_cost_per_ac") %>%
+    dplyr::rename(ocv_cost_per_ac_district_estimate = `district-estimate`, ocv_cost_per_ac_no_estimate = `no-estimate`)
+
+test_cost_per_ac_allISOs <- df_cost_ac %>% 
+    filter(confirmation_lens == "district-estimate") %>% 
+    filter(true_ac_cumu > 1) %>%
+    ungroup() %>% mutate(test_cost_per_ac = cost_test / true_ac_cumu) %>% 
+    dplyr::select(run_id, threshold, admin_level, test_cost_per_ac)
+  
+cost_per_ac_allISOs <- ocv_cost_per_ac_allISOs %>%
+    left_join(test_cost_per_ac_allISOs, by = c("run_id", "threshold", "admin_level")) %>%
+    mutate(ocv_cost_saved_per_ac = ocv_cost_per_ac_no_estimate - ocv_cost_per_ac_district_estimate,
+           spend_cost_ratio = ocv_cost_saved_per_ac / test_cost_per_ac) %>%
+    group_by(threshold, admin_level) %>%
+    summarize(ocv_cost_per_ac_district_estimate_median = median(ocv_cost_per_ac_district_estimate, na.rm = T),
+              ocv_cost_per_ac_no_estimate_median = median(ocv_cost_per_ac_no_estimate, na.rm = T),
+              test_cost_per_ac_median = median(test_cost_per_ac, na.rm = T),
+              ocv_cost_saved_per_ac_median = median(ocv_cost_saved_per_ac, na.rm = T),
+              spend_cost_ratio_median = median(spend_cost_ratio, na.rm = T),
+              # lower CI
+              ocv_cost_per_ac_district_estimate_lb = quantile(ocv_cost_per_ac_district_estimate, 0.025, na.rm = T),
+              ocv_cost_per_ac_no_estimate_lb = quantile(ocv_cost_per_ac_no_estimate,  0.025, na.rm = T),
+              test_cost_per_ac_lb = quantile(test_cost_per_ac, 0.025,  na.rm = T),
+              ocv_cost_saved_per_ac_lb = quantile(ocv_cost_saved_per_ac, 0.025, na.rm = T),
+              spend_cost_ratio_lb = quantile(spend_cost_ratio, 0.025, na.rm = T),
+              # upper CI
+              ocv_cost_per_ac_district_estimate_ub = quantile(ocv_cost_per_ac_district_estimate, 0.975, na.rm = T),
+              ocv_cost_per_ac_no_estimate_ub = quantile(ocv_cost_per_ac_no_estimate,  0.975, na.rm = T),
+              test_cost_per_ac_ub = quantile(test_cost_per_ac, 0.975, na.rm = T),
+              ocv_cost_saved_per_ac_ub = quantile(ocv_cost_saved_per_ac, 0.975, na.rm = T),
+              spend_cost_ratio_ub = quantile(spend_cost_ratio, 0.975, na.rm = T))
+write.csv(cost_per_ac_allISOs, paste0(cost_path, "cost_spend_save_per_ac_allISOs.csv"), row.names = F)
+
     

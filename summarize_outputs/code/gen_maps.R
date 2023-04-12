@@ -129,19 +129,24 @@ ggsave(plot = map, filename = "model_illustration/plots/incid_half.pdf")
 ## (10/18 added summarze output)
 ## make plot of doses administered in SSA 
 # set up
-library(dplyr)
+library(dplyr, lib = r_lib)
 library(stringr)
-library(GADMTools)
+library(tidyr)
+library(tidyverse)
+library(sf, lib=r_lib)
+library(sp, lib=r_lib)
+library(classInt, lib=r_lib)
+library(rgdal, lib=r_lib)
+library(GADMTools, lib = r_lib)
+library(raster, lib=r_lib)
+library(exactextractr, lib=r_lib)
+library(s2, lib=r_lib)
 library(ggplot2)
-source("packages/ocvImpact/R/utils_sum_output_median.R")
 output_final_path <- "output_final/202110gavi-3"
 setwd(output_final_path)
 
 # read in doses administered by country
-df_dose <- read.csv("eff_table/tp_eff_ac_byISO_median.csv")
-
-# format a bit 
-df_dose <- df_dose %>%
+df_dose <- read.csv("intermediate_table/tp_eff_ac_byISO_medianCI.csv") %>%
   dplyr::select(ISO, threshold, confirmation_lens, admin_level, tp_cumu_median)
 
 
@@ -172,10 +177,15 @@ shp <- gadm_sf_loadCountries(all_cc, level = 0)$sf
 shp_dose <- shp %>% left_join(df_map, by = "ISO")
 
 # manually add untargeted indicator
+untargeted_ISO_1e_04 <- (df_map %>% filter(threshold == 1e-04 & tp_cumu_median == 0))$ISO
+untargeted_ISO_0.001 <- (df_map %>% filter(threshold == 0.001 & tp_cumu_median == 0))$ISO
+untargeted_ISO_2e_04 <- (df_map %>% filter(threshold == 2e-04 & tp_cumu_median == 0))$ISO
+
+
 shp_dose <- shp_dose %>%
-    mutate(ind_untargeted = case_when(threshold == 1e-04 & ISO %in% c("SEN", "ZAF") ~ 1,
-                                      threshold == 0.001 & ISO %in% c("BEN", "BFA", "CIV", "GIN", "MDG", "MLI", "MRT", "RWA", "SEN", "TGO", "ZAF", "ZWE") ~ 1,
-                                      threshold == 2e-04 & ISO %in% c("BFA", "MDG", "SEN", "TGO", "ZAF") ~ 1,
+    mutate(ind_untargeted = case_when(threshold == 1e-04 & ISO %in% untargeted_ISO_1e_04 ~ 1,
+                                      threshold == 0.001 & ISO %in% untargeted_ISO_0.001 ~ 1,
+                                      threshold == 2e-04 & ISO %in% untargeted_ISO_2e_04 ~ 1,
                                       TRUE ~ 0))
 
 shp_dose <- 
@@ -205,7 +215,7 @@ map1 <-
    theme(plot.margin = unit(c(-20,0,-20,0), "cm")) +
    labs(fill = "Total doses administered (million)", x=NULL, y =NULL, title =NULL)
 
-ggsave(plot = map1, filename = "plots/map1.pdf")
+ggsave(plot = map1, filename = "/data/aazman1/hxu70/gavi-modeling/gavi_vimc_cholera/output_final/202110gavi-3/plots/map1.pdf")
 saveRDS(map1,"plots/doses_maps_0.001_1e-04.rds")
 
 # supplement map
