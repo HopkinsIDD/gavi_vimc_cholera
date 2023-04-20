@@ -69,3 +69,4 @@ output_raw/202110gavi-3/
 packages/ocvImpact/R/import_age_targeted_vac_pro.R
 packages/ocvImpact/R/outbreak_incidence_rate_multiplier_old.R
 *.out
+*.DS_Store
