@@ -4,7 +4,7 @@
 ## General information
 This repo has all the code necessary to simulate two different modeling projects: the cholera burdens modeling project that estimates vaccination campaign impacts (the GAVI-VIMC core project) on cholera controls and disease burdens in multiple African countries and some countries on other continents, and the enhanced surveillance benefits modeling project to evaluate the influences of higher cholera bacteriological confirmation capacity on vaccination campaign efficiency and cost-effectiveness (the surveillance value project/paper) that's solely focused on African countries. The preprint of this study is accessible at [medRxiv](https://www.medrxiv.org/content/10.1101/2022.11.25.22282776v1). The access to the formal paper will be posted here once it's been published.  
 
-We recommend running one project at a time because these two individual projects share folders that have the exactly same names and running both of them at the same time may cause some output files to be overwritten. However, running multiple countries simultaneously within the same project is enabled and encouraged. 
+Currently, only the surveillance project has been enabled to run on [ARCH](https://www.arch.jhu.edu/) (will be referred to as "Rockfish" hereafter), but both projects can be run on local machines. We recommend running one project at a time because these two individual projects share folders that have the exactly same names and running both of them at the same time may cause some output files to be overwritten. However, running multiple countries simultaneously within the same project is enabled and encouraged. 
 
 ## How to use this repository 
 All the information regarding how to git clone this repo (run `git lfs install` first because there are large files stored at this repo), how to set up the model, how to install relevant R packages, how to run simulations, and how to diagnose model output
@@ -23,7 +23,7 @@ The process to run the surveillance project is very similar to the steps describ
   <br />
 
 
-## Folder/File Index 
+## Folder Index 
 The following is a brief introduction of different folders and files on this repo to guide you through.  
   * configs: auto-generated configuration files containing parameters for both modeling projects 
   * deliverables: methodology description documentation and model comparison documentation for the GAVI-VIMC core project
@@ -33,11 +33,10 @@ The following is a brief introduction of different folders and files on this rep
   * output_final: for final summarized model output (empty until simulation processes)
   * output_raw: directly generated output files from model during simulation (empty until simulation processes)
   * packages: the project-specific R package containing all functions that work within both models
-  * sbatch_scripts: the Shell scripts used to submit jobs to set up the surveillance model on Rockfish, generate incidence rate raster files as model input, and simulate both models 
+  * sbatch_scripts: the Shell scripts used to submit jobs to set up the surveillance model on Rockfish, generate incidence rate raster files as model input, simulate both models, and diagnose the surveillance model  
   * scripts: R scripts used to initialize and run both models, as well as to process raw model output to prepare tables and figures for the surveillance project
-  * summarize_outputs: scripts to summarize model output to generate visuals for publication and visuals included in the manuscript 
-  * write_up: documents and tables used when submitting model products to VIMC
-  * diagnostic_report.Rmd: the diagnostic report RMarkdown file for the surveillance project
+  * summarize_outputs: code and data that can be used to summarize model output to generate tables and figures for the publication of the surveillance study and the actual tables and figures included in the manuscript 
+  * write_up: documents generated and data used before submitting the formal model products to VIMC
 
 
 
