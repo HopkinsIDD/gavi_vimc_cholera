@@ -1,27 +1,35 @@
 #====== The Basics ======#
-runname <- "202110gavi-3" ### Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
-scenarios <- c("campaign-default", "no-vaccination")
-countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
-              "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE",
-              "AFG", "HTI", "IRN", "IRQ", "NPL", "PAK", "PHL", "THA", "YEM", "IND", "BGD") #will likely to only include the countries in sub-Saharan Africa
-countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
-              "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE") # now only includes the countries in Africa
+targeting_strategy <- "affected_pop" #c("threshold_unconstrained", "affected_pop", "incidence"), "threshold_unconstrained" means it's for the surveillance project
+runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202110gavi-3") ### Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
 
-### Countries included in the mapping project
+
+#====== Shared parameters ======#
+scenarios <- c("campaign-default", "no-vaccination")
+num_skip_years <- 3   #district-level skipped years, relevant to both projects
+num_samples <- 200    #shared by both projects
+use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity 
+self_random_seed <- NULL  #for now, just use the random seed specified by the setting
+clean_outputs <- TRUE
+clean_incid <- FALSE
+# default country list
 ids <- readr::read_csv("input_data/locations_todeletelater.csv") # location ids
 cw <- readr::read_csv("input_data/region_country.csv")
 locs <- dplyr::right_join(cw, ids, by = c("country" = "region")) ## region & country grouping
 locs <- dplyr::filter(locs, !is.na(region))
 countries <- unique(locs$country)
+# countries simulated in the VIMC core project
+countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
+              "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE",
+              "AFG", "HTI", "IRN", "IRQ", "NPL", "PAK", "PHL", "THA", "YEM", "IND", "BGD") #will likely to only include the countries in sub-Saharan Africa
+# countries simulated in the surveillance project              
+countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
+              "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE") # now only includes the countries in Africa
 
-### Just for testing 
-#countries <- c("COD", "GHA", "MRT", "NGA", "TZA", "SOM", "SLE") #for testing, temporary 
 
 #====== Surveillance Project Specific ======#
 save_intermediate_raster <- TRUE #if TRUE, this will save memory during the model run
 save_final_output_raster <- TRUE #if TRUE, all the raster files will be saved
 ir_pre_screening <- FALSE #if TRUE, countries with low ir where no vacc will happen will be skipped 
-targeting_strategy <- "threshold_unconstrained" #c("threshold_unconstrained", "affected_pop", "incidence")
 vac_incid_thresholds <- c(1/1000, 1/5000, 1/10000) 
 vac_unconstrained <- TRUE #or refer to an external coverage dataset 
 vac_admin_level <- "both" #c("both", "admin1", "admin2"), running both admin levels for now, running a single one when issues occur 
@@ -36,25 +44,8 @@ sim_end_year <- 2035
 use_mean_ir <- TRUE
 mean_ir_span <- 5
 
-#====== Other Parameters ======#
-num_skip_years <- 3 #district level, relevant to the surveillance project
-num_samples <- 200 #relevant to the surveillance project
-use_random_seed <- TRUE #whether or not to have a random seed that governs the stochasticity 
-self_random_seed <- NULL #for now, just use the random seed specified by the setting
-clean_outputs <- TRUE
-clean_incid <- FALSE
 
-# ### tmp
-# outbreak_file_name <- paste0("/home/kaiyuezou/VIMC_Model/202110gavi-3/gavi_vimc_cholera/input_data", '/outbreak/outbreak_df.csv')
-# if (file.exists(outbreak_file_name)){
-#   outbreak_df <- readr::read_csv(outbreak_file_name)
-# }else{
-#   stop('The multi-country outbreak dataset does not exist under the correct directory. Please check. ')
-# }
-# outbreak_countries <- unique(outbreak_df$country)[!unique(outbreak_df$country) %in% c("TZA_zanzibar")]
-# # countries <- countries[!countries %in% outbreak_countries]
-# countries <- outbreak_countries
-
+#====== Shared parameters -- related to country-level incidence rate trends ======#
 use_country_incid_trend <- rep(TRUE, length(countries))
 
 no_country_list <- c("CMR", "COD", "ETH", "IRQ", "KEN", "LBR", "NGA", "SEN", "SOM", "YEM", "ZAF", "ZWE")
@@ -68,10 +59,11 @@ use_country_incid_trend <- unlist(use_country_incid_trend)
 rm(no_country_list)
 rm(not_sure_country_list)
 
-#====== Setting Parameters--incidence rate trend and outbreak multiplier ======#
-incidence_rate_trend <- FALSE #for surveillance for now
-outbreak_multiplier <- FALSE #for surveillance for now
-### For now, the random seed equals setting number
+
+#====== Setting Parameters -- based on incidence rate trend and outbreak multiplier ======#
+incidence_rate_trend <- FALSE 
+outbreak_multiplier <- FALSE 
+# For now, the random seed equals setting number
 if(use_random_seed & is.null(self_random_seed)){
   random_seed <- dplyr::case_when(
     !incidence_rate_trend & !outbreak_multiplier ~ 1, 
@@ -84,4 +76,3 @@ if(use_random_seed & is.null(self_random_seed)){
 }else if(!use_random_seed){
   random_seed <- sample(1:10000, 1) #let loose on random seed 
 }
-
