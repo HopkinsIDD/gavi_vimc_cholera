@@ -902,7 +902,7 @@ for(country in all_countries){
 write.csv(prop_vaxed_in_highIR_byISO, paste0(int_path, "prop_vaxed_in_highIR_byISO.csv"), row.names = F)
 
 
-### OUTPUT 40: targeted_baseline_true_ir_byISO.csv
+### OUTPUT 40: targeted_baseline_true_ir_byISO.csv (unused)
 # Average district-level baseline true IR (for all districts targeted at least once)
 if(!file.exists(paste0(output_final_path, "/intermediate_table/mean_ir_targeted.csv"))){
     message("Data file mean_ir_targeted.csv does not exist in the intermediate_table folder.")
@@ -969,6 +969,53 @@ for(country in all_countries){
     
     # rm
     rm(df_tt, df_tt_temp, df_inc, df_inc_oneISO)
+
+}
+write.csv(targeted_baseline_true_ir_byISO, paste0(int_path, "targeted_baseline_true_ir_byISO.csv"), row.names = F)
+
+
+
+### OUTPUT 40: targeted_baseline_true_ir_byISO.csv
+# Average district-level baseline true IR (for all districts targeted at least once)
+if(!file.exists(paste0(output_final_path, "/intermediate_table/mean_ir_targeted.csv"))){
+    message("Data file mean_ir_targeted.csv does not exist in the intermediate_table folder.")
+}else{
+    df_targeted_admins <- read.csv(paste0(output_final_path, "/intermediate_table/mean_ir_targeted.csv"))
+}
+
+# make a folder for true_ir tables
+if(!file.exists(paste0(output_final_path, "/", "true_ir_table"))){
+    dir.create(paste0(output_final_path, "/", "true_ir_table"))
+}
+
+
+# remove SEN and ZAF (without targeting in all scenarios)
+all_countries <- c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI", "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZMB", "ZWE")
+
+
+for(country in all_countries){
+        
+    # read in target table 
+    message(paste0("Reading the target table of ", country))
+    df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+    df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+
+    # added on 11/10/2022: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
+    df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
+    
+    # filter out data rows targeted
+    df_inc <- df_tt %>% 
+        filter(is_target == 1 & admin_level == "admin2") %>%
+        filter(confirmation_lens == "district-estimate" | confirmation_lens == "no-estimate") %>% 
+        dplyr::select(ISO, admin_level,NAME_2, confirmation_lens, threshold, year, run_id, true_incidence_rate)
+
+    
+    # write data for one country
+    message(paste0("Writing true IR table for ", country))
+    write.csv(df_inc, paste0(output_final_path, "/true_ir_table/true_ir_", country, ".csv"), row.names = FALSE)
+    
+    # rm
+    rm(df_tt, df_inc)
 
 }
 write.csv(targeted_baseline_true_ir_byISO, paste0(int_path, "targeted_baseline_true_ir_byISO.csv"), row.names = F)
