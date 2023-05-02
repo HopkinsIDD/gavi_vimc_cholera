@@ -62,8 +62,10 @@ df_small <- read.csv("data/df_small_targets_summary.csv")
 
 # mean IR of targeted admins (country level)
 df_mean_ir_targeted <- read.csv("data/mean_ir_targeted.csv")
-# mean baseline IR (across sims) of admins that were targeted at least once (admin1/admin2 level)
+# mean baseline clinical/observed IR (across sims) of admins that were targeted at least once (admin1/admin2 level)
 ir_eff_byISO <- read.csv("data/ir_eff_byISO.csv")
+# mean baseline true IR (across sims) of admins that were targeted at least once (admin1/admin2 level)
+targeted_baseline_true_ir_byISO <- read.csv("data/targeted_baseline_true_ir_byISO.csv")
 # number of averted cases and proportion of averted cases among all true cases
 n_prop_ac_allISOs_medianCI <- read.csv("data/n_prop_ac_allISOs_medianCI.csv")
 prop_ac_byISO_medianCI <- read.csv("data/prop_ac_byISO_medianCI.csv")
@@ -1390,3 +1392,67 @@ table_small <-
 
 table_small
 ```
+
+
+### **Figure S`r tab.counter`** Baseline incidence rate of targeted districts
+```{r}
+fig.counter <- fig.counter + 1
+
+plt_true_ir <- 
+  targeted_baseline_true_ir_byISO %>% 
+  filter(confirmation_lens == "district-estimate" | 
+           confirmation_lens == "no-estimate") %>%
+  filter(admin_level == "admin2") %>%
+  mutate(confirmation_lens = ifelse(confirmation_lens == "district-estimate", "Decentralized Testing", "Clinical Definition")) %>%
+  mutate(threshold = case_when(threshold == 1e-04 ~ "1/10,000",
+                               threshold == 2e-04 ~ "2/10,000",
+                               threshold == 1e-03 ~ "10/10,000")) %>%
+  mutate(threshold = factor(threshold, levels = c("1/10,000", "2/10,000", "10/10,000"))) %>%
+  rename(`Confirmation capacity` = confirmation_lens) %>%
+  group_by(`Confirmation capacity`, threshold) %>%
+  mutate(median_ir = median(as.numeric(true_incidence_rate))) %>%
+  ggplot() +
+  geom_histogram(aes(true_incidence_rate, fill = `Confirmation capacity`), 
+                 position="dodge") +
+  geom_vline(aes(xintercept= median_ir, color = `Confirmation capacity`), linetype = "dashed") +
+  theme_bw() +
+  scale_x_log10() +
+  labs(color = "Confirmation capacity") +
+  scale_fill_manual(values = c("steelblue", "gold")) +
+  scale_color_manual(values = c("steelblue", "gold")) +
+  facet_grid(threshold ~.)  +
+  xlab("Baseline true incidence rate")
+  #facet_grid( ~ threshold, scales = "free", space = "free")
+
+
+### get the mean / median of true IR 
+ir_mean_median <- 
+  targeted_baseline_true_ir_byISO %>% 
+  filter(confirmation_lens == "district-estimate" | 
+           confirmation_lens == "no-estimate") %>%
+  filter(admin_level == "admin2") %>%
+  mutate(confirmation_lens = ifelse(confirmation_lens == "district-estimate", "Decentralized Testing", "Clinical Definition")) %>%
+  mutate(threshold = case_when(threshold == 1e-04 ~ "1/10,000",
+                               threshold == 2e-04 ~ "2/10,000",
+                               threshold == 1e-03 ~ "10/10,000")) %>%
+  mutate(threshold = factor(threshold, levels = c("1/10,000", "2/10,000", "10/10,000"))) %>%
+  rename(`Confirmation capacity` = confirmation_lens) %>%
+  group_by(`Confirmation capacity`, threshold) %>%
+  mutate(median_ir = median(true_incidence_rate),
+         mean_ir = mean(true_incidence_rate)) 
+
+ir_mean_median %>%
+  group_by(`Confirmation capacity`, threshold) %>%
+  count(mean_ir, median_ir) %>%
+  dplyr::select(-n)
+
+
+plt_true_ir
+ggsave(plot = plt_true_ir, filename = "figures/plot_true_ir.jpg", height = 6, width = 8)
+```
+
+
+
+
+
+
