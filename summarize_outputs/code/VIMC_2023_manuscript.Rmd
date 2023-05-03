@@ -1421,7 +1421,7 @@ plt_true_ir <-
   scale_fill_manual(values = c("steelblue", "gold")) +
   scale_color_manual(values = c("steelblue", "gold")) +
   facet_grid(threshold ~.)  +
-  xlab("Baseline true incidence rate")
+  xlab("True incidence rate in OCV-targeted districts")
   #facet_grid( ~ threshold, scales = "free", space = "free")
 
 
