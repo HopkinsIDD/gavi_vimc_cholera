@@ -13,7 +13,7 @@ run_country_scenario(
   nsamples,
   ve_direct = generate_pct_protect_function(),
   indirect_mult = generate_indirect_incidence_mult(),
-  secular_trend_mult = generate_flatline_multiplier(),
+  secular_trend_mult = function(a, b, c, d) {     return(a * b * c * d) },
   clean = TRUE,
   redraw = FALSE,
   ...

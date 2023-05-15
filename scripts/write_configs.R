@@ -22,16 +22,24 @@ package_list <- c(
                   "stringr",
                   "tibble",
                   "tidyr",
-                  "yaml"
+                  "yaml", 
+                  "remotes", 
+                  "rgeoboundaries"
                   )
 
 for (package in package_list) {
-  if (!require(package = package, character.only = T)) {
+  if (!require(package = package, character.only = T) & package != "rgeoboundaries") {
     install.packages(pkgs = package)
     library(package = package, character.only = T)
+  }else if (package == "rgeoboundaries") {
+    remotes::install_gitlab("dickoa/rgeoboundaries")
+    if(!require(package = package, character.only = T)) {remotes::install_github("wmgeolab/rgeoboundaries")}
   }
+  
   detach(pos = which(grepl(package, search())))
 }
+
+
 
 #======Initialize Montagu package======#
 if (!require('montagu', character.only = T)) {
@@ -60,22 +68,60 @@ library('ocvImpact', character.only = T)
 
 
 source("scripts/set_all_parameters.R")
-
+#runname <- "201910gavi-5-config-test" #this is only for development use
 cpathname <- file.path("configs", runname)
 dir.create(cpathname, showWarnings = FALSE)
 
 for(scn in scenarios){
 
-  scnpathname <- file.path(cpathname, scn)
-  dir.create(scnpathname, showWarnings = FALSE)
-  pars <- tidyr::expand_grid(runname = runname, scenario = scn, country = countries, targeting = targeting_strategy, nsamples = num_samples, nskipyear = num_skip_years, clean = clean_outputs, redrawIncid = clean_incid)
+  # scnpathname <- file.path(cpathname, scn)
+  # dir.create(scnpathname, showWarnings = FALSE)
 
-  lapply(1:nrow(pars), function(i){
-    par_row <- pars[i,]
-    ocvImpact::prepare_config(par_row, scnpathname)
-  })
+  for(surveillance_scenario in surveillance_scenarios){
+    
+    # scnpathname <- file.path(cpathname, scn, surveillance_scenario)
+    # dir.create(scnpathname, showWarnings = FALSE)
+
+    for(vac_incid_threshold in vac_incid_thresholds){
+      
+      if(targeting_strategy != "threshold_unconstrained"){
+        scnpathname <- file.path(cpathname, scn)
+      }else if(targeting_strategy == "threshold_unconstrained"){
+        scnpathname <- file.path(cpathname, scn, surveillance_scenario, vac_incid_threshold)
+      }
+      dir.create(scnpathname, showWarnings = FALSE)
+
+      # parameters that apply to both projects 
+      pars <- tidyr::expand_grid(runname = runname, scenario = scn, country = countries, targeting = targeting_strategy, nsamples = num_samples, nskipyear = num_skip_years, clean = clean_outputs, redrawIncid = clean_incid) 
+      pars$use_country_incid_trend <- use_country_incid_trend
+      pars$incidence_rate_trend <- incidence_rate_trend
+      pars$outbreak_multiplier <- outbreak_multiplier          
+      pars$random_seed <- random_seed
+
+      # the followings are specific to the surveillance project
+      pars$save_intermediate_raster <- save_intermediate_raster
+      pars$save_final_output_raster <- save_final_output_raster
+      pars$ir_pre_screening <- ir_pre_screening
+      pars$vac_incid_threshold <- vac_incid_threshold
+      pars$vac_unconstrained <- vac_unconstrained  
+      pars$vac_admin_level <- vac_admin_level
+      pars$vac_coverage <- vac_coverage
+      pars$surveillance_scenario <- surveillance_scenario 
+      pars$testing_sensitivity <- testing_sensitivity[[surveillance_scenario]]
+      pars$vac_interval <- vac_interval
+      pars$sim_start_year <- sim_start_year
+      pars$vac_start_year <- vac_start_year
+      pars$vac_end_year <- vac_end_year
+      pars$sim_end_year <- sim_end_year   
+      pars$use_mean_ir <- use_mean_ir
+      pars$mean_ir_span <- mean_ir_span       
+
+      lapply(1:nrow(pars), function(i){
+        par_row <- pars[i,]
+        ocvImpact::prepare_config(par_row, scnpathname)
+      })
+    }
+  
+  }  
 
 }
-
-
-

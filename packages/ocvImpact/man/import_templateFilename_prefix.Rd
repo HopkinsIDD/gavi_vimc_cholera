@@ -10,6 +10,8 @@ import_templateFilename_prefix(type, modelpath, redownload = FALSE)
 \item{type}{"stochastic", "central", "parameter"}
 
 \item{modelpath}{path to Montagu files}
+
+\item{redownload}{whether to redownload the file}
 }
 \value{
 template filename prefix

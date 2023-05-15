@@ -4,7 +4,14 @@
 \alias{create_incid_raster}
 \title{create_incid_raster}
 \usage{
-create_incid_raster(modelpath, datapath, country, nsamples, redraw)
+create_incid_raster(
+  modelpath,
+  datapath,
+  country,
+  nsamples,
+  redraw,
+  random_seed = NULL
+)
 }
 \arguments{
 \item{modelpath}{path to montagu}
@@ -18,7 +25,7 @@ create_incid_raster(modelpath, datapath, country, nsamples, redraw)
 \item{redraw}{logical that indicates whether existing incid samples should be drawn again}
 }
 \value{
-raster of incidence rate, 30 samples
+raster of incidence rate, "nsamples" samples
 }
 \description{
 Generate a raster with the baseline cholera incidence

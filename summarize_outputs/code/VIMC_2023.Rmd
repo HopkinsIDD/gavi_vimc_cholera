@@ -1,0 +1,1369 @@
+---
+title: "VIMC results (2023)"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message=FALSE, 
+                      warning=FALSE)
+
+library(reactable)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(RColorBrewer)
+library(raster)
+library(tidyverse)
+library(patchwork)
+library(countrycode)
+library(flextable)
+library(cowplot)
+library(GADMTools)
+library(magick)
+library(ggpubr)
+library(wbstats)
+
+source("figures_utils.R")
+tab.counter <- 1
+fig.counter <- 1
+```
+
+### Main results of VIMC surveillance project. 
+
+<br>
+
+```{r load data}
+# raw dataset with tp, ac, and fvp of each year and each run
+df_raw <- read.csv("data/tp_ac_allISOs.csv")
+
+# tp, eff, ac by country
+df_tp_eff <- read.csv("data/tp_eff_ac_byISO_medianCI.csv")
+
+# tp, eff, ac all countries combined
+df_tp_eff_allISOs <- read.csv("data/tp_eff_ac_allISOs_medianCI.csv")
+
+# number of runs that are targeted
+n_targeted_runs <- read.csv("data/n_targeted_runs.csv")
+
+# numbers of admins that are targeted
+n_targeted_admins_ISOs <- read.csv("data/n_targeted_admins_ISOs.csv")
+
+# read baseline incidence rate at country and admin2 level
+df_incid0 <- read.csv("data/df_incid0.csv") %>% dplyr::select(-X)
+df_incid2 <- read.csv("data/df_incid2.csv") %>% dplyr::select(-X)
+
+# read in data rows with the "small district" issue 
+df_small <- read.csv("data/df_small_targets_summary.csv")
+
+# mean IR of targeted admins (country level)
+df_mean_ir_targeted <- read.csv("data/mean_ir_targeted.csv")
+# mean baseline IR (across sims) of admins that were targeted at least once (admin1/admin2 level)
+ir_eff_byISO <- read.csv("data/ir_eff_byISO.csv")
+
+# read in py targeted in admins where true IR exceed the threshold
+py_vaxed_byISO <- read.csv("data/py_vaxed_byISO.csv")
+py_vaxed_allISOs <- read.csv("data/py_vaxed_allISOs.csv")
+
+## read in cost tables
+ocv_costeff_allISOs_medianCI <- read.csv("data/cost/ocv_costeff_allISOs_medianCI.csv")
+ocv_costeff_byISO_medianCI <- read.csv("data/cost/ocv_costeff_byISO_medianCI.csv")
+total_costeff_allISOs_medianCI <- read.csv("data/cost/total_costeff_allISOs_medianCI.csv")
+total_costeff_byISO_medianCI <- read.csv("data/cost/total_costeff_byISO_medianCI.csv")
+icer_allISOs_medianCI <- read.csv("data/cost/icer_allISOs_medianCI.csv")
+icer_byISO_medianCI <- read.csv("data/cost/icer_byISO_medianCI.csv")
+
+# read in GDP per capita (2021) data frame
+gdp_per_cap <- read.csv("data/GDP_per_capita_2021.csv") 
+gdp_per_cap[which(gdp_per_cap$Country.Code == "SSD"),]$X2021 <- 364
+gdp_per_cap <- gdp_per_cap %>%
+  filter(Country.Code %in% unique(df_tp_eff$ISO)) %>%
+  dplyr::select(Country.Code, X2021) %>% 
+  rename(ISO = Country.Code, gdp = X2021) %>%
+  mutate(gdp_x3 = gdp *3)
+```
+
+```{r format data}
+cost_per_vaccine <- 2.3 # cost per fvp is 1.65+0.65
+
+# get median
+df_dose_eff_median <- df_tp_eff %>%
+  mutate(doses = tp_cumu_median / 1000000 * 2) %>%
+  dplyr::select(ISO, threshold, confirmation_lens, admin_level, efficiency_median, doses) %>%
+  rename(efficiency = efficiency_median)
+
+# format n targeted admins
+n_admins_ISOs <- n_targeted_admins_ISOs %>%
+  mutate(n_total_targets = paste0(n_total_targets_median, " (", n_total_targets_lb, "-", n_total_targets_ub, ")"),
+         n_unique_targets = paste0(n_unique_targets_median, " (", n_unique_targets_lb, "-", n_unique_targets_ub, ")"),
+         n_ISOs = paste0(n_targeted_ISO_median, " (", n_targeted_ISO_lb, "-", n_targeted_ISO_ub, ")")) %>%
+  dplyr::select(confirmation_lens, admin_level, threshold, n_total_targets, n_unique_targets, n_ISOs)
+
+# get the cost effectiveness median and CI from df_raw 
+df_costeff <- df_raw %>%
+  filter(year == 2035) %>%
+  mutate(vacc_cost = target_pop_cumu * 2 * cost_per_vaccine) %>%
+  mutate(cost_eff = vacc_cost / true_ac_cumu) %>% 
+  dplyr::select(threshold, confirmation_lens, admin_level, cost_eff) %>%
+  group_by(threshold, confirmation_lens, admin_level) %>%
+  summarize(cost_eff_lb = quantile(cost_eff, 0.025, na.rm = T),
+            cost_eff_median = quantile(cost_eff, 0.5, na.rm = T),
+            cost_eff_ub = quantile(cost_eff, 0.975, na.rm = T))
+```
+
+<br>
+
+### **Figure `r fig.counter`.** Model Illustration
+* IR: Incidence rate; CR: Confirmation rate.
+```{r echo=FALSE, out.width='100%'}
+fig.counter <- fig.counter + 1
+knitr::include_graphics("figures/fig1.png")
+```
+
+<br>
+
+### **Table `r tab.counter`.** Projected population targeted by OCV campaigns and OCV efficiency by surveillance scenario (2022 ~ 2030) 
+* This table is calculating the **median** and 95% CI. 
+* Total number of targeted pop and total averted cases were calculated combining all the countries for each of the 200 runs (regardless if there is targeting or not) and the median and 95% CI are calculated using all the 200 runs ;
+* When calculating efficiency, runs without targeting were dropped, the median and 95% CI were based on all runs with targeting going on.
+```{r}
+tab.counter <- tab.counter + 1
+
+# format to save the table
+tab <- df_tp_eff_allISOs %>%
+  mutate(tp_cumu_lb = round(tp_cumu_lb/1000000, 2),
+         tp_cumu_median = round(tp_cumu_median/1000000, 2),
+         tp_cumu_ub = round(tp_cumu_ub/1000000, 2),
+         efficiency_lb = round(efficiency_lb, 2),
+         efficiency_median = round(efficiency_median, 2),
+         efficiency_ub = round(efficiency_ub, 2),
+         ac_lb = round(ac_lb /1000000, 2),
+         ac_median = round(ac_median/1000000, 2),
+         ac_ub = round(ac_ub/1000000, 2)) %>%
+  mutate(tp_cumu = paste0(tp_cumu_median, " (", tp_cumu_lb, "-", tp_cumu_ub, ")"),
+         efficiency = paste0(efficiency_median, " (", efficiency_lb, "-", efficiency_ub, ")"),
+         ac = paste0(ac_median, " (", ac_lb, "-", ac_ub, ")")) %>%
+  left_join(n_admins_ISOs, by = c("threshold", "confirmation_lens", "admin_level")) %>%
+  dplyr::select(threshold, confirmation_lens, admin_level, tp_cumu, ac, efficiency, n_total_targets, n_unique_targets, n_ISOs) %>%
+  pivot_wider(names_from = "confirmation_lens", values_from = c("tp_cumu", "ac", "efficiency", "n_total_targets", "n_unique_targets", "n_ISOs")) %>%
+  arrange(threshold) %>%
+  mutate(threshold = case_when(threshold == 0.001 ~ "10/10,000 per year",
+                               threshold == 2e-04 ~ "2/10,000 per year",
+                               threshold == 1e-04 ~ "1/10,000 per year")) %>%
+  mutate(admin_level = case_when(admin_level == "admin1" ~ "Province",
+                                 admin_level == "admin2" ~ "District")) %>%
+  dplyr::select(1:2, 5,4,3, 8,7,6,11,10,9,14,13,12,17,16,15, 20,19,18)
+
+table1 <- tab %>%
+  dplyr::select(1,2,3:5, 9:11) %>%
+  flextable() %>%
+  # set the header values
+  add_header_row(top = TRUE,values = c("Threshold", "OCV targeting scale", 
+                                       "Fully vaccinated population (million)", "", "", 
+                                       "OCV Efficiency (averted cases / 1,000 fvp)", "", "")) %>%
+  # Rename the columns in original header row
+  set_header_labels(threshold = "", admin_level = "",
+                    `tp_cumu_district-estimate` = "District labs", `tp_cumu_global-estimate` = "National lab", `tp_cumu_no-estimate` = "Clinical definition",
+                    `efficiency_district-estimate` = "District labs", `efficiency_global-estimate` = "National lab", `efficiency_no-estimate` = "Clinical definition") %>%
+  # merge cells 
+  merge_at(i = 1, j = 3:5, part = "header") %>% # Horizontally merge columns 3 to 5 
+  merge_at(i = 1, j = 6:8, part = "header") %>%    # Horizontally merge columns 6 to 8 
+  merge_at(i = 1:2, j = 1, part = "header") %>%
+  merge_at(i = 1:2, j = 2, part = "header") %>%
+  merge_at(i = 1:2, j = 1) %>%
+  merge_at(i = 3:4, j = 1) %>%
+  merge_at(i = 5:6, j = 1) %>%
+  flextable::align(align = "center", j = c(1:8), part = "all") %>%
+  width(j=3:5, width = 1.5) %>%
+  width(j=6:8, width = 1.5) %>%
+  vline(part = "all", j = 1) %>%
+  vline(part = "all", j = 2) %>%   # at column 2 
+  vline(part = "all", j = 5) %>%
+  hline(part = "body", i = 2, j = 2:8) %>%
+  hline(part = "body", i = 4, j = 2:8) %>%
+  hline(part = "body", i = 1:4, j = 1) 
+  
+table1
+
+# save the main table
+save_as_docx(table1, path = "tables/table1.docx")
+```
+
+<br>
+
+### **Figure `r fig.counter`.** Comparison of OCV efficiency across scenarios
+* Each of the dot in the boxplot represents the **median** efficiency of each country.
+```{r efficiency ratio figure}
+fig.counter <- fig.counter + 1
+
+df_ratio <- df_raw %>% filter(year == 2035) %>%
+  mutate(efficiency = true_ac_cumu / target_pop_cumu * 1000) %>% 
+  dplyr::select(run_id, threshold, confirmation_lens, admin_level, efficiency) %>% 
+  pivot_wider(names_from = "confirmation_lens", values_from = "efficiency") %>%
+  mutate(global_no = `global-estimate` / `no-estimate`,
+         district_no = `district-estimate` / `no-estimate`,
+         district_global = `district-estimate` / `global-estimate`) %>%
+  group_by(threshold, admin_level) %>%
+  summarize(globalno_lb = quantile(global_no, 0.025, na.rm = TRUE),
+            globalno_median = quantile(global_no, 0.5, na.rm = TRUE),
+            globalno_ub = quantile(global_no, 0.975, na.rm = TRUE),
+            districtno_lb = quantile(district_no, 0.025, na.rm = TRUE),
+            districtno_median = quantile(district_no, 0.5, na.rm = TRUE),
+            districtno_ub = quantile(district_no, 0.975, na.rm = TRUE),
+            districtglobal_lb = quantile(district_global, 0.025, na.rm = TRUE),
+            districtglobal_median = quantile(district_global, 0.5, na.rm = TRUE),
+            districtglobal_ub = quantile(district_global, 0.975, na.rm = TRUE)) %>%
+  pivot_longer(cols = 3:11, names_to = c("type", "measure"), names_sep = "_", values_to = "efficiency") %>%
+  pivot_wider(names_from = "measure", values_from = "efficiency") %>%
+  mutate(type = case_when(type == "globalno" ~ "Clinical definition→ \nNational lab",
+                          type == "districtno" ~ "Clinical definition→ \nDistrict labs",
+                          type == "districtglobal" ~ "National lab→ \nDistrict labs"))
+
+pd <- position_dodge(0.3)
+
+fig_eff_ratio <- 
+  df_ratio %>%
+  filter(admin_level == "admin2") %>%
+  mutate(threshold = case_when(threshold == 0.001 ~ "10/10,000",
+                               threshold == 2e-04 ~ "2/10,000",
+                               threshold == 1e-04 ~ "1/10,000")) %>%
+  mutate(threshold = factor(threshold, levels = c("10/10,000", "2/10,000", "1/10,000"))) %>%
+  ggplot(aes(x = type, y = median, color = as.factor(threshold))) +
+  geom_errorbar(aes(ymin = lb, ymax = ub), width = 0.1, position = pd) +
+  geom_hline(yintercept=1, linetype = "dashed") +
+  geom_point(position = pd) +
+  labs(color = "Threshold") +
+  xlab("How cholera confirmation is improved") +
+  ylab("Relative Efficiency") +
+  theme_bw() +
+  scale_color_brewer(palette = "Set2") + 
+  theme(legend.position = "top", legend.title = element_text(size=10),  legend.text = element_text(size=10),
+        axis.text = element_text(size = 10), axis.title = element_text(size = 12))
+  #theme(legend.position="top", axis.text.x = element_text(angle = 20, vjust = 0.6,  hjust= 0.5))  
+
+```
+
+```{r efficiency boxplot}
+# efficiency boxplot when doing admin level 2 targeting
+df_sum <- df_dose_eff_median %>%
+  filter(admin_level == "admin2") %>%
+  mutate(confirmation_lens = case_when(confirmation_lens == "no-estimate" ~ "Clinical definition",
+                                       confirmation_lens == "global-estimate" ~ "National lab",
+                                       confirmation_lens == "district-estimate" ~ "District labs")) %>%
+  mutate(threshold = case_when(threshold == 0.001 ~ "10/10,000",
+                               threshold == 2e-04 ~ "2/10,000",
+                               threshold == 1e-04 ~ "1/10,000")) %>%
+  mutate(threshold = factor(threshold, levels = c("10/10,000", "2/10,000", "1/10,000"))) %>%
+  mutate(confirmation_lens = factor(confirmation_lens, levels = c("Clinical definition", "National lab", "District labs")))
+
+fig_eff_boxplot <- 
+    ggplot(df_sum, aes(x = as.factor(confirmation_lens), y = efficiency, 
+                       color = threshold)) +
+    geom_boxplot(width = 0.7, outlier.shape = NA) +
+    # without outliers 
+    geom_point(aes(color = threshold), size = 0.8, position=position_jitterdodge(dodge.width = 0.7)) +
+    # geom_jitter(aes(color = as.factor(threshold)),
+    #             alpha = 0.8, width = 0.1, height = 0.01) +
+    theme_bw() +
+    # facet_grid( ~ threshold, scales = "free", space = "free") +
+    # scale_x_discrete(labels = function(x) str_wrap(x, width = 15)) +
+    scale_color_manual(values=brewer.pal(n = length(unique(df_sum$confirmation_lens)), name = "Set2")) +
+    scale_fill_brewer(palette = "Set2") +
+    xlab('Level of cholera confirmation') +
+    ylab("OCV efficiency (averted true cases / 1,000 fvp)") + 
+    #theme(legend.position="top", axis.text.x = element_text(angle = 20, vjust =0.8,  hjust= 0.5)) +
+    theme(legend.position="top", legend.title = element_text(size=10),  legend.text = element_text(size=10),
+          axis.text = element_text(size = 10), axis.title = element_text(size = 12)) +
+    labs(color = "Threshold")
+```
+
+```{r fig.height = 6, fig.width = 12}
+fig2 <- cowplot::plot_grid(fig_eff_ratio,fig_eff_boxplot,
+                   labels = c('A', 'B'),
+                   nrow = 1)
+
+fig2
+ggsave(plot = fig2, filename = "figures/fig2.png", height = 6, width = 12)
+```
+
+<br>
+
+### **Figure `r fig.counter`.** OCV efficiency gained from cholera confirmation at finer scale
+* Figure `r fig.counter`A shows difference between **median** efficiency of "Clinical only" and "District labs";
+* The maps (Figure `r fig.counter`B) are showing number of doses administered when doing admin2 targeting and district level confirmation of cholera (district labs); 
+```{r Gained efficiency ,fig.height = 14, fig.width = 12, out.width='100%'}
+fig.counter <- fig.counter + 1
+# gained efficiency from no-estimate to district-estimate
+p1 <- plot_gained_eff_with_size(df_dose_eff_median, threshold_chosen = 0.001,
+                baseline_estimate = "no-estimate", improved_estimate = "district-estimate") 
+p3 <- plot_gained_eff_with_size(df_dose_eff_median, threshold_chosen = 1e-04,
+                baseline_estimate = "no-estimate", improved_estimate = "district-estimate") +
+  theme(legend.box="horizontal", legend.position = "bottom") 
+
+leg <- get_legend(p3)
+p1_aligned <- p1 + coord_cartesian(xlim = c(0,20)) + theme(legend.position="none")
+p3_aligned <- p3 + coord_cartesian(xlim = c(0,6)) + theme(legend.position="none")
+
+map <- readRDS("data/doses_maps_0.001_1e-04.rds") + theme(plot.margin = unit(c(-8, 0, -2, 5), "cm"))
+
+fig <- plot_grid(p3_aligned, p1_aligned, rel_widths = c(1,0.8))
+fig <- plot_grid(leg, fig, rel_heights = c(1,7), ncol = 1, labels = c("A", ""), label_size = 20)
+fig3 <- plot_grid(fig, map, labels = c("", "B"), ncol = 1, rel_heights = c(1,1.4), label_size = 20)
+
+#fig3
+
+ggsave(plot = fig3, filename = "figures/fig3.jpg", height = 14, width = 12)
+knitr::include_graphics("figures/fig3.jpg")
+```
+
+<br>
+<br>
+
+### Tables and figures after submission of preprint
+
+### **Table `r tab.counter`.** Expanded summary table
+Assuming cost per dose is 2.30 dollars (1.65 USD procurement + 0.65 USD delivery).
+NOTE that here the cost is only including OCV campaign cost, without accounting the testing cost (to be added later).
+```{r}
+tab.counter <- tab.counter + 1
+
+temp <- df_tp_eff_allISOs %>%
+  left_join(df_costeff, by = c("threshold", "confirmation_lens", "admin_level")) %>%
+  mutate(tp_cumu_median = round(tp_cumu_median/1000000),
+         tp_cumu_lb = round(tp_cumu_lb/1000000),
+         tp_cumu_ub = round(tp_cumu_ub/1000000),
+         efficiency_lb = round(efficiency_lb, 2),
+         efficiency_median = round(efficiency_median, 2),
+         efficiency_ub = round(efficiency_ub, 2),
+         ac_lb = round(ac_lb /1000000, 2),
+         ac_median = round(ac_median/1000000, 2),
+         ac_ub = round(ac_ub/1000000, 2),
+         cost_eff_lb = round(cost_eff_lb),
+         cost_eff_median = round(cost_eff_median),
+         cost_eff_ub = round(cost_eff_ub)) %>%
+  mutate(fvp = paste0(tp_cumu_median, " (", tp_cumu_lb, "-", tp_cumu_ub, ")"),
+         ac = paste0(ac_median, " (", ac_lb, "-", ac_ub, ")"),
+         efficiency = paste0(efficiency_median, " (", efficiency_lb, "-", efficiency_ub, ")"),
+         cost_eff = paste0(cost_eff_median, " (", cost_eff_lb, "-", cost_eff_ub, ")")) %>%
+  dplyr::select(1:3, fvp, ac, efficiency, cost_eff) %>%
+  pivot_wider(names_from = c("confirmation_lens"), values_from = c("fvp", "ac", "efficiency", "cost_eff")) %>%
+  pivot_longer(3:14, names_to = "scenario", values_to = "value") %>%
+  pivot_wider(names_from = c("threshold", "admin_level"), values_from = "value") %>%
+  mutate(value = str_replace(str_replace(str_replace(scenario, "_district-estimate", ""), "_global-estimate", ""), "_no-estimate", "")) %>%
+  dplyr::select(value, 1:7) %>%
+  dplyr::select(value, scenario, 4,3, 6,5, 8,7) %>%
+  dplyr::select(value, scenario, 7,8, 5,6, 3,4)
+
+expanded_tab <- temp %>%
+  mutate(scenario = case_when(str_detect(scenario, "district") ~ "District labs",
+                              str_detect(scenario, "global") ~ "National lab",
+                              str_detect(scenario, "no") ~ "Clinical only")) %>%
+  mutate(value = case_when(value == "fvp" ~ "FVPs (million)",
+                           value == "ac" ~ "Cases averted (million)",
+                           value == "efficiency" ~ "Campaign efficiency",
+                           value == "cost_eff" ~ "Campaign cost per case averted ($)")) %>%
+  flextable() %>%
+  # set the header values
+  add_header_row(top = TRUE,values = c("Value", "", 
+                                       "Threshold: 10/10,000", "",
+                                       "Threshold: 2/10,000", "",
+                                       "Threshold: 1/10,000", "")) %>%
+  # Rename the columns in original header row
+  set_header_labels(value = "", scenario = "",
+                    `1e-04_admin1` = "Province", `1e-04_admin2` = "District", `2e-04_admin1` = "Province",
+                    `2e-04_admin2` = "District", `0.001_admin1` = "Province", `0.001_admin2` = "District") %>%
+  # merge cells 
+  merge_at(i = 1, j = 3:4, part = "header") %>% # Horizontally merge columns 
+  merge_at(i = 1, j = 5:6, part = "header") %>% 
+  merge_at(i = 1, j = 7:8, part = "header") %>%
+  merge_at(i = 1:3, j = 1) %>%
+  merge_at(i = 4:6, j = 1) %>%
+  merge_at(i = 7:9, j = 1) %>%
+  merge_at(i = 10:12, j = 1) %>%
+  flextable::align(align = "center", j = c(1:8), part = "all") %>%
+  width(j=3:8, width = 1.5) %>%
+  vline(part = "all", j = 1) %>%
+  vline(part = "all", j = 2) %>%   # at column 2 
+  vline(part = "all", j = 4) %>%
+  vline(part = "all", j = 6) %>%
+  hline(part = "body", i = 3, j = 1:8) %>%
+  hline(part = "body", i = 6, j = 1:8) %>%
+  hline(part = "body", i = 9, j = 1:8) %>%
+  hline(part = "body", i = 12, j = 1:8)
+  
+
+expanded_tab 
+
+# save the expanded main table
+save_as_docx(expanded_tab, path = "tables/expanded_main_tab.docx")
+```
+
+<br>
+
+### **Table `r tab.counter`.** Number and proportion of person-year targeted in admins whose true IR exceeds the targeting threshold (summarized across all countries)
+```{r}
+tab.counter <- tab.counter + 1
+py_vaxed_allISOs %>%
+  mutate(py_vaxed_lb = round(py_vaxed_lb / 1000000, 1),
+         py_vaxed_median = round(py_vaxed_median / 1000000, 1),
+         py_vaxed_ub = round(py_vaxed_ub / 1000000, 1),
+         prop_py_vaxed_lb = round(prop_py_vaxed_lb * 100, 1),
+         prop_py_vaxed_median = round(prop_py_vaxed_median * 100, 1),
+         prop_py_vaxed_ub = round(prop_py_vaxed_ub * 100, 1),) %>%
+  mutate(py_vaxed = paste0(py_vaxed_median, " (", py_vaxed_lb, "-", py_vaxed_ub, ")")) %>%
+  mutate(prop_py_vaxed = paste0(prop_py_vaxed_median, " (", prop_py_vaxed_lb, "-", prop_py_vaxed_ub, ")")) %>%
+  dplyr::select(confirmation_lens, threshold, admin_level, py_vaxed, prop_py_vaxed) %>%
+  pivot_wider(names_from = "confirmation_lens", values_from = c("py_vaxed", "prop_py_vaxed")) %>%
+  mutate(threshold = case_when(threshold == 0.001 ~ "10/10,000 per year",
+                               threshold == 2e-04 ~ "2/10,000 per year",
+                               threshold == 1e-04 ~ "1/10,000 per year")) %>%
+  mutate(admin_level = case_when(admin_level == "admin1" ~ "Province",
+                                 admin_level == "admin2" ~ "District")) %>%
+  flextable() %>%
+  # set the header values
+  add_header_row(top = TRUE,values = c("Threshold", "OCV targeting scale", 
+                                       "Targeted person-year in admins where true IR exceeds targeting threshold", "", "", 
+                                       "Proportion of person-year targeted in admins where true IR exceeds targeting threshold", "", "")) %>%
+  # Rename the columns in original header row
+  set_header_labels(threshold = "", admin_level = "",
+                    `py_vaxed_district-estimate` = "District labs", `py_vaxed_global-estimate` = "National lab", `py_vaxed_no-estimate` = "Clinical definition",
+                    `prop_py_vaxed_district-estimate` = "District labs", `prop_py_vaxed_global-estimate` = "National lab", `prop_py_vaxed_no-estimate` = "Clinical definition") %>%
+  # merge cells 
+  merge_at(i = 1, j = 3:5, part = "header") %>% # Horizontally merge columns 3 to 5 
+  merge_at(i = 1, j = 6:8, part = "header") %>%    # Horizontally merge columns 6 to 8 
+  merge_at(i = 1:2, j = 1, part = "header") %>%
+  merge_at(i = 1:2, j = 2, part = "header") %>%
+  merge_at(i = 1:2, j = 1) %>%
+  merge_at(i = 3:4, j = 1) %>%
+  merge_at(i = 5:6, j = 1) %>%
+  flextable::align(align = "center", j = c(1:8), part = "all") %>%
+  width(j=3:5, width = 1.5) %>%
+  width(j=6:8, width = 1.5) %>%
+  vline(part = "all", j = 1) %>%
+  vline(part = "all", j = 2) %>%   # at column 2 
+  vline(part = "all", j = 5) %>%
+  hline(part = "body", i = 2, j = 2:8) %>%
+  hline(part = "body", i = 4, j = 2:8) %>%
+  hline(part = "body", i = 1:4, j = 1) 
+```
+
+<br>
+
+### **Figure `r fig.counter`.** Histogram of cases averted and campaign efficiency
+(Incidence threshold = 2e-04).
+```{r, fig.width=14, fig.height = 6}
+fig.counter <- fig.counter + 1
+selected_threshold <- 2e-04
+
+df_temp <- df_tp_eff_allISOs %>%
+  filter(threshold == selected_threshold) %>%
+  dplyr::select(admin_level, confirmation_lens, ac_median, efficiency_median) %>%
+  mutate(ac_median = - ac_median / 1000000) %>%
+  pivot_longer(cols = 3:4, names_to = "variable", values_to = "value") %>%
+  mutate(variable = case_when(variable == "ac_median" ~ "Cases averted (million)",
+                              variable == "efficiency_median" ~ "Campaign efficiency")) %>%
+  mutate(confirmation_lens = case_when(confirmation_lens == "no-estimate" ~ "Clinical definition only",
+                                       confirmation_lens == "global-estimate" ~ "National lab",
+                                       confirmation_lens == "district-estimate" ~ "District labs")) %>%
+  mutate(variable = factor(variable, levels = c("Cases averted (million)", "Campaign efficiency"))) %>%
+  mutate(confirmation_lens = factor(confirmation_lens, levels = c("Clinical definition only", "National lab", "District labs"))) %>%
+  mutate(value = round(value, 2))
+
+
+## District targeting + histogram 2 per 10k incid threshold
+district_2e_04 <- df_temp %>% filter(admin_level == "admin2") 
+
+# calculate ac, eff
+ac_district <- round(df_tp_eff_allISOs$ac_median[which(df_tp_eff_allISOs$admin_level == "admin2" & df_tp_eff_allISOs$confirmation_lens == "district-estimate" & df_tp_eff_allISOs$threshold == selected_threshold)] / 1000000, 2)
+ac_global <- round(df_tp_eff_allISOs$ac_median[which(df_tp_eff_allISOs$admin_level == "admin2" & df_tp_eff_allISOs$confirmation_lens == "global-estimate" & df_tp_eff_allISOs$threshold == selected_threshold)] / 1000000, 2)
+ac_no <- round(df_tp_eff_allISOs$ac_median[which(df_tp_eff_allISOs$admin_level == "admin2" & df_tp_eff_allISOs$confirmation_lens == "no-estimate" & df_tp_eff_allISOs$threshold == selected_threshold)] / 1000000,2)
+eff_district <- round(df_tp_eff_allISOs$efficiency_median[which(df_tp_eff_allISOs$admin_level == "admin2" & df_tp_eff_allISOs$confirmation_lens == "district-estimate" & df_tp_eff_allISOs$threshold == selected_threshold)], 2)
+eff_global <- round(df_tp_eff_allISOs$efficiency_median[which(df_tp_eff_allISOs$admin_level == "admin2" & df_tp_eff_allISOs$confirmation_lens == "global-estimate" & df_tp_eff_allISOs$threshold == selected_threshold)],2)
+eff_no <- round(df_tp_eff_allISOs$efficiency_median[which(df_tp_eff_allISOs$admin_level == "admin2" & df_tp_eff_allISOs$confirmation_lens == "no-estimate" & df_tp_eff_allISOs$threshold == selected_threshold)],2)
+
+# calculate increase / decrease between scenarios
+ac_no_global <- round((ac_no - ac_global)/ac_no * 100,1)
+ac_global_district <- round((ac_global - ac_district)/ac_global * 100,1)
+eff_no_global <- round((eff_global - eff_no)/eff_no * 100, 1)
+eff_global_district <- round((eff_district - eff_global)/eff_global * 100, 1)
+
+# make the base plot
+district_2e_04 <- district_2e_04 %>% 
+  mutate(value = ifelse(variable == "Campaign efficiency", value / 20, value))
+
+plt_district <- 
+  district_2e_04 %>%
+  ggplot(aes(x = confirmation_lens,y = value, fill = variable)) +
+  geom_bar(stat="identity", width = 0.3) +
+  coord_flip() +
+  scale_y_continuous(breaks = c(-0.5, -0.25, 0, 0.25, 0.5),
+                     labels = c(0.5, 0.25, 0, 5.0, 10.0)) + 
+  scale_fill_manual(values=c("Cases averted (million)" = "#fdb462", "Campaign efficiency"="#80b1d3")) +
+  geom_hline(yintercept = 0) +
+  theme_bw() +
+  xlab("") +
+  theme(legend.position = "top", 
+        axis.ticks.y = element_blank()) 
+
+# adding labels to denote numbers
+plt_district <- plt_district + 
+  annotate("text", 
+                x = c(3,2,1,3,2,1),
+                y = c(-ac_district+0.02, -ac_global+0.02, -ac_no+0.02, eff_district/20-0.02, eff_global/20-0.02, eff_no/20-0.02), 
+                     label = as.character(c(ac_district, ac_global, ac_no, eff_district, eff_global, eff_no)), size=5)
+
+# adding labels to denote difference
+plt_district <- plt_district +
+  geom_segment(y = -0.44, yend = -0.44, x = 1.95, xend = 1,
+               arrow = arrow(length = unit(0.03, "npc"), ends = "first")) +
+  geom_segment(y = -0.44, yend = -0.44, x = 3, xend = 2.05,
+               arrow = arrow(length = unit(0.03, "npc"), ends = "first"))  +
+  geom_segment(y = 0.5, yend = 0.5, x = 1.95, xend = 1,
+               arrow = arrow(length = unit(0.03, "npc"), ends = "first")) +
+  geom_segment(y = 0.5, yend = 0.5, x = 3, xend = 2.05,
+               arrow = arrow(length = unit(0.03, "npc"), ends = "first")) +
+  annotate("label", size=5, color = "forestgreen",
+           x = 2.5, y = -0.44, label = paste0("+", -ac_global_district, "%")) +
+  annotate("label", size=5, color = "red",
+           x = 1.5, y = -0.44, label = paste0("-", ac_no_global, "%")) +
+  annotate("label", size=5, color = "red",
+           x = 2.5, y = 0.5, label = paste0("",eff_global_district, "%")) +
+  annotate("label", size=5, color = "forestgreen",
+           x = 1.5, y = 0.5, label = paste0("+",eff_no_global, "%"))
+
+
+
+## Province targeting + histogram 10 per 10k incid threshold
+province_2e_04 <- df_temp %>% filter(admin_level == "admin1") 
+
+# calculate ac, eff
+ac_district <- round(df_tp_eff_allISOs$ac_median[which(df_tp_eff_allISOs$admin_level == "admin1" & df_tp_eff_allISOs$confirmation_lens == "district-estimate" & df_tp_eff_allISOs$threshold == selected_threshold)] / 1000000, 2)
+ac_global <- round(df_tp_eff_allISOs$ac_median[which(df_tp_eff_allISOs$admin_level == "admin1" & df_tp_eff_allISOs$confirmation_lens == "global-estimate" & df_tp_eff_allISOs$threshold == selected_threshold)] / 1000000, 2)
+ac_no <- round(df_tp_eff_allISOs$ac_median[which(df_tp_eff_allISOs$admin_level == "admin1" & df_tp_eff_allISOs$confirmation_lens == "no-estimate" & df_tp_eff_allISOs$threshold == selected_threshold)] / 1000000,2)
+eff_district <- round(df_tp_eff_allISOs$efficiency_median[which(df_tp_eff_allISOs$admin_level == "admin1" & df_tp_eff_allISOs$confirmation_lens == "district-estimate" & df_tp_eff_allISOs$threshold == selected_threshold)], 2)
+eff_global <- round(df_tp_eff_allISOs$efficiency_median[which(df_tp_eff_allISOs$admin_level == "admin1" & df_tp_eff_allISOs$confirmation_lens == "global-estimate" & df_tp_eff_allISOs$threshold == selected_threshold)],2)
+eff_no <- round(df_tp_eff_allISOs$efficiency_median[which(df_tp_eff_allISOs$admin_level == "admin1" & df_tp_eff_allISOs$confirmation_lens == "no-estimate" & df_tp_eff_allISOs$threshold == selected_threshold)],2)
+
+# calculate increase / decrease between scenarios
+ac_no_global <- round((ac_no - ac_global)/ac_no * 100,1)
+ac_global_district <- round((ac_global - ac_district)/ac_global * 100,1)
+eff_no_global <- round((eff_global - eff_no)/eff_no * 100, 1)
+eff_global_district <- round((eff_district - eff_global)/eff_global * 100, 1)
+
+# make the base plot
+province_2e_04 <- province_2e_04 %>% 
+  mutate(value = ifelse(variable == "Campaign efficiency", value / 20, value))
+
+plt_province <- 
+  province_2e_04 %>%
+  ggplot(aes(x = confirmation_lens, y = value, fill = variable)) +
+  geom_bar(stat="identity", width = 0.3) +
+  coord_flip() +
+  scale_y_continuous(breaks = c(-0.2, 0, 0.2, 0.4),
+                     labels = c(0.2, 0, 4.0, 8.0)) + 
+  scale_fill_manual(values=c("Cases averted (million)" = "#fdb462", "Campaign efficiency"="#80b1d3")) +
+  geom_hline(yintercept = 0) +
+  theme_bw() +
+  xlab("") +
+  theme(legend.position = "top", 
+        axis.ticks.y = element_blank()) 
+
+# adding labels to denote numbers
+plt_province <- plt_province + 
+  annotate("text", 
+           x = c(3,2,1,3,2,1),
+           y = c(-ac_district+0.015, -ac_global+0.015, -ac_no+0.015, eff_district/20-0.015, eff_global/20-0.015, eff_no/20-0.015), 
+           label = as.character(c(ac_district, ac_global, ac_no, eff_district, eff_global, eff_no)), size=5)
+
+# adding labels to denote difference
+plt_province <- plt_province +
+  geom_segment(y = -0.28, yend = -0.28, x = 1.95, xend = 1,
+               arrow = arrow(length = unit(0.03, "npc"), ends = "first")) +
+  geom_segment(y = -0.28, yend = -0.28, x = 3, xend = 2.05,
+               arrow = arrow(length = unit(0.03, "npc"), ends = "first"))  +
+  geom_segment(y = 0.36, yend = 0.36, x = 1.95, xend = 1,
+               arrow = arrow(length = unit(0.03, "npc"), ends = "first")) +
+  geom_segment(y = 0.36, yend = 0.36, x = 3, xend = 2.05,
+               arrow = arrow(length = unit(0.03, "npc"), ends = "first")) +
+  annotate("label", size=5, color = "forestgreen",
+           x = 2.5, y = -0.28, label = paste0("+", -ac_global_district, "%")) +
+  annotate("label", size=5, color = "red",
+           x = 1.5, y = -0.28, label = paste0("-", ac_no_global, "%")) +
+  annotate("label", size=5, color = "red",
+           x = 2.5, y = 0.36, label = paste0("",eff_global_district, "%")) +
+  annotate("label", size=5, color = "forestgreen",
+           x = 1.5, y = 0.36, label = paste0("+",eff_no_global, "%"))
+
+fig4 <- plot_grid(plt_province, plt_district, 
+                  labels = c("A. Province-level", "B. District-level"), nrow = 1,  label_size = 15, hjust = -0.1)
+
+fig4
+
+ggsave(plot = fig4, filename = "figures/fig4.jpg", height = 6, width = 20)
+```
+
+<br>
+
+### **Figure `r fig.counter`.** Level of laboratory confirmation with largest efficiency (admin 2 targeting only)
+The y-axis represents the mean true IR of **targeted admins** at baseline
+```{r, fig.width=18, fig.height=6}
+fig.counter <- fig.counter + 1
+df_cv <- df_incid2 %>% group_by(ISO) %>%
+  summarize(incid_cv = cv(baseline_incidence, na.rm = T)/100)
+
+df_maxeff <- df_mean_ir_targeted %>%
+  left_join(df_tp_eff, by = c("ISO", "confirmation_lens", "admin_level", "threshold")) %>%
+  filter(admin_level == "admin2") 
+
+df_maxeff_0.001 <- df_maxeff %>% 
+  filter(threshold == 0.001) %>% 
+  dplyr::select(ISO, confirmation_lens, mean_confirmed_ir, mean_true_ir, efficiency_median) %>%
+  group_by(ISO) %>%
+  mutate(max_confirmation_lens = confirmation_lens[efficiency_median == max(efficiency_median)]) %>%
+  # remove countries with very few targeted runs
+  filter(ISO %in% c("BDI", "BEN", "GIN", "MRT", "RWA") == FALSE) %>% 
+  filter(confirmation_lens == max_confirmation_lens) %>%
+  left_join(df_cv, by = "ISO")
+
+df_maxeff_2e_04 <- df_maxeff %>% 
+  filter(threshold == 2e-04) %>% 
+  dplyr::select(ISO, confirmation_lens, mean_confirmed_ir, mean_true_ir, efficiency_median) %>%
+  group_by(ISO) %>%
+  mutate(max_confirmation_lens = confirmation_lens[efficiency_median == max(efficiency_median)]) %>%
+  # remove countries with very few targeted runs
+  filter(ISO %in% c("BFA", "TGO") == FALSE) %>% 
+  filter(confirmation_lens == max_confirmation_lens) %>%
+  left_join(df_cv, by = "ISO")
+
+df_maxeff_1e_04 <- df_maxeff %>% 
+  filter(threshold == 1e-04) %>% 
+  dplyr::select(ISO, confirmation_lens, mean_confirmed_ir, mean_true_ir, efficiency_median) %>%
+  group_by(ISO) %>%
+  mutate(max_confirmation_lens = confirmation_lens[efficiency_median == max(efficiency_median)]) %>%
+  filter(confirmation_lens == max_confirmation_lens) %>%
+  left_join(df_cv, by = "ISO")
+
+y_label <- "Mean true baseline IR of targeted admins"
+plt_maxeff_0.001 <- plot_maxeff(maxeff = df_maxeff_0.001, var = "mean_true_ir", y_label = y_label)
+plt_maxeff_2e_04 <- plot_maxeff(maxeff = df_maxeff_2e_04, var = "mean_true_ir", y_label = y_label)
+plt_maxeff_1e_04 <- plot_maxeff(maxeff = df_maxeff_1e_04, var = "mean_true_ir", y_label = y_label)
+
+
+ggarrange(plt_maxeff_0.001, plt_maxeff_2e_04, plt_maxeff_1e_04, nrow = 1, common.legend = TRUE,
+          labels = c("threshold = 0.001", "threshold = 2e-04", "threshold = 1e-04"))
+
+```
+
+<br>
+
+### **Figure `r fig.counter`.** Level of laboratory confirmation with largest efficiency (admin 2 targeting only)
+The y-axis represents the clinical IR of the **country** at baseline 
+```{r, fig.width=18, fig.height=6}
+fig.counter <- fig.counter + 1
+
+df_maxeff_0.001 <- df_maxeff_0.001 %>% left_join(df_incid0, by = "ISO")
+df_maxeff_2e_04 <- df_maxeff_2e_04 %>% left_join(df_incid0, by = "ISO")
+df_maxeff_1e_04 <- df_maxeff_1e_04 %>% left_join(df_incid0, by = "ISO")
+
+y_label <- "Baseline clinical incidence of the whole country"
+plt_maxeff_0.001_ISOir <- plot_maxeff(df_maxeff_0.001, var = "baseline_incidence", y_label = y_label)
+plt_maxeff_2e_04_ISOir <- plot_maxeff(df_maxeff_2e_04, var = "baseline_incidence", y_label = y_label)
+plt_maxeff_1e_04_ISOir <- plot_maxeff(df_maxeff_1e_04, var = "baseline_incidence", y_label = y_label)
+
+ggarrange(plt_maxeff_0.001_ISOir, plt_maxeff_2e_04_ISOir, plt_maxeff_1e_04_ISOir, nrow = 1, common.legend = TRUE,
+          labels = c("threshold = 0.001", "threshold = 2e-04", "threshold = 1e-04"))
+
+```
+
+<br>
+
+### **Figure `r fig.counter`.** Level of laboratory confirmation with largest efficiency, compare between thresholds
+(admin 2 targeting only) for each country there are three bars, from left to right: 0.001, 2e-04, 1e-04 thresholds.
+The y axis here is the mean baseline confirmed IR of **targeted admins**.
+```{r fig.width=16, fig.height=10}
+fig.counter <- fig.counter + 1
+df_maxeff_by_threshold <-
+  rbind(
+    df_maxeff_0.001 %>% mutate(threshold = "0.001"),
+    df_maxeff_2e_04 %>% mutate(threshold = "2e-04"),
+    df_maxeff_1e_04 %>% mutate(threshold = "1e-04")
+  ) %>% arrange(ISO) %>%
+  dplyr::select(ISO, threshold, mean_confirmed_ir, max_confirmation_lens) %>%
+  right_join(
+    expand_grid(ISO = c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "ETH", "GHA", 
+                        "GIN", "GNB", "KEN", "LBR", "MDG", "MLI", "MOZ", "MRT", "MWI", "NAM", "NER",
+                        "NGA", "RWA", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZMB", "ZWE"),
+                threshold = c("0.001", "2e-04", "1e-04")),
+    by = c("ISO", "threshold")
+  ) %>%
+  mutate(mean_confirmed_ir = ifelse(is.na(mean_confirmed_ir), 1e-08, mean_confirmed_ir),
+         max_confirmation_lens = ifelse(is.na(max_confirmation_lens), "no targeting", max_confirmation_lens)) %>%
+  left_join(df_incid0, by = "ISO")
+
+y_label <- "Mean confirmed IR of all targeted admins"
+plt_1 <- df_maxeff_by_threshold %>%
+  filter(ISO %in% c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "ETH", "GHA")) %>%
+  mutate(threshold = factor(threshold, levels = c("0.001", "2e-04", "1e-04"))) %>%
+  ggplot()+
+  geom_bar(aes(y = mean_confirmed_ir, x = ISO, group = threshold, fill = max_confirmation_lens), stat = "identity", position=position_dodge()) +
+  theme_bw()+
+  theme(legend.position = "bottom") +
+  geom_hline(yintercept = c(0.001, 2e-04, 1e-04), linetype = "dashed") +
+  labs(fill = guide_legend("Confirmation level with highest efficiency")) +
+  ylab(y_label)
+
+plt_2 <- df_maxeff_by_threshold %>%
+  filter(ISO %in% c("GIN", "GNB", "KEN", "LBR", "MDG", "MLI", "MOZ", "MRT", "MWI", "NAM", "NER")) %>%
+  mutate(threshold = factor(threshold, levels = c("0.001", "2e-04", "1e-04"))) %>%
+  ggplot()+
+  geom_bar(aes(y = mean_confirmed_ir, x = ISO, group = threshold, fill = max_confirmation_lens), stat = "identity", position=position_dodge()) +
+  theme_bw()+
+  theme(legend.position = "bottom") +
+  geom_hline(yintercept = c(0.001, 2e-04, 1e-04), linetype = "dashed") +
+  labs(fill = guide_legend("Confirmation level with highest efficiency"))+
+  ylab(y_label)
+
+plt_3 <- df_maxeff_by_threshold %>%
+  filter(ISO %in% c("NGA", "RWA", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZMB", "ZWE")) %>%
+  mutate(threshold = factor(threshold, levels = c("0.001", "2e-04", "1e-04"))) %>%
+  ggplot()+
+  geom_bar(aes(y = mean_confirmed_ir, x = ISO, group = threshold, fill = max_confirmation_lens), stat = "identity", position=position_dodge()) +
+  theme_bw()+
+  theme(legend.position = "bottom") +
+  geom_hline(yintercept = c(0.001, 2e-04, 1e-04), linetype = "dashed") +
+  labs(fill = guide_legend("Confirmation level with highest efficiency")) +
+  ylab(y_label)
+
+ggarrange(plt_1, plt_2, plt_3, nrow = 3, common.legend = TRUE)
+```
+
+<br>
+
+### **Figure `r fig.counter`.** Level of laboratory confirmation with largest efficiency, compare between thresholds
+(admin 2 targeting only) for each country there are three bars, from left to right: 0.001, 2e-04, 1e-04 thresholds.
+The y axis here is the mean clinical IR of the **country** at baseline.
+```{r fig.width=16, fig.height=10}
+fig.counter <- fig.counter + 1
+
+y_label <- "Baseline clinical IR of the whole country"
+plt_1 <- df_maxeff_by_threshold %>%
+  filter(ISO %in% c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "ETH", "GHA")) %>%
+  mutate(threshold = factor(threshold, levels = c("0.001", "2e-04", "1e-04"))) %>%
+  ggplot()+
+  geom_bar(aes(y = baseline_incidence, x = ISO, group = threshold, fill = max_confirmation_lens), stat = "identity", position=position_dodge(), color = "white") +
+  theme_bw()+
+  theme(legend.position = "bottom") +
+  geom_hline(yintercept = c(0.001, 2e-04, 1e-04), linetype = "dashed") +
+  labs(fill = guide_legend("Confirmation level with highest efficiency")) +
+  ylab(y_label)
+
+plt_2 <- df_maxeff_by_threshold %>%
+  filter(ISO %in% c("GIN", "GNB", "KEN", "LBR", "MDG", "MLI", "MOZ", "MRT", "MWI", "NAM", "NER")) %>%
+  mutate(threshold = factor(threshold, levels = c("0.001", "2e-04", "1e-04"))) %>%
+  ggplot()+
+  geom_bar(aes(y = baseline_incidence, x = ISO, group = threshold, fill = max_confirmation_lens), stat = "identity", position=position_dodge()) +
+  theme_bw()+
+  theme(legend.position = "bottom") +
+  geom_hline(yintercept = c(0.001, 2e-04, 1e-04), linetype = "dashed") +
+  labs(fill = guide_legend("Confirmation level with highest efficiency"))+
+  ylab(y_label)
+
+plt_3 <- df_maxeff_by_threshold %>%
+  filter(ISO %in% c("NGA", "RWA", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZMB", "ZWE")) %>%
+  mutate(threshold = factor(threshold, levels = c("0.001", "2e-04", "1e-04"))) %>%
+  ggplot()+
+  geom_bar(aes(y = baseline_incidence, x = ISO, group = threshold, fill = max_confirmation_lens), stat = "identity", position=position_dodge()) +
+  theme_bw()+
+  theme(legend.position = "bottom") +
+  geom_hline(yintercept = c(0.001, 2e-04, 1e-04), linetype = "dashed") +
+  labs(fill = guide_legend("Confirmation level with highest efficiency")) +
+  ylab(y_label)
+
+ggarrange(plt_1, plt_2, plt_3, nrow = 3, common.legend = TRUE)
+```
+
+<br>
+<br>
+
+
+### Cost effectiveness 
+
+### **Table `r tab.counter`.** Cost per averted case (summarized across all countries) 
+This is also ICER ("no vaccination" scenario as REF.)
+```{r}
+tab.counter <- tab.counter + 1
+total_costeff_allISOs_medianCI %>%
+  mutate(total_costeff = paste0(round(costeff_ocv_test_median), " (", 
+                                round(costeff_ocv_test_lb), "-",
+                                round(costeff_ocv_test_ub), ")")) %>%
+  dplyr::select(confirmation_lens, admin_level, threshold, total_costeff) %>%
+  pivot_wider(names_from = "confirmation_lens", values_from = "total_costeff") %>%
+  dplyr::select(2,1,3,4,5) %>% arrange(threshold) %>% 
+  flextable() %>%
+  merge_v(j = 1:2) %>%
+  vline() %>% hline(part = "body") %>%
+  width(j =3:5,width = 2)
+```
+
+<br>
+
+### **Figure `r fig.counter`.** Compare cost per averted case with country level GDP (2021, World Bank) 
+Note: this is admin2 level targeting. Orange dot: GDP per capital (2021); Green dot: GDP per capita * 3. This is also ICER using "no vaccination" scenario as the REF.
+```{r, fig.width = 14, fig.height = 6}
+fig.counter <- fig.counter + 1
+
+cost_vs_gdp <- total_costeff_byISO_medianCI %>% 
+  left_join(gdp_per_cap, by = "ISO") %>% 
+  dplyr::select(ISO, confirmation_lens, admin_level, threshold, costeff_ocv_test_median, gdp, gdp_x3) %>% 
+  # keep only the two lowest thresholds
+  filter(threshold == 1e-04 | threshold == 2e-04) %>% 
+  filter(admin_level == "admin2") %>%
+  mutate(costeff_ocv_test_median = ifelse(threshold == 1e-04, -costeff_ocv_test_median, costeff_ocv_test_median)) %>%
+  mutate(gdp = ifelse(threshold == 1e-04, -gdp, gdp)) %>%
+  mutate(gdp_x3 = ifelse(threshold == 1e-04, -gdp_x3, gdp_x3)) %>%
+  group_by(threshold) %>% arrange(costeff_ocv_test_median) %>%
+  # remove ISOs with too few targeted runs for all scenarios 
+  filter(ISO != "CIV" & ISO != "ZAF" & ISO != "SEN" & ISO != "BFA" & ISO != "MDG" & ISO != "TGO")
+
+cost_vs_gdp_district <- cost_vs_gdp %>% filter(confirmation_lens == "district-estimate")
+cost_vs_gdp_global <- cost_vs_gdp %>% filter(confirmation_lens == "global-estimate")
+cost_vs_gdp_no <- cost_vs_gdp %>% filter(confirmation_lens == "no-estimate")
+
+ISO_levels_district <- cost_vs_gdp_district$ISO[1:29]
+ISO_levels_global <- cost_vs_gdp_global$ISO[1:29]
+ISO_levels_no <- cost_vs_gdp_no$ISO[1:29]
+
+plt_global <- cost_vs_gdp_global %>%
+  filter(ISO != "ZWE" & ISO != "MLI") %>% # too few targeted runs
+  mutate(threshold = factor(threshold, levels = c("2e-04", "1e-04"))) %>%
+  mutate(ISO = factor(ISO, levels = ISO_levels_district)) %>%
+  ggplot() + 
+  geom_bar(aes(x = ISO, y = costeff_ocv_test_median, fill = threshold), 
+           stat = "identity", position=position_stack()) +
+  
+  geom_point(aes(x = ISO, y = gdp), color = "orange", size = 1) +
+  geom_point(aes(x = ISO, y = gdp_x3), color = "forestgreen", size = 1) +
+  scale_y_continuous(breaks = c(-20000, -10000, 0, 10000, 20000),
+                     labels = c("20K", "10K", "0", "10K", "20K")) + 
+  ylab("Cost per averted case (USD)") + 
+  theme_bw() +
+  coord_flip()
+
+plt_district <- cost_vs_gdp_district %>%
+  filter(ISO != "ZWE" & ISO != "MLI") %>% # to match with district level
+  mutate(threshold = factor(threshold, levels = c("2e-04", "1e-04"))) %>%
+  mutate(ISO = factor(ISO, levels = ISO_levels_district)) %>%
+  ggplot() + 
+  geom_bar(aes(x = ISO, y = costeff_ocv_test_median, fill = threshold), 
+           stat = "identity", position=position_stack()) +
+  geom_point(aes(x = ISO, y = gdp), color = "orange", size = 1) +
+  geom_point(aes(x = ISO, y = gdp_x3), color = "forestgreen", size = 1) +
+  scale_y_continuous(breaks = c(-20000, -10000, 0, 10000, 20000),
+                     labels = c("20K", "10K", "0", "10K", "20K")) + 
+  ylab("Cost per averted case (USD)") + 
+  theme_bw() +
+  coord_flip()
+
+plt_no <- cost_vs_gdp_no %>%
+  filter(ISO != "ZWE" & ISO != "MLI") %>% # to match with district level
+  mutate(threshold = factor(threshold, levels = c("2e-04", "1e-04"))) %>%
+  mutate(ISO = factor(ISO, levels = ISO_levels_no)) %>%
+  ggplot() + 
+  geom_bar(aes(x = ISO, y = costeff_ocv_test_median, fill = threshold), 
+           stat = "identity", position=position_stack()) +
+  geom_point(aes(x = ISO, y = gdp), color = "orange", size = 1) +
+  geom_point(aes(x = ISO, y = gdp_x3), color = "forestgreen", size = 1) +
+  scale_y_continuous(breaks = c(-20000, -10000, 0, 10000, 20000),
+                     labels = c("20K", "10K", "0", "10K", "20K")) + 
+  ylab("Cost per averted case (USD)") + 
+  theme_bw() +
+  coord_flip()
+
+ggarrange(plt_district, plt_global, plt_no, nrow = 1, labels = c("District labs", "National lab", "Clinical def"),
+          common.legend = TRUE)
+```
+
+<br>
+
+### **Table `r tab.counter`.** ICER (status quo scenario as REF.)
+Status quo scenario: clinical case definition + district targeting + 2/10,000 threshold
+```{r}
+tab.counter <- tab.counter + 1
+icer_allISOs_medianCI %>%
+  mutate(icer = paste0(round(icer_median), " (", 
+                       round(icer_lb), ", ",
+                       round(icer_ub), ")")) %>%
+  dplyr::select(confirmation_lens, admin_level, threshold, icer) %>%
+  pivot_wider(names_from = "confirmation_lens", values_from = "icer") %>%
+  dplyr::select(2,1,3,4,5) %>% arrange(threshold) %>% 
+  flextable() %>%
+  merge_v(j = 1:2) %>%
+  vline() %>% hline(part = "body") %>%
+  width(j =3:5,width = 2)
+```
+
+<br>
+
+### **Figure `r fig.counter`.** ICER (status quo scenario as REF.) vs. GDP
+Note: this is admin2 level targeting. 
+Orange dot: GDP per capital (2021); Green dot: GDP per capita * 3
+```{r, fig.width = 12, fig.height = 6}
+fig.counter <- fig.counter + 1 
+
+icer_vs_gdp <- icer_byISO_medianCI %>% 
+  dplyr::left_join(gdp_per_cap, by = "ISO") %>% 
+  dplyr::select(ISO, confirmation_lens, admin_level, threshold, icer_median, gdp, gdp_x3) %>%
+  # keep only the two lowest thresholds
+  filter(threshold == 1e-04) %>% 
+  filter(admin_level == "admin2") %>%
+  arrange(icer_median) %>%
+  filter(ISO %in% c("BFA", "CAF", "MDG", "SEN", "TGO", "ZAF") == FALSE)
+
+icer_vs_gdp_district <- icer_vs_gdp %>% filter(confirmation_lens == "district-estimate")
+icer_vs_gdp_global <- icer_vs_gdp %>% filter(confirmation_lens == "global-estimate")
+icer_vs_gdp_no <- icer_vs_gdp %>% filter(confirmation_lens == "no-estimate")
+
+ISO_levels_district <- icer_vs_gdp_district$ISO
+ISO_levels_global <- icer_vs_gdp_global$ISO
+ISO_levels_no <- icer_vs_gdp_no$ISO
+
+plt_district <- icer_vs_gdp_district %>%
+  #filter(ISO != "ZWE" & ISO != "MLI") %>% # too few targeted runs
+  mutate(ISO = factor(ISO, levels = ISO_levels_district)) %>%
+  ggplot() + 
+  geom_bar(aes(x = ISO, y = icer_median), stat = "identity", position=position_stack(), fill = "white", color = "grey") +
+  geom_point(aes(x = ISO, y = gdp), color = "orange", size = 1) +
+  geom_point(aes(x = ISO, y = gdp_x3), color = "forestgreen", size = 1) +
+  #scale_y_continuous(breaks = c(-20000, -10000, 0, 10000, 20000),
+  #                   labels = c("20K", "10K", "0", "10K", "20K")) + 
+  ylab("ICER") + 
+  theme_bw() +
+  coord_flip()
+
+plt_global <- icer_vs_gdp_global %>%
+  #filter(ISO != "ZWE" & ISO != "MLI") %>% # too few targeted runs
+  mutate(ISO = factor(ISO, levels = ISO_levels_global)) %>%
+  ggplot() + 
+  geom_bar(aes(x = ISO, y = icer_median), stat = "identity", position=position_stack(), fill = "white", color = "grey") +
+  geom_point(aes(x = ISO, y = gdp), color = "orange", size = 1) +
+  geom_point(aes(x = ISO, y = gdp_x3), color = "forestgreen", size = 1) +
+  #scale_y_continuous(breaks = c(-20000, -10000, 0, 10000, 20000),
+  #                   labels = c("20K", "10K", "0", "10K", "20K")) + 
+  ylab("ICER") + 
+  theme_bw() +
+  coord_flip()
+
+plt_no <- icer_vs_gdp_no %>%
+  #filter(ISO != "ZWE" & ISO != "MLI") %>% # too few targeted runs
+  mutate(ISO = factor(ISO, levels = ISO_levels_no)) %>%
+  ggplot() + 
+  geom_bar(aes(x = ISO, y = icer_median), stat = "identity", position=position_stack(), fill = "white", color = "grey") +
+  geom_point(aes(x = ISO, y = gdp), color = "orange", size = 1) +
+  geom_point(aes(x = ISO, y = gdp_x3), color = "forestgreen", size = 1) +
+  #scale_y_continuous(breaks = c(-20000, -10000, 0, 10000, 20000),
+  #                   labels = c("20K", "10K", "0", "10K", "20K")) + 
+  ylab("ICER") + 
+  theme_bw() +
+  coord_flip()
+
+ggarrange(plt_district, plt_global, plt_no, nrow = 1, 
+          labels = c("District labs", "National lab", "Clinical def"),
+          common.legend = TRUE)
+```
+
+<br>
+<br>
+
+## Supplement
+```{r}
+fig.counter <- 1
+tab.counter <- 1
+```
+
+<br>
+
+### **Figure S`r fig.counter`** Gained efficiency from "Clinical only" to "District labs" (Threshold = 2/10,000 per year)
+```{r fig.height=6, fig.width=12, out.width='100%'}
+fig.counter <- fig.counter + 1
+
+p2 <- plot_gained_eff_with_size(df_dose_eff_median, threshold_chosen = 2e-04,
+                baseline_estimate = "no-estimate", improved_estimate = "district-estimate") + 
+  theme(legend.position = "bottom", legend.box = "vertical")
+
+map <- readRDS("data/doses_maps_2e-04.rds") + theme(plot.margin = unit(c(0, 0, 0, 0), "cm"))
+
+#cowplot::plot_grid(p2, map, labels = c("A", "B"), ncol = 1, rel_heights = c(1,1.2))
+figS1 <- cowplot::plot_grid(p2, map, labels = c("A", "B"), nrow = 1)
+#figS1
+
+ggsave(plot = figS1, filename = "figures/figS1.jpg", height = 6, width = 12)
+knitr::include_graphics("figures/figS1.jpg")
+```
+
+<br>
+
+### **Figure S`r fig.counter`** Gained efficiency from "Clinical only" to "National lab"
+```{r fig.height=12, fig.width=14}
+fig.counter <- fig.counter + 1
+
+p1 <- plot_gained_eff_with_size(df_dose_eff_median, threshold_chosen = 0.001,
+                baseline_estimate = "no-estimate", improved_estimate = "global-estimate")  +  theme(legend.position="none")
+p2 <- plot_gained_eff_with_size(df_dose_eff_median, threshold_chosen = 2e-04,
+                baseline_estimate = "no-estimate", improved_estimate = "global-estimate") +  theme(legend.position="none")
+p3 <- plot_gained_eff_with_size(df_dose_eff_median, threshold_chosen = 1e-04,
+                baseline_estimate = "no-estimate", improved_estimate = "global-estimate") +
+  theme(legend.box = "horizontal", legend.position = "bottom")
+
+leg <- get_legend(p3)
+p3 <- p3 + theme(legend.position="none")
+
+p123 <- plot_grid(plotlist = list(p3,p1,p2), nrow = 2, ncol = 2)
+fig_gained_eff_no_global <- plot_grid(plotlist = list(leg, p123), nrow = 2, rel_heights = c(1,15))
+
+figS2 <- fig_gained_eff_no_global
+figS2
+
+ggsave(plot = figS2, filename = "figures/figS2.jpg", height = 12, width = 14)
+```
+
+<br>
+
+### **Figure S`r fig.counter`** Gained efficiency from "National lab" to "District labs"
+```{r fig.height=12, fig.width=12}
+fig.counter <- fig.counter + 1
+
+p1 <- plot_gained_eff_with_size(df_dose_eff_median, threshold_chosen = 0.001,
+                baseline_estimate = "global-estimate", improved_estimate = "district-estimate")  +  theme(legend.position="none")
+p2 <- plot_gained_eff_with_size(df_dose_eff_median, threshold_chosen = 2e-04,
+                baseline_estimate = "global-estimate", improved_estimate = "district-estimate") +  theme(legend.position="none")
+p3 <- plot_gained_eff_with_size(df_dose_eff_median, threshold_chosen = 1e-04,
+                baseline_estimate = "global-estimate", improved_estimate = "district-estimate") +
+  theme(legend.box = "horizontal", legend.position = "bottom")
+
+leg <- get_legend(p3)
+p3 <- p3 + theme(legend.position="none")
+
+p123 <- plot_grid(plotlist = list(p3,p1, p2), nrow = 2, ncol = 2)
+fig_gained_eff_global_district <- plot_grid(plotlist = list(leg, p123), nrow = 2, rel_heights = c(1,15))
+
+figS3 <- fig_gained_eff_global_district
+figS3
+
+ggsave(plot = figS3, filename = "figures/figS3.jpg", height = 12, width = 14)
+```
+
+<br>
+
+### **Figure S`r fig.counter`** OCV efficiency over national baseline incidence
+Each dot in the figure represents a modeled country.
+```{r fig.height = 6, fig.width = 8}
+fig.counter < fig.counter + 1
+
+figS4 <- plot_eff_over_inc(df_sum = df_dose_eff_median, df_incidence = df_incid0)
+figS4 
+
+ggsave(plot = figS4, filename = "figures/figS4.jpg", height = 6, width = 8)
+```
+
+<br>
+
+### **Figure S`r fig.counter`** OCV efficiency over baseline incidence rate (admin unit level)
+Each dot in the figure below represents an admin unit that was targeted at least once, the x-axis is the mean baseline incidence rate of that admin unit (averaged across simulations), either observed IR or clinical IR; the y-axis is the median efficiency of that admin unit (median across simulations).
+```{r, fig.height = 6, fig.width = 8}
+fig.counter <- fig.counter + 1
+
+# observed IR as x-axis
+plt_observed_ir <- ir_eff_byISO %>%
+  filter(eff < 20 & eff > 0) %>%
+  mutate(confirmation_lens = case_when(confirmation_lens == "district-estimate" ~ "District labs",
+                                         confirmation_lens == "global-estimate" ~ "National lab",
+                                         confirmation_lens == "no-estimate" ~ "Clinical definition")) %>%
+    mutate(threshold = case_when(threshold == 1e-03 ~ "10 per 10,000",
+                                 threshold == 2e-04 ~ "2 per 10,000",
+                                 threshold == 1e-04 ~ "1 per 10,000")) %>%
+    mutate(threshold = factor(threshold, levels = c("10 per 10,000", "2 per 10,000", "1 per 10,000"))) %>%
+    mutate(confirmation_lens = factor(confirmation_lens, levels = c("Clinical definition", "National lab", "District labs"))) %>%
+    mutate(admin_level = case_when(admin_level == "admin1" ~ "Province-level targeting",
+                                   admin_level == "admin2" ~ "District-level targeting ")) %>%
+    ggplot(aes(x = mean_observed_ir, y = eff, color = as.factor(threshold))) +
+    geom_point(size = 0.5) + 
+    geom_smooth(alpha = 0.3) + 
+    facet_grid(confirmation_lens ~ admin_level, scales = "free", space = "free") + 
+    theme_bw() +
+    scale_x_sqrt() +
+    xlab("Admin level baseline observed incidence rate (avg across sims)") + 
+    ylab("OCV Efficiency") +
+    labs(color = "Threshold") +
+    scale_color_brewer(palette="Set2") + 
+  ggtitle("A. OCV efficiency ~ observed IR")
+
+plt_observed_ir
+```
+
+<br>
+
+```{r, fig.height = 6, fig.width = 8}
+# clinical IR as x-axis
+plt_clinical_ir <- ir_eff_byISO %>%
+  filter(eff < 20 & eff > 0) %>%
+  mutate(confirmation_lens = case_when(confirmation_lens == "district-estimate" ~ "District labs",
+                                         confirmation_lens == "global-estimate" ~ "National lab",
+                                         confirmation_lens == "no-estimate" ~ "Clinical definition")) %>%
+    mutate(threshold = case_when(threshold == 1e-03 ~ "10 per 10,000",
+                                 threshold == 2e-04 ~ "2 per 10,000",
+                                 threshold == 1e-04 ~ "1 per 10,000")) %>%
+    mutate(threshold = factor(threshold, levels = c("10 per 10,000", "2 per 10,000", "1 per 10,000"))) %>%
+    mutate(confirmation_lens = factor(confirmation_lens, levels = c("Clinical definition", "National lab", "District labs"))) %>%
+    mutate(admin_level = case_when(admin_level == "admin1" ~ "Province-level targeting",
+                                   admin_level == "admin2" ~ "District-level targeting ")) %>%
+    ggplot(aes(x = mean_clinical_ir, y = eff, color = as.factor(threshold))) +
+    geom_point(size = 0.5) + 
+    geom_smooth(alpha = 0.3) + 
+    facet_grid(confirmation_lens ~ admin_level, scales = "free", space = "free") + 
+    theme_bw() +
+    scale_x_sqrt() +
+    xlab("Admin level baseline clinical incidence rate (avg across sims)") + 
+    ylab("OCV Efficiency") +
+    labs(color = "Threshold") +
+    scale_color_brewer(palette="Set2") + 
+  ggtitle("B. OCV efficiency ~ clinical IR")
+
+plt_clinical_ir
+```
+
+<br>
+
+### **Figure S`r fig.counter`** Zoom in the figures above (efficiency ~ admin level IR)
+```{r, fig.height = 6, fig.width = 8}
+fig.counter <- fig.counter + 1
+
+# observed IR as x-axis (zoomed in)
+plt_observed_ir_zoomed <- ir_eff_byISO %>%
+  filter(eff < 20 & eff > 0) %>%
+  filter(mean_observed_ir < 0.002) %>%
+  mutate(confirmation_lens = case_when(confirmation_lens == "district-estimate" ~ "District labs",
+                                         confirmation_lens == "global-estimate" ~ "National lab",
+                                         confirmation_lens == "no-estimate" ~ "Clinical definition")) %>%
+    mutate(threshold = case_when(threshold == 1e-03 ~ "10 per 10,000",
+                                 threshold == 2e-04 ~ "2 per 10,000",
+                                 threshold == 1e-04 ~ "1 per 10,000")) %>%
+    mutate(threshold = factor(threshold, levels = c("10 per 10,000", "2 per 10,000", "1 per 10,000"))) %>%
+    mutate(confirmation_lens = factor(confirmation_lens, levels = c("Clinical definition", "National lab", "District labs"))) %>%
+    mutate(admin_level = case_when(admin_level == "admin1" ~ "Province-level targeting",
+                                   admin_level == "admin2" ~ "District-level targeting ")) %>%
+    ggplot(aes(x = mean_observed_ir, y = eff, color = as.factor(threshold))) +
+    geom_point(size = 0.5) + 
+    geom_smooth(alpha = 0.3) + 
+    facet_grid(confirmation_lens ~ admin_level, scales = "free", space = "free") + 
+    theme_bw() +
+    scale_x_sqrt() +
+    xlab("Admin level baseline observed incidence rate (avg across sims)") + 
+    ylab("OCV Efficiency") +
+    labs(color = "Threshold") +
+    scale_color_brewer(palette="Set2") + 
+  ggtitle("A. OCV efficiency ~ observed IR (zoomed in)")
+
+plt_observed_ir_zoomed
+```
+
+<br>
+
+```{r, fig.height = 6, fig.width = 8}
+# clinical IR as x-axis (zoomed in)
+plt_clinical_ir_zoomed <- ir_eff_byISO %>%
+  filter(eff < 20 & eff > 0) %>%
+  filter(mean_clinical_ir < 0.002) %>%
+  mutate(confirmation_lens = case_when(confirmation_lens == "district-estimate" ~ "District labs",
+                                         confirmation_lens == "global-estimate" ~ "National lab",
+                                         confirmation_lens == "no-estimate" ~ "Clinical definition")) %>%
+    mutate(threshold = case_when(threshold == 1e-03 ~ "10 per 10,000",
+                                 threshold == 2e-04 ~ "2 per 10,000",
+                                 threshold == 1e-04 ~ "1 per 10,000")) %>%
+    mutate(threshold = factor(threshold, levels = c("10 per 10,000", "2 per 10,000", "1 per 10,000"))) %>%
+    mutate(confirmation_lens = factor(confirmation_lens, levels = c("Clinical definition", "National lab", "District labs"))) %>%
+    mutate(admin_level = case_when(admin_level == "admin1" ~ "Province-level targeting",
+                                   admin_level == "admin2" ~ "District-level targeting ")) %>%
+    ggplot(aes(x = mean_clinical_ir, y = eff, color = as.factor(threshold))) +
+    geom_point(size = 0.5) + 
+    geom_smooth(alpha = 0.3) + 
+    facet_grid(confirmation_lens ~ admin_level, scales = "free", space = "free") + 
+    theme_bw() +
+    scale_x_sqrt() +
+    xlab("Admin level baseline clinical incidence rate (avg across sims)") + 
+    ylab("OCV Efficiency") +
+    labs(color = "Threshold") +
+    scale_color_brewer(palette="Set2") + 
+  ggtitle("B. OCV efficiency ~ clinical IR (zoomed in)")
+
+plt_clinical_ir_zoomed
+```
+
+<br>
+
+### **Table S`r tab.counter`** Full table of FVP, averted cases, efficiency, and targeted admin units.
+```{r full table}
+tab.counter <- tab.counter + 1
+
+tableS1 <- tab %>%
+  dplyr::select(-c(`tp_cumu_district-estimate`, `tp_cumu_global-estimate`, `tp_cumu_no-estimate`),
+                -c(`efficiency_district-estimate`, `efficiency_global-estimate`, `efficiency_no-estimate`)) %>%
+  flextable() %>%
+  # set the header values
+  add_header_row(top = TRUE,values = c("Threshold", "OCV targeting scale", 
+                                       "Averted cases (million)", "", "",
+                                       "Total admins targeted", "", "",
+                                       "Unique admins targeted", "","",
+                                       "Total countries targeted", "", "")) %>%
+  # Rename the columns in original header row
+  set_header_labels(threshold = "", admin_level = "",
+                    `ac_district-estimate` = "District labs", `ac_global-estimate` = "National lab", `ac_no-estimate` = "Clinical definition",
+                    `n_total_targets_district-estimate` = "District labs", `n_total_targets_global-estimate` = "National lab", `n_total_targets_no-estimate` = "Clinical definition",
+                    `n_unique_targets_district-estimate` = "District labs", `n_unique_targets_global-estimate` = "National lab", `n_unique_targets_no-estimate` = "Clinical definition",
+                    `n_ISOs_district-estimate` = "District labs", `n_ISOs_global-estimate` = "National lab", `n_ISOs_no-estimate` = "Clinical definition") %>%
+  # merge cells 
+  merge_at(i = 1, j = 3:5, part = "header") %>% # Horizontally merge columns 3 to 5 
+  merge_at(i = 1, j = 6:8, part = "header") %>%    # Horizontally merge columns 6 to 8 
+  merge_at(i = 1, j = 9:11, part = "header") %>%
+  merge_at(i = 1, j = 12:14, part = "header") %>%
+  merge_at(i = 1:2, j = 1, part = "header") %>%
+  merge_at(i = 1:2, j = 2, part = "header") %>%
+  merge_at(i = 1:2, j = 1) %>%
+  merge_at(i = 3:4, j = 1) %>%
+  merge_at(i = 5:6, j = 1) %>%
+  flextable::align(align = "center", j = c(1:14), part = "all") %>%
+  width(j=3:5, width = 1.5) %>%
+  width(j=6:8, width = 1.5) %>%
+  width(j=9:11, width = 1.5) %>%
+  width(j=12:14, width = 1.5) %>%
+  vline(part = "all", j = 1) %>%
+  vline(part = "all", j = 2) %>%   # at column 2 
+  vline(part = "all", j = 5) %>%
+  vline(part = "all", j = 8) %>%
+  vline(part = "all", j = 11) %>%
+  vline(part = "all", j = 14) %>%
+  hline(part = "body", i = 2, j = 2:14) %>%
+  hline(part = "body", i = 4, j = 2:14) %>%
+  hline(part = "body", i = 1:4, j = 1) 
+  
+tableS1
+
+# save the main table
+save_as_docx(tableS1, path = "tables/TableS1.docx")
+
+```
+<br>
+
+### **Table S`r tab.counter`** Districts excluded from targeting due to small size
+  * (I removed one district from KEN (admin1=West Pokot, admin2=unknown 8), this area has 0.1 pop and 0 area)
+  * Population here is population size in 2020 (calculated from the raster file);
+  * Incidence rate here is calculated from the baseline incidence rate (clinical).
+```{r small areas}
+tab.counter <- tab.counter + 1
+
+tableS2 <- 
+  df_small %>% 
+  rename(`National Lab` = global.estimate,
+         `Clinical definition` = no.estimate,
+         `District labs` = district.estimate) %>%
+  dplyr::select(-case) %>%
+  dplyr::select(1:6, 8,7,9, 10:12) %>%
+  filter(NAME_2 != "unknown 8") %>%
+  rename(`10/10,000 per year` = X0.001,
+         `2/10,000 per year` = X2e.04,
+         `1/10,000 per year` = X1e.04) %>%
+  mutate(pop = round(pop), incid = round(incid * 1000000,1)) %>%
+  rename(Admin1 = NAME_1, Admin2 = NAME_2, `Area (km^2)` = area_km2,
+         `Population size` = pop, `Incidence Rate (per million)` = incid)  %>%
+  flextable() %>%
+  # set the header values
+  add_header_row(top = TRUE,values = c("ISO", "Province", "District", "Population Size", "Incidence Rate(per million)", "Area (km^2)", "Bacteriological confirmation","","" ,"Threshold", "","")) %>%
+  # merge cells 
+  merge_at(i = 1, j = 7:9, part = "header") %>%
+  merge_at(i = 1, j = 10:12, part = "header") %>%
+  merge_at(i = 1:2, j = 1, part = "header") %>%
+  merge_at(i = 1:2, j = 2, part = "header") %>%
+  merge_at(i = 1:2, j = 3, part = "header") %>%
+  merge_at(i = 1:2, j = 4, part = "header") %>%
+  merge_at(i = 1:2, j = 5, part = "header") %>%
+  merge_at(i = 1:2, j = 6, part = "header") %>%
+  flextable::align(align = "center", j = c(1:12), part = "all") 
+
+tableS2
+
+# save the main table
+save_as_docx(tableS2, path = "tables/tableS2.docx")
+```
+
+<br>
+
+### **Table S`r tab.counter`** Targeted population, averted cases and OCV efficiency of each country
+* This table shows the medians and 95%CIs.
+```{r}
+tab.counter <- tab.counter + 1
+
+tab_byISO <- df_tp_eff %>%
+  left_join(n_targeted_runs, by = c("ISO", "threshold", "confirmation_lens", "admin_level")) %>%
+  mutate(tp_cumu_lb = round(tp_cumu_lb/1000000, 2),
+         tp_cumu_median = round(tp_cumu_median/1000000, 2),
+         tp_cumu_ub = round(tp_cumu_ub/1000000, 2),
+         efficiency_lb = round(efficiency_lb, 2),
+         efficiency_median = round(efficiency_median, 2),
+         efficiency_ub = round(efficiency_ub, 2),
+         ac_lb = round(ac_lb),
+         ac_median = round(ac_median),
+         ac_ub = round(ac_ub)) %>%
+  mutate(tp_cumu = paste0(tp_cumu_median, " (", tp_cumu_lb, "-", tp_cumu_ub, ")"),
+         efficiency = paste0(efficiency_median, " (", efficiency_lb, "-", efficiency_ub, ")"),
+         ac = paste0(ac_median, " (", ac_lb, "-", ac_ub, ")")) %>%
+  dplyr::select(ISO, threshold, confirmation_lens, admin_level, tp_cumu, ac, efficiency, n_runs_targeted) %>%
+  pivot_wider(names_from = "confirmation_lens", values_from = c("tp_cumu", "ac", "efficiency", "n_runs_targeted")) %>%
+arrange(ISO, desc(threshold), admin_level) %>%
+  mutate(threshold = case_when(threshold == 0.001 ~ "10/10,000 per year",
+                               threshold == 2e-04 ~ "2/10,000 per year",
+                               threshold == 1e-04 ~ "1/10,000 per year")) %>%
+  flextable() %>%
+  # set the header values
+  add_header_row(top = TRUE,values = c("ISO", "Threshold", "OCV targeting scale", 
+                                       "Fully vaccinated population (million)", "", "", 
+                                       "Averted cases", "", "",
+                                       "OCV Efficiency (averted cases / 1,000 fvp)", "", "",
+                                       "Number of runs targeted", "", "")) %>%
+  # Rename the columns in original header row
+  set_header_labels(ISO = "", threshold = "", admin_level = "",
+                    `tp_cumu_district-estimate` = "District labs", `tp_cumu_global-estimate` = "National lab", `tp_cumu_no-estimate` = "Clinical only",
+                    `ac_district-estimate` = "District labs", `ac_global-estimate` = "National lab", `ac_no-estimate` = "Clinical only",
+                    `efficiency_district-estimate` = "District labs", `efficiency_global-estimate` = "National lab", `efficiency_no-estimate` = "Clinical only",
+                    `n_runs_targeted_district-estimate` = "District labs", `n_runs_targeted_global-estimate` = "National lab", `n_runs_targeted_no-estimate` = "Clinical only") %>% 
+  # merge cells 
+  merge_at(i = 1, j = 4:6, part = "header") %>% # Horizontally merge columns 3 to 5 
+  merge_at(i = 1, j = 7:9, part = "header") %>%    # Horizontally merge columns 6 to 8 
+  merge_at(i = 1, j = 10:12, part = "header") %>%
+  merge_at(i = 1, j = 13:15, part = "header") %>%
+  merge_at(i = 1:2, j = 1, part = "header") %>%
+  merge_at(i = 1:2, j = 2, part = "header") %>%
+  merge_at(i = 1:2, j = 3, part = "header") %>%
+  flextable::align(align = "center", j = c(1:12), part = "all") %>%
+  width(j=4:6, width = 1.5) %>%
+  width(j=7:9, width = 1.5) %>%
+  width(j=10:12, width = 1.5) %>%
+  width(j=13:15, width = 1.5) %>%
+  vline(part = "all", j = 1) %>%
+  vline(part = "all", j = 2) %>%
+  vline(part = "all", j = 3) %>%   # at column 2 
+  vline(part = "all", j = 6) %>%
+  vline(part = "all", j = 9) %>%
+  vline(part = "all", j = 12)
+  
+tab_byISO
+
+# save the main table
+save_as_docx(tab_byISO, path = "tables/tableS3.docx")
+```
+
+<br>
+
+End of file.

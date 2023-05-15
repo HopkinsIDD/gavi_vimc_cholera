@@ -20,6 +20,8 @@ import_coverage_scenario(
 \item{scenario}{Unique string that identifies the coverage scenario name}
 
 \item{filter0}{logical for whether 0 vaccination years should be filtered out (default = FALSE)}
+
+\item{redownload}{whether to redownload the file}
 }
 \value{
 Dataframe with vaccination coverage for a single scenario and country. Years without vaccination are excluded from the returned dataframe. Countries without vaccination in any year return a null dataframe.

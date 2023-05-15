@@ -17,6 +17,7 @@ get_admin_population <- function(pop, shp){
 #' @title load_targets_by_country
 #' @description Load possible vaccination targets by country, including incidence and population proportion information
 #' @param datapath path to data 
+#' @param modelpath modelpath
 #' @param country country code
 #' @importFrom magrittr %>%
 #' @return dataframe with incidence and population by admin unit for a single country
@@ -122,7 +123,7 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
 
     ## Perform checks on the coverage scenario
     if (!all(coverage$gender == "both") | 
-        !all(coverage$age_range_verbatim == "default age and gender") | 
+        !all(coverage$age_range_verbatim == "default age and gender" | coverage$age_range_verbatim == ">1y") | 
         !all(coverage$activity_type == "campaign")
         ){
       stop(paste("Vaccine assignment is not supported for this coverage scenario. Check the gender, age_range_verbatim, and activity_type columns in the", scenario, "coverage sheet."))

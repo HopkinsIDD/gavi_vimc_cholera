@@ -1,0 +1,628 @@
+Beginning of script
+Sun Jul 10 22:43:00 EDT 2022
+
+
+processing file: diagnostic_report_copy.Rmd
+  |                                                                              |                                                                      |   0%  |                                                                              |.                                                                     |   1%
+   inline R code fragments
+
+  |                                                                              |.                                                                     |   2%
+label: setup (with options) 
+List of 3
+ $ include: logi FALSE
+ $ dev    : chr "CairoPNG"
+ $ message: logi FALSE
+
+
+Attaching package: 'dplyr'
+
+The following objects are masked from 'package:stats':
+
+    filter, lag
+
+The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union
+
+Loading required package: ocvImpact
+ℹ Loading ocvImpact
+Installing package into '/home/kaiyuezou/R/x86_64-pc-linux-gnu-library/4.0'
+(as 'lib' is unspecified)
+* installing *source* package ‘ocvImpact’ ...
+** using staged installation
+** R
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (ocvImpact)
+Loading required package: fasterize
+
+Attaching package: 'fasterize'
+
+The following object is masked from 'package:graphics':
+
+    plot
+
+The following object is masked from 'package:base':
+
+    plot
+
+Loading required package: remotes
+Loading required package: rgeoboundaries
+Loading required package: ggrepel
+  |                                                                              |..                                                                    |   3%
+   inline R code fragments
+
+  |                                                                              |..                                                                    |   4%
+label: unnamed-chunk-1 (with options) 
+List of 2
+ $ include: logi FALSE
+ $ message: logi FALSE
+
+  |                                                                              |...                                                                   |   4%
+  ordinary text without R code
+
+  |                                                                              |....                                                                  |   5%
+label: true case by year 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("True cases by year")
+
+  |                                                                              |....                                                                  |   6%
+  ordinary text without R code
+
+  |                                                                              |.....                                                                 |   7%
+label: true case by year 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("True cases by year")
+
+  |                                                                              |......                                                                |   8%
+  ordinary text without R code
+
+  |                                                                              |......                                                                |   9%
+label: true case by year 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("True cases by year")
+
+  |                                                                              |.......                                                               |  10%
+  ordinary text without R code
+
+  |                                                                              |.......                                                               |  11%
+label: true case by district 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("True cases by district")
+
+  |                                                                              |........                                                              |  11%
+  ordinary text without R code
+
+  |                                                                              |.........                                                             |  12%
+label: true case by district 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("True cases by district")
+
+  |                                                                              |.........                                                             |  13%
+  ordinary text without R code
+
+  |                                                                              |..........                                                            |  14%
+label: true case by district 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("True cases by district")
+
+  |                                                                              |..........                                                            |  15%
+  ordinary text without R code
+
+  |                                                                              |...........                                                           |  16%
+label: true case cumulative 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("True cases cumulative")
+
+  |                                                                              |............                                                          |  17%
+  ordinary text without R code
+
+  |                                                                              |............                                                          |  18%
+label: true case cumulative 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("True cases cumulative")
+
+  |                                                                              |.............                                                         |  18%
+  ordinary text without R code
+
+  |                                                                              |..............                                                        |  19%
+label: true case cumulative 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("True cases cumulative")
+
+  |                                                                              |..............                                                        |  20%
+  ordinary text without R code
+
+  |                                                                              |...............                                                       |  21%
+label: Observed case by year 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Observed case by year")
+
+  |                                                                              |...............                                                       |  22%
+  ordinary text without R code
+
+  |                                                                              |................                                                      |  23%
+label: Observed case by year 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Observed case by year")
+
+  |                                                                              |.................                                                     |  24%
+  ordinary text without R code
+
+  |                                                                              |.................                                                     |  25%
+label: Observed case by year 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Observed case by year")
+
+  |                                                                              |..................                                                    |  25%
+  ordinary text without R code
+
+  |                                                                              |..................                                                    |  26%
+label: Observed case by district 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Observed case by district")
+
+  |                                                                              |...................                                                   |  27%
+  ordinary text without R code
+
+  |                                                                              |....................                                                  |  28%
+label: Observed case by district 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Observed case by district")
+
+  |                                                                              |....................                                                  |  29%
+  ordinary text without R code
+
+  |                                                                              |.....................                                                 |  30%
+label: Observed case by district 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Observed case by district")
+
+  |                                                                              |.....................                                                 |  31%
+  ordinary text without R code
+
+  |                                                                              |......................                                                |  32%
+label: Observed case cumulative 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Observed case cumulative")
+
+  |                                                                              |.......................                                               |  32%
+  ordinary text without R code
+
+  |                                                                              |.......................                                               |  33%
+label: Observed case cumulative 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Observed case cumulative")
+
+  |                                                                              |........................                                              |  34%
+  ordinary text without R code
+
+  |                                                                              |.........................                                             |  35%
+label: Observed case cumulative 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Observed case cumulative")
+
+  |                                                                              |.........................                                             |  36%
+  ordinary text without R code
+
+  |                                                                              |..........................                                            |  37%
+label: Averted true case by year 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted true case by year")
+
+  |                                                                              |..........................                                            |  38%
+  ordinary text without R code
+
+  |                                                                              |...........................                                           |  39%
+label: Averted true case by year 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted true case by year")
+
+  |                                                                              |............................                                          |  39%
+  ordinary text without R code
+
+  |                                                                              |............................                                          |  40%
+label: Averted true case by year 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted true case by year")
+
+  |                                                                              |.............................                                         |  41%
+  ordinary text without R code
+
+  |                                                                              |.............................                                         |  42%
+label: Averted true case by district 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted true case by district")
+
+  |                                                                              |..............................                                        |  43%
+  ordinary text without R code
+
+  |                                                                              |...............................                                       |  44%
+label: Averted true case by district 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted true case by district")
+
+  |                                                                              |...............................                                       |  45%
+  ordinary text without R code
+
+  |                                                                              |................................                                      |  46%
+label: Averted true case by district 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted true case by district")
+
+  |                                                                              |.................................                                     |  46%
+  ordinary text without R code
+
+  |                                                                              |.................................                                     |  47%
+label: Averted true case cumulative 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted true case cumulative")
+
+  |                                                                              |..................................                                    |  48%
+  ordinary text without R code
+
+  |                                                                              |..................................                                    |  49%
+label: Averted true case cumulative 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted true case cumulative")
+
+  |                                                                              |...................................                                   |  50%
+  ordinary text without R code
+
+  |                                                                              |....................................                                  |  51%
+label: Averted true case cumulative 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted true case cumulative")
+
+  |                                                                              |....................................                                  |  52%
+  ordinary text without R code
+
+  |                                                                              |.....................................                                 |  53%
+label: Averted observed case by year 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted observed case by year")
+
+  |                                                                              |.....................................                                 |  54%
+  ordinary text without R code
+
+  |                                                                              |......................................                                |  54%
+label: Averted observed case by year 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted observed case by year")
+
+  |                                                                              |.......................................                               |  55%
+  ordinary text without R code
+
+  |                                                                              |.......................................                               |  56%
+label: Averted observed case by year 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted observed case by year")
+
+  |                                                                              |........................................                              |  57%
+  ordinary text without R code
+
+  |                                                                              |.........................................                             |  58%
+label: Averted observed case by district 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted observed case by district")
+
+  |                                                                              |.........................................                             |  59%
+  ordinary text without R code
+
+  |                                                                              |..........................................                            |  60%
+label: Averted observed case by district 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted observed case by district")
+
+  |                                                                              |..........................................                            |  61%
+  ordinary text without R code
+
+  |                                                                              |...........................................                           |  61%
+label: Averted observed case by district 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted observed case by district")
+
+  |                                                                              |............................................                          |  62%
+  ordinary text without R code
+
+  |                                                                              |............................................                          |  63%
+label: Averted observed case cumulative 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted observed case cumulative")
+
+  |                                                                              |.............................................                         |  64%
+  ordinary text without R code
+
+  |                                                                              |.............................................                         |  65%
+label: Averted observed case cumulative 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted observed case cumulative")
+
+  |                                                                              |..............................................                        |  66%
+  ordinary text without R code
+
+  |                                                                              |...............................................                       |  67%
+label: Averted observed case cumulative 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Averted observed case cumulative")
+
+  |                                                                              |...............................................                       |  68%
+  ordinary text without R code
+
+  |                                                                              |................................................                      |  68%
+label: Efficacy side-by-side comparison by year 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy side-by-side comparison by year")
+
+  |                                                                              |.................................................                     |  69%
+  ordinary text without R code
+
+  |                                                                              |.................................................                     |  70%
+label: Efficacy side-by-side comparison by year 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy side-by-side comparison by year")
+
+  |                                                                              |..................................................                    |  71%
+  ordinary text without R code
+
+  |                                                                              |..................................................                    |  72%
+label: Efficacy side-by-side comparison by year 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy side-by-side comparison by year")
+
+  |                                                                              |...................................................                   |  73%
+  ordinary text without R code
+
+  |                                                                              |....................................................                  |  74%
+label: Efficacy side-by-side comparison by district 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy side-by-side comparison by district")
+
+  |                                                                              |....................................................                  |  75%
+  ordinary text without R code
+
+  |                                                                              |.....................................................                 |  75%
+label: Efficacy side-by-side comparison by district 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy side-by-side comparison by district")
+
+  |                                                                              |.....................................................                 |  76%
+  ordinary text without R code
+
+  |                                                                              |......................................................                |  77%
+label: Efficacy side-by-side comparison by district 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy side-by-side comparison by district")
+
+  |                                                                              |.......................................................               |  78%
+  ordinary text without R code
+
+  |                                                                              |.......................................................               |  79%
+label: Efficacy side-by-side comparison all-year 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy side-by-side comparison all-year")
+
+  |                                                                              |........................................................              |  80%
+  ordinary text without R code
+
+  |                                                                              |........................................................              |  81%
+label: Efficacy side-by-side comparison all-year 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy side-by-side comparison all-year")
+
+  |                                                                              |.........................................................             |  82%
+  ordinary text without R code
+
+  |                                                                              |..........................................................            |  82%
+label: Efficacy side-by-side comparison all-year 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy side-by-side comparison all-year")
+
+  |                                                                              |..........................................................            |  83%
+  ordinary text without R code
+
+  |                                                                              |...........................................................           |  84%
+label: Efficacy subtraction comparison by year 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy subtraction comparison by year")
+
+  |                                                                              |............................................................          |  85%
+  ordinary text without R code
+
+  |                                                                              |............................................................          |  86%
+label: Efficacy subtraction comparison by year 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy subtraction comparison by year")
+
+  |                                                                              |.............................................................         |  87%
+  ordinary text without R code
+
+  |                                                                              |.............................................................         |  88%
+label: Efficacy subtraction comparison by year 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy subtraction comparison by year")
+
+  |                                                                              |..............................................................        |  89%
+  ordinary text without R code
+
+  |                                                                              |...............................................................       |  89%
+label: Efficacy subtraction comparison by district 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy subtraction comparison by district")
+
+  |                                                                              |...............................................................       |  90%
+  ordinary text without R code
+
+  |                                                                              |................................................................      |  91%
+label: Efficacy subtraction comparison by district 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy subtraction comparison by district")
+
+  |                                                                              |................................................................      |  92%
+  ordinary text without R code
+
+  |                                                                              |.................................................................     |  93%
+label: Efficacy subtraction comparison by district 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy subtraction comparison by district")
+
+  |                                                                              |..................................................................    |  94%
+  ordinary text without R code
+
+  |                                                                              |..................................................................    |  95%
+label: Efficacy subtraction comparison all-year 1/1000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy subtraction comparison all-year")
+
+  |                                                                              |...................................................................   |  96%
+  ordinary text without R code
+
+  |                                                                              |....................................................................  |  96%
+label: Efficacy subtraction comparison all-year 1/5000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy subtraction comparison all-year")
+
+  |                                                                              |....................................................................  |  97%
+  ordinary text without R code
+
+  |                                                                              |..................................................................... |  98%
+label: Efficacy subtraction comparison all-year 1/10000 (with options) 
+List of 3
+ $ fig.height: num 15
+ $ fig.width : num 15
+ $ fig.cap   : language capFig("Efficacy subtraction comparison all-year")
+
+  |                                                                              |..................................................................... |  99%
+  ordinary text without R code
+
+  |                                                                              |......................................................................| 100%
+label: unnamed-chunk-2 (with options) 
+List of 3
+ $ eval   : logi FALSE
+ $ include: logi FALSE
+ $ message: logi FALSE
+
+
+output file: diagnostic_report_copy.knit.md
+
+/usr/bin/pandoc +RTS -K512m -RTS diagnostic_report_copy.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output diagnostic_report_copy.html --self-contained --variable bs3=TRUE --standalone --section-divs --table-of-contents --toc-depth 3 --variable toc_float=1 --variable toc_selectors=h1,h2,h3 --variable toc_collapsed=1 --variable toc_smooth_scroll=1 --variable toc_print=1 --template /home/kaiyuezou/R/x86_64-pc-linux-gnu-library/4.0/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --include-in-header /home/kaiyuezou/.tmp/RtmpnXuN9B/rmarkdown-str49a575742586.html --mathjax --variable 'mathjax-url:https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' 
+
+Output created: diagnostic_report_copy.html
+Warning message:
+In png(..., res = dpi, units = "in") :
+  unable to open connection to X11 display ''
+rm: cannot remove '/home/kaiyuezou/.tmp/RtmpnXuN9B/.nfs000000000b7f079b0000c2d3': Device or resource busy
+End of script
+Sun Jul 10 22:52:50 EDT 2022

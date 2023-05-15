@@ -7,7 +7,8 @@
 #' @param country country code
 #' @param nsamples numeric, number of layers to sample (must be below 1000)
 #' @param redraw logical that indicates whether existing incid samples should be drawn again
-#' @return raster of incidence rate, 30 samples
+#' @param random_seed
+#' @return raster of incidence rate, "nsamples" samples
 #' @export
 #' @include get_singular_estimate.R align_rasters.R utils_montagu.R load_worldpop_by_country.R
 #######Kaiyue Added on 7/12/2021#######
@@ -16,10 +17,10 @@
 ###We also include modelpath as input
 ###########Comment completed###########
 
-create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
+create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw, random_seed = NULL){
 
   #######Kaiyue Added on 7/15/2021#######
-  ######Kaiyue editted on 7/21/2021######
+  ######Kaiyue editted on 1/30/2022######
   ###Use the WHO data source to update the current spreadsheet
   IncidenceTable <- ocvImpact::get_singular_estimate(datapath, country)
   RasterCountry <- subset(IncidenceTable, is.na(IncidenceTable$singular_estimate))$country_code
@@ -43,7 +44,10 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
       message('The "is_num_case" variable has an invalid value. ')
     }
     
-    
+    if(country == "IND"){ #borrow BGD incidence rate for IND
+      NumCases <- 0.0008536926*CountryPopMean
+    }
+
     PoisCases <- rpois(nsamples, NumCases)
     StochasticIR <- PoisCases / CountryPopMean
     write.csv(IncidenceTable, file = paste0(datapath, '/incidence/VIMC-47-countries-for-cholera-modelling.csv'), row.names=FALSE)
@@ -59,17 +63,33 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw){
   if (!file.exists(incid_out_fn) | redraw){
     
     ###If we want to redraw, first delete
-    if(redraw & file.exists(incid_out_fn)){
+    if(file.exists(incid_out_fn)){
       message(paste("Clean existing", incid_out_fn))
       file.remove(incid_out_fn)
     }
+
+    ###For BGD
+    if(country == "BGD"){
+      if(is.null(random_seed)){
+        random_seed <- as.numeric(config$setting$random_seed)
+      }
+      setting_num <- random_seed #for the current design
+      BGD_raster <- raster::stack(paste0(datapath, "/incidence/BGD_incid_5k_50_setting", setting_num, ".tif"))
+      return(BGD_raster)
+    }
     
+
+
     ###Just generate
     #######Kaiyue Added on 7/12/2021#######
     #if (country %in% c("COD", "ETH", "KEN", "SOM", "SSD")){ ----the older code with just the testing countries
     #the next line is the new code
     if (country %in% RasterCountry){
       ###########Comment completed###########
+      if(is.null(random_seed)){
+        random_seed <- as.numeric(config$setting$random_seed)
+      }
+      set.seed(random_seed)
       layer_indexes <- sort(sample(1:1000, nsamples, replace=TRUE))
       print(layer_indexes)
       

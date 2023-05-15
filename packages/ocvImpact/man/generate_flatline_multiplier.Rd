@@ -4,10 +4,27 @@
 \alias{generate_flatline_multiplier}
 \title{generate_flatline_multiplier}
 \usage{
-generate_flatline_multiplier()
+generate_flatline_multiplier(
+  trendtype,
+  datapath,
+  modelpath,
+  country,
+  use_country_incid_trend
+)
+}
+\arguments{
+\item{trendtype}{what type of trend function to return}
+
+\item{datapath}{path to input data}
+
+\item{modelpath}{path to montagu files}
+
+\item{country}{country code}
+
+\item{use_country_incid_trend}{whether use the country-level incidence rate trend}
 }
 \value{
-
+a function that can take in year or other parameters to produce a value
 }
 \description{
 Generate a function that represents projected secular trends in cholera incidence. This multiplier is used to adjust projected cholera incidence in future years.
