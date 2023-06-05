@@ -177,7 +177,7 @@ tab <- df_tp_eff_allISOs %>%
   filter(admin_level == "admin2") %>%
   dplyr::select(1, 5,3 ,8,6 ,14,12, 11,9)
 
-table1 <- tab %>%
+table2 <- tab %>%
   flextable() %>%
   # set the header values
   add_header_row(top = TRUE,values = c("Threshold",
@@ -204,7 +204,10 @@ table1 <- tab %>%
   vline(part = "all", j = 5) %>%
   vline(part = "all", j = 7) 
   
-table1
+table2
+
+save_as_docx(table2, path = "tables/table2.docx")
+
 ```
 
 <br>
@@ -297,7 +300,7 @@ plt.tested.ac.1
 ```{r}
 tab.counter <- tab.counter + 1
 
-cost_spend_save_per_ac_allISOs %>%
+table3 <- cost_spend_save_per_ac_allISOs %>%
   filter(admin_level == "admin2") %>% 
   mutate(ocv_cost_per_ac_district_estimate = paste0(round(ocv_cost_per_ac_district_estimate_median), " (", round(ocv_cost_per_ac_district_estimate_lb), "-", round(ocv_cost_per_ac_district_estimate_ub), ")"),
          ocv_cost_per_ac_no_estimate = paste0(round(ocv_cost_per_ac_no_estimate_median), " (", round(ocv_cost_per_ac_no_estimate_lb), "-", round(ocv_cost_per_ac_no_estimate_ub), ")"),
@@ -327,11 +330,11 @@ cost_spend_save_per_ac_allISOs %>%
   # set the header values
   add_header_row(top = TRUE,values = c("Threshold",  
                                        "Total cost per averted case ($)", "",  
-                                       "OCV cost saved per averted case ($)", "Test cost per averted case ($)", "OCV cost saved per test dollar spent ($)")) %>%
+                                       "OCV cost reduction per averted case ($)", "Test cost per averted case ($)", "OCV cost reduction per test dollar spent ($)")) %>%
   set_header_labels(threshold = "Threshold",
                     total_cost_per_ac_district_estimate = "Decentral. Testing", total_cost_per_ac_no_estimate = "Clinical Definition",
-                    ocv_cost_saved_per_ac = "OCV cost saved per averted case ($)", test_cost_per_ac = "Test cost per averted case ($)",
-                    spend_cost_ratio = "OCV cost saved per test dollar spent ($)") %>%
+                    ocv_cost_saved_per_ac = "OCV cost reduction per averted case ($)", test_cost_per_ac = "Test cost per averted case ($)",
+                    spend_cost_ratio = "OCV cost reduction per test dollar spent ($)") %>%
   merge_at(part = "header", j = 1, i = 1:2) %>%
   merge_at(part = "header", i = 1, j = 2:3) %>%
   merge_at(part = "header", j = 4, i = 1:2) %>%
@@ -341,6 +344,10 @@ cost_spend_save_per_ac_allISOs %>%
   width(j = 1:5, width = 1.5) %>%
   width(j = 6, width = 3)  %>%
   vline(j = c(1,3,4,5), part = "all")
+
+table3
+
+save_as_docx(table3, path = "tables/table3.docx")
 ```
 
 <br>
@@ -373,7 +380,13 @@ plt.compare.ac <- df.compare %>%
     theme(legend.box="horizontal", legend.position = "bottom") +
   geom_abline(slope=1, intercept=0, linetype = "dashed") +
   xlim(c(0,125000)) +
-  ylim(c(0,125000))
+  ylim(c(0,125000)) +
+  theme(axis.ticks.length=unit(.20, "cm")) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=16)) +
+  theme(legend.key.size = unit(1, 'cm'), #legend key size
+        legend.title = element_text(size=15), #legend title font size
+        legend.text = element_text(size=14)) #legend text font size
 
 # (supplement)
 plt.compare.fvp <- df.compare %>%
@@ -390,9 +403,15 @@ plt.compare.fvp <- df.compare %>%
     theme(legend.box="horizontal", legend.position = "bottom") +
   geom_abline(slope=1, intercept=0, linetype = "dashed") +
   xlim(c(0, 65)) +
-  ylim(c(0, 65))
+  ylim(c(0, 65)) +
+  theme(axis.ticks.length=unit(.20, "cm")) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=16)) +
+  theme(legend.key.size = unit(1, 'cm'), #legend key size
+        legend.title = element_text(size=15), #legend title font size
+        legend.text = element_text(size=14)) #legend text font size
 
-# total cost (by country)
+# figure 2B total cost (by country)
 df.compare.totalcost <- ocv_cost_byISO_medianCI %>% 
   dplyr::select(ISO, threshold, confirmation_lens, admin_level, ocv_cost_median) %>%
   left_join(
@@ -422,7 +441,13 @@ plt.compare.totalcost <- df.compare.totalcost %>%
     theme(legend.box="horizontal", legend.position = "bottom") +
   geom_abline(slope=1, intercept=0, linetype = "dashed") +
   xlim(c(0,310)) +
-  ylim(c(0,310))
+  ylim(c(0,310)) +
+  theme(axis.ticks.length=unit(.20, "cm")) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=16)) +
+  theme(legend.key.size = unit(1, 'cm'), #legend key size
+        legend.title = element_text(size=15), #legend title font size
+        legend.text = element_text(size=14)) #legend text font size
 
 
 # Make a box & whisker plot - threshold on x-axis, one box & whisker per confirmation scenario, OCV cost per case averted on y-axis (one dot per country)
@@ -454,7 +479,13 @@ plt.ocv.costeff <-
   #theme(legend.position="top", axis.text.x = element_text(angle = 20, vjust =0.8,  hjust= 0.5)) +
   theme(legend.position="bottom", legend.title = element_text(size=10),  legend.text = element_text(size=10),
         axis.text = element_text(size = 10), axis.title = element_text(size = 12)) +
-  labs(color = "Threshold")
+  labs(color = "Threshold") +
+  theme(axis.ticks.length=unit(.20, "cm")) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=16)) +
+  theme(legend.key.size = unit(1, 'cm'), #legend key size
+        legend.title = element_text(size=15), #legend title font size
+        legend.text = element_text(size=14)) #legend text font size
 
 
 # Figure 2D
@@ -503,7 +534,7 @@ plt.spend.save <-
     geom_point(data = df.spend.save, 
                aes(x = test_cost_per_ac_median, y = ocv_cost_saved_per_ac_median, 
                    color = threshold), size = 1) +
-    xlab("Test cost per averted case ($)") + ylab("OCV cost saved per averted case ($)") + 
+    xlab("Test cost per averted case ($)") + ylab("OCV cost reduction per averted case ($)") + 
     scale_color_brewer(palette="Set2") +
     #ggtitle("Test cost per averted case ($) ~ OCV cost saved per averted case ($) \n (Clinical Definition --> Decentralized Testing)") +
     theme_bw() +
@@ -515,9 +546,15 @@ plt.spend.save <-
   geom_text(data = df.lines, 
             aes(x = test_threshold_10, 
                 y = ocv_threshold_10, 
-                label = countryname), size = 3, nudge_y = -0.03, nudge_x = 0.08, color = "grey33")  +
+                label = countryname), size = 4, nudge_y = -0.03, nudge_x = 0.08, color = "grey33")  +
   scale_x_log10(labels = waiver()) +
-  scale_y_log10(labels = waiver())
+  scale_y_log10(labels = waiver()) +
+  theme(axis.ticks.length=unit(.20, "cm")) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=16)) +
+  theme(legend.key.size = unit(1, 'cm'), #legend key size
+        legend.title = element_text(size=15), #legend title font size
+        legend.text = element_text(size=14)) #legend text font size
   
 
 
@@ -541,6 +578,9 @@ plt.country.level <- ggarrange(plt.compare.ac, plt.compare.totalcost,
 plt.country.level
 
 ggsave(plot = plt.country.level, filename = "figures/fig2.jpg", height = 12, width = 13)
+plt.compare.fvp
+ggsave(plot = plt.compare.fvp, filename = "figures/figS3.jpg", height = 6, width = 6.5)
+
 ```
 
 
@@ -795,6 +835,9 @@ plt.vaxed.scatter <-
 #           labels = c("A. ", "B. "), nrow = 1,  label_size = 15, hjust = 0.1)
 
 plt.vaxed.boxplot
+
+ggsave(plot = plt.vaxed.boxplot, filename = "figures/fig3.jpg", height = 6, width = 6)
+
 ```
 
 <br>
@@ -1087,10 +1130,13 @@ fig_eff_boxplot <-
 ```
 
 ```{r fig.height = 6, fig.width = 12}
-cowplot::plot_grid(fig_eff_ratio,fig_eff_boxplot,
+figS2 <- cowplot::plot_grid(fig_eff_ratio,fig_eff_boxplot,
                    labels = c('A', 'B'),
                    nrow = 1)
+
+ggsave(plot = figS2, filename = "figures/figS2.jpg", height = 6, width = 12)
 ```
+
 
 ### **Figure S`r fig.counter`.** FVP (Decentral. Testing ~ Clinical Definition)
 ```{r fig.width = 6, fig.height= 6}
@@ -1163,7 +1209,7 @@ df.complete <- rbind(df.complete[22:24,], df.complete[1:3,], df.complete[4:6,], 
               df.complete[13:15,], df.complete[7:9,]) %>%
   dplyr::select(value, scenario, 7,8, 5,6,3,4)
   
-df.complete %>%
+tab.complete <- df.complete %>%
   mutate(value = case_when(value == "tp_cumu" ~ "FVPs (million)",
                            value == "ac" ~ "Cases averted (million)",
                            value == "prop_ac" ~ "Percent of true cases averted (%)",
@@ -1209,6 +1255,7 @@ df.complete %>%
   hline(part = "body", i = 21, j = 1:8) %>%
   hline(part = "body", i = 24, j = 1:8)
   
+save_as_docx(tab.complete, path = "tables/tableS8.docx")
 ```
 
 <br>
@@ -1391,6 +1438,9 @@ table_small <-
   flextable::align(align = "center", j = c(1:12), part = "all") 
 
 table_small
+
+save_as_docx(table_small, path = "tables/tableS7.docx")
+
 ```
 
 
@@ -1448,7 +1498,7 @@ ir_mean_median %>%
 
 
 plt_true_ir
-ggsave(plot = plt_true_ir, filename = "figures/plot_true_ir.jpg", height = 6, width = 8)
+ggsave(plot = plt_true_ir, filename = "figures/figS4.jpg", height = 6, width = 8)
 ```
 
 
