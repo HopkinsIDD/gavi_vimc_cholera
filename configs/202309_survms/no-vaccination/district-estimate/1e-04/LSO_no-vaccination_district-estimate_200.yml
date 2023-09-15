@@ -1,0 +1,33 @@
+runname: '202110gavi-3'
+country: 'LSO'
+scenario: 'no-vaccination'
+clean: TRUE
+incid:
+  num_samples: 200
+  redraw: FALSE
+  use_country_incid_trend: TRUE
+vacc:
+  targeting_strategy: 'threshold_unconstrained'
+  vac_incid_threshold: 1e-04
+  vac_unconstrained: TRUE
+  vac_admin_level: 'both'
+  vac_coverage: 0.68
+  num_skip_years: 3
+  vac_interval: 1
+  sim_start_year: 2022
+  vac_start_year: 2022
+  vac_end_year: 2030
+  sim_end_year: 2035
+  use_mean_ir: TRUE
+  mean_ir_span: 5
+surveillance_scenario:
+  surveillance_scenario: 'district-estimate'
+  testing_sensitivity: 1
+setting:
+  incidence_rate_trend: FALSE
+  outbreak_multiplier: FALSE
+  random_seed: 1
+optimize:
+  save_intermediate_raster: TRUE
+  save_final_output_raster: TRUE
+  ir_pre_screening: FALSE
