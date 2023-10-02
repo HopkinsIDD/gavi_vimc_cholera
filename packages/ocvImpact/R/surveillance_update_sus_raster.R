@@ -53,7 +53,7 @@ update_sus_rasterStack_optimized <- function( datapath,
     message(paste("Modeling campaign scenario susceptibility:", country, model_year, 1/mu, "life expectancy"))
 
     ### loop through the previous years 
-    for (year in max(baseline_year, model_year-last_vac_ef_year+1):model_year){
+    for (year in max(baseline_year, model_year-last_vac_ef_year):model_year){
       
       k <- year - baseline_year + 1 
       vac_admin1_fn <- paste0("intermediate_raster/", country, "_vac_admin1_", year, ".tif")
