@@ -4,7 +4,7 @@ runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survm
 
 
 #====== Shared parameters ======#
-scenarios <- c("campaign-default", "no-vaccination","1-dose-campaign")
+scenarios <- c("cholera-ocv1-default", "cholera-ocv1-ocv2-default","cholera-no-vaccination")
 num_skip_years <- 3   #district-level skipped years, relevant to both projects
 num_samples <- 200    #shared by both projects
 use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity 
