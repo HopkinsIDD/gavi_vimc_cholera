@@ -31,6 +31,14 @@ run_country_scenario <- function(
   redraw = FALSE,
   ...){
 
+  ##calam added conditionals changing the default ve_direct function to the new functions for the one and two-dose scenarios for the 2023 touchstone
+  if (ndoses == "one" & scenario == "campaign-default-one-dose"){ #use the new one dose vaccine efficacy function for the 2023 touchstones
+    ve_direct = generate_pct_protect_function_one_dose()
+  } else if (ndoses =="two" & scenario == "campaign-default-two-dose"){ #use the new two dose vaccine efficacy function for the 2023 touchstones
+    ve_direct = generate_pct_protect_function_two_dose()
+  }
+  ##finished adding conditionals, rest of the function is the same as the pre-2023 version
+  
   vacc_alloc <- allocate_vaccine(datapath, modelpath, country, scenario, ...) #the changes start from here 
 
   ## write proportion vaccinated to file and export total population raster stack
