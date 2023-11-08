@@ -92,7 +92,7 @@ for(scn in scenarios){
       dir.create(scnpathname, showWarnings = FALSE)
 
       # parameters that apply to both projects 
-      pars <- tidyr::expand_grid(runname = runname, scenario = scn, country = countries, targeting = targeting_strategy, nsamples = num_samples, nskipyear = num_skip_years, clean = clean_outputs, redrawIncid = clean_incid) 
+      pars <- tidyr::expand_grid(runname = runname, scenario = scn, country = countries, ndoses = ndoses, targeting = targeting_strategy, nsamples = num_samples, nskipyear = num_skip_years, clean = clean_outputs, redrawIncid = clean_incid) 
       pars$use_country_incid_trend <- use_country_incid_trend
       pars$incidence_rate_trend <- incidence_rate_trend
       pars$outbreak_multiplier <- outbreak_multiplier          

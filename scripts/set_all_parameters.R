@@ -11,6 +11,7 @@ use_random_seed <- TRUE   #whether or not to have a random seed that governs the
 self_random_seed <- NULL  #for now, just use the random seed specified by the setting
 clean_outputs <- TRUE
 clean_incid <- FALSE
+ndoses <- c("one", "two") ##calam added option for the number of doses, only applies to the VIMC Core model 2023 touchstone
 # default country list
 ids <- readr::read_csv("input_data/locations_todeletelater.csv") # location ids
 cw <- readr::read_csv("input_data/region_country.csv")

@@ -24,6 +24,7 @@ prepare_config <- function(p, configpath){
       "vacc:\n",
       "  targeting_strategy: ", p$targeting, "\n",
       "  num_skip_years: ", p$nskipyear, "\n",
+      "  ndoses: ", p$ndoses, "\n",
       "setting:\n",
       "  incidence_rate_trend: ", p$incidence_rate_trend, "\n",
       "  outbreak_multiplier: ", p$outbreak_multiplier, "\n", 
