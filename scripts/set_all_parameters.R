@@ -1,6 +1,7 @@
 #====== The Basics ======#
 targeting_strategy <- "affected_pop" #c("threshold_unconstrained", "affected_pop", "incidence"), "threshold_unconstrained" means it's for the surveillance project
-runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202110gavi-3") ### Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
+#runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202110gavi-3") ### Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
+runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202310gavi-4") ### for 2023 VIMC core:Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
 
 
 #====== Shared parameters ======#
