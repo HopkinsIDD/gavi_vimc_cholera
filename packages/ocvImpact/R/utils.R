@@ -181,6 +181,143 @@ generate_pct_protect_function <- function(my_trunc_year = 5, my_ve_scen = "base"
 }
 
 
+#' @name generate_pct_protect_function_one_dose
+#' @title generate_pct_protect_function_one_dose
+#' @description Using vaccine efficacy studies in the new Hanmeng and Andrew study, generate a function that takes the year since vaccination and provides an estimate of the direct ve. Vaccine efficacy declines to 0 after my_trunc_year years
+#' @param my_trun_year  
+#' @param my_ve_scen 
+#' @importFrom magrittr %>%
+#' @return dataframe with estimates for unweighted and weighted mean vaccination campaign coverage proportion across coverage surveys in the review
+#' @export
+generate_pct_protect_function_one_dose <- function(my_trunc_year = 3, my_ve_scen = "base", study_type = "all"){
+  
+  ve.dat <- readxl::read_xlsx("input_data/SR_of_OCV_efficacy_effectiveness.xlsx", sheet = 8) #load review table data from Hanmeng&Andrew
+  
+  ve.dat <- ve.dat[ve.dat$Dose == 1,] #select only cases with one dose of the vaccine, ignore cases with "at least one dose" for now
+  
+  if (study_type == "efficacy"){
+    ve.dat <- ve.dat[ve.dat$StudyType == 'Efficacy',]
+  } else if (study_type == "effectiveness"){
+    ve.dat <- ve.dat[ve.dat$StudyType == 'Effectiveness',]
+  } else if (study_type == "all"){
+    ve.dat <- ve.dat
+  }
+  
+  ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+  
+  ve.dat$weights <-  1/(abs(as.numeric(ve.dat$se))^2)
+  
+  ve.dat <- ve.dat[ve.dat$TL<48,] #select only cases where the observation period began before two years
+  
+  ##this is our basic trend in vaccine effictiveness.
+  ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+  
+  ##create a function that gives the expected percent protected
+  ##by a vaccine during a particular year after vaccination
+  
+  pct.protect<-function(year, ci=FALSE,trunc_year=my_trunc_year,ve_scen=my_ve_scen) {
+    if (any(year%%1 !=0)) {warning("function designed to average across years only")}
+    if(!ve_scen %in% c("base","low","high")) {warning("ve_scen not recognized, assuming ve_scen='base'")}
+    
+    months <- (year-.5)*12
+    
+    if(ve_scen %in% c("high","low")){
+      ci <- TRUE
+    }
+    
+    if (ci) {
+      rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+    } else {
+      rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months))),0) %>% unname
+    }
+    
+    rc <- as.matrix(rc)
+    
+    if(any(year>trunc_year)){
+      rc[which(year>trunc_year),] <- 0
+    }
+    
+    if(ve_scen == "high"){
+      rc <- rc[,2]
+    } else if (ve_scen == "low"){
+      rc <- rc[,3]
+    }
+    
+    return(rc)
+  }
+  return(pct.protect)
+}
+
+#' @name generate_pct_protect_function_two_dose
+#' @title generate_pct_protect_function_two_dose
+#' @description Using vaccine efficacy studies in the new Hanmeng and Andrew study, generate a function that takes the year since vaccination and provides an estimate of the direct ve. Vaccine efficacy declines to 0 after my_trunc_year years
+#' @param my_trun_year  
+#' @param my_ve_scen 
+#' @importFrom magrittr %>%
+#' @return dataframe with estimates for unweighted and weighted mean vaccination campaign coverage proportion across coverage surveys in the review
+#' @export
+generate_pct_protect_function_two_dose <- function(my_trunc_year = 5, my_ve_scen = "base", study_type = "efficacy"){
+  
+  ve.dat <- readxl::read_xlsx("input_data/SR_of_OCV_efficacy_effectiveness.xlsx", sheet = 8) #load review table data from Hanmeng&Andrew
+  
+  ve.dat <- ve.dat[ve.dat$Dose == 2,] #select only cases with two doses of the vaccine, ignore cases with "at least one dose" for now
+  
+  if (study_type == "efficacy"){
+    ve.dat <- ve.dat[ve.dat$StudyType == 'Efficacy',]
+  } else if (study_type == "effectiveness"){
+    ve.dat <- ve.dat[ve.dat$StudyType == 'Effectiveness',]
+  } else if (study_type == "all"){
+    ve.dat <- ve.dat
+  }
+  
+  ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
+  
+  ve.dat$weights <-  1/(abs(as.numeric(ve.dat$se))^2)
+  
+  ve.dat <- ve.dat[ve.dat$TL<48,] #select only cases where the observation period began before two years
+  
+  ##this is our basic trend in vaccine effictiveness.
+  ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
+  
+  ##create a function that gives the expected percent protected
+  ##by a vaccine during a particular year after vaccination
+  
+  pct.protect<-function(year, ci=FALSE,trunc_year=my_trunc_year,ve_scen=my_ve_scen) {
+    if (any(year%%1 !=0)) {warning("function designed to average across years only")}
+    if(!ve_scen %in% c("base","low","high")) {warning("ve_scen not recognized, assuming ve_scen='base'")}
+    
+    months <- (year-.5)*12
+    
+    if(ve_scen %in% c("high","low")){
+      ci <- TRUE
+    }
+    
+    if (ci) {
+      rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
+    } else {
+      rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months))),0) %>% unname
+    }
+    
+    rc <- as.matrix(rc)
+    
+    if(any(year>trunc_year)){
+      rc[which(year>trunc_year),] <- 0
+    }
+    
+    if(ve_scen == "high"){
+      rc <- rc[,2]
+    } else if (ve_scen == "low"){
+      rc <- rc[,3]
+    }
+    
+    return(rc)
+  }
+  return(pct.protect)
+}
+
+
+
+
 #' @name generate_indirect_incidence_mult
 #' @title generate_indirect_incidence_mult
 #' @description Using studies on indirect vaccine protection from Kolkota and Matlab, generate a function that takes the level of vaccination coverage and returns a multiplier indicating the percentage reduction in incidence due to indirect vaccine protection. These represent the baseline parameters for indirect vaccine protection. 
