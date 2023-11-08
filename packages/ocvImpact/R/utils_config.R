@@ -9,7 +9,7 @@
 #' @export
 prepare_config <- function(p, configpath){
   if(!p$targeting == "threshold_unconstrained"){
-    config_name <- paste0(configpath, "/", paste(p$country, p$scenario, p$nsamples, sep = "_"), ".yml")
+    config_name <- paste0(configpath, "/", paste(p$country, p$scenario, p$nsamples, p$ndoses, sep = "_"), ".yml")
     sink(file = config_name)
 
     cat(paste0(
@@ -53,6 +53,7 @@ prepare_config <- function(p, configpath){
       "  vac_admin_level: '", p$vac_admin_level, "'\n",
       "  vac_coverage: ", p$vac_coverage, "\n",
       "  num_skip_years: ", p$nskipyear, "\n",
+      "  ndoses: ", p$ndoses, "\n",
       "  vac_interval: ", p$vac_interval, "\n",
       "  sim_start_year: ", p$sim_start_year, "\n",
       "  vac_start_year: ", p$vac_start_year, "\n",
