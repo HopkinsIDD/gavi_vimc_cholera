@@ -192,6 +192,10 @@ redrawIncid <- config$incid$redraw
 targeting <- config$vacc$targeting_strategy
 nskipyears <- config$vacc$num_skip_years
 cln <- config$clean
+##number of doses, a parameter that only applies to the 202310gavi-4 touchstone
+if(runname == "202310gavi-4"){
+  ndoses <- config$ndoses
+}
 
 # random_seed <- as.numeric(config$setting$random_seed) #this one will be used through redrawing incidence rate raster and generating other rasters
 # set.seed(random_seed)
@@ -207,7 +211,13 @@ dir.create(mpathname, showWarnings = FALSE)
 dir.create(dpathname, showWarnings = FALSE)
 dir.create(spathname, showWarnings = FALSE)
 dir.create(ropathname, showWarnings = FALSE)
-dir.create(file.path(ropathname, scenario), showWarnings = FALSE)
+##calam added to create separate paths for the one-dose and two-dose scenarios for the 202310gavi-4 touchstone
+if (runname == "202310gavi-4"){
+  dir.create(file.path(ropathname, scenario, ndoses), showWarnings = FALSE)
+} else {
+  dir.create(file.path(ropathname, scenario), showWarnings = FALSE)
+}
+##the addition ends here
 dir.create(opathname, showWarnings = FALSE)
 
 #### Run model -- where different projects diverge 
@@ -244,7 +254,36 @@ if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
   ) 
 
 
-}else{
+}else if(config$vacc$targeting_strategy != 'threshold_unconstrained' & runname == "202310gavi-4"){
+  ### The VIMC project for the 202310gavi-4 touchstone with one dose and two dose scenarios
+  message(paste("Running:", runname, country, scenario, nsamples, targeting, ndoses))
+  expected_cases <- ocvImpact::run_country_scenario(
+    dpathname,
+    mpathname,
+    country,
+    scenario,
+    ropathname,
+    nsamples,
+    num_doses = ndoses,
+    clean = cln,
+    redraw = redrawIncid,
+    targeting_strat = targeting,
+    num_skip_years = nskipyears
+  )
+  
+  ## Create stochastic output file for country
+  message(paste("Calculating stochastic output:", runname, country, scenario, nsamples, targeting, ndoses))
+  stoch_template <- ocvImpact::export_country_stoch_template(
+    mpathname,
+    country,
+    scenario,
+    ropathname,
+    opathname
+  )
+  
+  
+  message(paste("End script:", runname, country, scenario, nsamples, targeting))
+  }else{
   ### The VIMC project 
   message(paste("Running:", runname, country, scenario, nsamples, targeting))
   expected_cases <- ocvImpact::run_country_scenario(
