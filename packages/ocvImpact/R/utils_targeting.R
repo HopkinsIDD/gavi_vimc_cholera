@@ -194,8 +194,21 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
     ftargets_flat <- data.table::rbindlist(ftargets, idcol="vacc_year")
 
   } #endelse
-
+  
+  ##calam added to export modelled fvps as raw output
+  
+  ##set up directory
+  incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
+  outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)
+  setting <- paste0('incid_trend_', incidence_rate_trend, '_outb_layer_',  outbreak_multiplier)
+  dir.create(paste0(rawoutpath, "/","modelled_fvps", "/", scenario, "/", setting), showWarnings = FALSE)
+  mfvps_out_fn <- paste0(rawoutpath, "/","modelled_fvps","/", scenario, "/", setting, "/", country, "_mod_fvps.csv")
+  message(paste("Write modelled fvps:", country, scenario, "\n", ftargets_flat))
+  
+  ##write to file
+  readr::write_csv(ftargets_flat, mfvps_out_fn)
   return(ftargets_flat)
+  
 }
 
 
