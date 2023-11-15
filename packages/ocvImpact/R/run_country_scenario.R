@@ -52,8 +52,16 @@ run_country_scenario <- function(
   outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)
   setting <- paste0('incid_trend_', incidence_rate_trend, '_outb_layer_',  outbreak_multiplier)
 
-  dir.create(paste0(rawoutpath, "/", scenario, "/", setting), showWarnings = FALSE)
-  ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_ec.csv")
+  ##calam added to write expected cases in separate directories for the one dose and two dose campaigns for 202310gavi-4 touchstone
+  if (num_doses == "one"|num_doses == "two"){
+    dir.create(paste0(rawoutpath, "/", scenario, "/", num_doses, "/", setting), showWarnings = FALSE)
+    ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", num_doses, "/", setting, "/", country, "_ec.csv")
+    cov_out_fn <- paste0(rawoutpath, "/", scenario, "/", num_doses, "/", setting, "/", country, "_coverage.csv") ##to write modelled coverage
+  }else {
+    dir.create(paste0(rawoutpath, "/", scenario, "/", setting), showWarnings = FALSE)
+    ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_ec.csv")
+    cov_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_coverage.csv") ##to write modelled coverage
+  }
   if(clean | !file.exists(ec_out_fn)){ ## rerun
 
     if (is.null(vacc_alloc)){
@@ -67,6 +75,9 @@ run_country_scenario <- function(
       ## Write to file 
       message(paste("Write expected cases:", country, scenario, "\n", ec_out_fn))
       readr::write_csv(expCases, ec_out_fn)
+      message(paste("Write modelled coverage:", country, scenario, "\n", cov_out_fn))
+      readr::write_csv(vacc_alloc, cov_out_fn)
+      
 
   } else{ ## read existing
     message(paste("Reading expected cases:", country, scenario, "\n", ec_out_fn))
