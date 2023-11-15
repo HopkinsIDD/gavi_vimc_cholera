@@ -11,6 +11,7 @@
 #' @param secular_trend_mult function that returns a multiplier for secular incidence trends over time (default: generate_flatline_multiplier())
 #' @param rawoutpath path to raw model output files
 #' @param nsamples number of stochastic samples to use
+#' @param num_doses the number of doses for the one-dose and two-dose scenarios of the 202310gavi-4 touchstone
 #' @param clean logical that indicates whether existing targeting and model outputs (sus, pop, vacc) should be deleted (default = TRUE)
 #' @param redraw logical that indicates whether existing incidence raster samples should be redrawn (default = FALSE)
 #' @param ... Optional parameters to pass to [`assign_vaccine_targets()`]. See [`assign_vaccine_targets()`] for defaults.
