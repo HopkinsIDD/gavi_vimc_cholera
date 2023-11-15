@@ -282,7 +282,7 @@ if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
   )
   
   
-  message(paste("End script:", runname, country, scenario, nsamples, targeting))
+  message(paste("End script:", runname, country, scenario, nsamples, targeting, ndoses))
   }else{
   ### The VIMC project 
   message(paste("Running:", runname, country, scenario, nsamples, targeting))
