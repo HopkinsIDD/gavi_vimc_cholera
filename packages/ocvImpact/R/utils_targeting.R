@@ -123,7 +123,7 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
 
     ## Perform checks on the coverage scenario
     if (!all(coverage$gender == "both") | 
-        !all(coverage$age_range_verbatim == "default age and gender" | coverage$age_range_verbatim == ">1y" | coverage$age_range_verbatim == "default age groups" | coverage$age_range_verbatim == "<NA>" | | coverage$age_range_verbatim == "1-100")|
+        !all(coverage$age_range_verbatim == "default age and gender" | coverage$age_range_verbatim == ">1y" | coverage$age_range_verbatim == "default age groups" | coverage$age_range_verbatim == "<NA>" | coverage$age_range_verbatim == "1-100")|
         !all(coverage$activity_type == "campaign")
         ){
       stop(paste("Vaccine assignment is not supported for this coverage scenario. Check the gender, age_range_verbatim, and activity_type columns in the", scenario, "coverage sheet."))
