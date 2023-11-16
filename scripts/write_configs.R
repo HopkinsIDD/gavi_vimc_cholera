@@ -20,6 +20,7 @@ package_list <- c(
                   "readr",
                   "sf",
                   "stringr",
+                  "readxl",
                   "tibble",
                   "tidyr",
                   "yaml", 

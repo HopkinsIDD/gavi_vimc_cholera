@@ -85,6 +85,7 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   # library(yaml)
   # library(purrr)
   library(dplyr)
+  library(readxl)
   # library(tidyverse)
   # library(stringi)
   # library(readr)
@@ -121,6 +122,7 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
     "readr",
     "sf",
     "stringr",
+    "readxl",
     "tibble",
     "tidyr",
     "yaml", 
