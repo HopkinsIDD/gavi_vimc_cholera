@@ -194,7 +194,7 @@ nskipyears <- config$vacc$num_skip_years
 cln <- config$clean
 ##number of doses, a parameter that only applies to the 202310gavi-4 touchstone
 if(runname == "202310gavi-4"){
-  ndoses <- config$ndoses
+  ndoses <- config$vacc$ndoses
 }
 
 # random_seed <- as.numeric(config$setting$random_seed) #this one will be used through redrawing incidence rate raster and generating other rasters
