@@ -10,7 +10,13 @@
 #' @return Dataframe with vaccination coverage for a single scenario and country. Years without vaccination are excluded from the returned dataframe. Countries without vaccination in any year return a null dataframe.
 #' @export
 #' @include retrieve_montagu_coverage.R
-import_coverage_scenario <- function(modelpath, country, scenario, filter0 = FALSE, redownload = TRUE){
+import_coverage_scenario <- function(modelpath, country, scenario, runname, num_doses = NULL, filter0 = FALSE, redownload = TRUE){
+  
+  ##calam added to ensure csv montagu coverage for each vaccination scenario is pulled from the montagu folder for the 202310gavi-4 touchstone 
+  if (runname == "202310gavi-4"){
+    num_doses <- config$vacc$ndoses
+  }
+  ##end addition
   
   #First check, then retrieve
   CoverageFiles <- list.files(modelpath, pattern = "^coverage_")
@@ -22,7 +28,14 @@ import_coverage_scenario <- function(modelpath, country, scenario, filter0 = FAL
   
   #Start importing
   cov_fnames <- list.files(modelpath, pattern = "^coverage_")
-  scn_fname <- paste0(modelpath, "/", grep(scenario, cov_fnames, ignore.case = TRUE, value = TRUE))
+  ##calam added to ensure csv montagu coverage for each vaccination scenario is pulled from the montagu folder for the 202310gavi-4 touchstone
+  if (runname == "202310gavi-4" & num_doses == "one"){
+    scn_fname <- paste0(modelpath, "/", "coverage_",runname, "_cholera_ocv1-default.csv")
+  } else if (runname == "202310gavi-4" & num_doses == "two"){
+    scn_fname <- paste0(modelpath, "/", "coverage_",runname, "_cholera_ocv1-ocv2-default.csv") ##end addition
+  } else {
+    scn_fname <- paste0(modelpath, "/", grep(scenario, cov_fnames, ignore.case = TRUE, value = TRUE))
+  }
 
   if (length(scn_fname)>1){
     stop(paste("You have not specified a unique scenario in", modelpath, "with the following string:", scenario))
