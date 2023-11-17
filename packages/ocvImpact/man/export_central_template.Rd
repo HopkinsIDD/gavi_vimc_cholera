@@ -9,9 +9,6 @@ export_central_template(stoch_output)
 \arguments{
 \item{stoch_output}{stochastic outputs, as from `[export_country_stoch_template()]`}
 }
-\value{
-
-}
 \description{
 Export a central burden template file (mean) using any stochastic template file output
 }

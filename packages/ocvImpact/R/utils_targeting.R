@@ -109,6 +109,13 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
   ptargets <- load_targets_by_country(datapath, modelpath, country)
   ###########add a little check point for the situation when the coverage data exists but is just 0
   coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE, redownload = FALSE)
+  
+  ##make sure we only keep rows with OCV2 for the two dose scenario for the 202310gavi-4 touchstone
+  if ("vaccine" %in% colnames(coverage) & any(coverage$vaccine == 'OCV2')){ #this identifies coverage for the two dose scenario
+    coverage <- coverage[coverage$vaccine == 'OCV2',] #keep only rows for ocv2
+    message("This is a two-dose campaign from the 202310gavi-4 touchstone, removed rows for ocv1")
+  }
+  
   coverage_as_all_0_for_campaign <- (sum(coverage$coverage) == 0)
   if (!coverage_as_all_0_for_campaign){
     coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = TRUE, redownload = FALSE)

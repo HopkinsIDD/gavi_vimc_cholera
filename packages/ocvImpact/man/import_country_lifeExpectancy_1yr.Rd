@@ -13,9 +13,6 @@ import_country_lifeExpectancy_1yr(modelpath, country, year)
 
 \item{year}{year for which life expectancy should be returned}
 }
-\value{
-
-}
 \description{
 Get total life expectancy at birth for a single year from standardized source in Montagu. [may be used in future for case-based targeting]
 }

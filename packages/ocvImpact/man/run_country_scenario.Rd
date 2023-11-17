@@ -13,7 +13,9 @@ run_country_scenario(
   nsamples,
   ve_direct = generate_pct_protect_function(),
   indirect_mult = generate_indirect_incidence_mult(),
-  secular_trend_mult = function(a, b, c, d) {     return(a * b * c * d) },
+  secular_trend_mult = function(a, b, c, d) {
+     return(a * b * c * d)
+ },
   clean = TRUE,
   redraw = FALSE,
   ...
@@ -45,9 +47,6 @@ run_country_scenario(
 \item{...}{Optional parameters to pass to [`assign_vaccine_targets()`]. See [`assign_vaccine_targets()`] for defaults.}
 
 \item{mu}{inverse life expectancy for country in years^(-1)}
-}
-\value{
-
 }
 \description{
 Run full country scenario
