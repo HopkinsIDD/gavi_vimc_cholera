@@ -67,10 +67,10 @@ run_country_scenario <- function(
   if(clean | !file.exists(ec_out_fn)){ ## rerun
 
     if (is.null(vacc_alloc)){
-      message("Calculate expected cases: with vaccination")
+      message("Calculate expected cases: no vaccination")
       expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, is_cf = TRUE, redraw)
     } else{
-      message("Calculate expected cases: no vaccination")
+      message("Calculate expected cases: with vaccination")
       expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, is_cf = FALSE, redraw)
     } 
 
