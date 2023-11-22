@@ -45,7 +45,7 @@ export_country_stoch_template <- function(
   runname <- config$runname
   if (runname == '202310gavi-4'){
     ndoses <- config$vacc$ndoses
-    ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", ndoses, "/", setting, "/", country, "_ec.csv")
+    ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country,"_",ndoses,"_ec.csv")
   } else {
     ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_ec.csv")
   }
