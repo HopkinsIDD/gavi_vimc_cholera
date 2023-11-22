@@ -57,9 +57,8 @@ run_country_scenario <- function(
   ##calam added to write expected cases in separate directories for the one dose and two dose campaigns for 202310gavi-4 touchstone
   runname <- config$runname
   if (runname == "202310gavi-4"){
-    ##dir.create(paste0(rawoutpath, "/", scenario, "/", num_doses, "/", setting), showWarnings = FALSE) ##calam keep this optional to make sure I don't mess up directories used in other functions
-    ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", num_doses, "/", setting, "/", country, "_ec.csv")
-    cov_out_fn <- paste0(rawoutpath, "/", scenario, "/", num_doses, "/", setting, "/", country, "_coverage.csv") ##to write modelled coverage
+    ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country,"_",num_doses,"_ec.csv")
+    cov_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country,"_",num_doses,"_coverage.csv") ##to write modelled coverage
   }else {
     ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_ec.csv")
     cov_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_coverage.csv") ##to write modelled coverage
