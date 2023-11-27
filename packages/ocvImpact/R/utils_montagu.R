@@ -287,3 +287,59 @@ import_templateFilename_prefix <- function(type, modelpath, redownload = FALSE){
   return(rc)
 
 }
+
+
+#' @name import_country_proportion_under5
+#' @title import_country_proportion_under5
+#' @description Get proportion of country population aged 1-4 from standardized source in Montagu
+#'
+#' @param modelpath path to montagu files
+#' @param country country code
+#' @param year year (year in which vaccination campaign takes place)
+#' @param redownload whether to redownload the file
+#'
+#' @importFrom magrittr %>%
+#' @return the proportion of the population aged <5 per year for the specified country and year
+#' @export 
+#' @include retrieve_montagu_agePop.R
+import_country_proportion_under5 <- function(modelpath, country, year, redownload = TRUE){
+  
+  #First check, then retrieve
+  AgePopFiles <- list.files(modelpath, pattern = "int_pop_both.csv$")
+  if (length(AgePopFiles) >= 1 & redownload == FALSE){ #there should be 1 file
+    message(paste0("The age-specific population files have been under the directory: ", modelpath, '. No new download was made. '))
+  } else{
+    retrieve_montagu_agePop(modelpath) 
+  }
+  
+  #Start importing
+  pop_fn <- list.files(modelpath, pattern = "int_pop_both.csv$")
+  if (length(pop_fn)>1){
+    stop(paste("More than 1 int_pop_both demographic file was found in", modelpath))
+  }
+  message(paste0("Loading ", modelpath, "/", pop_fn))
+  agepop <- readr::read_csv(paste0(modelpath, "/", pop_fn)) %>%
+    dplyr::filter(country_code == !!country) %>%
+    dplyr::filter(!age_from %in% c(0,100)) %>%   ##this filters out the people aged 0
+    dplyr::rename(GID_0 = country_code, pop_age = value) %>%
+    dplyr::select(GID_0, year, age_from, age_to, pop_age)
+  
+  totpop <- dplyr::group_by(agepop, GID_0, year) %>%
+    dplyr::summarise(pop_tot = sum(pop_age))
+  
+  rc <- dplyr::left_join(agepop, totpop, by = c("GID_0", "year")) %>%
+    dplyr::mutate(prop_age = pop_age/pop_tot) %>%
+    dplyr::rename(country = GID_0) %>%
+    
+    ##this is a major point differentiating this function from import_country_agePop
+    ##get proportion of the population that is under 5 years old for each year
+    under5_allyears <- rc %>%
+    dplyr::filter(age_from %in% c(1,2,3,4)) %>%
+    dplyr::group_by(year) %>%
+    summarise(prop_under5 = sum(prop_age)) 
+  
+  under5 <- under5_allyears[under5_allyears$year == year,]$prop_under5
+  
+  return(under5)
+}
+
