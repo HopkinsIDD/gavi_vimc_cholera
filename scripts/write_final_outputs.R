@@ -76,16 +76,28 @@ for (i in 1:length(scenarios)){
   }else{
     suffix <- ".*_stoch.csv"
   }
-
-  stoch_fns <- list.files(opathname, pattern = paste0(scn, suffix))
+  ##added to specify correct filenames for the outputs of the 202310gavi-4 touchstone
+  if (runname == "202310gavi-4"){
+    ndoses <- config$vacc$ndoses
+    stoch_fns <- list.files(opathname, pattern = paste0(scn,ndoses,suffix))
+  } else{
+    stoch_fns <- list.files(opathname, pattern = paste0(scn, suffix))
+  }
+  ##end addition
   stoch_out <- purrr::map_dfr(1:length(stoch_fns), function(j){
     if(single_setting){
       return(readr::read_csv(file.path(opathname, stoch_fns[j])))
     }else{
       stoch <- readr::read_csv(file.path(opathname, stoch_fns[j]))
       filename <- stoch_fns[j]
-      inci <- as.logical(stringr::str_split(filename, "_")[[1]][5])
-      outb <- as.logical(stringr::str_split(filename, "_")[[1]][8])
+      ##calam added to find new filenames for the 2023gavi-4 touchstone
+      if (runname == "202310gavi-4"){
+        inci <- as.logical(stringr::str_split(filename, "_")[[1]][6])
+        outb <- as.logical(stringr::str_split(filename, "_")[[1]][9])
+      } else {
+        inci <- as.logical(stringr::str_split(filename, "_")[[1]][5])
+        outb <- as.logical(stringr::str_split(filename, "_")[[1]][8])
+      }
 
       # stoch$run_id <- as.numeric(stoch$run_id)
       stoch <- stoch %>%
