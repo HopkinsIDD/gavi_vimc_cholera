@@ -63,18 +63,35 @@ export_country_stoch_template <- function(
 
   ## distribute model outputs by proportion of the population
   pop_age_df <- import_country_agePop(modelpath, country, redownload = FALSE)
-  stoch <- dplyr::left_join(expCases_age, pop_age_df, by = c("country", "year")) %>%
-    dplyr::mutate(
-      cases = round(cases_tot*prop_age, 0),
-      deaths = round(deaths_tot*prop_age, 0),
-      yll = round(yll_tot*prop_age, 0),
-      yld = round(yld_tot*prop_age, 0),
-      dalys = round(daly_tot*prop_age, 0)
+  ##calam added to reflect change in central burden template for touchstone 202310gavi-4, which requires yll
+  if (runname == '202310gavi-4'){
+    stoch <- dplyr::left_join(expCases_age, pop_age_df, by = c("country", "year")) %>%
+      dplyr::mutate(
+        cases = round(cases_tot*prop_age, 0),
+        deaths = round(deaths_tot*prop_age, 0),
+        yll = round(yll_tot*prop_age, 0),
+        yld = round(yld_tot*prop_age, 0),
+        dalys = round(daly_tot*prop_age, 0)
       ) %>%
-    dplyr::rename(age = age_from, cohort_size = pop_age) %>%
-    dplyr::full_join(cb_template, by = c("year", "country", "age")) %>%
-    dplyr::select(disease, run_id, year, age, country, country_name, cohort_size, cases, deaths, dalys) %>%
-    dplyr::arrange(run_id, age, year)
+      dplyr::rename(age = age_from, cohort_size = pop_age) %>%
+      dplyr::full_join(cb_template, by = c("year", "country", "age")) %>%
+      dplyr::select(disease, run_id, year, age, country, country_name, cohort_size, cases, deaths, dalys, yll) %>%
+      dplyr::arrange(run_id, age, year)
+  } else {
+    stoch <- dplyr::left_join(expCases_age, pop_age_df, by = c("country", "year")) %>%
+      dplyr::mutate(
+        cases = round(cases_tot*prop_age, 0),
+        deaths = round(deaths_tot*prop_age, 0),
+        yll = round(yll_tot*prop_age, 0),
+        yld = round(yld_tot*prop_age, 0),
+        dalys = round(daly_tot*prop_age, 0)
+      ) %>%
+      dplyr::rename(age = age_from, cohort_size = pop_age) %>%
+      dplyr::full_join(cb_template, by = c("year", "country", "age")) %>%
+      dplyr::select(disease, run_id, year, age, country, country_name, cohort_size, cases, deaths, dalys) %>%
+      dplyr::arrange(run_id, age, year)
+  }
+  ##end addition
   
   ## include setting into the file name 
   # incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
