@@ -334,7 +334,7 @@ generate_pct_protect_function_two_dose <- function(my_trunc_year = 5, my_ve_scen
 #' @export
 generate_pct_protect_function_one_dose_under5 <- function(my_trunc_year = 0, my_ve_scen = "base", study_type = "all"){
   
-  ve.dat <- readxl::read_xlsx("SR of OCV efficacy _ effectiveness_hanmeng.xlsx", sheet = 8) #load review table data from Hanmeng&Andrew
+  ve.dat <- readxl::read_xlsx("input_data/SR_of_OCV_efficacy_effectiveness.xlsx", sheet = 8) #load review table data from Hanmeng&Andrew
   
   ve.dat <- ve.dat[ve.dat$Dose == 1,] #select only cases with one dose of the vaccine, ignore cases with "at least one dose" for now
   
@@ -406,7 +406,7 @@ generate_pct_protect_function_one_dose_under5 <- function(my_trunc_year = 0, my_
 #' @export
 generate_pct_protect_function_two_dose_under5 <- function(my_trunc_year = 5, my_ve_scen = "base", study_type = "efficacy"){
   
-  ve.dat <- readxl::read_xlsx("SR of OCV efficacy _ effectiveness_hanmeng.xlsx", sheet = 8) #load review table data from Hanmeng&Andrew
+  ve.dat <- readxl::read_xlsx("input_data/SR_of_OCV_efficacy_effectiveness.xlsx", sheet = 8) #load review table data from Hanmeng&Andrew
   
   ve.dat <- ve.dat[ve.dat$Dose == 2,] #select only cases with two doses of the vaccine, ignore cases with "at least one dose" for now
   
