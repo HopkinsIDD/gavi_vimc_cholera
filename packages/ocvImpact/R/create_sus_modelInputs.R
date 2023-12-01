@@ -70,7 +70,13 @@ create_sus_modelInputs <- function(
         ## calculate remaining susceptible pop after vacc starts (loss due to migration and waning VE)
         tmp <- raster1_template
         popj <- raster::subset(pop_rasterStack, subset = j, drop = FALSE)
-
+        
+        ##calam added to get proportion of the population that is under 5 years old for new touchstone
+        if (runname == "202310gavi-4"){
+          under5_proportion <- import_country_proportion_under5(modelpath, country, year = output_years[j])
+        }
+        ##end addition
+        
         for (k in 1:j){ ## loop through pre-j years
           popk <- raster::subset(pop_rasterStack, subset = k, drop = FALSE)
           vacck <- raster::subset(vacc_rasterStack, subset = k, drop = FALSE)
@@ -81,7 +87,6 @@ create_sus_modelInputs <- function(
           
           ##calam added to use ve functions for the 202310gavi-4 touchstone, including wrapper functions for different age groups (under5/over5)
           if (runname == "202310gavi-4"){
-            under5_proportion <- import_country_proportion_under5(modelpath, country, year = output_years[j])
             ve_j_k <- as.numeric(ve_direct(proportion_under5 = under5_proportion, years = j-k+1)) 
           } else {
             ve_j_k <- as.numeric(ve_direct(j-k+1)) ## couldn't put the ve_direct function in raster::overlay even though it just returns a scalar
