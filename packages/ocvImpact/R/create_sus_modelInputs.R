@@ -81,7 +81,7 @@ create_sus_modelInputs <- function(
           
           ##calam added to use ve functions for the 202310gavi-4 touchstone, including wrapper functions for different age groups (under5/over5)
           if (runname == "202310gavi-4"){
-            under5_proportion <- import_country_proportion_under5(year = output_years[j])
+            under5_proportion <- import_country_proportion_under5(modelpath, country, year = output_years[j])
             ve_j_k <- as.numeric(ve_direct(proportion_under5 = under5_proportion, years = j-k+1)) 
           } else {
             ve_j_k <- as.numeric(ve_direct(j-k+1)) ## couldn't put the ve_direct function in raster::overlay even though it just returns a scalar
