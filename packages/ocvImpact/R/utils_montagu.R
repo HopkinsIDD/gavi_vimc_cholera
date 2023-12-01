@@ -329,7 +329,7 @@ import_country_proportion_under5 <- function(modelpath, country, year, redownloa
   
   rc <- dplyr::left_join(agepop, totpop, by = c("GID_0", "year")) %>%
     dplyr::mutate(prop_age = pop_age/pop_tot) %>%
-    dplyr::rename(country = GID_0) %>%
+    dplyr::rename(country = GID_0) 
     
     ##this is a major point differentiating this function from import_country_agePop
     ##get proportion of the population that is under 5 years old for each year
