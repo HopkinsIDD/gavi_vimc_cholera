@@ -35,9 +35,9 @@ run_country_scenario <- function(
 
   ##calam added conditionals changing the default ve_direct function to the new functions for the one and two-dose scenarios for the 2023 touchstone
   if (num_doses == "one" & scenario == "campaign-default"){ #use the new one dose vaccine efficacy function for the 2023 touchstones
-    ve_direct = generate_pct_protect_function_one_dose()
+    ve_direct = vaccine_efficacy_all_groups_one_dose()
   } else if (num_doses =="two" & scenario == "campaign-default"){ #use the new two dose vaccine efficacy function for the 2023 touchstones
-    ve_direct = generate_pct_protect_function_two_dose()
+    ve_direct = vaccine_efficacy_all_groups_two_dose()
   }
   ##finished adding conditionals, rest of the function is the same as the pre-2023 version
   
