@@ -11,6 +11,7 @@ run_country_scenario(
   scenario,
   rawoutpath,
   nsamples,
+  num_doses = NULL,
   ve_direct = generate_pct_protect_function(),
   indirect_mult = generate_indirect_incidence_mult(),
   secular_trend_mult = function(a, b, c, d) {
@@ -33,6 +34,8 @@ run_country_scenario(
 \item{rawoutpath}{path to raw model output files}
 
 \item{nsamples}{number of stochastic samples to use}
+
+\item{num_doses}{the number of doses for the one-dose and two-dose scenarios of the 202310gavi-4 touchstone}
 
 \item{ve_direct}{vaccine effect function (default: generate_pct_protect_function())}
 

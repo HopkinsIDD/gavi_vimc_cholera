@@ -86,14 +86,6 @@ for(scn in scenarios){
 
       for(vac_incid_threshold in vac_incid_thresholds){
       
-        if(targeting_strategy != "threshold_unconstrained" & runname != "202310gavi-4"){
-          scnpathname <- file.path(cpathname, scn)
-        }else if(targeting_strategy != "threshold_unconstrained" & runname == "202310gavi-4"){
-          scnpathname <- file.path(cpathname, scn, dose)
-        }else if(targeting_strategy == "threshold_unconstrained"){
-          scnpathname <- file.path(cpathname, scn, surveillance_scenario, vac_incid_threshold)
-        }
-        dir.create(scnpathname, showWarnings = FALSE)
 
         # parameters that apply to both projects 
         pars <- tidyr::expand_grid(runname = runname, scenario = scn, country = countries, targeting = targeting_strategy, nsamples = num_samples, nskipyear = num_skip_years, clean = clean_outputs, redrawIncid = clean_incid) 
@@ -101,6 +93,15 @@ for(scn in scenarios){
         pars$incidence_rate_trend <- incidence_rate_trend
         pars$outbreak_multiplier <- outbreak_multiplier          
         pars$random_seed <- random_seed
+        
+        if(targeting_strategy != "threshold_unconstrained" & runname != "202310gavi-4"){
+          scnpathname <- file.path(cpathname, scn)
+        }else if(targeting_strategy != "threshold_unconstrained" & runname == "202310gavi-4"){
+          scnpathname <- file.path(cpathname, scn, dose, incidence_rate_trend)
+        }else if(targeting_strategy == "threshold_unconstrained"){
+          scnpathname <- file.path(cpathname, scn, surveillance_scenario, vac_incid_threshold)
+        }
+        dir.create(scnpathname, showWarnings = FALSE)
         
         #parameters that apply only to the 202310gavi-4 touchstone with the one-dose and two-dose vaccination scenarios
         pars$ndoses <- dose

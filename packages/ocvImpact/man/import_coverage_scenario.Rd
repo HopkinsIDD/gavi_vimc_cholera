@@ -8,6 +8,7 @@ import_coverage_scenario(
   modelpath,
   country,
   scenario,
+  num_doses = NULL,
   filter0 = FALSE,
   redownload = TRUE
 )

@@ -7,7 +7,7 @@ runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survm
 #====== Shared parameters ======#
 scenarios <- c("campaign-default", "no-vaccination")
 num_skip_years <- 3   #district-level skipped years, relevant to both projects
-num_samples <- 200    #shared by both projects
+num_samples <- 100    #shared by both projects
 use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity 
 self_random_seed <- NULL  #for now, just use the random seed specified by the setting
 clean_outputs <- TRUE
@@ -65,7 +65,7 @@ rm(not_sure_country_list)
 
 
 #====== Setting Parameters -- based on incidence rate trend and outbreak multiplier ======#
-incidence_rate_trend <- FALSE 
+incidence_rate_trend <- TRUE
 outbreak_multiplier <- FALSE 
 # For now, the random seed equals setting number
 if(use_random_seed & is.null(self_random_seed)){
