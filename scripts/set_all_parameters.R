@@ -8,8 +8,14 @@ runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survm
 scenarios <- c("campaign-default", "no-vaccination")
 num_skip_years <- 3   #district-level skipped years, relevant to both projects
 num_samples <- 100    #shared by both projects
-use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity 
-self_random_seed <- NULL  #for now, just use the random seed specified by the setting
+use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity
+
+if (runname == "202310gavi-4"){
+  self_random_seed <- 33  #use the same random seed for all setting and scenarios for the 202310gavi-4 touchstone
+} else {
+  self_random_seed <- NULL  #for now, just use the random seed specified by the setting
+}
+
 clean_outputs <- TRUE
 clean_incid <- FALSE
 if (runname == "202310gavi-4"){
