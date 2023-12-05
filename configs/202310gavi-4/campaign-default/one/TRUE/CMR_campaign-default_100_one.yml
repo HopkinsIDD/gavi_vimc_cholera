@@ -13,4 +13,4 @@ vacc:
 setting:
   incidence_rate_trend: TRUE
   outbreak_multiplier: FALSE
-  random_seed: 3
+  random_seed: 103

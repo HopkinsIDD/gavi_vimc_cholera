@@ -11,7 +11,7 @@ num_samples <- 100    #shared by both projects
 use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity
 
 if (runname == "202310gavi-4"){
-  self_random_seed <- 33  #use the same random seed for all setting and scenarios for the 202310gavi-4 touchstone
+  self_random_seed <- 103  #use the same random seed for all setting and scenarios for the 202310gavi-4 touchstone
 } else {
   self_random_seed <- NULL  #for now, just use the random seed specified by the setting
 }
@@ -71,7 +71,7 @@ rm(not_sure_country_list)
 
 
 #====== Setting Parameters -- based on incidence rate trend and outbreak multiplier ======#
-incidence_rate_trend <- TRUE
+incidence_rate_trend <- FALSE
 outbreak_multiplier <- FALSE 
 # For now, the random seed equals setting number
 if(use_random_seed & is.null(self_random_seed)){
