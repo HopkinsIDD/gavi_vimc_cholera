@@ -199,9 +199,9 @@ if(runname == "202310gavi-4"){
   ndoses <- config$vacc$ndoses
 }
 
-# random_seed <- as.numeric(config$setting$random_seed) #this one will be used through redrawing incidence rate raster and generating other rasters
-# set.seed(random_seed)
-# rm(random_seed)
+random_seed <- as.numeric(config$setting$random_seed) #this one will be used through redrawing incidence rate raster and generating other rasters
+set.seed(random_seed)
+rm(random_seed)
 
 #### Create paths
 mpathname <- file.path("montagu", runname)
