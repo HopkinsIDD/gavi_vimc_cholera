@@ -13,9 +13,6 @@ import_country_lifeExpectancy(modelpath, country, redownload = TRUE)
 
 \item{redownload}{whether to redownload the file}
 }
-\value{
-
-}
 \description{
 Get total life expectancy at birth from standardized source in Montagu. [may be used in future for case-based targeting]
 }

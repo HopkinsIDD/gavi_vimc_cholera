@@ -29,9 +29,6 @@ assign_vaccine_targets(
 
 \item{num_skip_years}{Skip targeting in locations vaccinated within the last X years (default = 0 --> no skipping)}
 }
-\value{
-
-}
 \description{
 Assign vaccine to a country and year
 }

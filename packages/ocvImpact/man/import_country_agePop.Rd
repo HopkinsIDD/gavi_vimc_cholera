@@ -13,9 +13,6 @@ import_country_agePop(modelpath, country, redownload = TRUE)
 
 \item{redownload}{whether to redownload the file}
 }
-\value{
-
-}
 \description{
 Get age-specific (1-year) country population from standardized source in Montagu. [may be used in future for case-based targeting]
 }

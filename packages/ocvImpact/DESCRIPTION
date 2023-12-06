@@ -9,7 +9,7 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Suggests: 
     knitr,
     rmarkdown
@@ -37,4 +37,16 @@ Collate:
     'export_country_stoch_template.R'
     'outbreak_incidence_rate_multiplier.R'
     'run_country_scenario.R'
+    'surveillance_vacc_targeting.R'
+    'surveillance_update_vac_raster.R'
+    'surveillance_update_sus_raster.R'
+    'surveillance_true_confirmation_rate.R'
+    'surveillance_pop_weighted_incid.R'
+    'surveillance_create_expectedCases.R'
+    'run_surveillance_scenario.R'
+    'surveillance_case_by_district.R'
+    'surveillance_diagnostic_functions.R'
+    'surveillance_skip_countries.R'
     'utils_config.R'
+    'utils_cost.R'
+    'utils_process_rawoutput.R'

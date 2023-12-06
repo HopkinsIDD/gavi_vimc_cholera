@@ -11,6 +11,7 @@
 #' @param secular_trend_mult function that returns a multiplier for secular incidence trends over time (default: generate_flatline_multiplier())
 #' @param rawoutpath path to raw model output files
 #' @param nsamples number of stochastic samples to use
+#' @param num_doses the number of doses for the one-dose and two-dose scenarios of the 202310gavi-4 touchstone
 #' @param clean logical that indicates whether existing targeting and model outputs (sus, pop, vacc) should be deleted (default = TRUE)
 #' @param redraw logical that indicates whether existing incidence raster samples should be redrawn (default = FALSE)
 #' @param ... Optional parameters to pass to [`assign_vaccine_targets()`]. See [`assign_vaccine_targets()`] for defaults.
@@ -24,6 +25,7 @@ run_country_scenario <- function(
   scenario,
   rawoutpath,
   nsamples, 
+  num_doses = NULL,
   ve_direct = generate_pct_protect_function(),
   indirect_mult = generate_indirect_incidence_mult(),
   secular_trend_mult = function(a,b,c,d){return(a*b*c*d)},
@@ -31,6 +33,14 @@ run_country_scenario <- function(
   redraw = FALSE,
   ...){
 
+  ##calam added conditionals changing the default ve_direct function to the new functions for the one and two-dose scenarios for the 2023 touchstone
+  if (num_doses == "one" & scenario == "campaign-default"){ #use the new one dose vaccine efficacy function for the 2023 touchstones
+    ve_direct = vaccine_efficacy_all_groups_one_dose()
+  } else if (num_doses =="two" & scenario == "campaign-default"){ #use the new two dose vaccine efficacy function for the 2023 touchstones
+    ve_direct = vaccine_efficacy_all_groups_two_dose()
+  }
+  ##finished adding conditionals, rest of the function is the same as the pre-2023 version
+  
   vacc_alloc <- allocate_vaccine(datapath, modelpath, country, scenario, ...) #the changes start from here 
 
   ## write proportion vaccinated to file and export total population raster stack
@@ -42,22 +52,36 @@ run_country_scenario <- function(
   incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
   outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)
   setting <- paste0('incid_trend_', incidence_rate_trend, '_outb_layer_',  outbreak_multiplier)
-
   dir.create(paste0(rawoutpath, "/", scenario, "/", setting), showWarnings = FALSE)
-  ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_ec.csv")
+  
+  ##calam added to write expected cases in separate directories for the one dose and two dose campaigns for 202310gavi-4 touchstone
+  runname <- config$runname
+  if (runname == "202310gavi-4"){
+    ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country,"_",num_doses,"_ec.csv")
+    cov_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country,"_",num_doses,"_coverage.csv") ##to write modelled coverage
+  }else {
+    ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_ec.csv")
+    cov_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_coverage.csv") ##to write modelled coverage
+  }
   if(clean | !file.exists(ec_out_fn)){ ## rerun
 
     if (is.null(vacc_alloc)){
-      message("Calculate expected cases: with vaccination")
+      message("Calculate expected cases: no vaccination")
       expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, is_cf = TRUE, redraw)
     } else{
-      message("Calculate expected cases: no vaccination")
+      message("Calculate expected cases: with vaccination")
       expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, is_cf = FALSE, redraw)
     } 
 
       ## Write to file 
       message(paste("Write expected cases:", country, scenario, "\n", ec_out_fn))
       readr::write_csv(expCases, ec_out_fn)
+      ##only write coverage for campaign scenarios (vacc_alloc is null for the no-vaccination scenarios)
+      if (scenario == "campaign-default"){
+        message(paste("Write modelled coverage:", country, scenario, "\n", cov_out_fn))
+        readr::write_csv(vacc_alloc, cov_out_fn)
+      }
+      
 
   } else{ ## read existing
     message(paste("Reading expected cases:", country, scenario, "\n", ec_out_fn))

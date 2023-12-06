@@ -1,16 +1,26 @@
 #====== The Basics ======#
 targeting_strategy <- "affected_pop" #c("threshold_unconstrained", "affected_pop", "incidence"), "threshold_unconstrained" means it's for the surveillance project
-runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202110gavi-3") ### Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
+#runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202110gavi-3") ### Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
+runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202310gavi-4") ### for 2023 VIMC core:Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
 
 
 #====== Shared parameters ======#
 scenarios <- c("campaign-default", "no-vaccination")
 num_skip_years <- 3   #district-level skipped years, relevant to both projects
-num_samples <- 200    #shared by both projects
-use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity 
-self_random_seed <- NULL  #for now, just use the random seed specified by the setting
+num_samples <- 100    #shared by both projects
+use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity
+
+if (runname == "202310gavi-4"){
+  self_random_seed <- 103  #use the same random seed for all setting and scenarios for the 202310gavi-4 touchstone
+} else {
+  self_random_seed <- NULL  #for now, just use the random seed specified by the setting
+}
+
 clean_outputs <- TRUE
 clean_incid <- FALSE
+if (runname == "202310gavi-4"){
+  ndoses <- c("one", "two") ##calam added option for the number of doses, only applies to the VIMC Core model 2023 touchstone
+}
 # default country list
 ids <- readr::read_csv("input_data/locations_todeletelater.csv") # location ids
 cw <- readr::read_csv("input_data/region_country.csv")
@@ -61,7 +71,7 @@ rm(not_sure_country_list)
 
 
 #====== Setting Parameters -- based on incidence rate trend and outbreak multiplier ======#
-incidence_rate_trend <- FALSE 
+incidence_rate_trend <- FALSE
 outbreak_multiplier <- FALSE 
 # For now, the random seed equals setting number
 if(use_random_seed & is.null(self_random_seed)){
