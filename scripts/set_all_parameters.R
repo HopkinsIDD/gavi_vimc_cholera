@@ -71,7 +71,7 @@ rm(not_sure_country_list)
 
 
 #====== Setting Parameters -- based on incidence rate trend and outbreak multiplier ======#
-incidence_rate_trend <- TRUE
+incidence_rate_trend <- FALSE
 outbreak_multiplier <- FALSE 
 # For now, the random seed equals setting number
 if(use_random_seed & is.null(self_random_seed)){
