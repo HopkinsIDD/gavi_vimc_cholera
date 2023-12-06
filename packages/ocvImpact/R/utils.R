@@ -474,11 +474,11 @@ generate_pct_protect_function_two_dose_under5 <- function(my_trunc_year = 5, my_
 #' @examples
 vaccine_efficacy_all_groups_one_dose <- function(){
   vaccine_efficacy <- function(proportion_under5, years){
-    vaccine_efficavy_under5_function <- generate_pct_protect_function_one_dose_under5()
-    vaccine_efficavy_under5 <- vaccine_efficavy_under5_function(years)
-    vaccine_efficavy_over5_function <- generate_pct_protect_function_one_dose()
-    vaccine_efficavy_over5 <- vaccine_efficavy_over5_function(years)
-    vaccine_efficacy <- (vaccine_efficavy_under5 * proportion_under5 + vaccine_efficavy_over5 * (1-proportion_under5))/(proportion_under5 + (1-proportion_under5))
+    vaccine_efficacy_under5_function <- generate_pct_protect_function_one_dose_under5()
+    vaccine_efficacy_under5 <- vaccine_efficacy_under5_function(years)
+    vaccine_efficacy_over5_function <- generate_pct_protect_function_one_dose()
+    vaccine_efficacy_over5 <- vaccine_efficacy_over5_function(years)
+    vaccine_efficacy <- (vaccine_efficacy_under5 * proportion_under5 + vaccine_efficacy_over5 * (1-proportion_under5))/(proportion_under5 + (1-proportion_under5))
   }
   return(vaccine_efficacy)
 } 
@@ -492,11 +492,11 @@ vaccine_efficacy_all_groups_one_dose <- function(){
 #' @examples
 vaccine_efficacy_all_groups_two_dose <- function(){ 
   vaccine_efficacy <- function(proportion_under5, years){
-    vaccine_efficavy_under5_function <- generate_pct_protect_function_two_dose_under5()
-    vaccine_efficavy_under5 <- vaccine_efficavy_under5_function(years)
-    vaccine_efficavy_over5_function <- generate_pct_protect_function_two_dose()
-    vaccine_efficavy_over5 <- vaccine_efficavy_over5_function(years)
-    vaccine_efficacy <- (vaccine_efficavy_under5 * proportion_under5 + vaccine_efficavy_over5 * (1-proportion_under5))/(proportion_under5 + (1-proportion_under5))
+    vaccine_efficacy_under5_function <- generate_pct_protect_function_two_dose_under5()
+    vaccine_efficacy_under5 <- vaccine_efficacy_under5_function(years)
+    vaccine_efficacy_over5_function <- generate_pct_protect_function_two_dose()
+    vaccine_efficacy_over5 <- vaccine_efficacy_over5_function(years)
+    vaccine_efficacy <- (vaccine_efficacy_under5 * proportion_under5 + vaccine_efficacy_over5 * (1-proportion_under5))/(proportion_under5 + (1-proportion_under5))
   }
   return(vaccine_efficacy)
 } 
