@@ -343,3 +343,44 @@ import_country_proportion_under5 <- function(modelpath, country, year, redownloa
   return(under5)
 }
 
+##function that calculates the proportion of the target population that is vaccinated with one dose and with two doses of the vaccine for the two dose scenario
+##administration of each vaccine dose is independent, therefore the coverage for two vaccinations is the overlap of probabilities that
+##someone will get each dose of the vaccine. For 1 dose, we are using elizabeth's formula where the coverage for one dose is C1 = c1 - (c1*c2) + c2 - (c1*c2)
+##and for two doses, elizabeth's formula is C2 = c1*c2 (lower case c1 and c2 denotes montagu coverage for dose 1 and dose 2 respectively)
+
+#' @Title adjusted_montagu_coverage
+#'
+#' @param coverage_sheet the montagu coverage csv file
+#' @param country the country code
+#'
+#' @return a dataframe with the coverage for one-dose and two-dose for the specified country each year adjusted using elizabeth's formula
+#' @export
+#'
+#' @examples
+adjusted_montagu_coverage <- function(coverage_sheet, country){
+  coverage_unique <- unique(coverage_sheet) ##make sure we use unique rows
+  country <- country
+  df <- coverage_unique[coverage_unique$country_code == country,]
+  for (i in 1:nrow(df)){
+    if (df[i,]$vaccine == 'OCV1' & any(df$vaccine == 'OCV2' & df$year == df[i,]$year)){ 
+      print('ocv1')
+      pair <- which(df$vaccine == 'OCV2' & df$year == df[i,]$year)
+      ocv1_coverage <- df[i,]$coverage
+      ocv2_coverage <- df[pair,]$coverage
+      df[i,]$coverage <- ocv1_coverage - (ocv1_coverage*ocv2_coverage) + ocv2_coverage - (ocv1_coverage*ocv2_coverage) ##elizabeth's formula for ocv1 coverage   
+      print(df[i,]$coverage)
+    } else if (df[i,]$vaccine == 'OCV2' & any(df$vaccine == 'OCV1' & df$year == df[i,]$year)){
+      pair <- which(df$vaccine == 'OCV1' & df$year == df[i,]$year)
+      print('ocv2')
+      ocv2_coverage <- df[i,]$coverage
+      ocv1_coverage <- df[pair,]$coverage  
+      df[i,]$coverage <- ocv1_coverage*ocv2_coverage  ##elizabeth's formula for ocv2 coverage   
+      print(df[i,]$coverage)
+    } else { ##cases where there is only one vaccination campaign (ocv1 or ocv2) for a year
+      df[i,]$coverage <- df[i,]$coverage
+      print("only one vaccination campaign this year")
+      print(df[i,]$coverage)
+    }
+  }
+  return(df)
+}
