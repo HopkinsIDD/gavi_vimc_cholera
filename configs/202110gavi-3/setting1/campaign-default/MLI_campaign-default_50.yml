@@ -1,0 +1,15 @@
+runname: '202110gavi-3'
+country: 'MLI'
+scenario: 'campaign-default'
+clean: TRUE
+incid:
+  num_samples: 50
+  redraw: TRUE
+  use_country_incid_trend: TRUE
+vacc:
+  targeting_strategy: affected_pop
+  num_skip_years: 3
+setting:
+  incidence_rate_trend: FALSE
+  outbreak_multiplier: FALSE
+  random_seed: 1
