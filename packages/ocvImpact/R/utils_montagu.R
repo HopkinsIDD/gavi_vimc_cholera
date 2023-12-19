@@ -320,7 +320,7 @@ import_country_proportion_under5 <- function(modelpath, country, year, redownloa
   message(paste0("Loading ", modelpath, "/", pop_fn))
   agepop <- readr::read_csv(paste0(modelpath, "/", pop_fn)) %>%
     dplyr::filter(country_code == !!country) %>%
-    dplyr::filter(!age_from %in% c(0,100)) %>%   ##this filters out the people aged 0
+    dplyr::filter(!age_from %in% c(0)) %>%   ##this filters out the people aged 0
     dplyr::rename(GID_0 = country_code, pop_age = value) %>%
     dplyr::select(GID_0, year, age_from, age_to, pop_age)
   
