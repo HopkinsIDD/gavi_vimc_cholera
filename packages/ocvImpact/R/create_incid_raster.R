@@ -94,8 +94,16 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw, 
       print(layer_indexes)
       
       ## incidence data ##
-      message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
-      afr <- raster::stack(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
+      ##addition to use new mai rate raster for 2016-2020 for new touchstone
+      runname <- config$runname
+      if (runname == "202310gavi-4"){
+        message(paste0("Loading ", datapath, "/incidence/afro_2016-2020_lambda_5k.tif"))
+        afr <- raster::stack(paste0(datapath, "/incidence/afro_2016-2020_lambda_5k.tif"))
+      } else {
+        message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
+        afr <- raster::stack(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
+      }
+      ##end addition
       ###########this is following line is just for temp use before we figure out how to transfer raster files without corruptions###########
       #afr <- raster::stack(paste0("/home/kaiyuezou/montagu_try_7_5/gavi_vimc_cholera/input_data/incidence/afro_2010-2016_lambda_5k.tif"))
       afr_sample <- raster::subset(afr, layer_indexes, drop = FALSE)
