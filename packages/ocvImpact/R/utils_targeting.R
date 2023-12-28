@@ -45,9 +45,18 @@ load_targets_by_country <- function(datapath, modelpath, country){
   if (country %in% CountriesForSim$id){
 
     ## incidence data ##
-    message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
-    afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
-
+    
+    ##calam added 12/28/23 to use new raster for the 2023 touchstone
+    runname <- config$runname
+    if(runname == "202310gavi-4"){
+      message(paste0("Loading ", datapath, "/incidence/afro_2016-2020_lambda_5k_mean.tif"))
+      afr <- raster::raster(paste0(datapath, "/incidence/afro_2016-2020_lambda_5k_mean.tif"))
+    } else {
+      message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
+      afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
+    }
+    ##end addition
+    
     ## WorldPop population data ##
     pop <- load_worldpop_by_country(datapath, country)
     ## admin unit shapefile ##
@@ -109,6 +118,15 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
   ptargets <- load_targets_by_country(datapath, modelpath, country)
   ###########add a little check point for the situation when the coverage data exists but is just 0
   coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE, redownload = FALSE)
+  
+  ##calam added 12/21/23 to incorporate the adjustment of montagu coverage for the ocv1-ocv2 scenario
+  ##commented out on 12/28/23 for runs for the central burden estimates - should be toggled on for stochastic estimates
+  ##runname <- config$runname
+  ##ndoses <- config$vacc$ndoses
+  ##if (runname == "202310gavi-4" & ndoses == "two"){
+    ##coverage <- adjusted_montagu_coverage(coverage_sheet = coverage, country = country)
+  ##}
+  ##end addition
   
   ##make sure we only keep rows with OCV2 for the two dose scenario for the 202310gavi-4 touchstone
   if ("vaccine" %in% colnames(coverage) & any(coverage$vaccine == 'OCV2')){ #this identifies coverage for the two dose scenario
