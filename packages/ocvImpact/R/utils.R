@@ -502,6 +502,22 @@ vaccine_efficacy_all_groups_two_dose <- function(){
 } 
 
 
+#' @title  vaccine_efficacy_all_groups_all_doses
+#' @description function that takes the vaccine efficacy for the one-dose group and the vaccine efficacy of the two-dose group and 
+#' returns their weighted average. Weighting is according to the proportion people that had one dose/two doses of the vaccine in the population
+#' @param efficacy_one_dose vaccine efficacy for the one-dose group (output of vaccine_efficacy_all_groups_one_dose)
+#' @param efficacy_two_dose vaccine efficacy for the two-dose group (output of vaccine_efficacy_all_groups_two_dose)
+#' @param proportion_one_dose the proportion of vaccinated people that received one dose of the vaccine
+#' @return the vaccine efficacy for the mixed group that includes people vaccinated with one and two doses of the vaccine
+#' @export
+#'
+#' @examples
+vaccine_efficacy_all_groups_all_doses <- function(efficacy_one_dose, efficacy_two_dose, proportion_one_dose){
+  vaccine_efficacy <- (efficacy_one_dose * proportion_one_dose + efficacy_two_dose * (1-proportion_one_dose))/(proportion_one_dose + (1-proportion_one_dose)) ##weighted average
+  return(vaccine_efficacy)
+} 
+
+
 
 #' @name generate_indirect_incidence_mult
 #' @title generate_indirect_incidence_mult
