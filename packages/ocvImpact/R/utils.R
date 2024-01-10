@@ -55,16 +55,16 @@ create_model_pop_raster <- function(datapath, modelpath, country, year){
 #' @export
 #' @include utils_targeting.R load_shapefile_by_country.R utils.R
 allocate_vaccine <- function(datapath, modelpath, country, scenario, ...){
-
+  
   vacc_targets <- assign_vaccine_targets(datapath, modelpath, country, scenario, ...)
-
+  
   ## skip if no vaccination
   if (is.null(vacc_targets)){
     vacc_coverage <- NULL
   } else{
     vacc_years <- sort(unique(vacc_targets$vacc_year))
     shp <- load_shapefile_by_country(datapath, country)
-
+    
     ### a little play on the dataframe -- 7/2021
     shp <- shp %>%
       dplyr::mutate(genID = paste0(NAME_0, '-', NAME_1, '-', NAME_2))
@@ -83,16 +83,18 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, ...){
       return(rc)
     }) %>%
       data.table::rbindlist()
-
+    
     vacc_coverage <- dplyr::left_join(vacc_targets, vacc_pop, by = c("GID_2", "vacc_year")) %>%
-      dplyr::mutate(actual_prop_vaccinated = actual_fvp/pop_model) %>%
+      dplyr::mutate(actual_prop_ocv1_vaccinated = actual_ocv1_fvp/pop_model) %>%
+      dplyr::mutate(actual_prop_ocv2_vaccinated = actual_ocv2_fvp/pop_model) %>%
+      dplyr::mutate(actual_prop_atleast_1dose_vaccinated = (actual_ocv1_fvp + actual_ocv2_fvp)/pop_model) %>%
       sf::st_as_sf()
-
+    
     if(any(vacc_coverage$actual_vacc_prop>1)){
       warning(paste("Number of fully vaccinated persons exceeds population in some admin units of", country))
     }
   }
-
+  
   return(vacc_coverage)
 }
 
