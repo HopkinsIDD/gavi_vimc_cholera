@@ -517,6 +517,23 @@ vaccine_efficacy_all_groups_all_doses <- function(efficacy_one_dose, efficacy_tw
   return(vaccine_efficacy)
 } 
 
+#' @name get_pop_proportion_ocv1
+#' @title get_pop_proportion_ocv1 
+#' @description function that gets vacc_alloc and year as inputs and returns the proportion of vaccinated people that got
+#' one dose of the vaccine
+#' @param vacc_alloc the output of allocate_vaccine
+#' @param year the vaccination year
+#' @return the proportion of vaccinated people that received one dose of OCV
+#' @export
+#' @examples
+get_pop_proportion_ocv1 <- function(vacc_alloc, year){
+  vacc_alloc <- unique(vacc_alloc[vacc_alloc$vacc_year == year,]) ##unique in case there are duplicate rows, eg. GHA 2040
+  total_ocv1 <- sum(vacc_alloc$actual_ocv1_fvp) ## fvps with one dose
+  total_ocv2 <- sum(vacc_alloc$actual_ocv2_fvp) ## fvps with two doses
+  prop_ocv1_vs_ocv2 <- total_ocv1/(total_ocv1 + total_ocv2)
+  return(prop_ocv1_vs_ocv2)
+}
+
 
 
 #' @name generate_indirect_incidence_mult
