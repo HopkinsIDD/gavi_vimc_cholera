@@ -245,7 +245,7 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
         partialDistrict_vaccinated_ocv1_people <- goal_ocv1_fvp
         partialDistrict_ocv1_id <- 1
         
-      } if (nrow(fullDistrict_vaccinated_ocv2_people) == 0){
+      } else if (nrow(fullDistrict_vaccinated_ocv2_people) == 0){
         message("Partial district coverage: Coverage for ocv2 so low that no single district was fully vaccinated.")
         partialDistrict_vaccinated_ocv2_people <- goal_ocv2_fvp
         partialDistrict_ocv2_id <- 1
