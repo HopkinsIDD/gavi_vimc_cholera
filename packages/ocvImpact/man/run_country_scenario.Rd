@@ -12,7 +12,8 @@ run_country_scenario(
   rawoutpath,
   nsamples,
   num_doses = NULL,
-  ve_direct = generate_pct_protect_function(),
+  ve_direct_ocv1 = vaccine_efficacy_all_groups_one_dose(),
+  ve_direct_ocv2 = vaccine_efficacy_all_groups_two_dose(),
   indirect_mult = generate_indirect_incidence_mult(),
   secular_trend_mult = function(a, b, c, d) {
      return(a * b * c * d)
@@ -37,7 +38,9 @@ run_country_scenario(
 
 \item{num_doses}{the number of doses for the one-dose and two-dose scenarios of the 202310gavi-4 touchstone}
 
-\item{ve_direct}{vaccine effect function (default: generate_pct_protect_function())}
+\item{ve_direct_ocv1}{vaccine effect function for people that got one dose of OCV (default: vaccine_efficacy_all_groups_one_dose())}
+
+\item{ve_direct_ocv2}{vaccine effect function for people that got two doses of OCV (default: vaccine_efficacy_all_groups_two_dose())}
 
 \item{indirect_mult}{indirect effects function (default: generate_indirect_incidence_mult())}
 
