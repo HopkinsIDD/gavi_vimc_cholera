@@ -53,6 +53,35 @@ import_coverage_scenario <- function(modelpath, country, scenario, num_doses = N
     if (filter0){
       cov_dat <- dplyr::filter(cov_dat, coverage != 0)
     }
+    
+    ##added procedure to add ocv2 rows for the coverage for the ocv1 scenario to ensure implementation is consistent across scenarios
+    if (scenario == "ocv1-default"){
+      coverage_copy <- cov_dat
+      coverage_copy$vaccine <- 'OCV2' 
+      coverage_copy$coverage <- 0 ##ocv2 rows get 0 coverage for the ocv1-default scenario
+      cov_dat <- rbind(cov_dat, coverage_copy)
+      rm(coverage_copy) ##coverage_copy was just a template, remove to save memory
+    }
+    
+    ##added to adjust coverage
+    cov_dat <- adjusted_montagu_coverage(coverage_sheet = cov_dat, country = country)
+    
+    ##procedure to make coverage dataframe 'wider' (get new columns for ocv1 and ocv2 coverage)
+    
+    wide_coverage <- cov_dat %>% tidyr::pivot_wider(names_from = vaccine, values_from = coverage)
+    ocv2_coverage <- wide_coverage$OCV2[!is.na(wide_coverage$OCV2)]
+    wide_coverage <- subset(wide_coverage, (!is.na(wide_coverage$OCV1)))
+    wide_coverage$OCV2 <- ocv2_coverage
+    cov_dat <- wide_coverage
+    rm(wide_coverage) ##wide_coverage was just a template, remove to save memory
+    
+    ##get a new column with the fvps vaccinated with one dose of the vaccine
+    cov_dat <- dplyr::arrange(cov_dat, year) %>%
+      dplyr::mutate(fvp_ocv1 = round(target*OCV1, 0))
+    
+    ##get a new column with the fvps vaccinated with two doses of the vaccine
+    cov_dat <- dplyr::arrange(cov_dat, year) %>%
+      dplyr::mutate(fvp_ocv2 = round(target*OCV2, 0))
   }
 
   return(cov_dat)
