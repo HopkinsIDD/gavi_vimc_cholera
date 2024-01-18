@@ -12,18 +12,6 @@
 #' @include retrieve_montagu_coverage.R
 import_coverage_scenario <- function(modelpath, country, scenario, num_doses = NULL, filter0 = FALSE, redownload = TRUE){
   
-  ##calam added to ensure csv montagu coverage for each vaccination scenario is pulled from the montagu folder for the 202310gavi-4 touchstone 
-  runname <- config$runname
-  if (runname == "202310gavi-4" & scenario == "campaign-default"){
-    num_doses <- config$vacc$ndoses
-  }
-  if (runname == "202310gavi-4" & scenario == "campaign-default" & num_doses == "one"){
-    scenario <- "ocv1-default"
-  } else if (runname == "202310gavi-4" & scenario == "campaign-default" & num_doses == "two"){
-    scenario <- "ocv1-ocv2-default"
-  }
-  ##end addition
-  
   #First check, then retrieve
   CoverageFiles <- list.files(modelpath, pattern = "^coverage_")
   if (length(CoverageFiles) >= 2 & redownload == FALSE){ #there should be 2 coverage data files, so the default should be 2
