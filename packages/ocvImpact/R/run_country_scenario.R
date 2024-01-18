@@ -72,7 +72,7 @@ run_country_scenario <- function(
     message(paste("Write expected cases:", country, scenario, "\n", ec_out_fn))
     readr::write_csv(expCases, ec_out_fn)
     ##only write coverage for campaign scenarios (vacc_alloc is null for the no-vaccination scenarios)
-    if (scenario == "campaign-default"){
+    if (scenario == "ocv1-default" | scenario == "ocv1-ocv2-default"){
       message(paste("Write modelled coverage:", country, scenario, "\n", cov_out_fn))
       readr::write_csv(vacc_alloc, cov_out_fn)
     }
