@@ -97,7 +97,7 @@ for(scn in scenarios){
         if(targeting_strategy != "threshold_unconstrained" & runname != "202310gavi-4"){
           scnpathname <- file.path(cpathname, scn)
         }else if(targeting_strategy != "threshold_unconstrained" & runname == "202310gavi-4"){
-          if (scn == "campaign-default"){
+          if (scn == "ocv1-default" | scn == "ocv1-ocv2-default"){
             scnpathname <- file.path(cpathname, scn, dose, incidence_rate_trend)
           } else if (scn == "no-vaccination"){
             scnpathname <- file.path(cpathname, scn, incidence_rate_trend)
