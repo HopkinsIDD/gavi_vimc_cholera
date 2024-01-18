@@ -119,65 +119,17 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
   ###########add a little check point for the situation when the coverage data exists but is just 0
   coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE, redownload = FALSE)
   
-  ##calam added 12/21/23 to incorporate the adjustment of montagu coverage for the ocv1-ocv2 scenario
-  ##commented out on 12/28/23 for runs for the central burden estimates - should be toggled on for stochastic estimates
-  runname <- config$runname
-  ndoses <- config$vacc$ndoses
+  ##calam commented out lines 126-132 because following modifications in import_coverage_scenario there
+  ##is no longer a 'coverage' column in the coverage csv (there is an 'OCV1' column with one-dose coverage
+  ##and an 'OCV2' column with two-dose coverage)
   
-  ##added procedure to add ocv2 rows for the coverage for the ocv1 scenario to ensure implementation is consistent across scenarios
-  if (runname == "202310gavi-4" & ndoses == "one"){
-    
-    coverage_copy <- coverage
-    coverage_copy$vaccine <- 'OCV2' 
-    coverage_copy$coverage <- 0 ##ocv2 rows get 0 coverage for the ocv1 scenario
-    coverage <- rbind(coverage, coverage_copy)
-    rm(coverage_copy) ##coverage_copy was just a template, remove to save memory
-    
-  }
-  ##end procedure
+  ##coverage_as_all_0_for_campaign <- (sum(coverage$coverage) == 0)
   
-  ##adjust coverage
-  coverage <- adjusted_montagu_coverage(coverage_sheet = coverage, country = country)
-  
-  ##procedure to make coverage dataframe 'wider' (get new columns for ocv1 and ocv2 coverage)
-  
-  wide_coverage <- coverage %>% tidyr::pivot_wider(names_from = vaccine, values_from = coverage)
-  ocv2_coverage <- wide_coverage$OCV2[!is.na(wide_coverage$OCV2)]
-  wide_coverage <- subset(wide_coverage, (!is.na(wide_coverage$OCV1)))
-  wide_coverage$OCV2 <- ocv2_coverage
-  coverage <- wide_coverage
-  rm(wide_coverage) ##wide_coverage was just a template, remove to save memory
-  
-  coverage_as_all_0_for_campaign <- (sum(coverage$coverage) == 0)
-  
-  if (!coverage_as_all_0_for_campaign){
+  ##if (!coverage_as_all_0_for_campaign){
     
-    coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = TRUE, redownload = FALSE)
+    ##coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = TRUE, redownload = FALSE)
     
-    ##added procedure to add ocv2 rows for the coverage for the ocv1 scenario to ensure implementation is consistent across scenarios
-    
-    if (runname == "202310gavi-4" & ndoses == "one"){
-      
-      coverage_copy <- coverage
-      coverage_copy$vaccine <- 'OCV2'
-      coverage_copy$coverage <- 0 ##ocv2 rows get 0 coverage for the ocv1 scenario
-      coverage <- rbind(coverage, coverage_copy)
-      rm(coverage_copy) ##coverage_copy was just a template, remove to save memory
-      
-    }
-    
-    coverage <- adjusted_montagu_coverage(coverage_sheet = coverage, country = country)
-    
-    ##procedure to make coverage dataframe 'wider' (get new columns for ocv1 and ocv2 coverage)
-    
-    wide_coverage <- coverage %>% tidyr::pivot_wider(names_from = vaccine, values_from = coverage)
-    ocv2_coverage <- wide_coverage$OCV2[!is.na(wide_coverage$OCV2)]
-    wide_coverage <- subset(wide_coverage, (!is.na(wide_coverage$OCV1)))
-    wide_coverage$OCV2 <- ocv2_coverage
-    coverage <- wide_coverage
-    rm(wide_coverage) ##wide_coverage was just a template, remove to save memory
-    
-  }
+  ##}
   
   if (is.null(coverage)){
     
@@ -201,9 +153,9 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
       cov_year <- coverage[i,]
       goal_target_pop <- cov_year$target
       
-      ##calculate fvps with one dose and two doses of the vaccine
-      goal_ocv1_fvp <- cov_year$OCV1 * goal_target_pop
-      goal_ocv2_fvp <- cov_year$OCV2 * goal_target_pop
+      ##goal fvps with one dose and two doses of the vaccine
+      goal_ocv1_fvp <- cov_year$fvp_ocv1
+      goal_ocv2_fvp <- cov_year$fvp_ocv2
       
       ## Skip locations vaccinated within the previous `num_skip_years`
       skip_years <- cov_year$year - (1:num_skip_years)
