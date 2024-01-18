@@ -64,7 +64,7 @@ opathname <- file.path("output_final", runname)
 mpathname <- file.path("montagu", runname)
 
 if (runname == "202310gavi-4"){
-  scenarios <- c('campaign-default_one', 'campaign-default_two', 'no-vaccination')
+  scenarios <- c('ocv1-default_one', 'ocv1-ocv2-default_two', 'no-vaccination')
 }
 
 for (i in 1:length(scenarios)){
