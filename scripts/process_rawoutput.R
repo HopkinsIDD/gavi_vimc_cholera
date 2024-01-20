@@ -875,30 +875,61 @@ prop_vaxed_in_highIR_allISOs_medianCI <- n_vaxed_in_highIR_allISOs %>%
 write.csv(prop_vaxed_in_highIR_allISOs_medianCI, paste0(output_final_path, "/intermediate_table/prop_vaxed_in_highIR_allISOs_medianCI.csv"), row.names = F)
 
 
-## OUTPUT 39: prop_vaxed_in_highIR_byISO_medianCI
-# Proportion of population-year getting vaccinated among districts where true IR exceeds the targeting threshold (summarized across all countries)
-fvp_byISO <- read.csv(paste0(int_path, "tp_eff_ac_byISO_medianCI.csv"))
+## OUTPUT 39:  prop_vaxed_in_highIR_byISO_medianCI (updated 1.17.2024)
+# Proportion of population-year getting vaccinated among districts where true IR exceeds the targeting threshold
 for(country in all_countries){
     
     if(!country %in% c("SEN", "ZAF")){
-        # read in py_vaxed_in_highIR table 
-        message("reading in prop_vaxed table of ", country)
-        py_vaxed_in_highIR_oneISO <- read.csv(paste0(int_path, "py_vaxed_in_highIR_table/py_vaxed_in_highIR_", country, ".csv"))
-    
-        prop_vaxed_in_highIR_oneISO <- py_vaxed_in_highIR_oneISO %>%
+        
+        # read in target table 
+        message(paste0("For making prop_vaxed_in_highIR_allISOs_medianCI (output 39), reading the target table of ", country))
+        df_tt <- read.csv(paste0(output_final_path, "/target_table/target_table_", country, ".csv" ))
+        df_tt <- df_tt %>% mutate(true_averted_cases = no_vaccination_true_case - campaign_default_true_case)
+
+        # added on 11/10/2022: remove targets smaller than 5*5 grid (averted case == 0 & is_target == 1)
+        df_tt <- df_tt %>% filter(true_averted_cases != 0 | is_target != 1)
+        
+        # calculate targeted pop living in high burden areas for each run & scenario
+        df_py_vaxed_in_highIR <- df_tt %>%
+            filter(is_target == 1 & true_incidence_rate > threshold) %>%
+            group_by(ISO, confirmation_lens, threshold, admin_level, run_id) %>%
+            mutate(py_vaxed_in_highIR = cumsum(actual_fvp)) %>%
+            filter(year == 2030) %>%
+            dplyr::select(ISO, confirmation_lens, threshold, admin_level, run_id, py_vaxed_in_highIR) %>%
+            group_by(ISO, confirmation_lens, threshold, admin_level, run_id) %>%
+            summarize(py_vaxed_in_highIR = sum(py_vaxed_in_highIR))
+
+        # calculate targeted population
+        df_py_vaxed_all <- df_tt %>%
+            filter(is_target == 1) %>%
+            group_by(ISO, confirmation_lens, threshold, admin_level, run_id) %>%
+            mutate(py_vaxed = cumsum(actual_fvp)) %>%
+            filter(year == 2030) %>%
+            dplyr::select(ISO, confirmation_lens, threshold, admin_level, run_id, py_vaxed) %>%
+            group_by(ISO, confirmation_lens, threshold, admin_level, run_id) %>%
+            summarize(py_vaxed = sum(py_vaxed))
+
+        # join together 
+        prop_vaxed_in_highIR_oneISO <- df_py_vaxed_all %>%
+            full_join(df_py_vaxed_in_highIR, by = c("ISO", "confirmation_lens", "threshold", "admin_level", "run_id")) %>%
+            mutate(prop_vaxed_in_highIR = py_vaxed_in_highIR / py_vaxed) %>%
             group_by(ISO, confirmation_lens, threshold, admin_level) %>%
-            summarize(n_vaxed_in_highIR = median(py_vaxed_in_highIR, na.rm = T)) %>%
-            left_join(
-                fvp_byISO %>% filter(ISO == country) %>% dplyr::select(ISO, threshold, confirmation_lens, admin_level, tp_cumu_median),
-                by = c("ISO", "threshold", "confirmation_lens", "admin_level")
-            ) %>%
-            mutate(prop_vaxed_in_highIR = n_vaxed_in_highIR / tp_cumu_median)
+            summarize(prop_vaxed_in_highIR_median = median(prop_vaxed_in_highIR, na.rm = T),
+                      prop_vaxed_in_highIR_lb = quantile(prop_vaxed_in_highIR, 0.025, na.rm = T),
+                      prop_vaxed_in_highIR_ub = quantile(prop_vaxed_in_highIR, 0.975, na.rm = T)) %>%
+            mutate(prop_vaxed_in_highIR_median = ifelse(is.na(prop_vaxed_in_highIR_median), 0, prop_vaxed_in_highIR_median),
+                   prop_vaxed_in_highIR_lb = ifelse(is.na(prop_vaxed_in_highIR_lb), 0, prop_vaxed_in_highIR_lb),
+                   prop_vaxed_in_highIR_ub = ifelse(is.na(prop_vaxed_in_highIR_ub), 0, prop_vaxed_in_highIR_ub))
+        # for scenarios not presented in this above table: no targeting for this scenario
+        # for scenarios with NA: there is targeting, but there is not a single run that has true incidence above threshold, thus can be replaced by 0
+        write.csv(prop_vaxed_in_highIR_oneISO, paste0(output_final_path, "/intermediate_table/prop_vaxed_in_highIR_table/prop_vaxed_in_highIR_", country, ".csv"), row.names = F)   
 
         if(which(all_countries == country) == 1){prop_vaxed_in_highIR_byISO <- prop_vaxed_in_highIR_oneISO}
         if(which(all_countries == country) != 1){prop_vaxed_in_highIR_byISO <- rbind(prop_vaxed_in_highIR_byISO, prop_vaxed_in_highIR_oneISO)}
     }
 
 }
+message("Writing output 39")
 write.csv(prop_vaxed_in_highIR_byISO, paste0(int_path, "prop_vaxed_in_highIR_byISO.csv"), row.names = F)
 
 
