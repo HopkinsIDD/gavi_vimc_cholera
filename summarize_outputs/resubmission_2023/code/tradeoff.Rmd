@@ -1,0 +1,378 @@
+---
+title: "Tradeoff figures (VIMC 2023 resubmission)"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message=FALSE, 
+                      warning=FALSE)
+
+library(reactable)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(RColorBrewer)
+library(raster)
+library(tidyverse)
+library(patchwork)
+library(countrycode)
+library(flextable)
+library(cowplot)
+#library(GADMTools)
+library(magick)
+library(ggpubr)
+library(wbstats)
+
+source("figures_utils.R")
+
+tab.counter <- 1
+fig.counter <- 1
+```
+
+```{r load data}
+# averted cases
+df_tp_eff <- read.csv("data/tp_eff_ac_byISO_medianCI.csv") # by ISO
+df_tp_eff_allISOs <- read.csv("data/tp_eff_ac_allISOs_medianCI.csv") # all ISO 
+
+# percent of true averted cases
+n_prop_ac_allISOs_medianCI <- read.csv("data/n_prop_ac_allISOs_medianCI.csv") # all ISO
+prop_ac_byISO_medianCI <- read.csv("data/prop_ac_byISO_medianCI.csv") # by ISO
+
+# total cost 
+cost_allISOs_medianCI <- read.csv("data/cost/cost_allISOs_medianCI.csv") # all ISO
+ocv_cost_byISO_medianCI <- read.csv("data/cost/ocv_cost_byISO_medianCI.csv")
+test_cost_byISO_medianCI <- read.csv("data/cost/test_cost_byISO_medianCI.csv")
+
+# cost per avert case
+total_costeff_allISOs_medianCI <- read.csv("data/cost/total_costeff_allISOs_medianCI.csv")
+total_costeff_byISO_medianCI <- read.csv("data/cost/total_costeff_byISO_medianCI.csv")
+
+# read in baseline incidence of each country
+df_incid0 <- read.csv("data/df_incid0.csv") %>% dplyr::select(-X)
+```
+
+
+```{r}
+# get the total cost (OCV + test) of each ISO
+cost_byISO_medianCI <- 
+  ocv_cost_byISO_medianCI %>%
+  left_join(
+    test_cost_byISO_medianCI %>% 
+      dplyr::select(ISO, threshold, confirmation_lens, admin_level,
+                    test_cost_lb, test_cost_median, test_cost_ub),
+    by = c("ISO", "confirmation_lens", "threshold", "admin_level")
+  )
+
+cost_byISO_medianCI[is.na(cost_byISO_medianCI)] <- 0
+cost_byISO_medianCI <- cost_byISO_medianCI %>%
+  mutate(cost_median = ocv_cost_median + test_cost_median) %>%
+  dplyr::select(1:4, cost_median)
+```
+
+```{r}
+# join byISO data together 
+df.byISO <- 
+  df_tp_eff %>%
+  dplyr::select(ISO, threshold, confirmation_lens, admin_level, efficiency_median, ac_median) %>%
+  left_join(
+    cost_byISO_medianCI, by = c("ISO", "confirmation_lens", "threshold", "admin_level")
+  ) %>%
+  left_join(
+    total_costeff_byISO_medianCI %>% 
+      dplyr::select(ISO, threshold, confirmation_lens, admin_level, costeff_ocv_test_median),
+    by = c("ISO", "confirmation_lens", "threshold", "admin_level")
+  ) %>%
+  # filter out those without vaccination going on 
+  filter(!is.na(efficiency_median))
+
+# join allISOs data together 
+df.allISOs <-
+  df_tp_eff_allISOs %>% 
+  dplyr::select(-tp_cumu_lb, -tp_cumu_median, -tp_cumu_ub) %>%
+  left_join(
+    cost_allISOs_medianCI %>%
+      dplyr::select(-c(ocv_cost_lb, ocv_cost_median, ocv_cost_ub, test_cost_lb, test_cost_median, test_cost_ub)), by = c("threshold", "confirmation_lens", "admin_level")
+  ) %>%
+  left_join(
+    total_costeff_allISOs_medianCI, by = c("threshold", "confirmation_lens", "admin_level")
+  )
+  
+```
+
+<br>
+
+```{r, echo = T}
+baseline_ir_median <- median(df_incid0$baseline_incidence)
+median(df_incid0$baseline_incidence)
+```
+
+```{r}
+# group countries into regions:
+# function code from mapping pipeline:
+df.byISO <- df.byISO %>% 
+    dplyr::mutate(
+      AFRO_region = dplyr::case_when(
+        ISO %in% c("BDI","ETH","KEN","MDG","RWA","SDN","SSD","UGA","TZA","DJI","SOM","SDN") ~ "Eastern Africa",
+        ISO %in% c("MOZ","MWI","NAM","SWZ","ZMB","ZWE","ZAF") ~ "Southern Africa",
+        ISO %in% c("AGO","CMR","CAF","TCD","COG","COD","GNQ","GAN") ~ "Middle Africa",
+        ISO %in% c("BEN","BFA","CIV","GHA","GIN","GNB","LBR","MLI","MRT","NER","NGA","SEN","SLE","TGO") ~ "Western Africa"))
+
+df.byISO <- df.byISO %>%
+  left_join(df_incid0 %>% dplyr::select(ISO, baseline_incidence),
+            by = "ISO") %>%
+  mutate(burden = ifelse(baseline_incidence > baseline_ir_median, "high", "low"))
+
+high.burden.ISO <- unique((df.byISO %>% filter(burden == "high"))$ISO)
+low.burden.ISO <- unique((df.byISO %>% filter(burden == "low"))$ISO)
+```
+<br>
+
+### By country:
+
+### **Figure `r fig.counter`.**  Total cost ~ total averted cases 
+```{r, fig.width = 10, fig.height = 5}
+df.byISO %>% 
+  filter(admin_level == "admin2") %>%
+  filter(confirmation_lens != "global-estimate") %>%
+  ggplot() +
+  geom_point(aes(x = (ac_median/1000), y = (cost_median/1000000), color = as.factor(confirmation_lens))) +
+  facet_grid(. ~ factor(threshold)) +
+  scale_x_sqrt() +  scale_y_sqrt() +
+  xlab("Total averted cases (K)") +
+  ylab("Total cost (million)") +
+  labs(color ="Threshold") +
+  theme_bw() +
+  theme(legend.position = "top") 
+```
+
+<br>
+
+### Follow up after the meeting, to see the difference between the high burden 
+```{r}
+df.byISO %>% 
+  filter(admin_level == "admin2") %>%
+  filter(confirmation_lens != "global-estimate") %>%
+  ggplot() +
+  geom_point(aes(x = (ac_median/1000), y = (cost_median/1000000), color = as.factor(confirmation_lens))) +
+  facet_grid(burden ~ factor(threshold)) +
+  scale_x_sqrt() +  scale_y_sqrt() +
+  xlab("Total averted cases (K)") +
+  ylab("Total cost (million)") +
+  labs(color ="Threshold") +
+  theme(legend.position = "top")
+```
+
+
+```{r, fig.width=10, fig.height = 10}
+fig.counter <- fig.counter + 1
+
+df.byISO %>% 
+  filter(admin_level == "admin2") %>%
+  filter(confirmation_lens != "global-estimate") %>%
+  ggplot() +
+  geom_point(aes(x = (ac_median/1000), y = (cost_median/1000000), color = as.factor(confirmation_lens))) +
+  facet_grid(AFRO_region ~ factor(threshold)) +
+  scale_x_sqrt() +  scale_y_sqrt() +
+  xlab("Total averted cases (K)") +
+  ylab("Total cost (million)") +
+  labs(color ="Threshold") +
+  theme(legend.position = "top")
+```
+
+<br>
+
+### **Figure `r fig.counter`.** OCV efficiency ~ cost per averted case
+```{r, fig.width =10, fig.height=5}
+df.byISO %>% 
+  filter(admin_level == "admin2") %>%
+  filter(confirmation_lens != "global-estimate") %>%
+  filter(ac_median > 1) %>%
+  ggplot() +
+  geom_point(aes(x = (efficiency_median), y = (costeff_ocv_test_median), color = as.factor(confirmation_lens))) +
+  facet_grid(. ~ factor(threshold)) +
+  scale_y_log10() +
+  xlab("OCV efficiency") +
+  ylab("Cost per averted case") +
+  labs(color ="Confirmation_lens") +
+  theme(legend.position = "top")
+```
+
+<br>
+
+### OCV efficiency ~ cost per averted case (by disease burden)
+```{r}
+df.byISO %>% 
+  filter(admin_level == "admin2") %>%
+  filter(confirmation_lens != "global-estimate") %>%
+  filter(ac_median > 1) %>%
+  ggplot() +
+  geom_point(aes(x = (efficiency_median), y = (costeff_ocv_test_median), color = as.factor(confirmation_lens))) +
+  facet_grid(burden ~ factor(threshold)) +
+  scale_y_log10() +
+  xlab("OCV efficiency") +
+  ylab("Cost per averted case") +
+  labs(color ="Confirmation_lens") +
+  theme(legend.position = "top")
+```
+
+<br>
+
+```{r fig.width=10, fig.height = 7}
+fig.counter <- fig.counter + 1
+
+df.byISO %>% 
+  filter(admin_level == "admin2") %>%
+  filter(confirmation_lens != "global-estimate") %>%
+  filter(ac_median > 1) %>%
+  ggplot() +
+  geom_point(aes(x = (efficiency_median), y = (costeff_ocv_test_median), color = as.factor(confirmation_lens))) +
+  facet_grid(AFRO_region ~ factor(threshold)) +
+  scale_y_log10() +
+  xlab("OCV efficiency") +
+  ylab("Cost per averted case") +
+  labs(color ="Confirmation_lens") +
+  theme(legend.position = "top")
+```
+
+<br>
+
+### By scenario (countries aggregated)
+
+### **Figure `r fig.counter`.**  Total cost ~ total averted cases 
+```{r fig.width=10, fig.height = 5}
+fig.counter <- fig.counter + 1
+
+df.allISOs %>%
+  filter(admin_level == "admin2") %>%
+  ggplot() +
+  geom_point(aes(x = ac_median/1000000, y = total_cost_median/1000000, 
+                 color = factor(threshold))) +
+  geom_errorbar(aes(x = ac_median/1000000, y = total_cost_median/1000000,
+                    xmin = ac_lb/1000000, xmax = ac_ub/1000000, color = factor(threshold)),
+                width = 40) +
+  geom_errorbar(aes(x = ac_median/1000000, y = total_cost_median/1000000,
+                    ymin = total_cost_lb/1000000, ymax = total_cost_ub/1000000, color = factor(threshold)),
+                width = 0.02) +
+  facet_grid(~ confirmation_lens) +
+  xlab("Total averted cases (million)") +
+  ylab("Total cost ($million)") +
+  labs(color = "Threshold") +
+  theme_bw()
+```
+
+<br>
+
+
+### to be put in the extended data file
+```{r fig.width=8, fig.height = 8}
+# plot all scenarios in one panel
+plt.extended5 <-
+  df.allISOs %>%
+  mutate(confirmation_lens = case_when(confirmation_lens == "district-estimate" ~ "Decentralized Testing",
+                                       confirmation_lens == "no-estimate" ~ "Clinical Definition",
+                                       confirmation_lens == "global-estimate" ~ "Centralized Testing")) %>%
+  mutate(confirmation_lens = factor(confirmation_lens, levels = c("Clinical Definition", "Centralized Testing", "Decentralized Testing"))) %>%
+  mutate(threshold = case_when(threshold == 0.001 ~ "10/10,000 per year",
+                               threshold == 2e-04 ~ "2/10,000 per year",
+                               threshold == 1e-04 ~ "1/10,000 per year")) %>%
+  mutate(threshold = factor(threshold, levels = c("10/10,000 per year", "2/10,000 per year", "1/10,000 per year"))) %>%
+  filter(admin_level == "admin2") %>%
+  ggplot() +
+  geom_line(aes(x = ac_median/1000000, y = total_cost_median/1000000, color = confirmation_lens), alpha = 0.45) +
+
+  geom_point(aes(x = ac_median/1000000, y = total_cost_median/1000000, color = confirmation_lens, shape = factor(threshold)), size = 3) +
+  geom_errorbar(aes(x = ac_median/1000000, y = total_cost_median/1000000,
+                    xmin = ac_lb/1000000, xmax = ac_ub/1000000, color = confirmation_lens), width = 40) +
+  geom_errorbar(aes(x = ac_median/1000000, y = total_cost_median/1000000,
+                    ymin = total_cost_lb/1000000, ymax = total_cost_ub/1000000, color = confirmation_lens ),
+                width = 0.01) +
+  xlab("Total averted cases (million)") +
+  ylab("Total cost ($million)") +
+  labs(color = "Confirmation capacity") + 
+  theme_bw() +
+  theme(legend.position = "right", legend.box = 'vertical') +
+  labs(shape  = "Threshold")
+
+ggsave(plot = plt.extended5, filename = "figures/fig_extended5.jpg", height = 6, width = 8)
+```
+
+<br>
+
+### **Figure `r fig.counter`.**  OCV efficiency ~ cost per averted case 
+```{r fig.width=10, fig.height = 5}
+fig.counter <- fig.counter + 1
+
+df.allISOs %>%
+  filter(admin_level == "admin2") %>%
+  ggplot() +
+  geom_point(aes(x = efficiency_median, y = costeff_ocv_test_median, 
+                 color = factor(threshold))) +
+  geom_errorbar(aes(x = efficiency_median, y = costeff_ocv_test_median,
+                    xmin = efficiency_lb, xmax = efficiency_ub, color = factor(threshold)), width = 0.02) +
+  geom_errorbar(aes(x = efficiency_median, y = costeff_ocv_test_median,
+                    ymin = costeff_ocv_test_lb, ymax = costeff_ocv_test_ub, color = factor(threshold)),
+                width = 0.2) +
+  facet_grid(~ confirmation_lens) +
+  scale_y_log10() +
+  xlab("OCV efficiency") +
+  ylab("Cost per averted case") +
+  labs(color = "Threshold")
+```
+
+<br>
+
+```{r fig.width=8, fig.height = 8}
+df.allISOs %>%
+  filter(admin_level == "admin2") %>%
+  ggplot() +
+  geom_point(aes(x = efficiency_median, y = costeff_ocv_test_median, 
+                 color = factor(confirmation_lens), shape = factor(threshold)), size = 3) +
+  geom_errorbar(aes(x = efficiency_median, y = costeff_ocv_test_median,
+                    xmin = efficiency_lb, xmax = efficiency_ub, color = factor(confirmation_lens)), width = 0.02) +
+  geom_errorbar(aes(x = efficiency_median, y = costeff_ocv_test_median,
+                    ymin = costeff_ocv_test_lb, ymax = costeff_ocv_test_ub, color = factor(confirmation_lens)),
+                width = 0.3) +
+  geom_line(aes(x = efficiency_median, y = costeff_ocv_test_median, color = confirmation_lens), alpha = 0.45) +
+  scale_y_log10() +
+  xlab("OCV efficiency") +
+  ylab("Cost per averted case") +
+  labs(color = "Threshold")
+```
+
+<br>
+
+### **Figure `r fig.counter`.**  Total OCV cost ~ total test cost (by baseline burden)
+high: higher than baseline median; low: lower than baseline median.
+Baseline median: 9.107072e-05.
+```{r}
+fig.counter <- fig.counter + 1
+
+df.total.cost <- test_cost_byISO_medianCI %>%
+  dplyr::select(ISO, confirmation_lens, admin_level, threshold, test_cost_median) %>%
+  left_join(
+     ocv_cost_byISO_medianCI  %>% dplyr::select(ISO, threshold, confirmation_lens, admin_level, ocv_cost_median)
+  ) %>%
+  filter(admin_level == "admin2" & confirmation_lens == "district-estimate") %>% 
+  filter(ocv_cost_median > 1) %>%
+  mutate(burden = ifelse(ISO %in% high.burden.ISO, "high", "low")) %>%
+  mutate(test_cost_median = test_cost_median / 1000000,
+         ocv_cost_median = ocv_cost_median / 1000000)
+
+df.total.cost %>%
+  ggplot() +
+  geom_point(aes(x = test_cost_median, y = ocv_cost_median, color = factor(threshold))) +
+  scale_x_log10() +
+  scale_y_log10() +
+  facet_grid(burden ~ .) +
+  xlab("Total test cost ($million)") +
+  ylab("Total OCV cost ($million)") +
+  labs(color = "Threshold")
+  
+
+```
+
+
