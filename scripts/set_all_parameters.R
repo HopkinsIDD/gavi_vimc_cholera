@@ -5,9 +5,9 @@ runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survm
 
 
 #====== Shared parameters ======#
-scenarios <- c("ocv1-default", "ocv1-ocv2-default", "no-vaccination")
+scenarios <- c("ocv1-default","ocv1-ocv2-default", "no-vaccination")
 num_skip_years <- 3   #district-level skipped years, relevant to both projects
-num_samples <- 100  #shared by both projects
+num_samples <- 1  #shared by both projects
 use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity
 
 if (runname == "202310gavi-4"){
