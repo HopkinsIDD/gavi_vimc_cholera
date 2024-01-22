@@ -119,11 +119,9 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
   ###########add a little check point for the situation when the coverage data exists but is just 0
   coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE, redownload = FALSE)
   
-  ##calam commented out lines 126-132 because following modifications in import_coverage_scenario there
-  ##is no longer a 'coverage' column in the coverage csv (there is an 'OCV1' column with one-dose coverage
-  ##and an 'OCV2' column with two-dose coverage)
+  ##calam commented out lines 128-132 because we no longer want to filer out 0s (since we are adding rows with 0 OCV2 coverage for the ocv1-default scenario )
   
-  ##coverage_as_all_0_for_campaign <- (sum(coverage$coverage) == 0)
+  coverage_as_all_0_for_campaign <- (sum(coverage$OCV1) == 0)
   
   ##if (!coverage_as_all_0_for_campaign){
     
