@@ -23,6 +23,9 @@ create_sus_modelInputs <- function(
     ve_direct,
     clean){
   
+  ##for debugging 1/23/2024
+  message("create_sus_modelInputs starts")
+  
   ## create template and inputs
   years_ls <- get_model_years(modelpath, country, vacc_alloc)
   model_years <- years_ls[["model_years"]]
@@ -42,6 +45,9 @@ create_sus_modelInputs <- function(
   pop_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_pop.tif")
   vacc_rasterStack <- raster::stack(vacc_out_fn)
   pop_rasterStack <- raster::stack(pop_out_fn)
+  
+  ##for debugging 1/23/2024
+  message("raster templates created")
   
   if (clean & file.exists(sus_out_fn)){
     message(paste("Clean existing", sus_out_fn))
