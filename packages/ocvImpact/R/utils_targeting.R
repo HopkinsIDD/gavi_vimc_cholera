@@ -149,7 +149,9 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
     for (i in 1:length(coverage$year)){
       
       cov_year <- coverage[i,]
-      goal_target_pop <- cov_year$target
+      
+      ##calam commented out on 1/23/2024 because it does not apply to implementation for 202310gavi-4 touchstone
+      ##goal_target_pop <- cov_year$target
       
       ##goal fvps with one dose and two doses of the vaccine
       goal_ocv1_fvp <- cov_year$fvp_ocv1
@@ -176,10 +178,12 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
       ptargets_avail <- run_targeting_strategy(new_ptargets, targeting_strat) %>%
         dplyr::mutate(
           id = seq_along(GID_2),
-          possible_fvp = round(goal_target_pop * pop_prop * campaign_cov, 0), 
-          possible_fvp_cumsum = cumsum(possible_fvp),
-          actual_ocv1_fvp = ifelse(possible_fvp_cumsum <= goal_ocv1_fvp, possible_fvp, 0),
-          actual_ocv2_fvp = ifelse(possible_fvp_cumsum <= goal_ocv2_fvp, possible_fvp, 0),
+          possible_fvp_ocv1 = round(goal_ocv1_fvp * pop_prop * campaign_cov, 0),
+          possible_fvp_ocv2 = round(goal_ocv2_fvp * pop_prop * campaign_cov, 0), 
+          possible_fvp_cumsum_ocv1 = cumsum(possible_fvp_ocv1),
+          possible_fvp_cumsum_ocv2 = cumsum(possible_fvp_ocv2),
+          actual_ocv1_fvp = ifelse(possible_fvp_cumsum_ocv1 <= goal_ocv1_fvp, possible_fvp_ocv1, 0),
+          actual_ocv2_fvp = ifelse(possible_fvp_cumsum_ocv2 <= goal_ocv2_fvp, possible_fvp_ocv2, 0),
           fullDistrict_ocv1_target = ifelse(actual_ocv1_fvp > 0, TRUE, FALSE),
           fullDistrict_ocv2_target = ifelse(actual_ocv2_fvp > 0, TRUE, FALSE))
       
@@ -201,8 +205,8 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
         partialDistrict_ocv2_id <- 1
         
       } else{
-        partialDistrict_vaccinated_ocv1_people <- goal_ocv1_fvp - fullDistrict_vaccinated_ocv1_people[which.max(fullDistrict_vaccinated_ocv1_people$possible_fvp_cumsum),]$possible_fvp_cumsum
-        partialDistrict_vaccinated_ocv2_people <- goal_ocv2_fvp - fullDistrict_vaccinated_ocv2_people[which.max(fullDistrict_vaccinated_ocv2_people$possible_fvp_cumsum),]$possible_fvp_cumsum
+        partialDistrict_vaccinated_ocv1_people <- goal_ocv1_fvp - fullDistrict_vaccinated_ocv1_people[which.max(fullDistrict_vaccinated_ocv1_people$possible_fvp_cumsum_ocv1),]$possible_fvp_cumsum_ocv1
+        partialDistrict_vaccinated_ocv2_people <- goal_ocv2_fvp - fullDistrict_vaccinated_ocv2_people[which.max(fullDistrict_vaccinated_ocv2_people$possible_fvp_cumsum_ocv2),]$possible_fvp_cumsum_ocv2
         partialDistrict_ocv1_id <- max(fullDistrict_vaccinated_ocv1_people$id)+1
         partialDistrict_ocv2_id <- max(fullDistrict_vaccinated_ocv2_people$id)+1
         message(paste("Partial district ocv1 coverage:", ptargets_avail[which(ptargets_avail$id == partialDistrict_ocv1_id),]$GID_2))
