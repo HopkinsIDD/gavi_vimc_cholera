@@ -38,9 +38,6 @@ import_coverage_scenario <- function(modelpath, country, scenario, num_doses = N
   } else{
     cov_dat <- dplyr::arrange(cov_dat, year) %>%
       dplyr::mutate(fvp = round(target*coverage, 0))
-    if (filter0){
-      cov_dat <- dplyr::filter(cov_dat, coverage != 0)
-    }
     
     ##added procedure to add ocv2 rows for the coverage for the ocv1 scenario to ensure implementation is consistent across scenarios
     if (scenario == "ocv1-default"){
@@ -70,6 +67,11 @@ import_coverage_scenario <- function(modelpath, country, scenario, num_doses = N
     ##get a new column with the fvps vaccinated with two doses of the vaccine
     cov_dat <- dplyr::arrange(cov_dat, year) %>%
       dplyr::mutate(fvp_ocv2 = round(target*OCV2, 0))
+    
+    ## 1/23/2024 calam moved the filter0 utility at the end of the function
+    if (filter0){
+      cov_dat <- dplyr::filter(cov_dat, OCV1 != 0 | OCV2 != 0)
+    }
   }
 
   return(cov_dat)

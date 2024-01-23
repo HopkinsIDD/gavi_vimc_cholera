@@ -119,15 +119,13 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
   ###########add a little check point for the situation when the coverage data exists but is just 0
   coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE, redownload = FALSE)
   
-  ##calam commented out lines 128-132 because we no longer want to filer out 0s (since we are adding rows with 0 OCV2 coverage for the ocv1-default scenario )
+  coverage_as_all_0_for_campaign <- (sum(coverage$OCV1) == 0) & (sum(coverage$OCV2) == 0)
   
-  coverage_as_all_0_for_campaign <- (sum(coverage$OCV1) == 0)
-  
-  ##if (!coverage_as_all_0_for_campaign){
+  if (!coverage_as_all_0_for_campaign){
     
-    ##coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = TRUE, redownload = FALSE)
+    coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = TRUE, redownload = FALSE)
     
-  ##}
+  }
   
   if (is.null(coverage)){
     
@@ -218,9 +216,9 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
       
       
       if(coverage_as_all_0_for_campaign){
-        ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_ocv1_fvp>=0)
+        ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_ocv1_fvp>=0 & actual_ocv2_fvp>=0)
       } else if (coverage_as_all_0_for_campaign == FALSE){
-        ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_ocv1_fvp>0)
+        ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_ocv1_fvp>0 actual_ocv2_fvp>0)
       } else{
         stop(message('You did not pass the coverage_as_all_0_for_campaign checkpoint, please go back to the assign_vaccine_targets and check. '))
       }
