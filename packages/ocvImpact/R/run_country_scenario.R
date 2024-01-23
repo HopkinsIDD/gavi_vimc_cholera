@@ -42,7 +42,7 @@ run_country_scenario <- function(
   dummy <- create_static_modelInputs(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, clean)
   
   ## write susceptible population proportion raster 
-  dummy2 <- create_sus_modelInputs(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, ve_direct_ocv1, clean, ve_direct_ocv2)
+  dummy2 <- create_sus_modelInputs(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, ve_direct_ocv1, ve_direct_ocv2, clean)
   
   incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
   outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)

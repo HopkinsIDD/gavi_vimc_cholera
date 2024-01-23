@@ -20,7 +20,8 @@ create_sus_modelInputs <- function(
     scenario,
     rawoutpath,
     vacc_alloc,
-    ve_direct,
+    ve_direct_ocv1,
+    ve_direct_ocv2,
     clean){
   
   ##for debugging 1/23/2024
