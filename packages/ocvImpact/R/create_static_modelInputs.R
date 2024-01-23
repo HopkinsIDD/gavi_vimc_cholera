@@ -69,7 +69,7 @@ create_static_modelInputs <- function(
         new_layer <- fasterize::fasterize(
           dplyr::filter(vacc_alloc, vacc_year == year),
           raster0_template,
-          field = "actual_prop_vaccinated",
+          field = "actual_prop_atleast_1dose_vaccinated",
           fun = "last",
           background = 0
           )
