@@ -197,17 +197,20 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
         partialDistrict_vaccinated_ocv1_people <- goal_ocv1_fvp
         partialDistrict_ocv1_id <- 1
         
-      } else if (nrow(fullDistrict_vaccinated_ocv2_people) == 0){
+      } else{
+        partialDistrict_vaccinated_ocv1_people <- goal_ocv1_fvp - fullDistrict_vaccinated_ocv1_people[which.max(fullDistrict_vaccinated_ocv1_people$possible_fvp_cumsum_ocv1),]$possible_fvp_cumsum_ocv1
+        partialDistrict_ocv1_id <- max(fullDistrict_vaccinated_ocv1_people$id)+1
+        message(paste("Partial district ocv1 coverage:", ptargets_avail[which(ptargets_avail$id == partialDistrict_ocv1_id),]$GID_2))
+      }
+      
+      if (nrow(fullDistrict_vaccinated_ocv2_people) == 0){
         message("Partial district coverage: Coverage for ocv2 so low that no single district was fully vaccinated.")
         partialDistrict_vaccinated_ocv2_people <- goal_ocv2_fvp
         partialDistrict_ocv2_id <- 1
         
       } else{
-        partialDistrict_vaccinated_ocv1_people <- goal_ocv1_fvp - fullDistrict_vaccinated_ocv1_people[which.max(fullDistrict_vaccinated_ocv1_people$possible_fvp_cumsum_ocv1),]$possible_fvp_cumsum_ocv1
         partialDistrict_vaccinated_ocv2_people <- goal_ocv2_fvp - fullDistrict_vaccinated_ocv2_people[which.max(fullDistrict_vaccinated_ocv2_people$possible_fvp_cumsum_ocv2),]$possible_fvp_cumsum_ocv2
-        partialDistrict_ocv1_id <- max(fullDistrict_vaccinated_ocv1_people$id)+1
         partialDistrict_ocv2_id <- max(fullDistrict_vaccinated_ocv2_people$id)+1
-        message(paste("Partial district ocv1 coverage:", ptargets_avail[which(ptargets_avail$id == partialDistrict_ocv1_id),]$GID_2))
         message(paste("Partial district ocv2 coverage:", ptargets_avail[which(ptargets_avail$id == partialDistrict_ocv2_id),]$GID_2))
       }
       
