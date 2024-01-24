@@ -90,11 +90,11 @@ create_expectedCases <- function(
   dir.create(paste0(datapath, '/outbreak'), showWarnings = FALSE)
 
   ## apply outbreak multiplier only to the campaign years for now
-  first_year <- min(ocvImpact::import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE, redownload = FALSE)$year)
-  last_year  <- max(ocvImpact::import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE, redownload = FALSE)$year) + 5
-  campaign_years <- first_year:last_year
-  
-
+  if (!scenario == "no-vaccination"){  ##using the following lines for the no-vaccination scenario creates inf values and leads to error
+    first_year <- min(ocvImpact::import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE, redownload = FALSE)$year)
+    last_year  <- max(ocvImpact::import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE, redownload = FALSE)$year) + 5
+    campaign_years <- first_year:last_year  
+  }
 
   #set.seed(666) #hopefully that the ramdom seed set by the previous steps could pass onto here and be used, but it needs to be checked
   ec_ls <- lapply(output_years, function(oy){
