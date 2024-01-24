@@ -49,7 +49,7 @@ import_coverage_scenario <- function(modelpath, country, scenario, num_doses = N
     }
     
     ##added to adjust coverage
-    cov_dat <- adjusted_montagu_coverage(coverage_sheet = cov_dat, country = country)
+    cov_dat <- adjusted_montagu_coverage(coverage_sheet = cov_dat, cntrycode = country)
     
     ##procedure to make coverage dataframe 'wider' (get new columns for ocv1 and ocv2 coverage)
     

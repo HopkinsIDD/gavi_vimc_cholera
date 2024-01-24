@@ -11,7 +11,8 @@ create_sus_modelInputs(
   scenario,
   rawoutpath,
   vacc_alloc,
-  ve_direct,
+  ve_direct_ocv1,
+  ve_direct_ocv2,
   clean
 )
 }
@@ -28,11 +29,11 @@ create_sus_modelInputs(
 
 \item{vacc_alloc}{object returned from [`allocate_vaccine()`]}
 
-\item{clean}{logical that indicates whether existing sus_files should be deleted}
-
 \item{ve_direct_ocv1}{vaccine effect function for people that got one dose of OCV (default: vaccine_efficacy_all_groups_one_dose())}
 
 \item{ve_direct_ocv2}{vaccine effect function for people that got two doses of OCV (default: vaccine_efficacy_all_groups_two_dose())}
+
+\item{clean}{logical that indicates whether existing sus_files should be deleted}
 }
 \description{
 Create raster for proportion of population susceptible in each year, after accounting for vaccination
