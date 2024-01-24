@@ -376,30 +376,34 @@ import_country_proportion_under5 <- function(modelpath, country, year, redownloa
 #' @export
 #'
 #' @examples
-adjusted_montagu_coverage <- function(coverage_sheet, country){
-  coverage_unique <- unique(coverage_sheet) ##make sure we use unique rows
-  country <- country
-  df <- coverage_unique[coverage_unique$country_code == country,]
+adjusted_montagu_coverage <- function(coverage_sheet, cntrycode){
+  coverage_unique <- unique(coverage_sheet) ## make sure we use unique rows
+  df <- dplyr::filter(coverage_unique, country_code == cntrycode) %>%
+    dplyr::mutate(new_coverage = coverage) ## need to keep orig coverage for ocv2 new_coverage calculation
+  
   for (i in 1:nrow(df)){
     if (df[i,]$vaccine == 'OCV1' & any(df$vaccine == 'OCV2' & df$year == df[i,]$year)){ 
-      print('ocv1')
       pair <- which(df$vaccine == 'OCV2' & df$year == df[i,]$year)
       ocv1_coverage <- df[i,]$coverage
       ocv2_coverage <- df[pair,]$coverage
-      df[i,]$coverage <- ocv1_coverage - (ocv1_coverage*ocv2_coverage) + ocv2_coverage - (ocv1_coverage*ocv2_coverage) ##elizabeth's formula for ocv1 coverage   
-      print(df[i,]$coverage)
+      df[i,]$new_coverage <- ocv1_coverage + ocv2_coverage - (ocv1_coverage*ocv2_coverage) ## elizabeth's formula for ocv1 coverage   
+      print(paste('ocv1 replaced', df[i,]$coverage, "with", df[i,]$new_coverage))
     } else if (df[i,]$vaccine == 'OCV2' & any(df$vaccine == 'OCV1' & df$year == df[i,]$year)){
       pair <- which(df$vaccine == 'OCV1' & df$year == df[i,]$year)
       print('ocv2')
       ocv2_coverage <- df[i,]$coverage
       ocv1_coverage <- df[pair,]$coverage  
-      df[i,]$coverage <- ocv1_coverage*ocv2_coverage  ##elizabeth's formula for ocv2 coverage   
-      print(df[i,]$coverage)
+      df[i,]$new_coverage <- ocv1_coverage*ocv2_coverage  ## elizabeth's formula for ocv2 coverage   
+      print(paste('ocv2 replaced', df[i,]$coverage, "with", df[i,]$new_coverage))
     } else { ##cases where there is only one vaccination campaign (ocv1 or ocv2) for a year
-      df[i,]$coverage <- df[i,]$coverage
+      df[i,]$new_coverage <- df[i,]$coverage
       print("only one vaccination campaign this year")
-      print(df[i,]$coverage)
+      print(df[i,]$new_coverage)
     }
   }
-  return(df)
+  ## rename the columns in the return object so `coverage` can continue to be used
+  rc <- df %>% 
+    dplyr::rename(orig_coverage = coverage,
+                  coverage = new_coverage) 
+  return(rc)
 }
