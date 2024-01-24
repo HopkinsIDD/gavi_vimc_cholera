@@ -370,7 +370,7 @@ import_country_proportion_under5 <- function(modelpath, country, year, redownloa
 #' @Title adjusted_montagu_coverage
 #'
 #' @param coverage_sheet the montagu coverage csv file
-#' @param country the country code
+#' @param cntrycode the country code
 #'
 #' @return a dataframe with the coverage for one-dose and two-dose for the specified country each year adjusted using elizabeth's formula
 #' @export
