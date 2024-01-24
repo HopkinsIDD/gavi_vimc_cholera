@@ -84,6 +84,13 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, ...){
     }) %>%
       data.table::rbindlist()
     
+    ##for degubbing purposes calam 1/24/2024
+    print(vacc_targets$GID_2)
+    print(vacc_pop$GID_2)
+    print(vacc_targets$vacc_year)
+    print(vacc_pop$vacc_year)
+    ##end of debug section
+    
     vacc_coverage <- dplyr::left_join(vacc_targets, vacc_pop, by = c("GID_2", "vacc_year")) %>%
       dplyr::mutate(actual_prop_ocv1_vaccinated = actual_ocv1_fvp/pop_model) %>%
       dplyr::mutate(actual_prop_ocv2_vaccinated = actual_ocv2_fvp/pop_model) %>%
