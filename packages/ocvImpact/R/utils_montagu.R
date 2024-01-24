@@ -379,7 +379,7 @@ import_country_proportion_under5 <- function(modelpath, country, year, redownloa
 adjusted_montagu_coverage <- function(coverage_sheet, cntrycode){
   coverage_unique <- unique(coverage_sheet) ## make sure we use unique rows
   df <- dplyr::filter(coverage_unique, country_code == cntrycode) %>%
-    dplyr::mutate(new_coverage = coverage) ## need to keep orig coverage for ocv2 new_coverage calculation
+    dplyr::mutate(new_coverage = coverage) ## need to keep orig coverage for the second item in the pair's new_coverage calculation
   
   for (i in 1:nrow(df)){
     if (df[i,]$vaccine == 'OCV1' & any(df$vaccine == 'OCV2' & df$year == df[i,]$year)){ 
