@@ -221,7 +221,11 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
       if(coverage_as_all_0_for_campaign){
         ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_ocv1_fvp>=0 & actual_ocv2_fvp>=0)
       } else if (coverage_as_all_0_for_campaign == FALSE){
-        ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_ocv1_fvp>0 & actual_ocv2_fvp>0)
+        if (scenario == "ocv1-default"){
+          ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_ocv1_fvp>0)
+        } else {
+          ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_ocv1_fvp>0 & actual_ocv2_fvp>0)
+        }
       } else{
         stop(message('You did not pass the coverage_as_all_0_for_campaign checkpoint, please go back to the assign_vaccine_targets and check. '))
       }
