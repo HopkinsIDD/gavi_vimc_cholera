@@ -1,0 +1,16 @@
+runname: '202310gavi-4'
+country: 'MDG'
+scenario: 'ocv1-default'
+clean: TRUE
+incid:
+  num_samples: 100
+  redraw: FALSE
+  use_country_incid_trend: TRUE
+vacc:
+  targeting_strategy: affected_pop
+  num_skip_years: 3
+  ndoses: one
+setting:
+  incidence_rate_trend: FALSE
+  outbreak_multiplier: FALSE
+  random_seed: 103
