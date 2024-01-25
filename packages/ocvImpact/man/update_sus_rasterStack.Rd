@@ -22,6 +22,9 @@ update_sus_rasterStack(
 \arguments{
 \item{sus_list}{}
 }
+\value{
+sus_list
+}
 \description{
 update one sus rasterStack at a time
 }

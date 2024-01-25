@@ -15,6 +15,9 @@ check_table_screening(spathname, country, scenario, threshold, vac_admin_level)
 
 \item{vac_admin_level}{the admin level to check}
 }
+\value{
+logical
+}
 \description{
 check_table_screening
 }

@@ -21,6 +21,9 @@ update_sus_rasterStack_optimized(
 \arguments{
 \item{last_vac_ef_year}{the last year when vac is still effective after received}
 }
+\value{
+sus_list
+}
 \description{
 update multi-layer sus rasterStack at one time
 }

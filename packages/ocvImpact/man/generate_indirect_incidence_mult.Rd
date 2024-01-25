@@ -6,6 +6,9 @@
 \usage{
 generate_indirect_incidence_mult()
 }
+\value{
+function for indirect protection
+}
 \description{
 Using studies on indirect vaccine protection from Kolkota and Matlab, generate a function that takes the level of vaccination coverage and returns a multiplier indicating the percentage reduction in incidence due to indirect vaccine protection. These represent the baseline parameters for indirect vaccine protection.
 }

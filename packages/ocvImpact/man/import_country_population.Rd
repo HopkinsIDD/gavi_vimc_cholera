@@ -13,6 +13,9 @@ import_country_population(modelpath, country, redownload = TRUE)
 
 \item{redownload}{whether to redownload the file}
 }
+\value{
+dataframe
+}
 \description{
 Get total country population from standardized source in Montagu. [may be used in future for case-based targeting]
 }

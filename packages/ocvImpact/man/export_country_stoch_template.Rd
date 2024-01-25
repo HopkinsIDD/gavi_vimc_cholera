@@ -23,6 +23,9 @@ export_country_stoch_template(
 
 \item{outpath}{path to final model output files}
 }
+\value{
+dataframe
+}
 \description{
 Export a stochastic burden template file for a single country
 }

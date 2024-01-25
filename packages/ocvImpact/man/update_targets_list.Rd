@@ -42,6 +42,9 @@ update_targets_list(
 
 \item{testing_sensitivity}{true sensitivity of testing}
 }
+\value{
+dataframe
+}
 \description{
 update targets in the rc_list
 }

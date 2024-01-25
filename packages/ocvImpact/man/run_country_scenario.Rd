@@ -54,6 +54,9 @@ run_country_scenario(
 
 \item{mu}{inverse life expectancy for country in years^(-1)}
 }
+\value{
+dataframe and export files
+}
 \description{
 Run full country scenario
 }

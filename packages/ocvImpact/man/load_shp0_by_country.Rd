@@ -11,6 +11,9 @@ load_shp0_by_country(datapath, country)
 
 \item{country}{country code}
 }
+\value{
+shapefile
+}
 \description{
 load_shp0_by_country
 }
