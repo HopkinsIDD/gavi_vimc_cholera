@@ -109,7 +109,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
 #' @param campaign_cov Proportion of the target population vaccinated by the campaign (default = 0.8)
 #' @param num_skip_years Skip targeting in locations vaccinated within the last X years (default = 0 --> no skipping)
 #' @importFrom magrittr %>%
-#' @return 
+#' @return dataframe
 #' @export
 #' @include utils_targeting.R utils_montagu.R
 assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targeting_strat = "incidence", campaign_cov = 0.8, num_skip_years = 0){

@@ -7,7 +7,7 @@
 #' @param country country code
 #' @param nsamples numeric, number of layers to sample (must be below 1000)
 #' @param redraw logical that indicates whether existing incid samples should be drawn again
-#' @param random_seed
+#' @param random_seed random seed number
 #' @return raster of incidence rate, "nsamples" samples
 #' @export
 #' @include get_singular_estimate.R align_rasters.R utils_montagu.R load_worldpop_by_country.R

@@ -16,7 +16,7 @@
 #' @param clean logical that indicates whether existing targeting and model outputs (sus, pop, vacc) should be deleted (default = TRUE)
 #' @param redraw logical that indicates whether existing incidence raster samples should be redrawn (default = FALSE)
 #' @param ... Optional parameters to pass to [`assign_vaccine_targets()`]. See [`assign_vaccine_targets()`] for defaults.
-#' @return 
+#' @return dataframe and export files
 #' @export
 #' @include utils.R create_static_modelInputs.R create_sus_modelInputs.R create_expectedCases.R
 run_country_scenario <- function(

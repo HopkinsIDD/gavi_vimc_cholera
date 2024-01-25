@@ -480,7 +480,6 @@ generate_pct_protect_function_two_dose_under5 <- function(my_trunc_year = 5, my_
 #' @return a function returning the weighted average vaccine efficacy for the one-dose campaign 
 #' @export
 #'
-#' @examples
 vaccine_efficacy_all_groups_one_dose <- function(){
   vaccine_efficacy <- function(proportion_under5, years){
     vaccine_efficacy_under5_function <- generate_pct_protect_function_one_dose_under5()
@@ -498,7 +497,6 @@ vaccine_efficacy_all_groups_one_dose <- function(){
 #' @return a function returning the weighted average vaccine efficacy for the two-dose campaign 
 #' @export
 #'
-#' @examples
 vaccine_efficacy_all_groups_two_dose <- function(){ 
   vaccine_efficacy <- function(proportion_under5, years){
     vaccine_efficacy_under5_function <- generate_pct_protect_function_two_dose_under5()
@@ -520,7 +518,6 @@ vaccine_efficacy_all_groups_two_dose <- function(){
 #' @return the vaccine efficacy for the mixed group that includes people vaccinated with one and two doses of the vaccine
 #' @export
 #'
-#' @examples
 vaccine_efficacy_all_groups_all_doses <- function(efficacy_one_dose, efficacy_two_dose, proportion_one_dose){
   vaccine_efficacy <- (efficacy_one_dose * proportion_one_dose + efficacy_two_dose * (1-proportion_one_dose))/(proportion_one_dose + (1-proportion_one_dose)) ##weighted average
   return(vaccine_efficacy)
@@ -534,7 +531,6 @@ vaccine_efficacy_all_groups_all_doses <- function(efficacy_one_dose, efficacy_tw
 #' @param year the vaccination year
 #' @return the proportion of vaccinated people that received one dose of OCV
 #' @export
-#' @examples
 get_pop_proportion_ocv1 <- function(vacc_alloc, year){
   vacc_alloc <- unique(vacc_alloc[vacc_alloc$vacc_year == year,]) ##unique in case there are duplicate rows, eg. GHA 2040
   total_ocv1 <- sum(vacc_alloc$actual_ocv1_fvp) ## fvps with one dose
@@ -549,7 +545,7 @@ get_pop_proportion_ocv1 <- function(vacc_alloc, year){
 #' @title generate_indirect_incidence_mult
 #' @description Using studies on indirect vaccine protection from Kolkota and Matlab, generate a function that takes the level of vaccination coverage and returns a multiplier indicating the percentage reduction in incidence due to indirect vaccine protection. These represent the baseline parameters for indirect vaccine protection. 
 #' @importFrom magrittr %>%
-#' @return 
+#' @return function for indirect protection
 #' @export
 generate_indirect_incidence_mult <- function(){
 
