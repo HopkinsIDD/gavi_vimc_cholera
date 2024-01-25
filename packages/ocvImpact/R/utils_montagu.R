@@ -62,11 +62,9 @@ import_coverage_scenario <- function(modelpath, country, scenario, num_doses = N
     
     ##get a new column with the fvps vaccinated with one dose of the vaccine
     cov_dat <- dplyr::arrange(cov_dat, year) %>%
-      dplyr::mutate(fvp_ocv1 = round(target*OCV1, 0))
-    
-    ##get a new column with the fvps vaccinated with two doses of the vaccine
-    cov_dat <- dplyr::arrange(cov_dat, year) %>%
-      dplyr::mutate(fvp_ocv2 = round(target*OCV2, 0))
+      dplyr::mutate(fvp_ocv1 = round(target*OCV1, 0)) %>% ## add number of 1-dose vaccinees
+      dplyr::mutate(fvp_ocv2 = round(target*OCV2, 0)) %>% ## add number of 2-dose vaccinees
+      dplyr::mutate(prop_ocv1 = fvp_ocv1/(fvp_ocv1+fvp_ocv2)) ## calculate proportion of people receiving at least 1 dose that received exactly 1 dose
     
     ## 1/23/2024 calam moved the filter0 utility at the end of the function
     if (filter0){
