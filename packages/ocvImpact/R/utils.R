@@ -519,7 +519,7 @@ vaccine_efficacy_all_groups_two_dose <- function(){
 #' @export
 #'
 vaccine_efficacy_all_groups_all_doses <- function(efficacy_one_dose, efficacy_two_dose, proportion_one_dose){
-  vaccine_efficacy <- (efficacy_one_dose * proportion_one_dose + efficacy_two_dose * (1-proportion_one_dose))/(proportion_one_dose + (1-proportion_one_dose)) ##weighted average
+  vaccine_efficacy <- (efficacy_one_dose * proportion_one_dose + efficacy_two_dose * (1-proportion_one_dose)) ##weighted average
   return(vaccine_efficacy)
 } 
 
