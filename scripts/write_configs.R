@@ -78,7 +78,7 @@ for(scn in scenarios){
   scnpathname <- file.path(cpathname, scn)
   dir.create(scnpathname, showWarnings = FALSE)
   
-  for (dose in ndoses){
+  #for (dose in ndoses){
 
     for(surveillance_scenario in surveillance_scenarios){
     
@@ -105,7 +105,14 @@ for(scn in scenarios){
         dir.create(scnpathname, showWarnings = FALSE)
         
         #parameters that apply only to the 202310gavi-4 touchstone with the one-dose and two-dose vaccination scenarios
-        pars$ndoses <- dose
+        #pars$ndoses <- dose
+        if (scn == "ocv1-default"){
+          pars$ndoses <- "one"
+        } else if (scn == "ocv1-ocv2-default"){
+          pars$ndoses <- "two"
+        } else {
+          pars$ndoses <- "zero"
+        }
         # the followings are specific to the surveillance project
         pars$save_intermediate_raster <- save_intermediate_raster
         pars$save_final_output_raster <- save_final_output_raster
@@ -131,5 +138,5 @@ for(scn in scenarios){
       }
   
     }  
-  }
+ # }
 }

@@ -18,9 +18,7 @@ if (runname == "202310gavi-4"){
 
 clean_outputs <- TRUE
 clean_incid <- FALSE
-if (runname == "202310gavi-4"){
-  ndoses <- c("one", "two") ##calam added option for the number of doses, only applies to the VIMC Core model 2023 touchstone
-}
+
 # default country list
 ids <- readr::read_csv("input_data/locations_todeletelater.csv") # location ids
 cw <- readr::read_csv("input_data/region_country.csv")
