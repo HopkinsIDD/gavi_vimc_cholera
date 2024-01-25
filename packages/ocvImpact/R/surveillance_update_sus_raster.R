@@ -12,9 +12,8 @@
 #' @param model_year
 #' @param last_vac_ef_year the last year when vac is still effective after received 
 #' @param rc_targeted
-#' @return 
+#' @return sus_list
 #' @export
-#' @include
 update_sus_rasterStack_optimized <- function( datapath, 
                                               modelpath,
                                               country, 
@@ -108,9 +107,8 @@ update_sus_rasterStack_optimized <- function( datapath,
 #' @param outbreak_multiplier
 #' @param vac_incid_threshold
 #' @param surveillance_scenario
-#' @return 
+#' @return save raster
 #' @export
-#' @include
 save_sus_raster <- function(datapath, modelpath, country, nsamples, model_year, sus_list, 
                             rawoutpath = NULL, 
                             clean = NULL, 
@@ -186,9 +184,8 @@ save_sus_raster <- function(datapath, modelpath, country, nsamples, model_year, 
 #' @param input_list
 #' @param sus_list 
 #' @param rc_targeted
-#' @return 
+#' @return sus_list
 #' @export
-#' @include
 update_sus_rasterStack <- function(datapath, 
                                    modelpath,
                                    country, 

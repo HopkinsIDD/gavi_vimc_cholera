@@ -13,6 +13,9 @@ load_shp2_by_country(datapath, country, simple = FALSE)
 
 \item{simple}{return country level shapefile is TRUE}
 }
+\value{
+shapefile
+}
 \description{
 load_shp2_by_country
 }

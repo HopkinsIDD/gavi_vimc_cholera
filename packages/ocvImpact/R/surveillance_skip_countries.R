@@ -6,9 +6,8 @@
 #' @param scenario
 #' @param threshold incidence rate threshold
 #' @param vac_admin_level the admin level to check
-#' @return 
+#' @return logical
 #' @export
-#' @include
 check_table_screening <- function(spathname, country, scenario, threshold, vac_admin_level){
   
   scr_fn <- paste(spathname, "country_simulation_skipped.csv", sep = "/")
@@ -61,9 +60,8 @@ check_table_screening <- function(spathname, country, scenario, threshold, vac_a
 #' @param rc_list a list of targeting table to check confirmed_incidence_rate
 #' @param rc_targeted admin levels to be targeted at 
 #' @param nsamples number of layers 
-#' @return 
+#' @return check
 #' @export
-#' @include
 update_table_screening <- function(datapath, modelpath, country, scenario, threshold, vac_start_year, vac_end_year, rc_list, rc_targeted, nsamples){
   # Get the dataset
   scr_fn <- paste(datapath, "incidence", "country_simulation_skipped.csv", sep = "/")
@@ -119,9 +117,8 @@ update_table_screening <- function(datapath, modelpath, country, scenario, thres
 #' @description novacc_campde_transfer 
 #' @param rawoutpath path to the raw output folder 
 #' @param config the config with all the parameters 
-#' @return 
+#' @return copy files 
 #' @export
-#' @include
 novacc_campde_transfer <- function(rawoutpath, config){
   
   message(" *----* Using the novacc scenario model output for the camp scenario. ")

@@ -18,6 +18,9 @@ get_confirmed_incidence_rate(
 \arguments{
 \item{use_mean_ir}{}
 }
+\value{
+rc_list
+}
 \description{
 to get the confirmed incidence rate in the rc_list
 }

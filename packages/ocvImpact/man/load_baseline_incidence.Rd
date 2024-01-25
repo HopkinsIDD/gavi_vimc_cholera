@@ -24,6 +24,9 @@ load_baseline_incidence(
 \arguments{
 \item{country}{}
 }
+\value{
+raster list
+}
 \description{
 from lambda to incidence rate look-up table to rc_list
 }

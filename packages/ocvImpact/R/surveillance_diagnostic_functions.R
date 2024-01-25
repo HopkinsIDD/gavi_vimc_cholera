@@ -13,7 +13,6 @@
 #' @param surveillance_scenario scale of surveillance, takes "no-estimate", "global-estimate", or "district-estimate"
 #' @return table with model settings & scenario parameters
 #' @export
-#' @include
 check_model_setting <- function(working_dir = NULL, 
                                 configpath = "configs/202110gavi-3", 
                                 countries,
@@ -78,7 +77,6 @@ check_model_setting <- function(working_dir = NULL,
 #' @param admin_level the admin level to check for output
 #' @return TRUE or FALSE indicating whether the output files for the specified countries and scenarios exist in output folder, and also return warning messages to check output of which country is missing
 #' @export
-#' @include
 check_outputs_availability <- function( working_dir = NULL, 
                                         rawoutpath = "output_raw/202110gavi-3",
                                         configpath = "configs/202110gavi-3",
@@ -1071,7 +1069,6 @@ plot_time_table <- function(cache){
 #' @param surveillance_scenario scale of surveillance scenario, which will be used to calculate observed incidence 
 #' @return a table with incidence, target population and number of doses administered, by year and cumulatively
 #' @export
-#' @include
 get_inc_tp_doses_helper <- function(rc,
                                     sum_level,
                                     vax_cov = 0.68,
@@ -1267,7 +1264,6 @@ get_inc_tp_doses_helper <- function(rc,
 #' @param surveillance_scenario scale of surveillance, takes "no-estimate", "global-estimate", or "district-estimate"
 #' @return 
 #' @export
-#' @include
 get_inc_tp_doses <- function(working_dir, 
                              rawoutpath = "output_raw/202110gavi-3",
                              configpath = "configs/202110gavi-3",
@@ -1361,7 +1357,6 @@ get_inc_tp_doses <- function(working_dir,
 #' @param cache where the filenames and files are saved 
 #' @return two distribution plots cached 
 #' @export
-#' @include
 omega_alpha_distribution <- function( countries,
                                       surveillance_scenario_chosen = "global-estimate",   
                                       admins = "both", 
@@ -1419,7 +1414,6 @@ omega_alpha_distribution <- function( countries,
 #' @param cache where the filenames and files are saved 
 #' @return alpha table
 #' @export
-#' @include
 alpha_table <- function(cache){   
   alpha_table <- cache$alpha_table %>% 
     mutate(run_id = paste0("run ", run_id)) %>% 
@@ -1441,7 +1435,6 @@ alpha_table <- function(cache){
 #' @param rc target table of one country at one admin level
 #' @return a table summarizing target population and ocv efficiency for one country at one admin_level (either admin1 or admin2)
 #' @export
-#' @include
 make_eff_table <- function(rc){
   
   country <- rc$ISO[1]
@@ -1528,7 +1521,6 @@ make_eff_table <- function(rc){
 #' @param admin_level admin level(s) selected for the diagnostic report
 #' @return a table summarizing target population and ocv efficiency for one or more countries (at country level)
 #' @export
-#' @include
 combine_eff_table <- function(countries, 
                               df_target,
                               admin_level){
@@ -1565,7 +1557,6 @@ combine_eff_table <- function(countries,
 #' @param rc target table all countries at one admin level
 #' @return a table summarizing target population and ocv efficiency for all countries at one admin_level (either admin1 or admin2)
 #' @export
-#' @include
 make_eff_table_allISOs <- function(rc){
   
     df_tp_cumu <- rc %>% 
@@ -1646,7 +1637,6 @@ make_eff_table_allISOs <- function(rc){
 #' @param admin_level admin level(s) selected for the diagnostic report
 #' @return a table summarizing target population and ocv efficiency for one or more countries (at country level)
 #' @export
-#' @include
 combine_eff_table_allISOs <- function(df_target,
                                       admin_level){
     

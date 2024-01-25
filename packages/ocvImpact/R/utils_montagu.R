@@ -113,7 +113,7 @@ import_centralburden_template <- function(modelpath, country, redownload = TRUE)
 #' @param country country code
 #' @param redownload whether to redownload the file
 #' @importFrom magrittr %>%
-#' @return 
+#' @return dataframe
 #' @export 
 #' @include retrieve_montagu_population.R
 import_country_population <- function(modelpath, country, redownload = TRUE){
@@ -168,7 +168,7 @@ import_country_population_1yr <- function(modelpath, country, year){
 #' @param country country code
 #' @param redownload whether to redownload the file
 #' @importFrom magrittr %>%
-#' @return 
+#' @return  dataframe
 #' @export 
 #' @include retrieve_montagu_agePop.R
 import_country_agePop <- function(modelpath, country, redownload = TRUE){
@@ -210,7 +210,7 @@ import_country_agePop <- function(modelpath, country, redownload = TRUE){
 #' @param country country code
 #' @param redownload whether to redownload the file
 #' @importFrom magrittr %>%
-#' @return 
+#' @return dataframe
 #' @export 
 #' @include retrieve_montagu_lifeExpectancy.R
 import_country_lifeExpectancy <- function(modelpath, country, redownload = TRUE){
@@ -244,7 +244,7 @@ import_country_lifeExpectancy <- function(modelpath, country, redownload = TRUE)
 #' @param country country code
 #' @param year year for which life expectancy should be returned
 #' @importFrom magrittr %>%
-#' @return
+#' @return dataframe
 #' @export
 import_country_lifeExpectancy_1yr <- function(modelpath, country, year){
   lx0_df <- import_country_lifeExpectancy(modelpath, country, redownload = FALSE) #important change
@@ -365,7 +365,8 @@ import_country_proportion_under5 <- function(modelpath, country, year, redownloa
 ##someone will get each dose of the vaccine. For 1 dose, we are using elizabeth's formula where the coverage for one dose is C1 = c1 - (c1*c2) + c2 - (c1*c2)
 ##and for two doses, elizabeth's formula is C2 = c1*c2 (lower case c1 and c2 denotes montagu coverage for dose 1 and dose 2 respectively)
 
-#' @Title adjusted_montagu_coverage
+#' @title adjusted_montagu_coverage
+#' @name adjusted_montagu_coverage
 #'
 #' @param coverage_sheet the montagu coverage csv file
 #' @param cntrycode the country code
@@ -373,7 +374,6 @@ import_country_proportion_under5 <- function(modelpath, country, year, redownloa
 #' @return a dataframe with the coverage for one-dose and two-dose for the specified country each year adjusted using elizabeth's formula
 #' @export
 #'
-#' @examples
 adjusted_montagu_coverage <- function(coverage_sheet, cntrycode){
   coverage_unique <- unique(coverage_sheet) ## make sure we use unique rows
   df <- dplyr::filter(coverage_unique, country_code == cntrycode) %>%

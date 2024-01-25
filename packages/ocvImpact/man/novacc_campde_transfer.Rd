@@ -11,6 +11,9 @@ novacc_campde_transfer(rawoutpath, config)
 
 \item{config}{the config with all the parameters}
 }
+\value{
+copy files
+}
 \description{
 novacc_campde_transfer
 }

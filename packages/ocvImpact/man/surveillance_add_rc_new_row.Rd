@@ -17,6 +17,9 @@ surveillance_add_rc_new_row(
   mean_ir_span
 )
 }
+\value{
+rc_list
+}
 \description{
 quite similar to the load baseline incidence function, but focused on using the expected cases raster and adding new rows instead
 }

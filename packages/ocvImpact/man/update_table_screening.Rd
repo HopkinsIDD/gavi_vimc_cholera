@@ -38,6 +38,9 @@ update_table_screening(
 
 \item{nsamples}{number of layers}
 }
+\value{
+check
+}
 \description{
 update_table_screening
 }
