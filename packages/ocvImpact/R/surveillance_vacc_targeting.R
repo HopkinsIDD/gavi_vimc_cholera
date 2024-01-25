@@ -3,9 +3,8 @@
 #' @description load_shp0_by_country
 #' @param datapath path to input data 
 #' @param country country code 
-#' @return 
+#' @return shapefile
 #' @export
-#' @include
 load_shp0_by_country <- function(datapath, country){
   
   tryCatch(
@@ -29,9 +28,8 @@ load_shp0_by_country <- function(datapath, country){
 #' @param datapath path to input data 
 #' @param country country code 
 #' @param simple return country level shapefile is TRUE  
-#' @return 
+#' @return shapefile
 #' @export
-#' @include
 load_shp1_by_country <- function(datapath, country, simple = FALSE){
   
   tryCatch(
@@ -59,9 +57,8 @@ load_shp1_by_country <- function(datapath, country, simple = FALSE){
 #' @param datapath path to input data 
 #' @param country country code 
 #' @param simple return country level shapefile is TRUE  
-#' @return 
+#' @return shapefile
 #' @export
-#' @include
 load_shp2_by_country <- function(datapath, country, simple = FALSE){
   
   tryCatch(
@@ -100,9 +97,8 @@ load_shp2_by_country <- function(datapath, country, simple = FALSE){
 #' @param random_seed
 #' @param nsamples
 #' @param redraw
-#' @return 
+#' @return raster list
 #' @export
-#' @include
 load_baseline_incidence <- function(datapath, 
                                     modelpath, 
                                     country, 
@@ -333,9 +329,8 @@ load_baseline_incidence <- function(datapath,
 #' @param use_mean_ir
 #' @param mean_ir_span
 #' @param testing_sensitivity true sensitivity of testing 
-#' @return 
+#' @return dataframe
 #' @export
-#' @include
 update_targets_list <- function(datapath, modelpath, country, scenario, 
                                 rc_list, model_year, 
                                 campaign_cov, 
@@ -430,9 +425,8 @@ update_targets_list <- function(datapath, modelpath, country, scenario,
 #' @param use_mean_ir
 #' @param mean_ir_span
 #' @param testing_sensitivity
-#' @return 
+#' @return rc_list
 #' @export
-#' @include
 update_novacc_year <- function(datapath, rc_list, model_year, surveillance_scenario, rc_targeted, use_mean_ir, mean_ir_span, testing_sensitivity){
   for(rcs in rc_targeted){
     # Update the latest target year, if all NA's from last year or this is the first simulation year, no need to update
@@ -469,9 +463,8 @@ update_novacc_year <- function(datapath, rc_list, model_year, surveillance_scena
 #' @param use_mean_ir
 #' @param mean_ir_span
 #' @param testing_sensitivity
-#' @return 
+#' @return rc_list
 #' @export
-#' @include
 update_vacc_year <- function( datapath, modelpath, country, rc_list, model_year, 
                               campaign_cov, threshold, surveillance_scenario, 
                               vac_start_year, vac_end_year, num_skip_years, rc_targeted, 
@@ -545,9 +538,8 @@ update_vacc_year <- function( datapath, modelpath, country, rc_list, model_year,
 #' @param use_mean_ir 
 #' @param mean_ir_span
 #' @param testing_sensitivity
-#' @return 
+#' @return rc_list
 #' @export
-#' @include
 get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scenario, omicron_dataset, rcs, use_mean_ir, mean_ir_span, testing_sensitivity){
   ##### The same district/country can only use the same confirmation rate across years but different across layers 
 
@@ -610,9 +602,8 @@ get_confirmed_incidence_rate <- function(rc_list, model_year, surveillance_scena
 #' @param shp2
 #' @param nsamples
 #' @param mean_ir_span
-#' @return 
+#' @return rc_list
 #' @export
-#' @include
 surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_start_year, sim_end_year, shp1, shp2, nsamples, mean_ir_span){
 
   ## Prepare

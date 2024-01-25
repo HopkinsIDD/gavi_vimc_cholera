@@ -12,9 +12,8 @@
 #' @param input_list
 #' @param no_vacc_year
 #' @param rc_targeted
-#' @return 
+#' @return raster
 #' @export
-#' @include
 update_vac_raster <- function(datapath,
                               modelpath, 
                               country, 
@@ -130,9 +129,8 @@ update_vac_raster <- function(datapath,
 #' @param outbreak_multiplier
 #' @param vac_incid_threshold
 #' @param surveillance_scenario
-#' @return 
+#' @return save raster
 #' @export
-#' @include
 save_vac_raster <- function(datapath,
                             modelpath, 
                             country, 
