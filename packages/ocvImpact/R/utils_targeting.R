@@ -143,7 +143,7 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
     }
     
     ftargets <- vector(mode = "list", length = length(coverage$year))
-    
+    print(coverage$year)
     for (i in 1:length(coverage$year)){
       
       cov_year <- coverage[i,]
@@ -224,7 +224,7 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targe
         if (scenario == "ocv1-default"){
           ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_ocv1_fvp>0)
         } else {
-          ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_ocv1_fvp>0 & actual_ocv2_fvp>0)
+          ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_ocv1_fvp>0 | actual_ocv2_fvp>0)
         }
       } else{
         stop(message('You did not pass the coverage_as_all_0_for_campaign checkpoint, please go back to the assign_vaccine_targets and check. '))
