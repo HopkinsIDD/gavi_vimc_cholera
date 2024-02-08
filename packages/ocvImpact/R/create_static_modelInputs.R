@@ -118,6 +118,6 @@ create_static_modelInputs <- function(
   rm(vacc_rasterStack, startpop_raster, raster0_template, pop_rasterStack)
   gc()
   
-  return(NULL)
+  return(NULL) 
 
 }
