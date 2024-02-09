@@ -183,336 +183,129 @@ generate_pct_protect_function <- function(my_trunc_year = 5, my_ve_scen = "base"
     return(pct.protect)
 }
 
-
-
-#' @name generate_pct_protect_function_one_dose
-#' @title generate_pct_protect_function_one_dose
-#' @description Using vaccine efficacy studies in the new Hanmeng and Andrew study, generate a function that takes the year since vaccination and provides an estimate of the direct ve. Vaccine efficacy declines to 0 after my_trunc_year years
-#' @param my_trun_year
-#' @param my_ve_scen
-#' @importFrom magrittr %>%
-#' @return dataframe with estimates for unweighted and weighted mean vaccination campaign coverage proportion across coverage surveys in the review
+#' @title pct_protect_all_ages_1d
+#' @name pct_protect_all_ages_1d
+#' @description 1 dose VE function for all age groups
+#' @param years number of years since vacc campaign
+#' @param proportion_under5 proportion of population under 5 years
+#' @param my_trunc_year number of years after which VE is 0, default = 10
+#' @return proportion protected for a given time since vaccination and proportion under 5
 #' @export
-generate_pct_protect_function_one_dose <- function(my_trunc_year = 3, my_ve_scen = "base", study_type = "all"){
-
-  ve.dat <- readxl::read_xlsx("input_data/SR_of_OCV_efficacy_effectiveness.xlsx", sheet = 8) #load review table data from Hanmeng&Andrew
-
-  ve.dat <- ve.dat[ve.dat$Dose == 1,] #select only cases with one dose of the vaccine, ignore cases with "at least one dose" for now
-
-  if (study_type == "efficacy"){
-    ve.dat <- ve.dat[ve.dat$StudyType == 'Efficacy',]
-  } else if (study_type == "effectiveness"){
-    ve.dat <- ve.dat[ve.dat$StudyType == 'Effectiveness',]
-  } else if (study_type == "all"){
-    ve.dat <- ve.dat
-  }
-
-  ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
-
-  ve.dat$weights <-  1/(abs(as.numeric(ve.dat$se))^2)
-
-  ve.dat <- ve.dat[ve.dat$TL<48,] #select only cases where the observation period began before two years
-
-  ##this is our basic trend in vaccine effictiveness.
-  ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
-
-  ##create a function that gives the expected percent protected
-  ##by a vaccine during a particular year after vaccination
-
-  pct.protect<-function(year, ci=FALSE,trunc_year=my_trunc_year,ve_scen=my_ve_scen) {
-    if (any(year%%1 !=0)) {warning("function designed to average across years only")}
-    if(!ve_scen %in% c("base","low","high")) {warning("ve_scen not recognized, assuming ve_scen='base'")}
-
-    months <- (year-.5)*12
-
-    if(ve_scen %in% c("high","low")){
-      ci <- TRUE
-    }
-
-    if (ci) {
-      rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
-    } else {
-      rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months))),0) %>% unname
-    }
-
-    rc <- as.matrix(rc)
-
-    if(any(year>trunc_year)){
-      rc[which(year>trunc_year),] <- 0
-    }
-
-    if(ve_scen == "high"){
-      rc <- rc[,2]
-    } else if (ve_scen == "low"){
-      rc <- rc[,3]
-    }
-
-    return(rc)
-  }
-  return(pct.protect)
-}
-
-
-
-#' @name generate_pct_protect_function_two_dose
-#' @title generate_pct_protect_function_two_dose
-#' @description Using vaccine efficacy studies in the new Hanmeng and Andrew study, generate a function that takes the year since vaccination and provides an estimate of the direct ve. Vaccine efficacy declines to 0 after my_trunc_year years
-#' @param my_trun_year
-#' @param my_ve_scen
-#' @importFrom magrittr %>%
-#' @return dataframe with estimates for unweighted and weighted mean vaccination campaign coverage proportion across coverage surveys in the review
-#' @export
-generate_pct_protect_function_two_dose <- function(my_trunc_year = 5, my_ve_scen = "base", study_type = "efficacy"){
-
-  ve.dat <- readxl::read_xlsx("input_data/SR_of_OCV_efficacy_effectiveness.xlsx", sheet = 8) #load review table data from Hanmeng&Andrew
-
-  ve.dat <- ve.dat[ve.dat$Dose == 2,] #select only cases with two doses of the vaccine, ignore cases with "at least one dose" for now
-
-  if (study_type == "efficacy"){
-    ve.dat <- ve.dat[ve.dat$StudyType == 'Efficacy',]
-  } else if (study_type == "effectiveness"){
-    ve.dat <- ve.dat[ve.dat$StudyType == 'Effectiveness',]
-  } else if (study_type == "all"){
-    ve.dat <- ve.dat
-  }
-
-  ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
-
-  ve.dat$weights <-  1/(abs(as.numeric(ve.dat$se))^2)
-
-  ve.dat <- ve.dat[ve.dat$TL<48,] #select only cases where the observation period began before two years
-
-  ##this is our basic trend in vaccine effictiveness.
-  ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
-
-  ##create a function that gives the expected percent protected
-  ##by a vaccine during a particular year after vaccination
-
-  pct.protect<-function(year, ci=FALSE,trunc_year=my_trunc_year,ve_scen=my_ve_scen) {
-    if (any(year%%1 !=0)) {warning("function designed to average across years only")}
-    if(!ve_scen %in% c("base","low","high")) {warning("ve_scen not recognized, assuming ve_scen='base'")}
-
-    months <- (year-.5)*12
-
-    if(ve_scen %in% c("high","low")){
-      ci <- TRUE
-    }
-
-    if (ci) {
-      rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
-    } else {
-      rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months))),0) %>% unname
-    }
-
-    rc <- as.matrix(rc)
-
-    if(any(year>trunc_year)){
-      rc[which(year>trunc_year),] <- 0
-    }
-
-    if(ve_scen == "high"){
-      rc <- rc[,2]
-    } else if (ve_scen == "low"){
-      rc <- rc[,3]
-    }
-
-    return(rc)
-  }
-  return(pct.protect)
-}
-
-
-
-#' @name generate_pct_protect_function_one_dose_under5
-#' @title generate_pct_protect_function_one_dose_under5
-#' @description Using vaccine efficacy studies in the new Hanmeng and Andrew study, generate a function that takes the year since vaccination and provides an estimate of the direct ve. Vaccine efficacy declines to 0 after my_trunc_year years
-#'
-#' @param my_trunc_year
-#' @param study_type
-#' @param my_ve_scen
-#'
-#' @importFrom magrittr %>%
-#' @return dataframe with estimates for unweighted and weighted mean vaccination campaign coverage proportion across coverage surveys in the review
-#' @export
-generate_pct_protect_function_one_dose_under5 <- function(my_trunc_year = 0, my_ve_scen = "base", study_type = "all"){
-
-  ve.dat <- readxl::read_xlsx("input_data/SR_of_OCV_efficacy_effectiveness.xlsx", sheet = 8) #load review table data from Hanmeng&Andrew
-
-  ve.dat <- ve.dat[ve.dat$Dose == 1,] #select only cases with one dose of the vaccine, ignore cases with "at least one dose" for now
-
-  if (study_type == "efficacy"){
-    ve.dat <- ve.dat[ve.dat$StudyType == 'Efficacy',]
-  } else if (study_type == "effectiveness"){
-    ve.dat <- ve.dat[ve.dat$StudyType == 'Effectiveness',]
-  } else if (study_type == "all"){
-    ve.dat <- ve.dat
-  }
-
-  ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
-
-  ve.dat$weights <-  1/(abs(as.numeric(ve.dat$se))^2)
-
-  ve.dat <- ve.dat[ve.dat$TL<48,] #select only cases where the observation period ended before two years
-
-  ##this is our basic trend in vaccine effectiveness.
-  ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
-
-  ##create a function that gives the expected percent protected
-  ##by a vaccine during a particular year after vaccination
-
-  pct.protect<-function(year, ci=FALSE,trunc_year=my_trunc_year,ve_scen=my_ve_scen) {
-    if (any(year%%1 !=0)) {warning("function designed to average across years only")}
-    if(!ve_scen %in% c("base","low","high")) {warning("ve_scen not recognized, assuming ve_scen='base'")}
-
-    months <- (year-.5)*12
-
-    if(ve_scen %in% c("high","low")){
-      ci <- TRUE
-    }
-
-    if (ci) {
-      rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
-    } else {
-      rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months))),0) %>% unname
-    }
-
-    rc <- as.matrix(rc)
-
-    if(any(year>=trunc_year)){
-      rc[which(year>=trunc_year),] <- 0 ##set vaccine efficacy to 0 for all years when under-5 year olds are vaccinated
-    }
-
-    if(ve_scen == "high"){
-      rc <- rc[,2]
-    } else if (ve_scen == "low"){
-      rc <- rc[,3]
-    }
-
-    return(rc)
-  }
-  return(pct.protect)
-}
-
-
-
-#' @name generate_pct_protect_function_two_dose_under5
-#' @title generate_pct_protect_function_two_dose_under5
-#' @description Using vaccine efficacy studies in the new Hanmeng and Andrew study, generate a function that takes the year since vaccination and provides an estimate of the direct ve. Vaccine efficacy declines to 0 after my_trunc_year years
-#'
-#' @param my_trunc_year
-#' @param study_type
-#' @param my_ve_scen
-#'
-#' @importFrom magrittr %>%
-#' @return dataframe with estimates for unweighted and weighted mean vaccination campaign coverage proportion across coverage surveys in the review
-#' @export
-generate_pct_protect_function_two_dose_under5 <- function(my_trunc_year = 5, my_ve_scen = "base", study_type = "efficacy"){
-
-  ve.dat <- readxl::read_xlsx("input_data/SR_of_OCV_efficacy_effectiveness.xlsx", sheet = 8) #load review table data from Hanmeng&Andrew
-
-  ve.dat <- ve.dat[ve.dat$Dose == 2,] #select only cases with two doses of the vaccine, ignore cases with "at least one dose" for now
-
-  if (study_type == "efficacy"){
-    ve.dat <- ve.dat[ve.dat$StudyType == 'Efficacy',]
-  } else if (study_type == "effectiveness"){
-    ve.dat <- ve.dat[ve.dat$StudyType == 'Effectiveness',]
-  } else if (study_type == "all"){
-    ve.dat <- ve.dat
-  }
-
-  ve.dat$T <- (ve.dat$TL+ve.dat$TR)/2
-
-  ve.dat$weights <-  1/(abs(as.numeric(ve.dat$se))^2)
-
-  ve.dat <- ve.dat[ve.dat$TL<48,] #select only cases where the observation period ended before two years
-
-  ##this is our basic trend in vaccine effectiveness.
-  ve.trend <- lm(yi~T , data=ve.dat, weights = weights)
-
-  ##create a function that gives the expected percent protected
-  ##by a vaccine during a particular year after vaccination
-
-  pct.protect<-function(year, ci=FALSE,trunc_year=my_trunc_year,ve_scen=my_ve_scen) {
-    if (any(year%%1 !=0)) {warning("function designed to average across years only")}
-    if(!ve_scen %in% c("base","low","high")) {warning("ve_scen not recognized, assuming ve_scen='base'")}
-
-    months <- (year-.5)*12
-
-    if(ve_scen %in% c("high","low")){
-      ci <- TRUE
-    }
-
-    if (ci) {
-      rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months), interval="confidence") ),0) %>% unname
-    } else {
-      rc <- pmax(1-exp(predict(ve.trend, newdata=data.frame(T=months))),0) %>% unname
-    }
-
-    rc <- as.matrix(rc)
-    rc <- rc-(rc*0.44) ##added to shift down the curve by 0.44 of the vaccine efficacy for over 5 year olds
-
-    if(any(year>trunc_year)){
-      rc[which(year>trunc_year),] <- 0
-    }
-
-    if(ve_scen == "high"){
-      rc <- rc[,2]
-    } else if (ve_scen == "low"){
-      rc <- rc[,3]
-    }
-
-    return(rc)
-  }
-  return(pct.protect)
-}
-
-
-
-#' @title vaccine_efficacy_all_groups_one_dose
-#' @description wrapper function that takes the vaccine efficacy functions for the <5 and >5 year olds for the one-dose campaign and returns a new function that returns their weighted average. Weighting is according to the proportion of <5 and >5 year-olds in the population
-#' @return a function returning the weighted average vaccine efficacy for the one-dose campaign
-#' @export
-#'
-vaccine_efficacy_all_groups_one_dose <- function(){
-  vaccine_efficacy <- function(proportion_under5, years){
-    vaccine_efficacy_under5_function <- generate_pct_protect_function_one_dose_under5()
-    vaccine_efficacy_under5 <- vaccine_efficacy_under5_function(years)
-    vaccine_efficacy_over5_function <- generate_pct_protect_function_one_dose()
-    vaccine_efficacy_over5 <- vaccine_efficacy_over5_function(years)
-    vaccine_efficacy <- (vaccine_efficacy_under5 * proportion_under5 + vaccine_efficacy_over5 * (1-proportion_under5))/(proportion_under5 + (1-proportion_under5))
-  }
+pct_protect_all_ages_1d <- function(years, proportion_under5, my_trunc_year = 10){
+  
+  ve_under5_1d <- pct_protect_under5_1d(years, my_trunc_year)
+  ve_over5_1d <- pct_protect_over5_1d(years)
+  vaccine_efficacy <- (ve_under5_1d * proportion_under5 + ve_over5_1d * (1-proportion_under5))
+  
   return(vaccine_efficacy)
 }
 
-
-#' @title vaccine_efficacy_all_groups_two_dose
-#' @description  wrapper function that takes the vaccine efficacy functions for the <5 and >5 year olds for the two-dose campaign and returns a new function that returns their weighted average. Weighting is according to the proportion of <5 and >5 year-olds in the population
-#' @return a function returning the weighted average vaccine efficacy for the two-dose campaign
+#' @title pct_protect_under5_1d
+#' @name pct_protect_under5_1d
+#' @description 1 dose VE function for under 5s
+#' @param years number of years since vacc campaign
+#' @param my_trunc_year number of years after which VE is 0, default = 10
+#' @return proportion protected for a given time since vaccination and under 5s
 #' @export
-#'
-vaccine_efficacy_all_groups_two_dose <- function(){
-  vaccine_efficacy <- function(proportion_under5, years){
-    vaccine_efficacy_under5_function <- generate_pct_protect_function_two_dose_under5()
-    vaccine_efficacy_under5 <- vaccine_efficacy_under5_function(years)
-    vaccine_efficacy_over5_function <- generate_pct_protect_function_two_dose()
-    vaccine_efficacy_over5 <- vaccine_efficacy_over5_function(years)
-    vaccine_efficacy <- (vaccine_efficacy_under5 * proportion_under5 + vaccine_efficacy_over5 * (1-proportion_under5))/(proportion_under5 + (1-proportion_under5))
+pct_protect_under5_1d <- function(years, my_trunc_year = 10){
+  ## currently assuming no protection for under 5 1-dose recipients
+  return(0)
+}
+
+#' @title pct_protect_over5_1d
+#' @name pct_protect_over5_1d
+#' @description 1 dose VE function for over 5s
+#' @param years number of years since vacc campaign
+#' @param my_trunc_year number of years after which VE is 0, default = 10
+#' @return proportion protected for a given time since vaccination and over 5s
+#' @export
+pct_protect_over5_1d <- function(years, my_trunc_year = 10){
+  if (any(years%%1 !=0)) {warning("function designed to average across years only")}
+
+  ve_1d_trend <- readRDS("input_data/log1d_obs.rds") ## UNDEBUG put real predict object
+  months <- (years-.5)*12
+  df <- metafor::predict.rma(ve_1d_trend, newmods=months, transf=function(x) 1-exp(x), addx=TRUE) %>%
+    as.data.frame() %>%
+    dplyr::mutate(pred_corr = ifelse(pred < 0, 0, pred)) 
+  rc <- as.matrix(df$pred_corr)
+
+  if(any(years>my_trunc_year)){
+    rc[which(years>my_trunc_year),] <- 0
   }
+
+  return(rc)
+}
+
+#' @title pct_protect_all_ages_2d
+#' @name pct_protect_all_ages_2d
+#' @description 2 dose VE function for all age groups
+#' @param years number of years since vacc campaign
+#' @param proportion_under5 proportion of population under 5 years
+#' @param my_trunc_year number of years after which VE is 0, default = 10
+#' @return proportion protected for a given time since vaccination and proportion under 5
+#' @export
+pct_protect_all_ages_2d <- function(years, proportion_under5, my_trunc_year = 10){
+  
+  ve_under5_2d <- pct_protect_under5_2d(years, my_trunc_year)
+  ve_over5_2d <- pct_protect_over5_2d(years, my_trunc_year)
+  vaccine_efficacy <- (ve_under5_2d * proportion_under5 + ve_over5_2d * (1-proportion_under5))
+  
   return(vaccine_efficacy)
 }
 
-
-#' @title  vaccine_efficacy_all_groups_all_doses
-#' @description function that takes the vaccine efficacy for the one-dose group and the vaccine efficacy of the two-dose group and
-#' returns their weighted average. Weighting is according to the proportion people that had one dose/two doses of the vaccine in the population
-#' @param efficacy_one_dose vaccine efficacy for the one-dose group (output of vaccine_efficacy_all_groups_one_dose)
-#' @param efficacy_two_dose vaccine efficacy for the two-dose group (output of vaccine_efficacy_all_groups_two_dose)
-#' @param proportion_one_dose the proportion of vaccinated people that received one dose of the vaccine
-#' @return the vaccine efficacy for the mixed group that includes people vaccinated with one and two doses of the vaccine
+#' @title pct_protect_under5_2d
+#' @name pct_protect_under5_2d
+#' @description 2 dose VE function for under 5s
+#' @param years number of years since vacc campaign
+#' @param my_trunc_year number of years after which VE is 0, default = 10
+#' @return proportion protected for a given time since vaccination and under 5s
 #' @export
-#'
-vaccine_efficacy_all_groups_all_doses <- function(efficacy_one_dose, efficacy_two_dose, proportion_one_dose){
-  vaccine_efficacy <- (efficacy_one_dose * proportion_one_dose + efficacy_two_dose * (1-proportion_one_dose)) ##weighted average
+pct_protect_under5_2d <- function(years, my_trunc_year = 10){
+  age_multiplier <- mean(c(0.28, 1.04, 0.49, 0.83, 0.69, 0.56, 1.03, 0.34)) ## raw mean of relative VE of <5s to >5s in prelim version of Xu et al. 
+  rc <- age_multiplier * pct_protect_over5_2d(years, my_trunc_year)
+  return(rc)
+}
+
+#' @title pct_protect_over5_2d
+#' @name pct_protect_over5_2d
+#' @description 2 dose VE function for over 5s
+#' @param years number of years since vacc campaign
+#' @param my_trunc_year number of years after which VE is 0, default = 10
+#' @return proportion protected for a given time since vaccination and over 5s
+#' @export
+pct_protect_over5_2d <- function(years, my_trunc_year = 10){
+  if (any(years%%1 !=0)) {warning("function designed to average across years only")}
+
+  ve_2d_trend <- readRDS("input_data/log2d_obs.rds") 
+  months <- (years-.5)*12
+  df <- metafor::predict.rma(ve_2d_trend, newmods=months, transf=function(x) 1-exp(x), addx=TRUE) %>%
+    as.data.frame() %>%
+    dplyr::mutate(pred_corr = ifelse(pred < 0, 0, pred))  
+  rc <- as.matrix(df$pred_corr)
+
+  if(any(years>my_trunc_year)){
+    rc[which(years>my_trunc_year),] <- 0
+  }
+
+  return(rc)
+}
+
+
+#' @title pct_protect_all
+#' @name pct_protect_all
+#' @description total VE function for all age groups
+#' @param years number of years since vacc campaign
+#' @param proportion_under5 proportion of population under 5 years
+#' @param proportion_one_dose proportion of one dose vaccinees
+#' @param my_trunc_year number of years after which VE is 0, default = 10
+#' @return proportion protected for a given time since vaccination and proportion under 5
+#' @export
+pct_protect_all <- function(years, proportion_under5, proportion_one_dose, my_trunc_year = 10){
+  
+  ve_2d <- pct_protect_all_ages_2d(years, proportion_under5, my_trunc_year)
+  ve_1d <- pct_protect_all_ages_1d(years, proportion_under5, my_trunc_year)
+  vaccine_efficacy <- (ve_2d * proportion_one_dose + ve_1d * (1-proportion_one_dose))
+  
   return(vaccine_efficacy)
 }
 
