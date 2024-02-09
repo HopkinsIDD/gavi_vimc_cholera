@@ -8,7 +8,7 @@ incid:
   use_country_incid_trend: TRUE
 vacc:
   targeting_strategy: affected_pop
-  num_skip_years: 3
+  num_skip_years: 5
   ndoses: zero
 setting:
   incidence_rate_trend: TRUE
