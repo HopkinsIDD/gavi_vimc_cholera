@@ -114,7 +114,7 @@ get_model_years <- function(modelpath, country, vacc_alloc){
 
   if (!is.null(vacc_alloc)){
     ## assume that vaccine effects could be observed for maximum 8 years after the last campaign
-    myear <- seq(min(as.numeric(vacc_alloc$vacc_year)), min(max(as.numeric(vacc_alloc$vacc_year)+8), max_output_year)) ## CHANGE THIS TO LINK WITH MY_TRUNC_YEAR PARAM IN GENERATE_PCT_PROTECT_FUNCTION
+    myear <- seq(min(as.numeric(vacc_alloc$vacc_year)), min(max(as.numeric(vacc_alloc$vacc_year)+10), max_output_year)) ## COULD CHANGE 10YEARS THIS TO LINK WITH MY_TRUNC_YEAR PARAM IN GENERATE_PCT_PROTECT_FUNCTION
   } else{
     myear <- NULL
   }
@@ -129,8 +129,8 @@ get_model_years <- function(modelpath, country, vacc_alloc){
 #' @name generate_pct_protect_function
 #' @title generate_pct_protect_function
 #' @description Using vaccine efficacy studies in Bi et al. (2017), generate a function that takes the year since vaccination and provides an estimate of the direct ve. Vaccine efficacy declines to 0 after my_trunc_year years
-#' @param my_trun_year
-#' @param my_ve_scen
+#' @param my_trunc_year number of years after which VE is 0
+#' @param my_ve_scen VE scenario
 #' @importFrom magrittr %>%
 #' @return dataframe with estimates for unweighted and weighted mean vaccination campaign coverage proportion across coverage surveys in the review
 #' @export
@@ -222,15 +222,15 @@ pct_protect_under5_1d <- function(years, my_trunc_year = 10){
 pct_protect_over5_1d <- function(years, my_trunc_year = 10){
   if (any(years%%1 !=0)) {warning("function designed to average across years only")}
 
-  ve_1d_trend <- readRDS("input_data/log1d_obs.rds") ## UNDEBUG put real predict object
+  ve_1d_trend <- readRDS("input_data/log1d_obs.rds") 
   months <- (years-.5)*12
   df <- metafor::predict.rma(ve_1d_trend, newmods=months, transf=function(x) 1-exp(x), addx=TRUE) %>%
     as.data.frame() %>%
     dplyr::mutate(pred_corr = ifelse(pred < 0, 0, pred)) 
-  rc <- as.matrix(df$pred_corr)
+  rc <- df$pred_corr
 
   if(any(years>my_trunc_year)){
-    rc[which(years>my_trunc_year),] <- 0
+    rc[which(years>my_trunc_year)] <- 0
   }
 
   return(rc)
@@ -281,10 +281,10 @@ pct_protect_over5_2d <- function(years, my_trunc_year = 10){
   df <- metafor::predict.rma(ve_2d_trend, newmods=months, transf=function(x) 1-exp(x), addx=TRUE) %>%
     as.data.frame() %>%
     dplyr::mutate(pred_corr = ifelse(pred < 0, 0, pred))  
-  rc <- as.matrix(df$pred_corr)
+  rc <- df$pred_corr
 
   if(any(years>my_trunc_year)){
-    rc[which(years>my_trunc_year),] <- 0
+    rc[which(years>my_trunc_year)] <- 0
   }
 
   return(rc)
@@ -304,7 +304,7 @@ pct_protect_all <- function(years, proportion_under5, proportion_one_dose, my_tr
   
   ve_2d <- pct_protect_all_ages_2d(years, proportion_under5, my_trunc_year)
   ve_1d <- pct_protect_all_ages_1d(years, proportion_under5, my_trunc_year)
-  vaccine_efficacy <- (ve_2d * proportion_one_dose + ve_1d * (1-proportion_one_dose))
+  vaccine_efficacy <- (ve_1d * proportion_one_dose + ve_2d * (1-proportion_one_dose))
   
   return(vaccine_efficacy)
 }
