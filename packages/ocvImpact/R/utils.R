@@ -304,7 +304,13 @@ pct_protect_all <- function(years, proportion_under5, proportion_one_dose, my_tr
   
   ve_2d <- pct_protect_all_ages_2d(years, proportion_under5, my_trunc_year)
   ve_1d <- pct_protect_all_ages_1d(years, proportion_under5, my_trunc_year)
-  vaccine_efficacy <- (ve_1d * proportion_one_dose + ve_2d * (1-proportion_one_dose))
+  
+  if(is.na(proportion_one_dose) | proportion_one_dose > 1 | proportion_one_dose < 0){
+    message("proportion_one_dose is invalid, there may be no vaccination. returning VE = 0")
+    vaccine_efficacy <- 0
+  } else{
+    vaccine_efficacy <- (ve_1d * proportion_one_dose + ve_2d * (1-proportion_one_dose))
+  }  
   
   return(vaccine_efficacy)
 }
@@ -315,18 +321,27 @@ pct_protect_all <- function(years, proportion_under5, proportion_one_dose, my_tr
 #' one dose of the vaccine
 #' @param vacc_alloc the output of allocate_vaccine
 #' @param year the vaccination year
-#' @return the proportion of vaccinated people that received one dose of OCV
+#' @return the proportion of vaccinated people that received one dose of OCV in that year or the last year with vaccination
 #' @export
 get_pop_proportion_ocv1 <- function(vacc_alloc, year){
-  vacc_alloc_year <- unique(vacc_alloc[vacc_alloc$vacc_year == year,]) ##unique in case there are duplicate rows, eg. GHA 2040
-  if(nrow(vacc_alloc_year) > 0){
-      total_ocv1 <- sum(vacc_alloc$actual_ocv1_fvp) ## fvps with one dose
-      total_ocv2 <- sum(vacc_alloc$actual_ocv2_fvp) ## fvps with two doses
-      prop_ocv1_vs_ocv2 <- total_ocv1/(total_ocv1 + total_ocv2)
-  } else{
-      message(paste("No ocv1 proportion calculated. There was no vaccination in", year))
-      prop_ocv1_vs_ocv2 <- NA
+  vacc_alloc$vacc_year <- as.numeric(vacc_alloc$vacc_year)
+  vacc_alloc_year <- vacc_alloc[vacc_alloc$vacc_year == year,]
+  
+  if(year < min(vacc_alloc$vacc_year)){
+    warning(paste("Cannot return ocv1 proportion for years before the first vaccination year. Returning proportion for first vaccination year.", min(vacc_alloc$vacc_year)))
+    vacc_alloc_year <- vacc_alloc[vacc_alloc$vacc_year == min(vacc_alloc$vacc_year),]
+
+  } else if(nrow(vacc_alloc_year) == 0){
+    # otherwise, if no vaccination in year, identify most recent vacc year prior to current year
+    most_recent_vacc_year <- max(vacc_alloc$vacc_year[which(vacc_alloc$vacc_year < year)])
+    vacc_alloc_year <- vacc_alloc[vacc_alloc$vacc_year == most_recent_vacc_year,]
+    message(paste("There was no vaccination in", year, ". Calculating prop in", most_recent_vacc_year))
   }
+
+  total_ocv1 <- sum(vacc_alloc_year$actual_ocv1_fvp) ## fvps with one dose
+  total_ocv2 <- sum(vacc_alloc_year$actual_ocv2_fvp) ## fvps with two doses
+  prop_ocv1_vs_ocv2 <- total_ocv1/(total_ocv1 + total_ocv2)
+  
   return(prop_ocv1_vs_ocv2)
 }
 

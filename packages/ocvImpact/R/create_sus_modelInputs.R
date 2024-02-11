@@ -77,9 +77,6 @@ create_sus_modelInputs <- function(
         tmp <- raster1_template
         popj <- raster::subset(pop_rasterStack, subset = j, drop = FALSE)
 
-        under5_proportion <- import_country_proportion_under5(modelpath, country, year = output_years[j]) ## DEBUG add rm redownload arg
-        prop_ocv1 <- get_pop_proportion_ocv1(vacc_alloc, year = output_years[j])
-
         ## loop through pre-j years that could have had vaccination (identified by model_years object)
         if(min(which(output_years %in% model_years))>j){
             stop("Check immunity only in years prior to the current output year.")
@@ -95,13 +92,13 @@ create_sus_modelInputs <- function(
           ) 
 
           ## these proportions are referenced to k, which will be the year of the last vaccination campaign when applicable to ve_j_k calculations
-          under5_proportion <- import_country_proportion_under5(modelpath, country, year = output_years[k], redownload = FALSE) ## UNDEBUG rm redownload arg
+          under5_proportion <- import_country_proportion_under5(modelpath, country, year = output_years[k]) ## DEBUG add redownload arg
           prop_ocv1 <- get_pop_proportion_ocv1(vacc_alloc, year = output_years[k])
 
           ## calculate VE
           ve_j_k <- pct_protect_all(years = j-k+1, proportion_under5 = under5_proportion, proportion_one_dose = prop_ocv1, my_trunc_year = trunc_year)
 
-          # print(paste("j, k, vetot, prop_ocv1, under5prop", j, k, ve_j_k, prop_ocv1, under5_proportion)) ##UNDEBUG rm line
+          print(paste("j, k, vetot, prop_ocv1, under5prop", j, k, ve_j_k, prop_ocv1, under5_proportion)) 
 
           prob_still_protected <- raster::overlay(vacck, pkj,
                                                   fun = function(x, y){return(x*y*ve_j_k)}
