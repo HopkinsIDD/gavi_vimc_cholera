@@ -12,7 +12,7 @@ get_pop_proportion_ocv1(vacc_alloc, year)
 \item{year}{the vaccination year}
 }
 \value{
-the proportion of vaccinated people that received one dose of OCV
+the proportion of vaccinated people that received one dose of OCV in that year or the last year with vaccination
 }
 \description{
 function that gets vacc_alloc and year as inputs and returns the proportion of vaccinated people that got
