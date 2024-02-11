@@ -82,9 +82,9 @@ load_targets_by_country <- function(datapath, modelpath, country){
       dplyr::select(GID_0, GID_2, NAME_1, NAME_2, incidence, pop_prop) %>%
       tibble::as_tibble()
 
-#    if (sum(rc$pop_prop)!=1){
-#      stop(paste("The population proportion calculation is incorrect for", country))
-#    } ## DEBUG uncomment this section
+    if (sum(rc$pop_prop)!=1){
+      stop(paste("The population proportion calculation is incorrect for", country))
+    } ## DEBUG comment this section
 
     rm(afr,pop,shp)
     gc()
