@@ -11,6 +11,7 @@ create_sus_modelInputs(
   scenario,
   rawoutpath,
   vacc_alloc,
+  cache,
   clean,
   trunc_year = 10
 )
@@ -27,6 +28,8 @@ create_sus_modelInputs(
 \item{rawoutpath}{path to raw model output files}
 
 \item{vacc_alloc}{object returned from [`allocate_vaccine()`]}
+
+\item{cache}{montagu cache}
 
 \item{clean}{logical that indicates whether existing sus_files should be deleted}
 

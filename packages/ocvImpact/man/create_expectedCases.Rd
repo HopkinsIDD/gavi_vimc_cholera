@@ -14,6 +14,7 @@ create_expectedCases(
   indirect_mult,
   secular_trend_mult,
   nsamples,
+  cache,
   is_cf,
   redraw
 )
@@ -36,6 +37,8 @@ create_expectedCases(
 \item{secular_trend_mult}{function for calculating secular trends in mean annual incidence}
 
 \item{nsamples}{number of stochastic samples to use}
+
+\item{cache}{montagu cache}
 
 \item{is_cf}{logical indicating whether to run counterfactual model}
 

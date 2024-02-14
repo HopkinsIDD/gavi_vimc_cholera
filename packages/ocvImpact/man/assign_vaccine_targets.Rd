@@ -9,6 +9,7 @@ assign_vaccine_targets(
   modelpath,
   country,
   scenario,
+  cache,
   targeting_strat = "incidence",
   campaign_cov = 0.8,
   num_skip_years = 0
@@ -22,6 +23,8 @@ assign_vaccine_targets(
 \item{country}{country code}
 
 \item{scenario}{Unique string that identifies the coverage scenario name}
+
+\item{cache}{montagu cache}
 
 \item{targeting_strat}{Unique string that identifies how targets should be ranked (default = incidence)}
 
