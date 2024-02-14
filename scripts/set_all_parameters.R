@@ -5,22 +5,20 @@ runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survm
 
 
 #====== Shared parameters ======#
-scenarios <- c("campaign-default", "no-vaccination")
+scenarios <- c("ocv1-default","ocv1-ocv2-default", "no-vaccination")
 num_skip_years <- 3   #district-level skipped years, relevant to both projects
-num_samples <- 100    #shared by both projects
+num_samples <- 1  #shared by both projects
 use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity
 
 if (runname == "202310gavi-4"){
-  self_random_seed <- 103  #use the same random seed for all setting and scenarios for the 202310gavi-4 touchstone
+  self_random_seed <- 103  #use the same random seed for all settings and scenarios for the 202310gavi-4 touchstone
 } else {
   self_random_seed <- NULL  #for now, just use the random seed specified by the setting
 }
 
 clean_outputs <- TRUE
 clean_incid <- FALSE
-if (runname == "202310gavi-4"){
-  ndoses <- c("one", "two") ##calam added option for the number of doses, only applies to the VIMC Core model 2023 touchstone
-}
+
 # default country list
 ids <- readr::read_csv("input_data/locations_todeletelater.csv") # location ids
 cw <- readr::read_csv("input_data/region_country.csv")
@@ -32,8 +30,8 @@ countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZ
               "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE",
               "AFG", "HTI", "IRN", "IRQ", "NPL", "PAK", "PHL", "THA", "YEM", "IND", "BGD") #will likely to only include the countries in sub-Saharan Africa
 # countries simulated in the surveillance project              
-countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
-              "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE") # now only includes the countries in Africa
+#countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
+              #"MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE") # now only includes the countries in Africa
 
 
 #====== Surveillance Project Specific ======#

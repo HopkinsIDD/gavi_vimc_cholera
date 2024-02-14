@@ -12,18 +12,6 @@
 #' @include retrieve_montagu_coverage.R
 import_coverage_scenario <- function(modelpath, country, scenario, num_doses = NULL, filter0 = FALSE, redownload = TRUE){
   
-  ##calam added to ensure csv montagu coverage for each vaccination scenario is pulled from the montagu folder for the 202310gavi-4 touchstone 
-  runname <- config$runname
-  if (runname == "202310gavi-4" & scenario == "campaign-default"){
-    num_doses <- config$vacc$ndoses
-  }
-  if (runname == "202310gavi-4" & scenario == "campaign-default" & num_doses == "one"){
-    scenario <- "ocv1-default"
-  } else if (runname == "202310gavi-4" & scenario == "campaign-default" & num_doses == "two"){
-    scenario <- "ocv1-ocv2-default"
-  }
-  ##end addition
-  
   #First check, then retrieve
   CoverageFiles <- list.files(modelpath, pattern = "^coverage_")
   if (length(CoverageFiles) >= 2 & redownload == FALSE){ #there should be 2 coverage data files, so the default should be 2
@@ -50,8 +38,37 @@ import_coverage_scenario <- function(modelpath, country, scenario, num_doses = N
   } else{
     cov_dat <- dplyr::arrange(cov_dat, year) %>%
       dplyr::mutate(fvp = round(target*coverage, 0))
+    
+    ##added procedure to add ocv2 rows for the coverage for the ocv1 scenario to ensure implementation is consistent across scenarios
+    if (scenario == "ocv1-default"){
+      coverage_copy <- cov_dat
+      coverage_copy$vaccine <- 'OCV2' 
+      coverage_copy$coverage <- 0 ##ocv2 rows get 0 coverage for the ocv1-default scenario
+      cov_dat <- rbind(cov_dat, coverage_copy)
+      rm(coverage_copy) ##coverage_copy was just a template, remove to save memory
+    }
+    
+    ##added to adjust coverage
+    cov_dat <- adjusted_montagu_coverage(coverage_sheet = cov_dat, cntrycode = country)
+    
+    ##procedure to make coverage dataframe 'wider' (get new columns for ocv1 and ocv2 coverage)
+    
+    wide_coverage <- cov_dat %>% tidyr::pivot_wider(names_from = vaccine, values_from = coverage)
+    ocv2_coverage <- wide_coverage$OCV2[!is.na(wide_coverage$OCV2)]
+    wide_coverage <- subset(wide_coverage, (!is.na(wide_coverage$OCV1)))
+    wide_coverage$OCV2 <- ocv2_coverage
+    cov_dat <- wide_coverage
+    rm(wide_coverage) ##wide_coverage was just a template, remove to save memory
+    
+    ##get a new column with the fvps vaccinated with one dose of the vaccine
+    cov_dat <- dplyr::arrange(cov_dat, year) %>%
+      dplyr::mutate(fvp_ocv1 = round(target*OCV1, 0)) %>% ## add number of 1-dose vaccinees
+      dplyr::mutate(fvp_ocv2 = round(target*OCV2, 0)) %>% ## add number of 2-dose vaccinees
+      dplyr::mutate(prop_ocv1 = fvp_ocv1/(fvp_ocv1+fvp_ocv2)) ## calculate proportion of people receiving at least 1 dose that received exactly 1 dose
+    
+    ## 1/23/2024 calam moved the filter0 utility at the end of the function
     if (filter0){
-      cov_dat <- dplyr::filter(cov_dat, coverage != 0)
+      cov_dat <- dplyr::filter(cov_dat, OCV1 != 0 | OCV2 != 0)
     }
   }
 
@@ -96,7 +113,7 @@ import_centralburden_template <- function(modelpath, country, redownload = TRUE)
 #' @param country country code
 #' @param redownload whether to redownload the file
 #' @importFrom magrittr %>%
-#' @return 
+#' @return dataframe
 #' @export 
 #' @include retrieve_montagu_population.R
 import_country_population <- function(modelpath, country, redownload = TRUE){
@@ -151,7 +168,7 @@ import_country_population_1yr <- function(modelpath, country, year){
 #' @param country country code
 #' @param redownload whether to redownload the file
 #' @importFrom magrittr %>%
-#' @return 
+#' @return  dataframe
 #' @export 
 #' @include retrieve_montagu_agePop.R
 import_country_agePop <- function(modelpath, country, redownload = TRUE){
@@ -193,7 +210,7 @@ import_country_agePop <- function(modelpath, country, redownload = TRUE){
 #' @param country country code
 #' @param redownload whether to redownload the file
 #' @importFrom magrittr %>%
-#' @return 
+#' @return dataframe
 #' @export 
 #' @include retrieve_montagu_lifeExpectancy.R
 import_country_lifeExpectancy <- function(modelpath, country, redownload = TRUE){
@@ -227,7 +244,7 @@ import_country_lifeExpectancy <- function(modelpath, country, redownload = TRUE)
 #' @param country country code
 #' @param year year for which life expectancy should be returned
 #' @importFrom magrittr %>%
-#' @return
+#' @return dataframe
 #' @export
 import_country_lifeExpectancy_1yr <- function(modelpath, country, year){
   lx0_df <- import_country_lifeExpectancy(modelpath, country, redownload = FALSE) #important change
@@ -348,39 +365,42 @@ import_country_proportion_under5 <- function(modelpath, country, year, redownloa
 ##someone will get each dose of the vaccine. For 1 dose, we are using elizabeth's formula where the coverage for one dose is C1 = c1 - (c1*c2) + c2 - (c1*c2)
 ##and for two doses, elizabeth's formula is C2 = c1*c2 (lower case c1 and c2 denotes montagu coverage for dose 1 and dose 2 respectively)
 
-#' @Title adjusted_montagu_coverage
+#' @title adjusted_montagu_coverage
+#' @name adjusted_montagu_coverage
 #'
 #' @param coverage_sheet the montagu coverage csv file
-#' @param country the country code
+#' @param cntrycode the country code
 #'
 #' @return a dataframe with the coverage for one-dose and two-dose for the specified country each year adjusted using elizabeth's formula
 #' @export
 #'
-#' @examples
-adjusted_montagu_coverage <- function(coverage_sheet, country){
-  coverage_unique <- unique(coverage_sheet) ##make sure we use unique rows
-  country <- country
-  df <- coverage_unique[coverage_unique$country_code == country,]
+adjusted_montagu_coverage <- function(coverage_sheet, cntrycode){
+  coverage_unique <- unique(coverage_sheet) ## make sure we use unique rows
+  df <- dplyr::filter(coverage_unique, country_code == cntrycode) %>%
+    dplyr::mutate(new_coverage = coverage) ## need to keep orig coverage for the second item in the pair's new_coverage calculation
+  
   for (i in 1:nrow(df)){
     if (df[i,]$vaccine == 'OCV1' & any(df$vaccine == 'OCV2' & df$year == df[i,]$year)){ 
-      print('ocv1')
       pair <- which(df$vaccine == 'OCV2' & df$year == df[i,]$year)
       ocv1_coverage <- df[i,]$coverage
       ocv2_coverage <- df[pair,]$coverage
-      df[i,]$coverage <- ocv1_coverage - (ocv1_coverage*ocv2_coverage) + ocv2_coverage - (ocv1_coverage*ocv2_coverage) ##elizabeth's formula for ocv1 coverage   
-      print(df[i,]$coverage)
+      df[i,]$new_coverage <- ocv1_coverage + ocv2_coverage - (ocv1_coverage*ocv2_coverage) ## elizabeth's formula for ocv1 coverage   
+      print(paste('ocv1 replaced', df[i,]$coverage, "with", df[i,]$new_coverage))
     } else if (df[i,]$vaccine == 'OCV2' & any(df$vaccine == 'OCV1' & df$year == df[i,]$year)){
       pair <- which(df$vaccine == 'OCV1' & df$year == df[i,]$year)
-      print('ocv2')
       ocv2_coverage <- df[i,]$coverage
       ocv1_coverage <- df[pair,]$coverage  
-      df[i,]$coverage <- ocv1_coverage*ocv2_coverage  ##elizabeth's formula for ocv2 coverage   
-      print(df[i,]$coverage)
+      df[i,]$new_coverage <- ocv1_coverage*ocv2_coverage  ## elizabeth's formula for ocv2 coverage   
+      print(paste('ocv2 replaced', df[i,]$coverage, "with", df[i,]$new_coverage))
     } else { ##cases where there is only one vaccination campaign (ocv1 or ocv2) for a year
-      df[i,]$coverage <- df[i,]$coverage
+      df[i,]$new_coverage <- df[i,]$coverage
       print("only one vaccination campaign this year")
-      print(df[i,]$coverage)
+      print(df[i,]$new_coverage)
     }
   }
-  return(df)
+  ## rename the columns in the return object so `coverage` can continue to be used
+  rc <- df %>% 
+    dplyr::rename(orig_coverage = coverage,
+                  coverage = new_coverage) 
+  return(rc)
 }

@@ -7,7 +7,7 @@
 #' @param rawoutpath path to raw model output files
 #' @param outpath path to final model output files
 #' @importFrom magrittr %>%
-#' @return 
+#' @return dataframe
 #' @export
 #' @include utils.R utils_montagu.R 
 export_country_stoch_template <- function(

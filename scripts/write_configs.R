@@ -71,18 +71,19 @@ library('ocvImpact', character.only = T)
 source("scripts/set_all_parameters.R")
 #runname <- "201910gavi-5-config-test" #this is only for development use
 cpathname <- file.path("configs", runname)
-dir.create(cpathname, showWarnings = FALSE)
+#dir.create(cpathname, showWarnings = FALSE)
 
 for(scn in scenarios){
 
-  # scnpathname <- file.path(cpathname, scn)
-  # dir.create(scnpathname, showWarnings = FALSE)
-  for (dose in ndoses){
+  scnpathname <- file.path(cpathname, scn)
+  dir.create(scnpathname, showWarnings = FALSE)
+  
+  #for (dose in ndoses){
 
     for(surveillance_scenario in surveillance_scenarios){
     
-    # scnpathname <- file.path(cpathname, scn, surveillance_scenario)
-    # dir.create(scnpathname, showWarnings = FALSE)
+    ##scnpathname <- file.path(cpathname, scn, surveillance_scenario)
+    ##dir.create(scnpathname, showWarnings = FALSE)
 
       for(vac_incid_threshold in vac_incid_thresholds){
       
@@ -97,18 +98,21 @@ for(scn in scenarios){
         if(targeting_strategy != "threshold_unconstrained" & runname != "202310gavi-4"){
           scnpathname <- file.path(cpathname, scn)
         }else if(targeting_strategy != "threshold_unconstrained" & runname == "202310gavi-4"){
-          if (scn == "campaign-default"){
-            scnpathname <- file.path(cpathname, scn, dose, incidence_rate_trend)
-          } else if (scn == "no-vaccination"){
             scnpathname <- file.path(cpathname, scn, incidence_rate_trend)
-          }
         }else if(targeting_strategy == "threshold_unconstrained"){
           scnpathname <- file.path(cpathname, scn, surveillance_scenario, vac_incid_threshold)
         }
         dir.create(scnpathname, showWarnings = FALSE)
         
         #parameters that apply only to the 202310gavi-4 touchstone with the one-dose and two-dose vaccination scenarios
-        pars$ndoses <- dose
+        #pars$ndoses <- dose
+        if (scn == "ocv1-default"){
+          pars$ndoses <- "one"
+        } else if (scn == "ocv1-ocv2-default"){
+          pars$ndoses <- "two"
+        } else {
+          pars$ndoses <- "zero"
+        }
         # the followings are specific to the surveillance project
         pars$save_intermediate_raster <- save_intermediate_raster
         pars$save_final_output_raster <- save_final_output_raster
@@ -134,5 +138,5 @@ for(scn in scenarios){
       }
   
     }  
-  }
+ # }
 }

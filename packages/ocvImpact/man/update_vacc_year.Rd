@@ -22,6 +22,9 @@ update_vacc_year(
   testing_sensitivity
 )
 }
+\value{
+rc_list
+}
 \description{
 update the targets in the list if it's a vaccination campaign year
 }

@@ -84,7 +84,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
 
     if (sum(rc$pop_prop)!=1){
       stop(paste("The population proportion calculation is incorrect for", country))
-    }
+    } ## DEBUG comment this section
 
     rm(afr,pop,shp)
     gc()
@@ -109,115 +109,132 @@ load_targets_by_country <- function(datapath, modelpath, country){
 #' @param campaign_cov Proportion of the target population vaccinated by the campaign (default = 0.8)
 #' @param num_skip_years Skip targeting in locations vaccinated within the last X years (default = 0 --> no skipping)
 #' @importFrom magrittr %>%
-#' @return 
+#' @return dataframe
 #' @export
 #' @include utils_targeting.R utils_montagu.R
 assign_vaccine_targets <- function(datapath, modelpath, country, scenario, targeting_strat = "incidence", campaign_cov = 0.8, num_skip_years = 0){
-
+  
   message(paste("Now assigning vaccine by incidence:", country, scenario))
   ptargets <- load_targets_by_country(datapath, modelpath, country)
   ###########add a little check point for the situation when the coverage data exists but is just 0
   coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE, redownload = FALSE)
   
-  ##calam added 12/21/23 to incorporate the adjustment of montagu coverage for the ocv1-ocv2 scenario
-  ##commented out on 12/28/23 for runs for the central burden estimates - should be toggled on for stochastic estimates
-  ##runname <- config$runname
-  ##ndoses <- config$vacc$ndoses
-  ##if (runname == "202310gavi-4" & ndoses == "two"){
-    ##coverage <- adjusted_montagu_coverage(coverage_sheet = coverage, country = country)
-  ##}
-  ##end addition
+  coverage_as_all_0_for_campaign <- (sum(coverage$OCV1) == 0) & (sum(coverage$OCV2) == 0)
   
-  ##make sure we only keep rows with OCV2 for the two dose scenario for the 202310gavi-4 touchstone
-  if ("vaccine" %in% colnames(coverage) & any(coverage$vaccine == 'OCV2')){ #this identifies coverage for the two dose scenario
-    coverage <- coverage[coverage$vaccine == 'OCV2',] #keep only rows for ocv2
-    message("This is a two-dose campaign from the 202310gavi-4 touchstone, removed rows for ocv1")
-  }
-  
-  coverage_as_all_0_for_campaign <- (sum(coverage$coverage) == 0)
   if (!coverage_as_all_0_for_campaign){
+    ## this seems to be a catch-all filtering step, in case montagu starts including no-vaccination years in its coverage sheets
     coverage <- import_coverage_scenario(modelpath, country, scenario, filter0 = TRUE, redownload = FALSE)
+    
   }
-
+  
   if (is.null(coverage)){
-
+    
     message("No vaccine was assigned for the no-vaccination scenario. Returning NULL value.")
     ftargets_flat <- NULL
-  
+    
   } else{
-
+    
     ## Perform checks on the coverage scenario
     if (!all(coverage$gender == "both") | 
         !all(coverage$age_range_verbatim == "default age and gender" | coverage$age_range_verbatim == ">1y" | coverage$age_range_verbatim == "default age groups" | coverage$age_range_verbatim == "<NA>" | coverage$age_range_verbatim == "1-100")|
         !all(coverage$activity_type == "campaign")
-        ){
+    ){
       stop(paste("Vaccine assignment is not supported for this coverage scenario. Check the gender, age_range_verbatim, and activity_type columns in the", scenario, "coverage sheet."))
     }
-
+    
     ftargets <- vector(mode = "list", length = length(coverage$year))
-
+    print(coverage$year)
     for (i in 1:length(coverage$year)){
-
+      
       cov_year <- coverage[i,]
-      goal_target_pop <- cov_year$target
-      goal_fvp <- cov_year$fvp
+      
+      goal_target_pop <- cov_year$target ## target population for the vaccination campaign @ country level
+      
+      ##goal fvps with one dose and two doses of the vaccine
+      goal_ocv1_fvp <- cov_year$fvp_ocv1
+      goal_ocv2_fvp <- cov_year$fvp_ocv2
+      prop_ocv1 <- cov_year$prop_ocv1 ## proportion of vaccinees that receive 1 dose
       
       ## Skip locations vaccinated within the previous `num_skip_years`
       skip_years <- cov_year$year - (1:num_skip_years)
       if(num_skip_years>0 & length(skip_years)>0 & any(skip_years %in% coverage$year)){
-
+        
         message(paste("Skip locations vaccinated in", paste(skip_years, collapse = ",")))    
         incl_skip_years <- which(names(ftargets) %in% skip_years)    
         recent_targets <- unique(as.vector(sapply(incl_skip_years, function(x){
           ftargets[[x]]$GID_2
         })))
-
+        
         new_ptargets <- dplyr::filter(ptargets, !(GID_2 %in% recent_targets))      
-
+        
       } else{
         message(paste("Skipping was disabled (num_skip_years=0) or there were no recent campaigns within", num_skip_years, "years of", cov_year$year))
         new_ptargets <- ptargets
       }
-
+      
       ## full district targeting 
       ptargets_avail <- run_targeting_strategy(new_ptargets, targeting_strat) %>%
         dplyr::mutate(
           id = seq_along(GID_2),
-          possible_fvp = round(goal_target_pop * pop_prop * campaign_cov, 0), 
-          possible_fvp_cumsum = cumsum(possible_fvp),
-          actual_fvp = ifelse(possible_fvp_cumsum <= goal_fvp, possible_fvp, 0),
-          fullDistrict_target = ifelse(actual_fvp > 0, TRUE, FALSE))
-
-      ## partial district targeting
-      fullDistrict_vaccinated_people <- dplyr::filter(ptargets_avail, fullDistrict_target) 
-      message(paste("Full district coverage: ", paste(fullDistrict_vaccinated_people$GID_2, collapse = ",")))
-
-      if (nrow(fullDistrict_vaccinated_people) == 0){
-        message("Partial district coverage: Coverage was  so low that no single district was fully vaccinated.")
-        partialDistrict_vaccinated_people <- goal_fvp
-        partialDistrict_id <- 1
+          possible_fvp_ocv1 = round(goal_target_pop * pop_prop * campaign_cov * prop_ocv1, 0),
+          possible_fvp_ocv2 = round(goal_target_pop * pop_prop * campaign_cov * (1-prop_ocv1), 0), 
+          possible_fvp_cumsum_ocv1 = cumsum(possible_fvp_ocv1),
+          possible_fvp_cumsum_ocv2 = cumsum(possible_fvp_ocv2),
+          actual_ocv1_fvp = ifelse(possible_fvp_cumsum_ocv1 <= goal_ocv1_fvp, possible_fvp_ocv1, 0),
+          actual_ocv2_fvp = ifelse(possible_fvp_cumsum_ocv2 <= goal_ocv2_fvp, possible_fvp_ocv2, 0),
+          fullDistrict_ocv1_target = ifelse(actual_ocv1_fvp > 0, TRUE, FALSE),
+          fullDistrict_ocv2_target = ifelse(actual_ocv2_fvp > 0, TRUE, FALSE))
       
+      ## partial district targeting
+      fullDistrict_vaccinated_ocv1_people <- dplyr::filter(ptargets_avail, fullDistrict_ocv1_target)
+      fullDistrict_vaccinated_ocv2_people <- dplyr::filter(ptargets_avail, fullDistrict_ocv2_target) 
+      message(paste("Full district ocv1 coverage: ", paste(fullDistrict_vaccinated_ocv1_people$GID_2, collapse = ",")))
+      message(paste("Full district ocv2 coverage: ", paste(fullDistrict_vaccinated_ocv2_people$GID_2, collapse = ",")))
+      
+      
+      if (nrow(fullDistrict_vaccinated_ocv1_people) == 0){
+        message("Partial district coverage: Coverage for ocv1 was so low that no single district was fully vaccinated.")
+        partialDistrict_vaccinated_ocv1_people <- goal_ocv1_fvp
+        partialDistrict_ocv1_id <- 1
+        
       } else{
-        partialDistrict_vaccinated_people <- goal_fvp - fullDistrict_vaccinated_people[which.max(fullDistrict_vaccinated_people$possible_fvp_cumsum),]$possible_fvp_cumsum
-        partialDistrict_id <- max(fullDistrict_vaccinated_people$id)+1
-        message(paste("Partial district coverage:", ptargets_avail[which(ptargets_avail$id == partialDistrict_id),]$GID_2))
+        partialDistrict_vaccinated_ocv1_people <- goal_ocv1_fvp - fullDistrict_vaccinated_ocv1_people[which.max(fullDistrict_vaccinated_ocv1_people$possible_fvp_cumsum_ocv1),]$possible_fvp_cumsum_ocv1
+        partialDistrict_ocv1_id <- max(fullDistrict_vaccinated_ocv1_people$id)+1
+        message(paste("Partial district ocv1 coverage:", ptargets_avail[which(ptargets_avail$id == partialDistrict_ocv1_id),]$GID_2))
       }
       
-      ptargets_avail[which(ptargets_avail$id == partialDistrict_id),]$actual_fvp <- partialDistrict_vaccinated_people
-
+      if (nrow(fullDistrict_vaccinated_ocv2_people) == 0){
+        message("Partial district coverage: Coverage for ocv2 so low that no single district was fully vaccinated.")
+        partialDistrict_vaccinated_ocv2_people <- goal_ocv2_fvp
+        partialDistrict_ocv2_id <- 1
+        
+      } else{
+        partialDistrict_vaccinated_ocv2_people <- goal_ocv2_fvp - fullDistrict_vaccinated_ocv2_people[which.max(fullDistrict_vaccinated_ocv2_people$possible_fvp_cumsum_ocv2),]$possible_fvp_cumsum_ocv2
+        partialDistrict_ocv2_id <- max(fullDistrict_vaccinated_ocv2_people$id)+1
+        message(paste("Partial district ocv2 coverage:", ptargets_avail[which(ptargets_avail$id == partialDistrict_ocv2_id),]$GID_2))
+      }
+      
+      ptargets_avail[which(ptargets_avail$id == partialDistrict_ocv1_id),]$actual_ocv1_fvp <- partialDistrict_vaccinated_ocv1_people
+      ptargets_avail[which(ptargets_avail$id == partialDistrict_ocv2_id),]$actual_ocv2_fvp <- partialDistrict_vaccinated_ocv2_people
+      
+      
       if(coverage_as_all_0_for_campaign){
-        ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_fvp>=0)
+        ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_ocv1_fvp>=0 & actual_ocv2_fvp>=0)
       } else if (coverage_as_all_0_for_campaign == FALSE){
-        ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_fvp>0)
+        if (scenario == "ocv1-default"){
+          ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_ocv1_fvp>0)
+        } else {
+          ftargets[[i]] <- dplyr::filter(ptargets_avail, actual_ocv1_fvp>0 | actual_ocv2_fvp>0)
+        }
       } else{
         stop(message('You did not pass the coverage_as_all_0_for_campaign checkpoint, please go back to the assign_vaccine_targets and check. '))
       }
       names(ftargets)[i] <- as.character(cov_year$year)
-
+      
     } #endfor
-
+    
     ftargets_flat <- data.table::rbindlist(ftargets, idcol="vacc_year")
-
+    
   } #endelse
   
   ##calam added to export modelled fvps as raw output

@@ -23,6 +23,8 @@ create_incid_raster(
 \item{nsamples}{numeric, number of layers to sample (must be below 1000)}
 
 \item{redraw}{logical that indicates whether existing incid samples should be drawn again}
+
+\item{random_seed}{random seed number}
 }
 \value{
 raster of incidence rate, "nsamples" samples

@@ -95,8 +95,8 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   ###comment out the following lines when launch formal runs (no need to comment out if on MARCC)
   library(desc, lib=r_lib)
   library(pkgload, lib=r_lib)
-  roxygen2::roxygenise('packages/ocvImpact')
-  install.packages('packages/ocvImpact', type='source', repos = NULL, lib=r_lib)
+  # roxygen2::roxygenise('packages/ocvImpact')
+  # install.packages('packages/ocvImpact', type='source', repos = NULL, lib=r_lib)
 
   library(montagu, lib = r_lib)
   library(ocvImpact, lib = r_lib)
@@ -147,16 +147,16 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   source("scripts/montagu_handle.R")
 
   #======Use the ocvImpact package======#
-  if (!require('ocvImpact', character.only = T)) {
-    roxygen2::roxygenise("packages/ocvImpact")
-    install.packages("packages/ocvImpact", type = "source", repos = NULL)
-    library('ocvImpact', character.only = T)
-  }
+  #if (!require('ocvImpact', character.only = T)) {
+  #  roxygen2::roxygenise("packages/ocvImpact")
+  #  install.packages("packages/ocvImpact", type = "source", repos = NULL)
+  #  library('ocvImpact', character.only = T)
+  #}
 
   #======For the convenience of debugging======#
   ### The two lines below should be commented out when running the formal model (as it may cause issues when running multiple countries at the same time)
-  roxygen2::roxygenise("packages/ocvImpact")
-  install.packages("packages/ocvImpact", type = "source", repos = NULL)
+  # roxygen2::roxygenise("packages/ocvImpact")
+  # install.packages("packages/ocvImpact", type = "source", repos = NULL)
 
   ##======Load certain packages that are used a lot======#
   library('ocvImpact', character.only = T)

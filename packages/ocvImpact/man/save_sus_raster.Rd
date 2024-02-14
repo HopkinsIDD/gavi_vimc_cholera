@@ -20,6 +20,9 @@ save_sus_raster(
   surveillance_scenario = NULL
 )
 }
+\value{
+save raster
+}
 \description{
 save_sus_raster
 }

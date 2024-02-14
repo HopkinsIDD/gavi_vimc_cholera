@@ -18,6 +18,9 @@ update_vac_raster(
   rc_targeted
 )
 }
+\value{
+raster
+}
 \description{
 update_vac_raster one at a time
 }

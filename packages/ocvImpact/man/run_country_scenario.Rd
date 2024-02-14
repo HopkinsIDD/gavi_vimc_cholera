@@ -12,7 +12,6 @@ run_country_scenario(
   rawoutpath,
   nsamples,
   num_doses = NULL,
-  ve_direct = generate_pct_protect_function(),
   indirect_mult = generate_indirect_incidence_mult(),
   secular_trend_mult = function(a, b, c, d) {
      return(a * b * c * d)
@@ -37,8 +36,6 @@ run_country_scenario(
 
 \item{num_doses}{the number of doses for the one-dose and two-dose scenarios of the 202310gavi-4 touchstone}
 
-\item{ve_direct}{vaccine effect function (default: generate_pct_protect_function())}
-
 \item{indirect_mult}{indirect effects function (default: generate_indirect_incidence_mult())}
 
 \item{secular_trend_mult}{function that returns a multiplier for secular incidence trends over time (default: generate_flatline_multiplier())}
@@ -50,6 +47,9 @@ run_country_scenario(
 \item{...}{Optional parameters to pass to [`assign_vaccine_targets()`]. See [`assign_vaccine_targets()`] for defaults.}
 
 \item{mu}{inverse life expectancy for country in years^(-1)}
+}
+\value{
+dataframe and export files
 }
 \description{
 Run full country scenario

@@ -43,17 +43,17 @@ if (!require('montagu', character.only = T)) {
 source("scripts/montagu_handle.R")
 
 #======Use the ocvImpact package======#
-if (!require('ocvImpact', character.only = T)) {
-  roxygen2::roxygenise("packages/ocvImpact")
-  install.packages("packages/ocvImpact", type = "source", repos = NULL)
-  library('ocvImpact', character.only = T)
-}
+#if (!require('ocvImpact', character.only = T)) {
+  #roxygen2::roxygenise("packages/ocvImpact")
+  #install.packages("packages/ocvImpact", type = "source", repos = NULL)
+  #library('ocvImpact', character.only = T)
+#}
 
 #======For the convenience of debugging======#
 ###These a few lines can be deleted safely after the model can run smoothly on the server. 
-library(raster)
-roxygen2::roxygenise("packages/ocvImpact")
-install.packages("packages/ocvImpact", type = "source", repos = NULL)
+##library(raster)
+##roxygen2::roxygenise("packages/ocvImpact")
+##install.packages("packages/ocvImpact", type = "source", repos = NULL)
 library('ocvImpact', character.only = T)
 
 ###########Comment completed###########
@@ -64,7 +64,7 @@ opathname <- file.path("output_final", runname)
 mpathname <- file.path("montagu", runname)
 
 if (runname == "202310gavi-4"){
-  scenarios <- c('campaign-default_one', 'campaign-default_two', 'no-vaccination')
+  scenarios <- c('ocv1-default_one', 'ocv1-ocv2-default_two', 'no-vaccination')
 }
 
 for (i in 1:length(scenarios)){
