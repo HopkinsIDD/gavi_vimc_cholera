@@ -7,9 +7,9 @@
 generate_pct_protect_function(my_trunc_year = 5, my_ve_scen = "base")
 }
 \arguments{
-\item{my_ve_scen}{}
+\item{my_trunc_year}{number of years after which VE is 0}
 
-\item{my_trun_year}{}
+\item{my_ve_scen}{VE scenario}
 }
 \value{
 dataframe with estimates for unweighted and weighted mean vaccination campaign coverage proportion across coverage surveys in the review

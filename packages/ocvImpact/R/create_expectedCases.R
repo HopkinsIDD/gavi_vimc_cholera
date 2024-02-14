@@ -92,7 +92,7 @@ create_expectedCases <- function(
   ## apply outbreak multiplier only to the campaign years for now
   if (!scenario == "no-vaccination"){  ##using the following lines for the no-vaccination scenario creates inf values and leads to error
     first_year <- min(ocvImpact::import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE, redownload = FALSE)$year)
-    last_year  <- max(ocvImpact::import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE, redownload = FALSE)$year) + 5
+    last_year  <- max(ocvImpact::import_coverage_scenario(modelpath, country, scenario, filter0 = FALSE, redownload = FALSE)$year) + 10 ## potential impact could extend 10 years beyond last campaign ## COULD CHANGE TO MATCH TRUNC_YEAR
     campaign_years <- first_year:last_year  
   }
 
@@ -124,8 +124,6 @@ create_expectedCases <- function(
       outbreak_trend_function <- function(yr_index){return(1)}
     }
 
-
-
     yr_index <- which(oy == output_years)
     pop_rasterLayer <- raster::subset(pop_rasterStack, yr_index, drop = FALSE)
     vacc_rasterLayer <- raster::subset(vacc_rasterStack, yr_index, drop = FALSE)
@@ -138,10 +136,8 @@ create_expectedCases <- function(
     
     overall_multiplier <- secular_trend_mult(incid_trend_multiplier, outbreak_ic_multiplier, confirmation_multiplier, utilization_multiplier)
     
-
-    
     if (oy %in% model_years){ ## consecutive years where vaccine dynamics are in play
-
+      
       ## make new indirect effects template
       indirect_rasterLayer <- pop_rasterLayer
       raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer)))

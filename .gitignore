@@ -56,7 +56,7 @@ input_data/incidence/ZMB_incid_5k_50.tif
 input_data/incidence/ZWE_incid_5k_50.tif
 
 input_data/outbreak/
-*.rds
+input_data/shapefiles/
 montagu/202110gavi-3/202110gavi-3_405_all-countries_int_pop_both.csv
 montagu/202110gavi-3/202110gavi-3_405_all-countries_lx0_both.csv
 montagu/202110gavi-3/202110gavi-3_405_all-countries_tot_pop_both.csv

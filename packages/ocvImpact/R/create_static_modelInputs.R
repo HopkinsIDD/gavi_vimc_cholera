@@ -24,7 +24,6 @@ create_static_modelInputs <- function(
   years_ls <- get_model_years(modelpath, country, vacc_alloc)
   output_years <- years_ls[["output_years"]]
   first_output_year <- output_years[1]
-  real_output_years <- output_years[-1]
 
   startpop_raster <- create_model_pop_raster(datapath, modelpath, country, first_output_year)
   raster0_template <- raster::calc(startpop_raster, fun = function(x){x*0})
@@ -118,6 +117,6 @@ create_static_modelInputs <- function(
   rm(vacc_rasterStack, startpop_raster, raster0_template, pop_rasterStack)
   gc()
   
-  return(NULL)
+  return(NULL) 
 
 }

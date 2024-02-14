@@ -84,7 +84,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
 
     if (sum(rc$pop_prop)!=1){
       stop(paste("The population proportion calculation is incorrect for", country))
-    }
+    } ## DEBUG comment this section
 
     rm(afr,pop,shp)
     gc()
