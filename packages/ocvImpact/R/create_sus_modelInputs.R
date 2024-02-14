@@ -81,15 +81,23 @@ create_sus_modelInputs <- function(
         if(min(which(output_years %in% model_years))>j){
             stop("Check immunity only in years prior to the current output year.")
           }
-        for (k in min(which(output_years %in% model_years)):j){ 
-          
+        ## only loop through years where VE could still have an impact -- the earliest output_year or j-the max duration of VE
+        ## N.B. loops starting with j+1-min... means that year j has 0 effect from campaigns in year k (this is why we do j+1-min...)
+        if(scenario == 'ocv1-default'){
+          min_loop_year <- max(min(which(output_years %in% model_years)), j+2-min(which(pct_protect_all(years = 1:10, proportion_under5 = 0, proportion_one_dose = 1)==0)))
+        } else{
+          min_loop_year <- max(min(which(output_years %in% model_years)), j+2-min(which(pct_protect_all(years = 1:10, proportion_under5 = 0, proportion_one_dose = 0)==0)))
+        }
+
+        for (k in min_loop_year:j){
+
           popk <- raster::subset(pop_rasterStack, subset = k, drop = FALSE)
           vacck <- raster::subset(vacc_rasterStack, subset = k, drop = FALSE)
 
           ## population retention (measures turnover rate due to death) from years k into year j
           pkj <- raster::overlay(popk, popj,
                                  fun = function(x, y){x*(1-((j-k)*mu))/y}
-          ) 
+          )
 
           ## these proportions are referenced to k, which will be the year of the last vaccination campaign when applicable to ve_j_k calculations
           under5_proportion <- import_country_proportion_under5(modelpath, country, year = output_years[k]) ## DEBUG add redownload arg
@@ -98,7 +106,7 @@ create_sus_modelInputs <- function(
           ## calculate VE
           ve_j_k <- pct_protect_all(years = j-k+1, proportion_under5 = under5_proportion, proportion_one_dose = prop_ocv1, my_trunc_year = trunc_year)
 
-          print(paste("j, k, vetot, prop_ocv1, under5prop", j, k, ve_j_k, prop_ocv1, under5_proportion)) 
+          print(paste("j, k, vetot, prop_ocv1, under5prop", j, k, ve_j_k, prop_ocv1, under5_proportion))
 
           prob_still_protected <- raster::overlay(vacck, pkj,
                                                   fun = function(x, y){return(x*y*ve_j_k)}
