@@ -2,10 +2,11 @@
 #' @name create_incid_raster
 #' @title create_incid_raster
 #' @description Generate a raster with the baseline cholera incidence
-#' @param modelpath path to montagu 
-#' @param datapath path to data 
+#' @param modelpath path to montagu
+#' @param datapath path to data
 #' @param country country code
 #' @param nsamples numeric, number of layers to sample (must be below 1000)
+#' @param cache montagu cache
 #' @param redraw logical that indicates whether existing incid samples should be drawn again
 #' @param random_seed random seed number
 #' @return raster of incidence rate, "nsamples" samples
@@ -17,7 +18,7 @@
 ###We also include modelpath as input
 ###########Comment completed###########
 
-create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw, random_seed = NULL){
+create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, redraw, random_seed = NULL){
 
   #######Kaiyue Added on 7/15/2021#######
   ######Kaiyue editted on 1/30/2022######
@@ -29,9 +30,9 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw, 
   if (country %in% NonRasterCountry){
     NRCountryIndex <- match(country, IncidenceTable$country_code)
     YearList <- as.numeric(strsplit(IncidenceTable$year_list[NRCountryIndex], '-')[[1]])
-    CountryPopTable <- ocvImpact::import_country_population(modelpath, country, redownload = FALSE)
+    CountryPopTable <- ocvImpact::import_country_population(modelpath, country, cache, redownload = FALSE)
     CountryPopMean <- mean(CountryPopTable$pop_model[match(YearList, CountryPopTable$year)], na.rm = TRUE)
-    
+
     if (IncidenceTable$is_num_case[NRCountryIndex] == 0){
       NumCases <- IncidenceTable$singular_estimate[NRCountryIndex] * CountryPopMean
       IncidenceTable$num_case[NRCountryIndex] <- NumCases
@@ -43,7 +44,7 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw, 
     } else{
       message('The "is_num_case" variable has an invalid value. ')
     }
-    
+
     if(country == "IND"){ #borrow BGD incidence rate for IND
       NumCases <- 0.0008536926*CountryPopMean
     }
@@ -57,11 +58,11 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw, 
     gc()
   }
   ###########Comment completed###########
-  
+
   incid_out_fn <- paste0(datapath, "/incidence/", country, "_incid_5k_", nsamples, ".tif")
-  
+
   if (!file.exists(incid_out_fn) | redraw){
-    
+
     ###If we want to redraw, first delete
     if(file.exists(incid_out_fn)){
       message(paste("Clean existing", incid_out_fn))
@@ -77,7 +78,7 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw, 
       BGD_raster <- raster::stack(paste0(datapath, "/incidence/BGD_incid_5k_50_setting", setting_num, ".tif"))
       return(BGD_raster)
     }
-    
+
 
 
     ###Just generate
@@ -92,7 +93,7 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw, 
       set.seed(random_seed)
       layer_indexes <- sort(sample(1:1000, nsamples, replace=TRUE))
       print(layer_indexes)
-      
+
       ## incidence data ##
       ##addition to use new mai rate raster for 2016-2020 for new touchstone
       runname <- config$runname
@@ -109,14 +110,14 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw, 
       afr_sample <- raster::subset(afr, layer_indexes, drop = FALSE)
       rm(afr)
       gc()
-      
+
       lambda <- align_rasters(datapath, country, afr_sample)
       rm(afr_sample)
       gc()
-      
+
       message(paste("Write", incid_out_fn))
       raster::writeRaster(raster::stack(lambda), filename = incid_out_fn)
-      
+
       #######Kaiyue Added on 7/12/2021####### -- this is to use singular incidence to represent the whole country incidence
    }else if(country %in% NonRasterCountry){
       ###Calculate the number of cases for each grid cell and stack
@@ -129,11 +130,11 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw, 
       }
       rm(CountryPopRaster)
       rm(CountryIRRaster)
-      
+
       nrc <- raster::stack(StochasticLayers)
-      nrc_sample <- nrc #we already have "nsample" samples 
+      nrc_sample <- nrc #we already have "nsample" samples
       #raster::plot(nrc_sample) ###################just for testing
-      
+
       rm(StochasticLayers)
       rm(nrc)
       gc()
@@ -144,15 +145,15 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, redraw, 
       message(paste("Write", incid_out_fn))
       raster::writeRaster(raster::stack(lambda), filename = incid_out_fn)
       ###########Comment completed###########
-      
+
    }else {
       stop(paste(country, "cholera incidence data was not found."))
     }
-    
+
  }else {
     message(paste("Skip creation", incid_out_fn))
     lambda <- raster::stack(incid_out_fn)
  }
-  
+
   return(lambda)
 }
