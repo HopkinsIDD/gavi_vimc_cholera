@@ -17,16 +17,23 @@ export_country_stoch_template <- function(
   rawoutpath,
   outpath
   ){
+  
+  ## avoid reading montagu files multiple times
+  montagu_cache <- new.env()
+  montagu_cache[["centralburden_template"]] <- import_centralburden_template(modelpath, country, montagu_cache, redownload = FALSE)
+  montagu_cache[["country_agePop"]] <- import_country_agePop(modelpath, country, montagu_cache, redownload = FALSE)
+  montagu_cache[["country_lifeExpectancy"]] <- import_country_lifeExpectancy(modelpath, country, montagu_cache, redownload = FALSE)
+  
 
   ## import templates
-  cb_template <- import_centralburden_template(modelpath, country, redownload = FALSE)
+  cb_template <- import_centralburden_template(modelpath, country, montagu_cache, redownload = FALSE)
 
   ## calculation inputs
   disab_wt <- import_disability_weight()
   infect_dur <- generate_infectionDuration()
   cfr <- generate_cfr(country)
   aoi <- generate_aoi(country) ## average age of infection
-  lifeExpect_df <- import_country_lifeExpectancy(modelpath, country, redownload = FALSE)
+  lifeExpect_df <- import_country_lifeExpectancy(modelpath, country, montagu_cache, redownload = FALSE)
 
   if(!all(unique(cb_template$year) %in% lifeExpect_df$year)){
     missing_yrs <- unique(cb_template$year)[which(!unique(cb_template$year) %in% lifeExpect_df$year)]
@@ -62,7 +69,7 @@ export_country_stoch_template <- function(
     dplyr::rename(cases_tot = ec, deaths_tot = ed)
 
   ## distribute model outputs by proportion of the population
-  pop_age_df <- import_country_agePop(modelpath, country, redownload = FALSE)
+  pop_age_df <- import_country_agePop(modelpath, country, montagu_cache, redownload = FALSE)
   ##calam added to reflect change in central burden template for touchstone 202310gavi-4, which requires yll
   if (runname == '202310gavi-4'){
     stoch <- dplyr::left_join(expCases_age, pop_age_df, by = c("country", "year")) %>%
