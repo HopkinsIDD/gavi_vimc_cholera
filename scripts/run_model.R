@@ -18,7 +18,7 @@ if (as.logical(Sys.getenv("RUN_ON_MARCC",FALSE))) {
   print(paste0("Whether to skip checks: ", skip_checks))
   library(gert, lib=r_lib)
 
-  #### Check local changes 
+  #### Check local changes
   if((nrow(gert::git_status(repo=getwd())) != 0) & !skip_checks){
     mod_fns <- gert::git_status(repo=getwd())$file
     checklist <- c("^configs/", "^packages/ocvImpact/R/", "^scripts/")
@@ -28,7 +28,7 @@ if (as.logical(Sys.getenv("RUN_ON_MARCC",FALSE))) {
         if(any(grepl(itm, mod_fns))){
           if(any(mod_fns[grepl(itm, mod_fns)] != "scripts/montagu_handle.R") & !all( grepl(ign, mod_fns[grepl(itm, mod_fns)]) )){
             mod_fns <- mod_fns[mod_fns != "scripts/montagu_handle.R"]
-            stop(paste0("There are local changes that will affect formal run, please check: ", 
+            stop(paste0("There are local changes that will affect formal run, please check: ",
                         mod_fns[grepl(itm, mod_fns)][!grepl(ign, mod_fns[grepl(itm, mod_fns)])], "\n"))
           }
         }
@@ -36,13 +36,13 @@ if (as.logical(Sys.getenv("RUN_ON_MARCC",FALSE))) {
     }
   }
 
-  #### Check package versions 
-  if(packageVersion("sf", lib=r_lib) != "1.0.8" 
+  #### Check package versions
+  if(packageVersion("sf", lib=r_lib) != "1.0.8"
     |packageVersion("GADMTools", lib=r_lib) != "3.9.1"
     |packageVersion("exactextractr", lib=r_lib) != "0.9.0"
-    |packageVersion("raster", lib=r_lib) != "3.4.13" 
-    |packageVersion("Rcpp", lib=r_lib) != "1.0.9" 
-    |packageVersion("terra", lib=r_lib) != "1.4.22"){ 
+    |packageVersion("raster", lib=r_lib) != "3.4.13"
+    |packageVersion("Rcpp", lib=r_lib) != "1.0.9"
+    |packageVersion("terra", lib=r_lib) != "1.4.22"){
     stop("The important R packages do not have the correct versions, please check. ")
   }
 
@@ -108,10 +108,10 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   chooseCRANmirror(ind = 77) #specify the mirror so that the packages can be successfully installed in the non-interactive way
 
   package_list <- c(
-    "GADMTools", 
-    "rgdal", 
-    "drat", 
-    "roxygen2", 
+    "GADMTools",
+    "rgdal",
+    "drat",
+    "roxygen2",
     "data.table",
     "dplyr",
     "exactextractr",
@@ -125,8 +125,8 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
     "readxl",
     "tibble",
     "tidyr",
-    "yaml", 
-    "truncnorm", 
+    "yaml",
+    "truncnorm",
     "MCMCglmm"
   )
 
@@ -222,7 +222,7 @@ if (runname == "202310gavi-4"){
 ##the addition ends here
 dir.create(opathname, showWarnings = FALSE)
 
-#### Run model -- where different projects diverge 
+#### Run model -- where different projects diverge
 if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
   ### The surveillance project
   cache <- new.env()
@@ -238,12 +238,12 @@ if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
     cache$novacc_campde_transfer <- FALSE
   }
 
-  ## If the stage 1 screening process has been passed 
-  message(paste(" --- Running Surveillance Project:", country, "for scenario combination:", 
-                config$surveillance_scenario$surveillance_scenario, 
-                scenario, as.numeric(config$vacc$vac_incid_threshold), 
+  ## If the stage 1 screening process has been passed
+  message(paste(" --- Running Surveillance Project:", country, "for scenario combination:",
+                config$surveillance_scenario$surveillance_scenario,
+                scenario, as.numeric(config$vacc$vac_incid_threshold),
                 tolower(config$vacc$vac_admin_level), nsamples)) #needs to add more
-  run_surveillance_scenario( 
+  run_surveillance_scenario(
     datapath = dpathname,
     modelpath = mpathname,
     country,
@@ -252,8 +252,8 @@ if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
     nsamples,
     clean = cln,
     redraw = redrawIncid,
-    config = config #all new parameters that would be used will be read in as one config file 
-  ) 
+    config = config #all new parameters that would be used will be read in as one config file
+  )
 
 
 }else if(config$vacc$targeting_strategy != 'threshold_unconstrained' & runname == "202310gavi-4"){
@@ -272,7 +272,7 @@ if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
     targeting_strat = targeting,
     num_skip_years = nskipyears
   )
-  
+
   ## Create stochastic output file for country
   message(paste("Calculating stochastic output:", runname, country, scenario, nsamples, targeting, ndoses))
   stoch_template <- ocvImpact::export_country_stoch_template(
@@ -282,11 +282,11 @@ if(config$vacc$targeting_strategy == 'threshold_unconstrained'){
     ropathname,
     opathname
   )
-  
-  
+
+
   message(paste("End script:", runname, country, scenario, nsamples, targeting, ndoses))
   }else{
-  ### The VIMC project 
+  ### The VIMC project
   message(paste("Running:", runname, country, scenario, nsamples, targeting))
   expected_cases <- ocvImpact::run_country_scenario(
     dpathname,
