@@ -74,11 +74,11 @@ export_country_stoch_template <- function(
   if (runname == '202310gavi-4'){
     stoch <- dplyr::left_join(expCases_age, pop_age_df, by = c("country", "year")) %>%
       dplyr::mutate(
-        cases = round(cases_tot*prop_age, 3),
-        deaths = round(deaths_tot*prop_age, 3),
-        yll = round(yll_tot*prop_age, 3),
-        yld = round(yld_tot*prop_age, 3),
-        dalys = round(daly_tot*prop_age, 3)
+        cases = round(cases_tot*prop_age, 4),
+        deaths = round(deaths_tot*prop_age, 4),
+        yll = round(yll_tot*prop_age, 4),
+        yld = round(yld_tot*prop_age, 4),
+        dalys = round(daly_tot*prop_age, 4)
       ) %>%
       dplyr::rename(age = age_from, cohort_size = pop_age) %>%
       dplyr::full_join(cb_template, by = c("year", "country", "age")) %>%
@@ -87,11 +87,11 @@ export_country_stoch_template <- function(
   } else {
     stoch <- dplyr::left_join(expCases_age, pop_age_df, by = c("country", "year")) %>%
       dplyr::mutate(
-        cases = round(cases_tot*prop_age, 3),
-        deaths = round(deaths_tot*prop_age, 3),
-        yll = round(yll_tot*prop_age, 3),
-        yld = round(yld_tot*prop_age, 3),
-        dalys = round(daly_tot*prop_age, 3)
+        cases = round(cases_tot*prop_age, 4),
+        deaths = round(deaths_tot*prop_age, 4),
+        yll = round(yll_tot*prop_age, 4),
+        yld = round(yld_tot*prop_age, 4),
+        dalys = round(daly_tot*prop_age, 4)
       ) %>%
       dplyr::rename(age = age_from, cohort_size = pop_age) %>%
       dplyr::full_join(cb_template, by = c("year", "country", "age")) %>%
