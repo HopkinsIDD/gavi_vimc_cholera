@@ -31,6 +31,25 @@ run_country_scenario <- function(
     redraw = FALSE,
     ...){
 
+  incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
+  outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)
+  setting <- paste0('incid_trend_', incidence_rate_trend, '_outb_layer_',  outbreak_multiplier)
+  dir.create(paste0(rawoutpath, "/", scenario, "/", setting), showWarnings = FALSE)
+  
+  ##calam added to write expected cases in separate directories for the one dose and two dose campaigns for 202310gavi-4 touchstone
+  runname <- config$runname
+  if (runname == "202310gavi-4"){
+    ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country,"_",num_doses,"_ec.csv")
+    cov_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country,"_",num_doses,"_coverage.csv") ##to write modelled coverage
+    imm_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country,"_",num_doses,"_immune.csv") ##ca debug
+  } else {
+    ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_ec.csv")
+    cov_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_coverage.csv")
+    imm_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_immune.csv")
+  }
+  if(clean | !file.exists(ec_out_fn)){ ## rerun
+  
+  
   ## avoid reading montagu files multiple times
   montagu_cache <- new.env()
   montagu_cache[["coverage_scenario"]] <- import_coverage_scenario(modelpath, country, scenario, montagu_cache, filter0 = FALSE, redownload = FALSE)
@@ -48,23 +67,6 @@ run_country_scenario <- function(
   ## write susceptible population proportion raster
   track_prop_immune <- create_sus_modelInputs(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, montagu_cache, clean)
 
-  incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
-  outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)
-  setting <- paste0('incid_trend_', incidence_rate_trend, '_outb_layer_',  outbreak_multiplier)
-  dir.create(paste0(rawoutpath, "/", scenario, "/", setting), showWarnings = FALSE)
-
-  ##calam added to write expected cases in separate directories for the one dose and two dose campaigns for 202310gavi-4 touchstone
-  runname <- config$runname
-  if (runname == "202310gavi-4"){
-    ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country,"_",num_doses,"_ec.csv")
-    cov_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country,"_",num_doses,"_coverage.csv") ##to write modelled coverage
-    imm_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country,"_",num_doses,"_immune.csv") ##ca debug
-  } else {
-    ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_ec.csv")
-    cov_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_coverage.csv")
-    imm_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_immune.csv")
-  }
-  if(clean | !file.exists(ec_out_fn)){ ## rerun
 
     if (is.null(vacc_alloc)){
       message("Calculate expected cases: no vaccination")
