@@ -28,13 +28,14 @@ create_relative_worldpop_weights <- function(datapath, country){
 #' @param modelpath path to montagu files
 #' @param country country code
 #' @param year population year
+#' @param cache montagu cache
 #' @return raster of model population
 #' @export
 #' @include utils_montagu.R
-create_model_pop_raster <- function(datapath, modelpath, country, year){
+create_model_pop_raster <- function(datapath, modelpath, country, year, cache){
 
   wts <- create_relative_worldpop_weights(datapath, country)
-  year_pop <- import_country_population_1yr(modelpath, country, year)
+  year_pop <- import_country_population_1yr(modelpath, country, year, cache)
 
   rc <- raster::calc(wts, fun=function(x) x*year_pop)
 
@@ -49,14 +50,15 @@ create_model_pop_raster <- function(datapath, modelpath, country, year){
 #' @param modelpath path to montagu files
 #' @param country country code
 #' @param scenario Unique string that identifies the coverage scenario name
+#' @param cache montagu cache
 #' @param ... Optional parameters to pass to [`assign_vaccine_targets()`]. See [`assign_vaccine_targets()`] for defaults.
 #' @importFrom magrittr %>%
 #' @return dataframe with proportion of total population allocated with vaccines in admin units in a given country and year
 #' @export
 #' @include utils_targeting.R load_shapefile_by_country.R utils.R
-allocate_vaccine <- function(datapath, modelpath, country, scenario, ...){
+allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...){
 
-  vacc_targets <- assign_vaccine_targets(datapath, modelpath, country, scenario, ...)
+  vacc_targets <- assign_vaccine_targets(datapath, modelpath, country, scenario, cache, ...)
 
   ## skip if no vaccination
   if (is.null(vacc_targets)){
@@ -73,7 +75,7 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, ...){
     shp <- merge(shp, shp_sp, id = 'genID')
 
     vacc_pop <- lapply(vacc_years, function(yr){
-      model_pop_raster <- create_model_pop_raster(datapath, modelpath, country, yr)
+      model_pop_raster <- create_model_pop_raster(datapath, modelpath, country, yr, cache)
       model_pop_admin <- get_admin_population(model_pop_raster, shp)
       rc <- shp %>%
         dplyr::mutate(vacc_year = yr,
@@ -105,11 +107,12 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, ...){
 #' @param modelpath path to montagu files
 #' @param country country code
 #' @param vacc_alloc object returned from [`allocate_vaccine()`]
+#' @param cache montagu cache
 #' @return list with model_years, start_year, and real_model_years
 #' @export
 #' @include utils_montagu.R
-get_model_years <- function(modelpath, country, vacc_alloc){
-  tmp <- import_centralburden_template(mpathname, country, redownload = FALSE)
+get_model_years <- function(modelpath, country, vacc_alloc, cache){
+  tmp <- import_centralburden_template(mpathname, country, cache, redownload = FALSE)
   max_output_year <- max(tmp$year)
 
   if (!is.null(vacc_alloc)){
@@ -192,11 +195,11 @@ generate_pct_protect_function <- function(my_trunc_year = 5, my_ve_scen = "base"
 #' @return proportion protected for a given time since vaccination and proportion under 5
 #' @export
 pct_protect_all_ages_1d <- function(years, proportion_under5, my_trunc_year = 10){
-  
+
   ve_under5_1d <- pct_protect_under5_1d(years, my_trunc_year)
   ve_over5_1d <- pct_protect_over5_1d(years)
   vaccine_efficacy <- (ve_under5_1d * proportion_under5 + ve_over5_1d * (1-proportion_under5))
-  
+
   return(vaccine_efficacy)
 }
 
@@ -222,11 +225,11 @@ pct_protect_under5_1d <- function(years, my_trunc_year = 10){
 pct_protect_over5_1d <- function(years, my_trunc_year = 10){
   if (any(years%%1 !=0)) {warning("function designed to average across years only")}
 
-  ve_1d_trend <- readRDS("input_data/log1d_obs.rds") 
+  ve_1d_trend <- readRDS("input_data/log1d_obs.rds")
   months <- (years-.5)*12
   df <- metafor::predict.rma(ve_1d_trend, newmods=months, transf=function(x) 1-exp(x), addx=TRUE) %>%
     as.data.frame() %>%
-    dplyr::mutate(pred_corr = ifelse(pred < 0, 0, pred)) 
+    dplyr::mutate(pred_corr = ifelse(pred < 0, 0, pred))
   rc <- df$pred_corr
 
   if(any(years>my_trunc_year)){
@@ -245,11 +248,11 @@ pct_protect_over5_1d <- function(years, my_trunc_year = 10){
 #' @return proportion protected for a given time since vaccination and proportion under 5
 #' @export
 pct_protect_all_ages_2d <- function(years, proportion_under5, my_trunc_year = 10){
-  
+
   ve_under5_2d <- pct_protect_under5_2d(years, my_trunc_year)
   ve_over5_2d <- pct_protect_over5_2d(years, my_trunc_year)
   vaccine_efficacy <- (ve_under5_2d * proportion_under5 + ve_over5_2d * (1-proportion_under5))
-  
+
   return(vaccine_efficacy)
 }
 
@@ -261,7 +264,7 @@ pct_protect_all_ages_2d <- function(years, proportion_under5, my_trunc_year = 10
 #' @return proportion protected for a given time since vaccination and under 5s
 #' @export
 pct_protect_under5_2d <- function(years, my_trunc_year = 10){
-  age_multiplier <- mean(c(0.28, 1.04, 0.49, 0.83, 0.69, 0.56, 1.03, 0.34)) ## raw mean of relative VE of <5s to >5s in prelim version of Xu et al. 
+  age_multiplier <- mean(c(0.28, 1.04, 0.49, 0.83, 0.69, 0.56, 1.03, 0.34)) ## raw mean of relative VE of <5s to >5s in prelim version of Xu et al.
   rc <- age_multiplier * pct_protect_over5_2d(years, my_trunc_year)
   return(rc)
 }
@@ -276,11 +279,11 @@ pct_protect_under5_2d <- function(years, my_trunc_year = 10){
 pct_protect_over5_2d <- function(years, my_trunc_year = 10){
   if (any(years%%1 !=0)) {warning("function designed to average across years only")}
 
-  ve_2d_trend <- readRDS("input_data/log2d_obs.rds") 
+  ve_2d_trend <- readRDS("input_data/log2d_obs.rds")
   months <- (years-.5)*12
   df <- metafor::predict.rma(ve_2d_trend, newmods=months, transf=function(x) 1-exp(x), addx=TRUE) %>%
     as.data.frame() %>%
-    dplyr::mutate(pred_corr = ifelse(pred < 0, 0, pred))  
+    dplyr::mutate(pred_corr = ifelse(pred < 0, 0, pred))
   rc <- df$pred_corr
 
   if(any(years>my_trunc_year)){
@@ -301,17 +304,17 @@ pct_protect_over5_2d <- function(years, my_trunc_year = 10){
 #' @return proportion protected for a given time since vaccination and proportion under 5
 #' @export
 pct_protect_all <- function(years, proportion_under5, proportion_one_dose, my_trunc_year = 10){
-  
+
   ve_2d <- pct_protect_all_ages_2d(years, proportion_under5, my_trunc_year)
   ve_1d <- pct_protect_all_ages_1d(years, proportion_under5, my_trunc_year)
-  
+
   if(is.na(proportion_one_dose) | proportion_one_dose > 1 | proportion_one_dose < 0){
     message("proportion_one_dose is invalid, there may be no vaccination. returning VE = 0")
     vaccine_efficacy <- 0
   } else{
     vaccine_efficacy <- (ve_1d * proportion_one_dose + ve_2d * (1-proportion_one_dose))
-  }  
-  
+  }
+
   return(vaccine_efficacy)
 }
 
@@ -326,7 +329,7 @@ pct_protect_all <- function(years, proportion_under5, proportion_one_dose, my_tr
 get_pop_proportion_ocv1 <- function(vacc_alloc, year){
   vacc_alloc$vacc_year <- as.numeric(vacc_alloc$vacc_year)
   vacc_alloc_year <- vacc_alloc[vacc_alloc$vacc_year == year,]
-  
+
   if(year < min(vacc_alloc$vacc_year)){
     warning(paste("Cannot return ocv1 proportion for years before the first vaccination year. Returning proportion for first vaccination year.", min(vacc_alloc$vacc_year)))
     vacc_alloc_year <- vacc_alloc[vacc_alloc$vacc_year == min(vacc_alloc$vacc_year),]
@@ -341,7 +344,7 @@ get_pop_proportion_ocv1 <- function(vacc_alloc, year){
   total_ocv1 <- sum(vacc_alloc_year$actual_ocv1_fvp) ## fvps with one dose
   total_ocv2 <- sum(vacc_alloc_year$actual_ocv2_fvp) ## fvps with two doses
   prop_ocv1_vs_ocv2 <- total_ocv1/(total_ocv1 + total_ocv2)
-  
+
   return(prop_ocv1_vs_ocv2)
 }
 

@@ -9,6 +9,7 @@ create_incid_raster(
   datapath,
   country,
   nsamples,
+  cache,
   redraw,
   random_seed = NULL
 )
@@ -21,6 +22,8 @@ create_incid_raster(
 \item{country}{country code}
 
 \item{nsamples}{numeric, number of layers to sample (must be below 1000)}
+
+\item{cache}{montagu cache}
 
 \item{redraw}{logical that indicates whether existing incid samples should be drawn again}
 

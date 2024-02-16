@@ -4,7 +4,7 @@
 \alias{get_model_years}
 \title{get_model_years}
 \usage{
-get_model_years(modelpath, country, vacc_alloc)
+get_model_years(modelpath, country, vacc_alloc, cache)
 }
 \arguments{
 \item{modelpath}{path to montagu files}
@@ -12,6 +12,8 @@ get_model_years(modelpath, country, vacc_alloc)
 \item{country}{country code}
 
 \item{vacc_alloc}{object returned from [`allocate_vaccine()`]}
+
+\item{cache}{montagu cache}
 }
 \value{
 list with model_years, start_year, and real_model_years

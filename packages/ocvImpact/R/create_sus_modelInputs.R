@@ -7,6 +7,7 @@
 #' @param scenario Unique string that identifies the coverage scenario name
 #' @param rawoutpath path to raw model output files
 #' @param vacc_alloc object returned from [`allocate_vaccine()`]
+#' @param cache montagu cache
 #' @param clean logical that indicates whether existing sus_files should be deleted
 #' @param trunc_year number of years after which VE = 0 (default = 10)
 #' @return track_prop_immune dataframe
@@ -19,6 +20,7 @@ create_sus_modelInputs <- function(
     scenario,
     rawoutpath,
     vacc_alloc,
+    cache,
     clean,
     trunc_year = 10){
 
@@ -26,12 +28,12 @@ create_sus_modelInputs <- function(
   message("create_sus_modelInputs starts")
 
   ## create template and inputs
-  years_ls <- get_model_years(modelpath, country, vacc_alloc)
+  years_ls <- get_model_years(modelpath, country, vacc_alloc, cache)
   model_years <- years_ls[["model_years"]]
   output_years <- years_ls[["output_years"]]
   first_output_year <- output_years[1]
 
-  startpop_raster <- create_model_pop_raster(datapath, modelpath, country, first_output_year)
+  startpop_raster <- create_model_pop_raster(datapath, modelpath, country, first_output_year, cache)
   raster1_template <- raster::calc(startpop_raster, fun = function(x){ifelse(x>0, x/x, 0)})
 
   #### TRACK AND MODEL VACCINE EFFECTS AT GRID LEVEL ####
@@ -62,7 +64,7 @@ create_sus_modelInputs <- function(
     for (j in 1:length(output_years)){ ## loop through model years
 
       ## Get life expectancy data from file
-      mu <- 1/(import_country_lifeExpectancy_1yr(mpathname, country, output_years[j]))
+      mu <- 1/(import_country_lifeExpectancy_1yr(mpathname, country, output_years[j], cache))
       message(paste("Modeling susceptibility:", country, output_years[j], 1/mu, "life expectancy"))
 
       if (!(output_years[j] %in% model_years)){
@@ -100,7 +102,7 @@ create_sus_modelInputs <- function(
           )
 
           ## these proportions are referenced to k, which will be the year of the last vaccination campaign when applicable to ve_j_k calculations
-          under5_proportion <- import_country_proportion_under5(modelpath, country, year = output_years[k]) ## DEBUG add redownload arg
+          under5_proportion <- import_country_proportion_under5(modelpath, country, year = output_years[k], cache, redownload = FALSE) ## DEBUG add redownload arg
           prop_ocv1 <- get_pop_proportion_ocv1(vacc_alloc, year = output_years[k])
 
           ## calculate VE

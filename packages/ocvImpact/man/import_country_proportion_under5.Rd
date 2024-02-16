@@ -4,7 +4,13 @@
 \alias{import_country_proportion_under5}
 \title{import_country_proportion_under5}
 \usage{
-import_country_proportion_under5(modelpath, country, year, redownload = TRUE)
+import_country_proportion_under5(
+  modelpath,
+  country,
+  year,
+  cache,
+  redownload = TRUE
+)
 }
 \arguments{
 \item{modelpath}{path to montagu files}
@@ -12,6 +18,8 @@ import_country_proportion_under5(modelpath, country, year, redownload = TRUE)
 \item{country}{country code}
 
 \item{year}{year (year in which vaccination campaign takes place)}
+
+\item{cache}{montagu cache}
 
 \item{redownload}{whether to redownload the file}
 }

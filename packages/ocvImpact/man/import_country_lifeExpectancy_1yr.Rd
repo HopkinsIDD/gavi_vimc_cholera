@@ -4,7 +4,7 @@
 \alias{import_country_lifeExpectancy_1yr}
 \title{import_country_lifeExpectancy_1yr}
 \usage{
-import_country_lifeExpectancy_1yr(modelpath, country, year)
+import_country_lifeExpectancy_1yr(modelpath, country, year, cache)
 }
 \arguments{
 \item{modelpath}{path to montagu files}
@@ -12,6 +12,8 @@ import_country_lifeExpectancy_1yr(modelpath, country, year)
 \item{country}{country code}
 
 \item{year}{year for which life expectancy should be returned}
+
+\item{cache}{montagu cache}
 }
 \value{
 dataframe

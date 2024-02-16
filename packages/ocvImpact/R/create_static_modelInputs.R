@@ -1,36 +1,38 @@
 #' @name create_static_modelInputs
 #' @title create_static_modelInputs
 #' @description Create proportion of population vaccinated and total population rasterStacks. Write vaccination raster to file and export population raster
-#' @param datapath path to input data 
+#' @param datapath path to input data
 #' @param modelpath path to montagu files
 #' @param country country code
 #' @param scenario Unique string that identifies the coverage scenario name
 #' @param rawoutpath path to raw model output files
 #' @param vacc_alloc object returned from [`allocate_vaccine()`]
-#' @param clean logical that indicates whether existing model output files (vacc & pop) should be deleted 
+#' @param cache montagu cache
+#' @param clean logical that indicates whether existing model output files (vacc & pop) should be deleted
 #' @return rasterStack of total population for model years
 #' @export
-#' @include utils.R 
+#' @include utils.R
 create_static_modelInputs <- function(
-  datapath, 
-  modelpath, 
-  country, 
+  datapath,
+  modelpath,
+  country,
   scenario,
   rawoutpath,
   vacc_alloc,
+  cache,
   clean){
-  
+
   ## create template and inputs
-  years_ls <- get_model_years(modelpath, country, vacc_alloc)
+  years_ls <- get_model_years(modelpath, country, vacc_alloc, cache)
   output_years <- years_ls[["output_years"]]
   first_output_year <- output_years[1]
 
-  startpop_raster <- create_model_pop_raster(datapath, modelpath, country, first_output_year)
+  startpop_raster <- create_model_pop_raster(datapath, modelpath, country, first_output_year, cache)
   raster0_template <- raster::calc(startpop_raster, fun = function(x){x*0})
-  
+
   #### CREATE proportion vaccinated AND total population RASTERS FOR MODELING ####
 
-  ## create rasterStack for 
+  ## create rasterStack for
   ## 1. proportion of population vaccinated in each grid cell
   ## 2. population
   vacc_rasterStack <- raster::stack(raster0_template)
@@ -63,8 +65,9 @@ create_static_modelInputs <- function(
     }
 
     for (year in output_years){
+      message(paste("In", year, "of static_modelInputs"))
 
-      if (year %in% unique(vacc_alloc$vacc_year)){ 
+      if (year %in% unique(vacc_alloc$vacc_year)){
         new_layer <- fasterize::fasterize(
           dplyr::filter(vacc_alloc, vacc_year == year),
           raster0_template,
@@ -80,28 +83,28 @@ create_static_modelInputs <- function(
 
       vacc_rasterStack <- raster::addLayer(vacc_rasterStack, new_vacc_layer)
 
-      new_pop_layer <- create_model_pop_raster(datapath, modelpath, country, year)
+      new_pop_layer <- create_model_pop_raster(datapath, modelpath, country, year, cache)
       pop_rasterStack <- raster::addLayer(pop_rasterStack, new_pop_layer)
 
       rm(new_vacc_layer, new_pop_layer)
       gc()
-    
+
     } #endfor model_years
 
     ## drop initial vacc & pop rast layers, which were dummies
     vacc_rs <- raster::dropLayer(vacc_rasterStack, 1)
     pop_rs <- raster::dropLayer(pop_rasterStack, 1)
-    
+
     if ((dim(vacc_rs)[3] != length(output_years)) &
         (dim(pop_rs)[3] != length(output_years))){
-      
+
       stop(paste(
-        "The vaccine intervention is implemented in", 
-        dim(vacc_rs)[3], 
-        "years, the population data is stacked for", 
-        dim(pop_rs)[3], 
-        "years, but the model will run for", 
-        length(output_years), 
+        "The vaccine intervention is implemented in",
+        dim(vacc_rs)[3],
+        "years, the population data is stacked for",
+        dim(pop_rs)[3],
+        "years, but the model will run for",
+        length(output_years),
         "years."))
     }
 
@@ -113,10 +116,10 @@ create_static_modelInputs <- function(
     message(paste("Write", pop_out_fn))
     raster::writeRaster(pop_rs, filename = pop_out_fn)
   }
-  
+
   rm(vacc_rasterStack, startpop_raster, raster0_template, pop_rasterStack)
   gc()
-  
-  return(NULL) 
+
+  return(NULL)
 
 }

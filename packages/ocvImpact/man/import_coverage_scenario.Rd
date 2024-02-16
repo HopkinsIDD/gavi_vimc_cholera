@@ -8,7 +8,7 @@ import_coverage_scenario(
   modelpath,
   country,
   scenario,
-  num_doses = NULL,
+  cache,
   filter0 = FALSE,
   redownload = TRUE
 )
@@ -19,6 +19,8 @@ import_coverage_scenario(
 \item{country}{country code}
 
 \item{scenario}{Unique string that identifies the coverage scenario name}
+
+\item{cache}{montagu cache object}
 
 \item{filter0}{logical for whether 0 vaccination years should be filtered out (default = FALSE)}
 

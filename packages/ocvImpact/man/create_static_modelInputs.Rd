@@ -11,6 +11,7 @@ create_static_modelInputs(
   scenario,
   rawoutpath,
   vacc_alloc,
+  cache,
   clean
 )
 }
@@ -26,6 +27,8 @@ create_static_modelInputs(
 \item{rawoutpath}{path to raw model output files}
 
 \item{vacc_alloc}{object returned from [`allocate_vaccine()`]}
+
+\item{cache}{montagu cache}
 
 \item{clean}{logical that indicates whether existing model output files (vacc & pop) should be deleted}
 }

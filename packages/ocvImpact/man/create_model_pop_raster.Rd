@@ -4,7 +4,7 @@
 \alias{create_model_pop_raster}
 \title{create_model_pop_raster}
 \usage{
-create_model_pop_raster(datapath, modelpath, country, year)
+create_model_pop_raster(datapath, modelpath, country, year, cache)
 }
 \arguments{
 \item{datapath}{path to input data}
@@ -14,6 +14,8 @@ create_model_pop_raster(datapath, modelpath, country, year)
 \item{country}{country code}
 
 \item{year}{population year}
+
+\item{cache}{montagu cache}
 }
 \value{
 raster of model population

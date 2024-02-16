@@ -4,12 +4,14 @@
 \alias{import_country_agePop}
 \title{import_country_agePop}
 \usage{
-import_country_agePop(modelpath, country, redownload = TRUE)
+import_country_agePop(modelpath, country, cache, redownload = TRUE)
 }
 \arguments{
 \item{modelpath}{path to montagu files}
 
 \item{country}{country code}
+
+\item{cache}{montagu cache}
 
 \item{redownload}{whether to redownload the file}
 }

@@ -4,12 +4,14 @@
 \alias{import_country_population}
 \title{import_country_population}
 \usage{
-import_country_population(modelpath, country, redownload = TRUE)
+import_country_population(modelpath, country, cache, redownload = TRUE)
 }
 \arguments{
 \item{modelpath}{path to montagu files}
 
 \item{country}{country code}
+
+\item{cache}{montagu cache}
 
 \item{redownload}{whether to redownload the file}
 }

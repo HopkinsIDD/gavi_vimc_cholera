@@ -4,12 +4,14 @@
 \alias{import_centralburden_template}
 \title{import_centralburden_template}
 \usage{
-import_centralburden_template(modelpath, country, redownload = TRUE)
+import_centralburden_template(modelpath, country, cache, redownload = TRUE)
 }
 \arguments{
 \item{modelpath}{Path to montagu files}
 
 \item{country}{country code}
+
+\item{cache}{montagu cache}
 
 \item{redownload}{whether to redownload the file}
 }

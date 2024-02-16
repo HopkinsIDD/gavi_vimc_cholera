@@ -9,24 +9,31 @@
 #' @importFrom magrittr %>%
 #' @return dataframe
 #' @export
-#' @include utils.R utils_montagu.R 
+#' @include utils.R utils_montagu.R
 export_country_stoch_template <- function(
   modelpath,
-  country, 
+  country,
   scenario,
   rawoutpath,
   outpath
   ){
 
+  ## avoid reading montagu files multiple times
+  montagu_cache <- new.env()
+  montagu_cache[["centralburden_template"]] <- import_centralburden_template(modelpath, country, montagu_cache, redownload = FALSE)
+  montagu_cache[["country_agePop"]] <- import_country_agePop(modelpath, country, montagu_cache, redownload = FALSE)
+  montagu_cache[["country_lifeExpectancy"]] <- import_country_lifeExpectancy(modelpath, country, montagu_cache, redownload = FALSE)
+
+
   ## import templates
-  cb_template <- import_centralburden_template(modelpath, country, redownload = FALSE)
+  cb_template <- montagu_cache[["centralburden_template"]]
 
   ## calculation inputs
   disab_wt <- import_disability_weight()
   infect_dur <- generate_infectionDuration()
   cfr <- generate_cfr(country)
   aoi <- generate_aoi(country) ## average age of infection
-  lifeExpect_df <- import_country_lifeExpectancy(modelpath, country, redownload = FALSE)
+  lifeExpect_df <- montagu_cache[["country_lifeExpectancy"]]
 
   if(!all(unique(cb_template$year) %in% lifeExpect_df$year)){
     missing_yrs <- unique(cb_template$year)[which(!unique(cb_template$year) %in% lifeExpect_df$year)]
@@ -50,7 +57,7 @@ export_country_stoch_template <- function(
     ec_out_fn <- paste0(rawoutpath, "/", scenario, "/", setting, "/", country, "_ec.csv")
   }
   ##calam addition end
-  expCases <- readr::read_csv(ec_out_fn) 
+  expCases <- readr::read_csv(ec_out_fn)
   expCases_age <- dplyr::left_join(expCases, lifeExpect_df, by = c("country", "year")) %>%
     dplyr::mutate(
       ed = cfr*ec,
@@ -62,16 +69,16 @@ export_country_stoch_template <- function(
     dplyr::rename(cases_tot = ec, deaths_tot = ed)
 
   ## distribute model outputs by proportion of the population
-  pop_age_df <- import_country_agePop(modelpath, country, redownload = FALSE)
+  pop_age_df <- montagu_cache[["country_agePop"]]
   ##calam added to reflect change in central burden template for touchstone 202310gavi-4, which requires yll
   if (runname == '202310gavi-4'){
     stoch <- dplyr::left_join(expCases_age, pop_age_df, by = c("country", "year")) %>%
       dplyr::mutate(
-        cases = round(cases_tot*prop_age, 0),
-        deaths = round(deaths_tot*prop_age, 0),
-        yll = round(yll_tot*prop_age, 0),
-        yld = round(yld_tot*prop_age, 0),
-        dalys = round(daly_tot*prop_age, 0)
+        cases = round(cases_tot*prop_age, 4),
+        deaths = round(deaths_tot*prop_age, 4),
+        yll = round(yll_tot*prop_age, 4),
+        yld = round(yld_tot*prop_age, 4),
+        dalys = round(daly_tot*prop_age, 4)
       ) %>%
       dplyr::rename(age = age_from, cohort_size = pop_age) %>%
       dplyr::full_join(cb_template, by = c("year", "country", "age")) %>%
@@ -80,11 +87,11 @@ export_country_stoch_template <- function(
   } else {
     stoch <- dplyr::left_join(expCases_age, pop_age_df, by = c("country", "year")) %>%
       dplyr::mutate(
-        cases = round(cases_tot*prop_age, 0),
-        deaths = round(deaths_tot*prop_age, 0),
-        yll = round(yll_tot*prop_age, 0),
-        yld = round(yld_tot*prop_age, 0),
-        dalys = round(daly_tot*prop_age, 0)
+        cases = round(cases_tot*prop_age, 4),
+        deaths = round(deaths_tot*prop_age, 4),
+        yll = round(yll_tot*prop_age, 4),
+        yld = round(yld_tot*prop_age, 4),
+        dalys = round(daly_tot*prop_age, 4)
       ) %>%
       dplyr::rename(age = age_from, cohort_size = pop_age) %>%
       dplyr::full_join(cb_template, by = c("year", "country", "age")) %>%
@@ -92,12 +99,12 @@ export_country_stoch_template <- function(
       dplyr::arrange(run_id, age, year)
   }
   ##end addition
-  
-  ## include setting into the file name 
+
+  ## include setting into the file name
   # incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
   # outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)
   # setting <- paste0('incid_trend_', incidence_rate_trend, '_outb_layer_',  outbreak_multiplier)
-  
+
   ##calam added added for the new one dose and two dose campaigns for the 202310gavi-4 touchstone
   if (runname == '202310gavi-4'){
     ndoses <- config$vacc$ndoses
@@ -127,5 +134,5 @@ export_country_stoch_template <- function(
   readr::write_csv(params, par_fn)
 
   return(stoch)
-  
+
 }
