@@ -55,6 +55,9 @@ load_targets_by_country <- function(datapath, modelpath, country){
       message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
       afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
     }
+    
+    bgd <- raster::raster(paste0(datapath, "/incidence/BGD_incid_5k_100.tif"))
+    
     ##end addition
 
     ## WorldPop population data ##
@@ -63,7 +66,11 @@ load_targets_by_country <- function(datapath, modelpath, country){
     shp <- load_shapefile_by_country(datapath, country)
 
     ## summarize rasters to admin level
-    incid2 <- exactextractr::exact_extract(afr, shp, 'mean') ## could add population weight here for better incidence estimate but need to project population to the incidence grid
+    if (country == "BGD"){
+      incid2 <- exactextractr::exact_extract(bgd, shp, 'mean') ## to use BGD incidence raster for targeting
+    } else {
+      incid2 <- exactextractr::exact_extract(afr, shp, 'mean') ## could add population weight here for better incidence estimate but need to project population to the incidence grid
+    }
     pop2 <- get_admin_population(pop, shp)
     total_pop <- sum(pop2)
 
