@@ -56,8 +56,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
       afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
     }
     
-    bgd <- raster::raster(paste0(datapath, "/incidence/BGD_incid_5k_100.tif"))
-    
+
     ##end addition
 
     ## WorldPop population data ##
@@ -67,6 +66,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
 
     ## summarize rasters to admin level
     if (country == "BGD"){
+      bgd <- raster::raster(paste0(datapath, "/incidence/BGD_incid_5k_100.tif"))
       incid2 <- exactextractr::exact_extract(bgd, shp, 'mean') ## to use BGD incidence raster for targeting
     } else {
       incid2 <- exactextractr::exact_extract(afr, shp, 'mean') ## could add population weight here for better incidence estimate but need to project population to the incidence grid
