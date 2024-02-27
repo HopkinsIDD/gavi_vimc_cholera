@@ -64,10 +64,20 @@ load_targets_by_country <- function(datapath, modelpath, country){
     ## admin unit shapefile ##
     shp <- load_shapefile_by_country(datapath, country)
 
-    ## summarize rasters to admin level
+    ## summarize rasters to admin level (BGD, non-raster, and african raster countries)
     if (country == "BGD"){
       bgd <- raster::raster(paste0(datapath, "/incidence/BGD_incid_5k_100.tif"))
       incid2 <- exactextractr::exact_extract(bgd, shp, 'mean') ## to use BGD incidence raster for targeting
+    } else if (country %in% c("AFG", "HTI", "IRN", "IRQ", "NPL", "PAK", "PHL", "THA", "YEM", "IND")) { #for non-raster countries
+       file_path <- paste0(datapath, "/incidence/",country, "_incid_5k_", config$num_samples, ".tif")  
+       
+       ##check that the incidence rate raster is cropped and exists 
+       if (file.exists(file_path)){
+         non_rast <- raster::raster(file_path)
+         incid2 <- exactextractr::exact_extract(non_rast, shp, 'mean') ## to use incidence raster for targeting for non-raster countries
+       } else {
+          stop(paste("Run the run_country_incid_crop script first for ", country))
+       }
     } else {
       incid2 <- exactextractr::exact_extract(afr, shp, 'mean') ## could add population weight here for better incidence estimate but need to project population to the incidence grid
     }
