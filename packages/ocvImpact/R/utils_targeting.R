@@ -70,7 +70,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
       incid2 <- exactextractr::exact_extract(bgd, shp, 'mean') ## to use BGD incidence raster for targeting
     } else if (country %in% c("AFG", "HTI", "IRN", "IRQ", "NPL", "PAK", "PHL", "THA", "YEM", "IND")) { #for non-raster countries
        file_path <- paste0(datapath, "/incidence/",country, "_incid_5k_", config$num_samples, ".tif")  
-       
+       message(paste0("Loading ", file_path))
        ##check that the incidence rate raster is cropped and exists 
        if (file.exists(file_path)){
          non_rast <- raster::raster(file_path)
