@@ -73,9 +73,12 @@ for (i in 1:length(scenarios)){
   print(scn)
   
   ## Stochastic outputs
-  incidence_rate_trend <-TRUE #just for now
-  outbreak_multiplier <- TRUE #just for now
-  single_setting <- FALSE
+  ## if you want to generate central and stochastic estimates for a single setting set single_setting to TRUE
+  ## and specify whether the incidence_rate_trend is TRUE or FALSE
+  ## otherwise just set single_setting to FALSE
+  incidence_rate_trend <-TRUE # user-specified
+  outbreak_multiplier <- FALSE # user-specified
+  single_setting <- FALSE # user-specified
   if(single_setting){
     suffix <- paste0(".*", "_incid_trend_", incidence_rate_trend, "_outb_layer_", outbreak_multiplier, "_stoch.csv")
   }else{
@@ -121,9 +124,12 @@ for (i in 1:length(scenarios)){
   readr::write_csv(central_out, central_final_fn)
   
   ## Parameter outputs
-  # incidence_rate_trend <- TRUE #just for now
-  # outbreak_multiplier <- FALSE #just for now
-  # single_setting <- TRUE
+  ## if you want to generate parameter tables for a single setting set single_setting to TRUE
+  ## and specify whether the incidence_rate_trend is TRUE or FALSE
+  ## otherwise just set single_setting to FALSE
+  incidence_rate_trend <- FALSE # user-specified
+  outbreak_multiplier <- FALSE # user-specified
+  single_setting <- FALSE # user-specified
   if(single_setting){
     print("single setting is true")  
     suffix <- paste0(".*", "_incid_trend_", incidence_rate_trend, "_outb_layer_", outbreak_multiplier, "_pars.csv")
