@@ -1,0 +1,1480 @@
+---
+title: "Diagnostic Report -- based on current model outputs - combined all settings"
+subtitle: "202310gavi-4 -- central burden estimates"
+author: "JHU-Lee Modeling Group"
+date: "`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+  pdf_document: default
+params:
+  touchstone: '202310gavi-4'
+  args: 'run-diag'
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r include=FALSE}
+### Setup
+chooseCRANmirror(ind = 77) #specify the mirror so that the packages can be successfully installed in the non-interactive way
+package_list <- c("tidyverse",
+                  "dplyr",
+                  "knitr",
+                 "kableExtra",
+                 "lemon", 
+                 "rstudioapi")
+for (package in package_list) {
+  if (!require(package = package, character.only = T)) {
+    install.packages(pkgs = package, dependencies = TRUE)
+    library(package = package, character.only = T)
+  }
+  library(package = package, character.only = T)
+}
+library(tidyverse)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(lemon)
+library(rstudioapi)
+library(tinytex)
+
+## How to run this rmd
+## To run the rmd, you will need the following directories:
+## 1. 'current_outputs_combined_settings' which will include the central burden estimates for all three scenarios
+## 2. 'data_from_montagu', which includes the montagu coverage files and demographic files
+## 3. 'coverage_files/output_raw/ocv1-default/incid_trend_FALSE_outb_layer_FALSE' which should include all modelled coverage csvs (an intermediate output of the model)
+
+
+### Read in the central burden estimates
+campaign_ocv1_output <- list.files('current_outputs_combined_settings/', pattern = "default_one")
+campaign_ocv2_output <- list.files('current_outputs_combined_settings/', pattern = "default_two")
+no_vaccination_output <- list.files('current_outputs_combined_settings/', pattern = "no-vaccination")
+  cen_camp_ocv1  <- read_csv(paste0('current_outputs_combined_settings/', campaign_ocv1_output[1]))
+  cen_camp_ocv2  <- read_csv(paste0('current_outputs_combined_settings/', campaign_ocv2_output[1]))
+  cen_novax <- read_csv(paste0('current_outputs_combined_settings/', no_vaccination_output[1]))
+  
+  
+```
+
+
+
+# Table 1. The Model Specs
+Specific characteristics of this model are shown in this table. 
+```{r include=FALSE}
+glimpse(cen_camp_ocv1)
+names(cen_camp_ocv1)
+```
+
+
+```{r include=FALSE}
+glimpse(cen_camp_ocv2)
+names(cen_camp_ocv2)
+```
+
+
+```{r echo=FALSE}
+
+model_spec <- cen_camp_ocv1 %>% 
+  mutate(Disease = disease) %>%
+  mutate(ModelingGroup = 'JHU-Lee') %>%
+  mutate(YearRange = paste0(min(year), '-', max(year))) %>% 
+  mutate(AgeRange = paste0(min(age), '-', max(age))) %>% 
+  mutate(CountryList = paste(unique(cen_camp_ocv1$country), collapse = '  -  ')) %>% 
+  mutate(SimulatedOutcomes = paste(names(cen_camp_ocv1)[6:ncol(cen_camp_ocv1)], collapse='  -  ') ) %>% 
+  select(Disease, ModelingGroup, YearRange, AgeRange, CountryList, SimulatedOutcomes) %>% 
+  slice(1)
+
+###need a global variable here -- number of countries
+num_country_for_plot <- length(unique(cen_camp_ocv1$country))
+kable(data.frame(Item = names(model_spec), Details = unlist(unname(model_spec[1,]))))
+
+```
+
+
+
+# Coverage Trajectories
+
+The trends of the specific coverage sets per campaign scenario can be observed in this figure. For the ocv1-ocv2-default scenario, the coverage reported here is the adjusted coverage from montagu, which is modified to consider the fact that there is no correlation between rounds 'OCV1' and 'OCV2'.
+
+```{r include=FALSE}
+### get the coverage data from local
+cov_novax <- read_csv("data_from_montagu/coverage_202310gavi-4_cholera-no-vaccination.csv")
+cov_camp_ocv1 <- read_csv("data_from_montagu/coverage_202310gavi-4_cholera-ocv1-default.csv")
+cov_camp_ocv2 <- read_csv("data_from_montagu/coverage_202310gavi-4_cholera-ocv1-ocv2-default.csv")
+
+
+## get a copy of the unadjusted coverage 
+unadjusted_cov_camp_ocv1 <- cov_camp_ocv1
+unadjusted_cov_camp_ocv2 <- cov_camp_ocv2
+
+  
+```
+
+```{r include=FALSE}
+
+##function to adjust the coverage
+
+adjusted_montagu_coverage <- function(coverage_sheet, cntrycode){
+  coverage_unique <- unique(coverage_sheet) ## make sure we use unique rows
+  df <- dplyr::filter(coverage_unique, country_code == cntrycode) %>%
+    dplyr::mutate(new_coverage = coverage) ## need to keep orig coverage for the second item in the pair's new_coverage calculation
+
+  for (i in 1:nrow(df)){
+    if (df[i,]$vaccine == 'OCV1' & any(df$vaccine == 'OCV2' & df$year == df[i,]$year)){
+      pair <- which(df$vaccine == 'OCV2' & df$year == df[i,]$year)
+      ocv1_coverage <- df[i,]$coverage
+      ocv2_coverage <- df[pair,]$coverage
+      df[i,]$new_coverage <- ocv1_coverage + ocv2_coverage - (ocv1_coverage*ocv2_coverage) ## elizabeth's formula for ocv1 coverage
+      print(paste('ocv1 replaced', df[i,]$coverage, "with", df[i,]$new_coverage))
+    } else if (df[i,]$vaccine == 'OCV2' & any(df$vaccine == 'OCV1' & df$year == df[i,]$year)){
+      pair <- which(df$vaccine == 'OCV1' & df$year == df[i,]$year)
+      ocv2_coverage <- df[i,]$coverage
+      ocv1_coverage <- df[pair,]$coverage
+      df[i,]$new_coverage <- ocv1_coverage*ocv2_coverage  ## elizabeth's formula for ocv2 coverage
+      print(paste('ocv2 replaced', df[i,]$coverage, "with", df[i,]$new_coverage))
+    } else { ##cases where there is only one vaccination campaign (ocv1 or ocv2) for a year
+      df[i,]$new_coverage <- df[i,]$coverage
+      print("only one vaccination campaign this year")
+      print(df[i,]$new_coverage)
+    }
+  }
+  ## rename the columns in the return object so `coverage` can continue to be used
+  rc <- df %>%
+    dplyr::rename(orig_coverage = coverage,
+                  coverage = new_coverage)
+  return(rc)
+}
+
+##adjust the coverage for the ocv1-default scenario
+
+countries <- unique(cov_camp_ocv1$country_code)
+coverage_country_ocv1 <- list()
+coverage_country_ocv1_ocv2 <- list()
+for (country in countries){
+  coverage_country_ocv1[[country]] <- adjusted_montagu_coverage(coverage_sheet = cov_camp_ocv1, cntrycode = country)
+  coverage_country_ocv1_ocv2[[country]] <- adjusted_montagu_coverage(coverage_sheet = cov_camp_ocv2, cntrycode = country)
+}
+
+cov_camp_ocv1 <- do.call(rbind, coverage_country_ocv1)
+cov_camp_ocv2 <- do.call(rbind, coverage_country_ocv1_ocv2)
+
+##save memory
+rm(coverage_country_ocv1)
+rm(coverage_country_ocv1_ocv2)
+
+##add columns with fvps with one and two doses based on the coverage tables
+cov_camp_ocv1 <- cov_camp_ocv1 %>% 
+  mutate(fvp = round(coverage * target, 0))
+
+cov_camp_ocv2 <- cov_camp_ocv2 %>% 
+  mutate(fvp = round(coverage * target, 0))
+
+
+
+```
+ 
+# Figure 1. Modified montagu coverage per vaccination scenario
+
+## Ocv1-default
+
+```{r fig.width=10, fig.height=(2.5*num_country_for_plot), echo=FALSE}
+
+cov_camp_ocv1 %>%
+  filter(country_code %in% unique(cen_camp_ocv1$country)) %>% 
+  ggplot(aes(x=year, y=coverage)) + 
+  geom_bar(stat="identity", fill="skyblue", alpha=1.0) + 
+  theme_minimal() +
+  facet_grid(country_code~.)
+
+```
+
+
+## Ocv1-ocv2-default
+
+```{r fig.width=10, fig.height=(2.5*num_country_for_plot), echo=FALSE}
+
+cov_camp_ocv2 %>%
+  filter(country_code %in% unique(cen_camp_ocv2$country)) %>% 
+  ggplot(aes(x=year, y=coverage, fill = vaccine)) + 
+  geom_bar(stat="identity",  position = "dodge", alpha=1.0) +
+  labs(fill = "Number of doses") +
+  theme_minimal() +
+  scale_fill_manual(values = c("skyblue", "brown2"), labels = c("1", "2")) +
+  facet_grid(country_code~.)
+
+```
+
+
+
+# Figure 2. Comparison of modelled and montagu Vaccinated People (VP) for each campaign scenario
+
+Modelled number of vaccinated people and the number of vaccinated people per country/year as calculated using the coverage tables from montagu. Note that there could be cases where the modelled number of vaccinated people can me different from the number of vaccinated people calculated using the montagu data.
+
+```{r include=FALSE}
+
+##load modelled coverage per country for the ocv1-default scenario with incid FALSE
+
+modelled_fvp_1F <- list()
+for (i in 1:length(countries)){
+  coverage_file <- list.files(path = "coverage_files/output_raw/ocv1-default/incid_trend_FALSE_outb_layer_FALSE", pattern = paste0(countries[i], "_one_coverage"))
+  coverage <- readr::read_csv(file.path("coverage_files/output_raw/ocv1-default/incid_trend_FALSE_outb_layer_FALSE", coverage_file)) %>%
+    select(vacc_year,actual_ocv1_fvp, actual_ocv2_fvp) %>%
+    group_by(vacc_year) %>%
+    mutate(fvp_ocv1 = sum(actual_ocv1_fvp)) %>%
+    ungroup() %>%
+    select(vacc_year, fvp_ocv1) %>%
+    unique() %>%
+    mutate(country = countries[i])
+  modelled_fvp_1F[[i]] <- coverage
+}
+modelled_fvp_1F <- data.table::rbindlist(modelled_fvp_1F)
+
+##compiled table to be exported
+FVP_ocv1_default <- modelled_fvp_1F 
+readr::write_csv(FVP_ocv1_default, file = "FVP_ocv1-default.csv")
+
+##load modelled coverage per country for the ocv1-ocv2-default scenario with incid FALSE
+
+modelled_fvp_2F <- list()
+for (i in 1:length(countries)){
+  coverage_file <- list.files(path = "coverage_files/output_raw/ocv1-ocv2-default/incid_trend_FALSE_outb_layer_FALSE", pattern = paste0(countries[i], "_two_coverage"))
+  coverage <- readr::read_csv(file.path("coverage_files/output_raw/ocv1-ocv2-default/incid_trend_FALSE_outb_layer_FALSE", coverage_file)) %>%
+    select(vacc_year,actual_ocv1_fvp, actual_ocv2_fvp) %>%
+    group_by(vacc_year) %>%
+    mutate(fvp_ocv1 = sum(actual_ocv1_fvp)) %>%
+    mutate(fvp_ocv2 = sum(actual_ocv2_fvp)) %>%
+    ungroup() %>%
+    select(vacc_year, fvp_ocv1, fvp_ocv2) %>%
+    unique() %>%
+    mutate(country = countries[i])
+  modelled_fvp_2F[[i]] <- coverage
+}
+modelled_fvp_2F <- data.table::rbindlist(modelled_fvp_2F)
+
+##compiled table to be exported
+FVP_ocv1_ocv2_default <- modelled_fvp_2F 
+readr::write_csv(FVP_ocv1_ocv2_default, file = "FVP_ocv1-ocv2-default.csv")
+
+```
+
+
+## Ocv1-default Scenario
+
+```{r fig.width=15, fig.height=(2.5*num_country_for_plot), echo=FALSE}
+
+##left join modelled_fvps with montagu_fvps from the coverage table
+joined_fvp_ocv1_default <- dplyr::left_join(modelled_fvp_1F, cov_camp_ocv1, by = join_by(country == country_code,vacc_year == year)) %>%
+  dplyr::rename(fvp_montagu = fvp_ocv1, fvp_model = fvp) %>%
+  tidyr::pivot_longer(cols = starts_with("fvp"), names_to = "variable", values_to = "value")
+
+# Plot
+ggplot(joined_fvp_ocv1_default, aes(x = vacc_year, y = value, fill = variable)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.6) +
+  labs(y = "Vaccinated Persons",
+       fill = "Number of people") +
+  theme_minimal() +
+  facet_grid(country~. , scales = "free_y") +
+  scale_fill_manual(values = c("lightblue4", "lightblue2"), labels = c("Modelled, 1 dose", "Montagu, 1 dose")) +
+  xlab("year")
+
+```
+
+
+## Ocv1-ocv2-default Scenario
+
+
+```{r fig.width=30, fig.height=(5*num_country_for_plot), echo=FALSE}
+
+##get rows for people vaccinated with one and two doses of the vaccine
+
+modelled_fvp_2F_long <- modelled_fvp_2F %>%
+  tidyr::pivot_longer(cols = starts_with("fvp"), names_to = "num_doses", values_to = "FVP") %>%
+    mutate(
+    num_doses = case_when(
+      num_doses == "fvp_ocv1" ~ "OCV1",
+      num_doses == "fvp_ocv2" ~ "OCV2"
+    )
+  ) 
+
+joined_fvp_ocv1_ocv2_default <- dplyr::left_join(modelled_fvp_2F_long, cov_camp_ocv2, by = join_by(country == country_code,vacc_year == year, num_doses == vaccine)) %>%
+  dplyr::rename(fvp_montagu = fvp, fvp_model = FVP) %>%
+  tidyr::pivot_longer(cols = starts_with("fvp"), names_to = "variable", values_to = "value") %>%
+  mutate(variable2 = paste0(variable,"_",num_doses))
+
+# Plot
+ggplot(joined_fvp_ocv1_ocv2_default, aes(x = vacc_year, y = value, fill = interaction(variable, num_doses), group = interaction(variable, num_doses))) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.6) +
+  labs( y = "Vaccinated People",
+       fill = "Number of people") +
+  theme_minimal() +
+  facet_grid(country~. , scales = "free_y") +
+  scale_fill_manual(values = c("lightblue4", "lightblue2", "brown", "brown2"), labels = c("Modelled, 1 dose", "Montagu, 1 dose", "Modelled, 2 doses", "Montagu, 2 doses")) +
+  theme(text=element_text(size=21)) +
+  xlab("year")
+
+
+```
+
+
+# Table 2. Check that the number of people vaccinated with at least one dose in the ocv1-ocv2-scenario (the sum of vaccinated people with one and two doses) is higher than the number of people who reveived either round 'OCV1' or round 'OCV2'
+
+This only applies to the ocv1-ocv2 scenario and uses the unadjusted montagu coverage to calculate the number of people vaccinated at rounds 'OCV1' and 'OCV2' and the adjusted montagu coverage to calculate the number of people who received at least one dose of the vaccine. In the table below, we show only cases where the  number of people vaccinated with at least one dose is higher than the number of people who reveived either round 'OCV1' or round 'OCV2'
+
+```{r fig.width=10, fig.height=(2.5*num_country_for_plot), echo=FALSE}
+
+##get number of people who received round one ('OCV1') and round two ('OCV2') based on the unadjusted coverage
+
+unadjusted_cov_camp_ocv2 <- unadjusted_cov_camp_ocv2 %>%
+  dplyr::mutate(FVP = round(target * coverage, 0)) %>%
+  dplyr::select(vaccine, country_code, year, FVP) %>%
+  tidyr::pivot_wider(names_from = vaccine, values_from = FVP)
+
+##calculate modelled fvps who received at least one dose of the vaccine
+
+model_fvp_at_least_one_dose <- modelled_fvp_2F %>%
+  dplyr::mutate(vp_at_least_one_dose = fvp_ocv1 + fvp_ocv2) %>%
+  dplyr::select(vacc_year, country, vp_at_least_one_dose) %>%
+  dplyr::rename(country_code = country, year = vacc_year)
+
+##join the two dataframes
+
+joined <- dplyr::left_join(unadjusted_cov_camp_ocv2, model_fvp_at_least_one_dose) %>%
+  na.omit()
+
+##comparing the unadjusted coverage to the modelled coverage files to see if VPs for any round exceed modelled oned who received at least one dose
+
+
+##table with the cases where this happens
+joined_exceptions <- joined %>% filter(OCV1 > vp_at_least_one_dose | OCV2 > vp_at_least_one_dose)
+kable(joined_exceptions) %>%
+  kable_styling(full_width = FALSE, position = "center") %>%
+  column_spec(1, width = "50px") %>%  
+  column_spec(2, width = "50px") %>%  
+  column_spec(3, width = "50px") 
+
+```
+
+# Table 3. Coverage Data Check for Campaign Scenario
+
+Age ranges of the different coverage sets include either standard age ranges (as it is the case of Measles) but sometimes it differs by year and country so that several combinations can be possible (See table below).
+
+```{r echo=FALSE}
+### little table
+cov_age_ocv1_df <- cov_camp_ocv1 %>% 
+  mutate(coverage_set_name = scenario) %>% 
+  mutate(age_from = min(age_first)) %>% 
+  mutate(age_to = max(age_last)) %>% 
+  mutate(freq = n()) %>% 
+  select(coverage_set_name, age_from, age_to, freq) %>% 
+  slice(1)
+
+kable(cov_age_ocv1_df)
+
+### little table
+cov_age_ocv2_df <- cov_camp_ocv2 %>% 
+  mutate(coverage_set_name = scenario) %>% 
+  mutate(age_from = min(age_first)) %>% 
+  mutate(age_to = max(age_last)) %>% 
+  mutate(freq = n()) %>% 
+  select(coverage_set_name, age_from, age_to, freq) %>% 
+  slice(1)
+
+kable(cov_age_ocv2_df)
+
+```
+
+
+
+# Figure 3. Vaccinated People
+
+The estimates of vaccinated people (VP) are obtained by multiplying coverage from each coverage set in Montagu (after adjustment for the ocv1-ocv2-default scenario) and the target population. The following graphs show the number of Vaccinated People (VP) at a global level by scenario. 
+
+```{r include=FALSE}
+### calculate FVPs for ocv1
+fvps_ocv1_camp <- cov_camp_ocv1 %>% 
+  group_by(year) %>% 
+  mutate(GlobalFVPs = sum(target*coverage)) %>% 
+  filter(country_code == country_code[1]) %>% 
+  select(year, GlobalFVPs) %>% 
+  mutate(scenarios = 'Campaign')
+
+fvps_ocv1_camp <- data.frame(sapply(fvps_ocv1_camp, rep.int, times=2))
+NumRow <- nrow(fvps_ocv1_camp)
+
+if (length((cov_novax$coverage)) == 0){
+  fvps_ocv1_camp$scenarios[1:NumRow/2] <- 'No Vaccination'
+  fvps_ocv1_camp$GlobalFVPs[1:NumRow/2] <- 0
+  fvps_ocv1_camp$year <- as.numeric(fvps_ocv1_camp$year)
+  fvps_ocv1_camp$GlobalFVPs <- as.numeric(fvps_ocv1_camp$GlobalFVPs)
+}else{
+  message('The no vaccination scenario has non-zero coverage data, please check the coverage dataset from montagu. ')
+}
+
+### calculate FVPs for ocv1-ocv2
+fvps_ocv2_camp <- cov_camp_ocv2 %>% 
+  group_by(year, vaccine) %>% 
+  mutate(GlobalFVPs = sum(target*coverage)) %>% 
+  filter(country_code == country_code[1]) %>% 
+  select(year, GlobalFVPs) %>% 
+  mutate(scenarios = 'Campaign')
+
+fvps_ocv2_camp <- data.frame(sapply(fvps_ocv2_camp, rep.int, times=2))
+NumRow <- nrow(fvps_ocv2_camp)
+
+if (length((cov_novax$coverage)) == 0){
+  fvps_ocv2_camp$scenarios[1:NumRow/2] <- 'No Vaccination'
+  fvps_ocv2_camp$GlobalFVPs[1:NumRow/2] <- 0
+  fvps_ocv2_camp$year <- as.numeric(fvps_ocv2_camp$year)
+  fvps_ocv2_camp$GlobalFVPs <- as.numeric(fvps_ocv2_camp$GlobalFVPs)
+}else{
+  message('The no vaccination scenario has non-zero coverage data, please check the coverage dataset from montagu. ')
+}
+
+```
+
+
+```{r echo=FALSE, fig.width=10}
+### Plotting
+fvps_ocv1_camp %>% 
+  ggplot(aes(x=year, y=GlobalFVPs/1000000)) + 
+  geom_bar(stat="identity", fill="skyblue", alpha=1.0) + 
+  theme_minimal() +
+  facet_grid(.~scenarios) +
+  labs(y = "Number of Vaccinated Persons for the ocv1 scenario (in millions)", fill = "Number of doses") 
+
+fvps_ocv2_camp %>% 
+  ggplot(aes(x=year, y=GlobalFVPs/1000000, fill=vaccine)) + 
+  geom_bar(stat="identity", position = "dodge", alpha=1.0) + 
+  theme_minimal() +
+  facet_grid(.~scenarios) +
+  labs(y = "Number of Vaccinated Persons for the ocv1-ocv2 scenario (in millions)", fill = "Number of doses") +
+  scale_fill_manual(values = c("skyblue", "brown2"), labels = c("1", "2")) 
+
+##to compare the two campaign scenarios (ocv and ocv2)
+
+fvps_ocv1_camp <- fvps_ocv1_camp %>%
+  mutate(scenarios = ifelse(scenarios == 'Campaign', 'Campaign-ocv1', 'No vaccination'))
+
+fvps_ocv2_camp <- fvps_ocv2_camp %>%
+  mutate(scenarios = ifelse(scenarios == 'Campaign', 'Campaign-ocv1-ocv2', 'No vaccination'))
+
+##add vaccine column to ocv1 scenario
+fvps_ocv1_camp <- fvps_ocv1_camp %>%
+  mutate(vaccine = rep("OCV1", times = nrow(fvps_ocv1_camp)))
+
+
+fvps_both_camp <- rbind(fvps_ocv1_camp, fvps_ocv2_camp)
+
+fvps_both_camp2 <- fvps_both_camp %>%
+  filter(scenarios != 'No vaccination')
+
+
+
+fvps_both_camp2 %>% 
+  ggplot(aes(x=year, y=GlobalFVPs/1000000, fill = vaccine)) + 
+  geom_bar(stat="identity", position="dodge", alpha=1.0) + 
+  theme_minimal() +
+  facet_grid(.~scenarios) +
+  labs(y = "Number of Vaccinated Persons (in millions)", fill = "Number of doses") +
+  scale_fill_manual(values = c("skyblue", "brown2"), labels = c("1", "2")) 
+
+
+
+```
+
+# Table 4. Check the general info
+
+Expected number of rows.
+
+```{r echo=FALSE}
+outcome_code = rep(names(cen_camp_ocv1)[6:ncol(cen_camp_ocv1)], 2)
+outcome_num = length(names(cen_camp_ocv1)[6:ncol(cen_camp_ocv1)])
+
+kable(data.frame(scenario_description = c(rep('Campaign, ocv1-Default', outcome_num), rep('No vaccination', outcome_num)),
+                 outcome_code = outcome_code,
+                 number_of_non_na_rows =  c(colSums(!is.na(cen_camp_ocv1[outcome_code[1:outcome_num]])),
+                                            colSums(!is.na(cen_novax[outcome_code[(outcome_num + 1):(outcome_num*2)]])) )    ))
+rm(outcome_code)
+
+outcome_code = rep(names(cen_camp_ocv2)[6:ncol(cen_camp_ocv2)], 2)
+outcome_num = length(names(cen_camp_ocv2)[6:ncol(cen_camp_ocv2)])
+
+kable(data.frame(scenario_description = c(rep('Campaign, ocv2-Default', outcome_num), rep('No vaccination', outcome_num)),
+                 outcome_code = outcome_code,
+                 number_of_non_na_rows =  c(colSums(!is.na(cen_camp_ocv2[outcome_code[1:outcome_num]])),
+                                            colSums(!is.na(cen_novax[outcome_code[(outcome_num + 1):(outcome_num*2)]])) )    ))
+rm(outcome_code)
+
+```
+
+
+```{r include=FALSE}
+### first merge/join two datasets
+stack_camp_ocv1 <- cen_camp_ocv1 %>% mutate(id = paste0(country, as.character(year), as.character(age)))
+stack_camp_ocv1$source <- 'Campaign, ocv1-Default'
+stack_camp_ocv2 <- cen_camp_ocv2 %>% mutate(id = paste0(country, as.character(year), as.character(age)))
+stack_camp_ocv2$source <- 'Campaign, ocv2-Default'
+stack_novax <- cen_novax %>% mutate(id = paste0(country, as.character(year), as.character(age)))
+stack_novax$source <- 'No vaccination'
+
+stacked <- rbind(stack_novax, stack_camp_ocv1, stack_camp_ocv2)
+rm(stack_novax)
+rm(stack_camp)
+
+### create new variables
+num_country <- length(unique(cen_camp_ocv1$country))
+
+stacked <- stacked %>%
+  group_by(year, age, source) %>% 
+  mutate( cases1 = case_when(sum(!is.na(cases))< num_country ~ 0,
+                             sum(!is.na(cases))==num_country ~ 1) ) %>%
+  mutate( cases2 = sum(cases > 0) ) %>% 
+  mutate( cohort_size1 = case_when(sum(!is.na(cohort_size))<num_country ~ 0,
+                             sum(!is.na(cohort_size))==num_country ~ 1) ) %>%
+  mutate( cohort_size2 = sum(cohort_size > 0) ) %>%
+  mutate( dalys1 = case_when(sum(!is.na(dalys))<num_country ~ 0,
+                             sum(!is.na(dalys))==num_country ~ 1) ) %>%
+  mutate( dalys2 = sum(dalys > 0) ) %>%
+  mutate( deaths1 = case_when(sum(!is.na(deaths))<num_country ~ 0,
+                             sum(!is.na(deaths))==num_country ~ 1) ) %>%
+  mutate( deaths2 = sum(deaths > 0) ) %>%
+  mutate( yll1 = case_when(sum(!is.na(yll))<num_country ~ 0,
+                             sum(!is.na(yll))==num_country ~ 1) ) %>%
+  mutate( yll2 = sum(yll > 0) )
+
+### gather
+stacked1 <- stacked %>% 
+  gather(new_outcomes, values, c(cases1,cohort_size1,dalys1,deaths1,yll1)) 
+stacked2 <- stacked %>% 
+  gather(new_outcomes, values, c(cases2,cohort_size2,dalys2,deaths2,yll2))
+rm(stacked)
+
+```
+
+
+
+# Figure 4. Missing Value Check
+
+This figure shows the shape of the upload by scenarios and outcomes (whether there are missing values, 1 means no missing value).
+
+```{r echo=FALSE, fig.width=10, fig.height=10}
+### plotting
+stacked1 %>% 
+  ggplot(aes(year, age, fill = values)) + 
+  geom_tile() +
+  facet_grid(new_outcomes ~ source) +
+  scale_fill_gradient(low="steelblue4", high="skyblue") +
+  theme_minimal()
+rm(stacked1)
+
+```
+
+
+
+# Figure 5. Positive Value Check
+
+This figure shows the pattern of positive values (number of positive values across all simulated countries).
+
+```{r echo=FALSE, fig.width=10, fig.height=10}
+### another similar plot
+stacked2 %>% 
+  ggplot(aes(year, age, fill = values)) + 
+  geom_tile() +
+  facet_grid(new_outcomes ~ source) +
+  scale_fill_gradient(low="steelblue4", high="skyblue") +
+  theme_minimal()
+rm(stacked2)
+
+```
+
+
+
+# Figure 6. Check the cohort size -- Global
+### Notion: the interpolated population dataset doesn't have info for age 100 but has the above, we will leave that out to keep the consistency. 
+
+```{r include=FALSE}
+### prepare the datasets
+int_pop <- read_csv('data_from_montagu/202310gavi-4_dds-202208_int_pop_both.csv') #this one has all the countries we have to make it smaller
+int_pop_ocv1 <- int_pop %>% 
+  filter(year >= 2000 & age_to <= 100 & country_code%in%unique(cen_camp_ocv1$country)) %>% 
+  mutate(id = paste0(country_code, as.character(year), as.character(age_to))) %>% 
+  select(id, value)
+cen_cohort_ocv1 <- cen_camp_ocv1 %>% 
+  filter(age < 100) %>% 
+  mutate(id = paste0(country, as.character(year), as.character(age)))
+pop_plot_ocv1 = full_join(cen_cohort_ocv1, int_pop_ocv1, by = 'id')
+
+pop_plot_no_country_class_ocv1 <- pop_plot_ocv1 %>% 
+  group_by(age, year) %>% 
+  mutate(int_population = sum(value)) %>% 
+  mutate(simu_population = sum(cohort_size)) %>% 
+  mutate(diff_population = int_population - simu_population) %>% 
+  filter(country == unique(cen_camp_ocv1$country)[1]) %>% 
+  gather(population_source, population_value, c(int_population, simu_population, diff_population)) %>% 
+  select(-value, -cohort_size, -country)
+pop_plot_all_countries_ocv1 <- pop_plot_ocv1 %>% 
+  mutate(int_population = value) %>% 
+  mutate(simu_population = cohort_size) %>% 
+  mutate(diff_population = int_population - simu_population) %>% 
+  gather(population_source, population_value, c(int_population, simu_population, diff_population)) %>% 
+  select(-value, -cohort_size)
+rm(int_pop_ocv1)
+rm(cen_cohort_ocv1)
+rm(pop_plot_ocv1)
+
+### check if there is NA
+sum(is.na(pop_plot_no_country_class_ocv1[names(pop_plot_no_country_class_ocv1)[1:ncol(pop_plot_no_country_class_ocv1)]]))
+sum(is.na(pop_plot_all_countries_ocv1[names(pop_plot_all_countries_ocv1)[1:ncol(pop_plot_all_countries_ocv1)]]))
+
+int_pop_ocv2 <- int_pop %>% 
+  filter(year >= 2000 & age_to <= 100 & country_code%in%unique(cen_camp_ocv1$country)) %>% 
+  mutate(id = paste0(country_code, as.character(year), as.character(age_to))) %>% 
+  select(id, value)
+cen_cohort_ocv2 <- cen_camp_ocv2 %>% 
+  filter(age < 100) %>% 
+  mutate(id = paste0(country, as.character(year), as.character(age)))
+pop_plot_ocv2 = full_join(cen_cohort_ocv2, int_pop_ocv2, by = 'id')
+
+pop_plot_no_country_class_ocv2 <- pop_plot_ocv2 %>% 
+  group_by(age, year) %>% 
+  mutate(int_population = sum(value)) %>% 
+  mutate(simu_population = sum(cohort_size)) %>% 
+  mutate(diff_population = int_population - simu_population) %>% 
+  filter(country == unique(cen_camp_ocv2$country)[1]) %>% 
+  gather(population_source, population_value, c(int_population, simu_population, diff_population)) %>% 
+  select(-value, -cohort_size, -country)
+pop_plot_all_countries_ocv2 <- pop_plot_ocv2 %>% 
+  mutate(int_population = value) %>% 
+  mutate(simu_population = cohort_size) %>% 
+  mutate(diff_population = int_population - simu_population) %>% 
+  gather(population_source, population_value, c(int_population, simu_population, diff_population)) %>% 
+  select(-value, -cohort_size)
+rm(int_pop_ocv2)
+rm(cen_cohort_ocv2)
+rm(pop_plot_ocv2)
+
+### check if there is NA
+sum(is.na(pop_plot_no_country_class_ocv2[names(pop_plot_no_country_class_ocv2)[1:ncol(pop_plot_no_country_class_ocv2)]]))
+sum(is.na(pop_plot_all_countries_ocv2[names(pop_plot_all_countries_ocv2)[1:ncol(pop_plot_all_countries_ocv2)]]))
+
+
+```
+
+
+This figure shows the comparison of cohort size against interpolated population in all countries. 
+
+```{r echo=FALSE, fig.width=10, fig.height=5}
+### plotting
+pop_plot_no_country_class_ocv1 %>% 
+  ggplot(aes(fill = age, y = population_value/1000000, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(~factor(population_source, levels=c('int_population','simu_population','diff_population'))) + 
+  labs(x = 'calendar year', y = 'people for ocv1 scenario (in millions)')
+#rm(pop_plot_no_country_class_ocv1)
+
+pop_plot_no_country_class_ocv2 %>% 
+  ggplot(aes(fill = age, y = population_value/1000000, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(~factor(population_source, levels=c('int_population','simu_population','diff_population'))) + 
+  labs(x = 'calendar year', y = 'people for ocv2 scenario (in millions)')
+#rm(pop_plot_no_country_class_ocv2)
+
+```
+
+
+
+# Figure 7. Check the Cohort Size -- All Simulated Countries
+
+This figure shows the comparison of cohort size against interpolated population in the simulated countries. 
+
+```{r echo=FALSE, fig.width=10, fig.height=(2.5*num_country_for_plot)}
+### plotting
+pop_plot_all_countries_ocv1 %>% 
+  ggplot(aes(fill = age, y = population_value/1000000, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(population_source, levels=c('int_population','simu_population','diff_population')), scales = 'free') + 
+  labs(x = 'calendar year', y = 'people for ocv1 scenario (in millions)')
+#rm(pop_plot_all_countries_ocv1)
+
+pop_plot_all_countries_ocv2 %>% 
+  ggplot(aes(fill = age, y = population_value/1000000, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(population_source, levels=c('int_population','simu_population','diff_population')), scales = 'free') + 
+  labs(x = 'calendar year', y = 'people for ocv2 scenario (in millions)')
+#rm(pop_plot_all_countries_ocv2)
+
+```
+
+
+
+# Table 5. Cohort Size Check in Table Format -- All Countries (not included in this report)
+```{r echo=FALSE, eval=FALSE}
+no_class_ocv1 <- pop_plot_no_country_class_ocv1 %>% 
+  filter(population_source == 'diff_population') %>% 
+  group_by(population_value) %>% 
+  summarise(freq = n()) %>% 
+  mutate(Countries = "All", PopulationDifference = population_value, Frequency = freq, Proportion = freq/(nrow(pop_plot_no_country_class_ocv1)/length(unique(pop_plot_no_country_class_ocv1$population_source)))) %>% 
+  select(-population_value, -freq)
+kable(no_class_ocv1)
+
+no_class_ocv2 <- pop_plot_no_country_class_ocv2 %>% 
+  filter(population_source == 'diff_population') %>% 
+  group_by(population_value) %>% 
+  summarise(freq = n()) %>% 
+  mutate(Countries = "All", PopulationDifference = population_value, Frequency = freq, Proportion = freq/(nrow(pop_plot_no_country_class_ocv2)/length(unique(pop_plot_no_country_class_ocv2$population_source)))) %>% 
+  select(-population_value, -freq)
+kable(no_class_ocv2)
+```
+
+
+
+# Table 6. Cohort Size Check in Table Format -- Each Country (not included in this report)
+```{r echo=FALSE, eval=FALSE}
+all_countries_ocv1 <- pop_plot_all_countries_ocv1 %>% 
+  filter(population_source == 'diff_population') %>% 
+  group_by(country, population_value) %>% 
+  summarise(freq = n()) %>% 
+  mutate(Countries = country, PopulationDifference = population_value, Frequency = freq, Proportion = freq/(nrow(pop_plot_no_country_class_ocv1)/length(unique(pop_plot_no_country_class_ocv1$population_source))/length(unique(pop_plot_no_country_class_ocv1$country_name)) )) %>% 
+  ungroup() %>% 
+  select(-population_value, -freq, -country)
+kable(all_countries_ocv1)
+
+rm(pop_plot_no_country_class_ocv1)
+rm(pop_plot_all_countries_ocv1)
+
+all_countries_ocv2 <- pop_plot_all_countries_ocv2 %>% 
+  filter(population_source == 'diff_population') %>% 
+  group_by(country, population_value) %>% 
+  summarise(freq = n()) %>% 
+  mutate(Countries = country, PopulationDifference = population_value, Frequency = freq, Proportion = freq/(nrow(pop_plot_no_country_class_ocv2)/length(unique(pop_plot_no_country_class_ocv2$population_source))/length(unique(pop_plot_no_country_class_ocv2$country_name)) )) %>% 
+  ungroup() %>% 
+  select(-population_value, -freq, -country)
+kable(all_countries_ocv2)
+
+rm(pop_plot_no_country_class_ocv2)
+rm(pop_plot_all_countries_ocv2)
+
+```
+
+
+
+# Figure 8. Age Distribution for Different Estimates
+
+```{r include=FALSE}
+### prepare and merge the datasets
+cen_camp_ocv1_merge <- cen_camp_ocv1 %>% 
+  mutate(id = paste0(country, as.character(year), as.character(age))) %>% 
+  mutate(cohort_size_camp_ocv1 = cohort_size, cases_camp_ocv1 = cases, deaths_camp_ocv1 = deaths, dalys_camp_ocv1 = dalys, yll_camp_ocv1 = yll) %>% 
+  dplyr::select(id, cohort_size_camp_ocv1, cases_camp_ocv1, deaths_camp_ocv1, dalys_camp_ocv1,yll_camp_ocv1)
+
+cen_camp_ocv2_merge <- cen_camp_ocv2 %>% 
+  mutate(id = paste0(country, as.character(year), as.character(age))) %>% 
+  mutate(cohort_size_camp_ocv2 = cohort_size, cases_camp_ocv2 = cases, deaths_camp_ocv2 = deaths, dalys_camp_ocv2 = dalys, yll_camp_ocv2 = yll) %>% 
+  dplyr::select(id, cohort_size_camp_ocv2, cases_camp_ocv2, deaths_camp_ocv2, dalys_camp_ocv2,yll_camp_ocv2)
+
+cen_novax_merge <- cen_novax %>% 
+  mutate(id = paste0(country, as.character(year), as.character(age)))
+
+merged = full_join(cen_novax_merge, cen_camp_ocv1_merge, by = "id")
+merged = full_join(merged, cen_camp_ocv2_merge, by = "id")
+  
+merged_pro <- merged
+rm(cen_camp_ocv1_merge)
+rm(cen_camp_ocv2_merge)
+rm(cen_novax_merge)
+
+### get one version of merged data with difference values
+##compare ocv1 with no-vaccination
+merged_with_diff_ocv1 <- merged %>% 
+  mutate(cohort_size_diff = (cohort_size - cohort_size_camp_ocv1)) %>% 
+  mutate(cases_diff = (cases - cases_camp_ocv1)) %>%
+  mutate(deaths_diff = (deaths - deaths_camp_ocv1)) %>%
+  mutate(dalys_diff = (dalys - dalys_camp_ocv1)) %>%
+  mutate(yll_diff = (yll - yll_camp_ocv1)) %>%
+  gather(cohort_size_source, cohort_size_value, c(cohort_size, cohort_size_camp_ocv1, cohort_size_diff)) %>% 
+  gather(cases_source, cases_value, c(cases, cases_camp_ocv1, cases_diff)) %>%
+  gather(deaths_source, deaths_value, c(deaths, deaths_camp_ocv1, deaths_diff)) %>%
+  gather(dalys_source, dalys_value, c(dalys, dalys_camp_ocv1, dalys_diff)) %>%
+  gather(yll_source, yll_value, c(yll, yll_camp_ocv1, yll_diff)) %>%
+  filter((cohort_size_source == 'cohort_size' & 
+          cases_source == 'cases' & 
+          deaths_source ==  'deaths' & 
+          dalys_source == 'dalys' &
+          yll_source == 'yll') | 
+          (cohort_size_source == 'cohort_size_camp_ocv1' & 
+          cases_source == 'cases_camp_ocv1' & 
+          deaths_source ==  'deaths_camp_ocv1' & 
+          dalys_source == 'dalys_camp_ocv1' &
+          yll_source == 'yll_camp_ocv1'  ) |
+          (cohort_size_source == 'cohort_size_diff' & 
+          cases_source == 'cases_diff' & 
+          deaths_source ==  'deaths_diff' & 
+          dalys_source == 'dalys_diff' &
+          yll_source == 'yll_diff'  ) ) %>% 
+  mutate(source = case_when(cohort_size_source == 'cohort_size' ~ 'No vaccination',
+                            cohort_size_source == 'cohort_size_camp_ocv1' ~ 'Campaign, ocv1-Default', 
+                            cohort_size_source == 'cohort_size_diff' ~ 'Two scenarios difference') ) %>% 
+  dplyr::select(-cohort_size_source, -cases_source, -deaths_source, -dalys_source, -yll_source)
+
+##compare ocv2 with no-vaccination
+merged_with_diff_ocv2 <- merged %>% 
+  mutate(cohort_size_diff = (cohort_size - cohort_size_camp_ocv2)) %>% 
+  mutate(cases_diff = (cases - cases_camp_ocv2)) %>%
+  mutate(deaths_diff = (deaths - deaths_camp_ocv2)) %>%
+  mutate(dalys_diff = (dalys - dalys_camp_ocv2)) %>%
+  mutate(yll_diff = (yll - yll_camp_ocv2)) %>%
+  gather(cohort_size_source, cohort_size_value, c(cohort_size, cohort_size_camp_ocv2, cohort_size_diff)) %>% 
+  gather(cases_source, cases_value, c(cases, cases_camp_ocv2, cases_diff)) %>%
+  gather(deaths_source, deaths_value, c(deaths, deaths_camp_ocv2, deaths_diff)) %>%
+  gather(dalys_source, dalys_value, c(dalys, dalys_camp_ocv2, dalys_diff)) %>%
+  gather(yll_source, yll_value, c(yll, yll_camp_ocv2, yll_diff)) %>%
+  filter((cohort_size_source == 'cohort_size' & 
+          cases_source == 'cases' & 
+          deaths_source ==  'deaths' & 
+          dalys_source == 'dalys' &
+          yll_source == 'yll') | 
+          (cohort_size_source == 'cohort_size_camp_ocv2' & 
+          cases_source == 'cases_camp_ocv2' & 
+          deaths_source ==  'deaths_camp_ocv2' & 
+          dalys_source == 'dalys_camp_ocv2' &
+          yll_source == 'yll_camp_ocv2'  ) |
+          (cohort_size_source == 'cohort_size_diff' & 
+          cases_source == 'cases_diff' & 
+          deaths_source ==  'deaths_diff' & 
+          dalys_source == 'dalys_diff' &
+          yll_source == 'yll_diff'  ) ) %>% 
+  mutate(source = case_when(cohort_size_source == 'cohort_size' ~ 'No vaccination',
+                            cohort_size_source == 'cohort_size_camp_ocv2' ~ 'Campaign, ocv1-ocv2-Default', 
+                            cohort_size_source == 'cohort_size_diff' ~ 'Two scenarios difference') ) %>% 
+  dplyr::select(-cohort_size_source, -cases_source, -deaths_source, -dalys_source, -yll_source)
+
+##compare ocv1 with ocv2
+
+merged_with_diff_ocv2_to_ocv1 <- merged %>% 
+  mutate(cohort_size_diff = (cohort_size_camp_ocv1 - cohort_size_camp_ocv2)) %>% 
+  mutate(cases_diff = (cases_camp_ocv1 - cases_camp_ocv2)) %>%
+  mutate(deaths_diff = (deaths_camp_ocv1 - deaths_camp_ocv2)) %>%
+  mutate(dalys_diff = (dalys_camp_ocv1 - dalys_camp_ocv2)) %>%
+  mutate(yll_diff = (yll_camp_ocv1 - yll_camp_ocv2)) %>%
+  gather(cohort_size_source, cohort_size_value, c(cohort_size_camp_ocv1, cohort_size_camp_ocv2, cohort_size_diff)) %>% 
+  gather(cases_source, cases_value, c(cases_camp_ocv1, cases_camp_ocv2, cases_diff)) %>%
+  gather(deaths_source, deaths_value, c(deaths_camp_ocv1, deaths_camp_ocv2, deaths_diff)) %>%
+  gather(dalys_source, dalys_value, c(dalys_camp_ocv1, dalys_camp_ocv2, dalys_diff)) %>%
+  gather(yll_source, yll_value, c(yll_camp_ocv1, yll_camp_ocv2, yll_diff)) %>%
+  filter((cohort_size_source == 'cohort_size_camp_ocv1' & 
+          cases_source == 'cases_camp_ocv1' & 
+          deaths_source ==  'deaths_camp_ocv1' & 
+          dalys_source == 'dalys_camp_ocv1' &
+          yll_source == 'yll_camp_ocv1') | 
+          (cohort_size_source == 'cohort_size_camp_ocv2' & 
+          cases_source == 'cases_camp_ocv2' & 
+          deaths_source ==  'deaths_camp_ocv2' & 
+          dalys_source == 'dalys_camp_ocv2' &
+          yll_source == 'yll_camp_ocv2'  ) |
+          (cohort_size_source == 'cohort_size_diff' & 
+          cases_source == 'cases_diff' & 
+          deaths_source ==  'deaths_diff' & 
+          dalys_source == 'dalys_diff' &
+          yll_source == 'yll_diff'  ) ) %>% 
+  mutate(source = case_when(cohort_size_source == 'cohort_size_camp_ocv1' ~ 'Campaign, ocv1-Default',
+                            cohort_size_source == 'cohort_size_camp_ocv2' ~ 'Campaign, ocv1-ocv2-Default', 
+                            cohort_size_source == 'cohort_size_diff' ~ 'Two scenarios difference') ) %>% 
+  dplyr::select(-cohort_size_source, -cases_source, -deaths_source, -dalys_source, -yll_source)
+
+
+### regular version doesn't need the difference variable
+merged <- merged %>% 
+  gather(cohort_size_source, cohort_size_value, c(cohort_size, cohort_size_camp_ocv1, cohort_size_camp_ocv2)) %>% 
+  gather(cases_source, cases_value, c(cases, cases_camp_ocv1, cases_camp_ocv2)) %>%
+  gather(deaths_source, deaths_value, c(deaths, deaths_camp_ocv1, deaths_camp_ocv2)) %>%
+  gather(dalys_source, dalys_value, c(dalys, dalys_camp_ocv1, dalys_camp_ocv2)) %>%
+  gather(yll_source, yll_value, c(yll, yll_camp_ocv1, yll_camp_ocv2)) %>%
+  filter((cohort_size_source == 'cohort_size' & 
+          cases_source == 'cases' & 
+          deaths_source ==  'deaths' & 
+          dalys_source == 'dalys' &
+          yll_source == 'yll'  ) | 
+          (cohort_size_source == 'cohort_size_camp_ocv1' & 
+          cases_source == 'cases_camp_ocv1' & 
+          deaths_source ==  'deaths_camp_ocv1' & 
+          dalys_source == 'dalys_camp_ocv1' &
+          yll_source == 'yll_camp_ocv1'  ) |
+          (cohort_size_source == 'cohort_size_camp_ocv2' & 
+          cases_source == 'cases_camp_ocv2' & 
+          deaths_source ==  'deaths_camp_ocv2' & 
+          dalys_source == 'dalys_camp_ocv2' &
+          yll_source == 'yll_camp_ocv2'  )) %>% 
+  mutate(source = case_when(cohort_size_source == 'cohort_size' ~ 'No vaccination',
+                            cohort_size_source == 'cohort_size_camp_ocv1' ~ 'Campaign, ocv1-Default',
+                            cohort_size_source == 'cohort_size_camp_ocv2' ~ 'Campaign, ocv1-ocv2-Default')) %>% 
+  dplyr::select(-cohort_size_source, -cases_source, -deaths_source, -dalys_source, -yll_source)
+  
+### combine the countries
+merged_no_country_class <- merged %>% 
+  group_by(source, year, age) %>% 
+  mutate(cohort_size_value = sum(cohort_size_value)) %>% 
+  mutate(cases_value = sum(cases_value)) %>%
+  mutate(deaths_value = sum(deaths_value)) %>%
+  mutate(dalys_value = sum(dalys_value)) %>%
+  mutate(yll_value = sum(yll_value)) %>%
+  filter(country == unique(merged$country)[1]) %>%
+  select(-country)
+
+### just to look at if vaccine compaign has effects
+merged_no_country_class %>% 
+  filter(year == 2021 & age == 25)
+  
+```
+
+
+This figure shows the aggregated (for all countries) age distribution patterns by outcome.
+
+```{r echo=FALSE, fig.width=10, fig.height=10}
+### prepare the dataset and plot
+merged_no_country_year <- merged_no_country_class %>% 
+  group_by(source, age) %>% 
+  mutate(cohort_size_value = sum(cohort_size_value)) %>% 
+  mutate(cases_value = sum(cases_value)) %>%
+  mutate(deaths_value = sum(deaths_value)) %>%
+  mutate(dalys_value = sum(dalys_value)) %>%
+  mutate(yll_value = sum(yll_value)) %>%
+  filter(year == unique(merged_no_country_class$year)[1]) %>%
+  select(-year) %>% 
+  gather(outcome, outcome_values, cases_value:yll_value)
+
+merged_no_country_year %>% 
+  ggplot(aes(x=age, y=outcome_values/1000000)) + 
+  geom_bar(stat="identity", fill="skyblue", alpha=1.0) + 
+  theme_minimal() +
+  facet_grid(outcome~source, scales = 'free') + 
+  labs(y='people (in millions)')
+rm(merged_no_country_year)
+
+```
+
+
+
+# Figure 9. Global Burden Comparison in 2000-2030.
+
+This figure shows the global (simulated countries) burden values by decades 2000-2030. 
+
+```{r echo=FALSE, fig.width=17, fig.height=15}
+### prepare the dataset and plot
+merged_no_country_2030 <- merged_no_country_class %>% 
+  filter(year >= 2000 & year <= 2030) %>% 
+  mutate(year_class = case_when(year >= 2000 & year <= 2010 ~ '2000 - 2010',
+                                year >= 2011 & year <= 2020 ~ '2011 - 2020',
+                                year >= 2021 & year <= 2030 ~ '2021 - 2030',)) %>% 
+  group_by(source, year_class) %>% 
+  mutate(cases = sum(cases_value), dalys = sum(dalys_value), deaths = sum(deaths_value), yll = sum(yll_value)) %>% 
+  filter(age == unique(age)[1] & (year == 2000 | year == 2011 | year == 2021)) %>% 
+  select(year_class, source, cases, dalys, deaths, yll) %>% 
+  gather(outcome, outcome_values, cases:yll)
+
+merged_no_country_2030 %>% 
+  ggplot(aes(fill=source, y=outcome_values/1000000, x=source)) + 
+  geom_bar(position="dodge", stat="identity") + 
+  theme_minimal() + 
+  facet_grid(outcome~year_class, scales = 'free') + 
+  labs(y='people (in millions)')
+rm(merged_no_country_2030)
+
+```
+
+
+
+# Figure 10. Global Burden Comparison in 2000-2100.
+
+This figure shows the global (simulated countries) burden disease values 2000-2100. 
+
+```{r echo=FALSE, fig.width=17, fig.height=10}
+### prepare the dataset and plot
+merged_no_country_gathered <- merged_no_country_class %>% 
+  mutate(cases = cases_value, deaths = deaths_value, dalys = dalys_value, yll = yll_value) %>% 
+  select(year, age, source, cases:yll) %>% 
+  gather(outcome, outcome_values, cases:yll)
+
+merged_no_country_gathered %>% 
+  ggplot(aes(fill = age, y = outcome_values/1000000, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(outcome~factor(source, levels = c('No vaccination', 'Campaign, ocv1-Default', 'Campaign, ocv1-ocv2-Default')), scales = 'free') + 
+  labs(x = 'calendar year', y = 'people (in millions)')
+rm(merged_no_country_gathered)
+
+```
+
+
+
+# Figure 11. Case Estimates for Each Country across Scenarios
+
+This figure shows every single simulated countries' estimated case values and differences 2000-2100. 
+
+```{r echo=FALSE, fig.width=10, fig.height=(2.5*num_country_for_plot)}
+### plotting
+merged_with_diff_ocv1 %>% 
+  ggplot(aes(fill = age, y = cases_value, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(source, levels=c('Campaign, ocv1-Default', 'No vaccination', 'Two scenarios difference')), scales = 'free') + 
+  labs(x = 'calendar year', y = 'number of cases')
+
+merged_with_diff_ocv2 %>% 
+  ggplot(aes(fill = age, y = cases_value, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(source, levels=c('Campaign, ocv1-ocv2-Default', 'No vaccination', 'Two scenarios difference')), scales = 'free') + 
+  labs(x = 'calendar year', y = 'number of cases')
+
+merged_with_diff_ocv2_to_ocv1 %>% 
+  ggplot(aes(fill = age, y = cases_value, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(source, levels=c("Campaign, ocv1-ocv2-Default", "Campaign, ocv1-Default", "Two scenarios difference")), scales = 'free') + 
+  labs(x = 'calendar year', y = 'number of cases')
+#rm(pop_plot_all_countries)
+
+```
+
+
+
+# Figure 12. Death Estimates for Each Country across Scenarios
+
+This figure shows every single simulated countries' estimated deaths values and differences 2000-2100. 
+
+```{r echo=FALSE, fig.width=10, fig.height=(2.5*num_country_for_plot)}
+### plotting
+merged_with_diff_ocv1 %>% 
+  ggplot(aes(fill = age, y = deaths_value, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(source, levels=c('Campaign, ocv1-Default', 'No vaccination', 'Two scenarios difference')), scales = 'free') + 
+  labs(x = 'calendar year', y = 'number of deaths')
+
+merged_with_diff_ocv2 %>% 
+  ggplot(aes(fill = age, y = deaths_value, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(source, levels=c('Campaign, ocv1-ocv2-Default', 'No vaccination', 'Two scenarios difference')), scales = 'free') + 
+  labs(x = 'calendar year', y = 'number of deaths')
+
+merged_with_diff_ocv2_to_ocv1 %>% 
+  ggplot(aes(fill = age, y = deaths_value, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(source, levels=c("Campaign, ocv1-ocv2-Default", "Campaign, ocv1-Default", "Two scenarios difference")), scales = 'free') + 
+  labs(x = 'calendar year', y = 'number of deaths')
+#rm(pop_plot_all_countries)
+
+```
+
+
+
+# Figure 13. Dalys Estimates for Each Country across Scenarios
+This figure shows every single simulated countries' estimated dalys values and differences 2000-2100. 
+```{r echo=FALSE, fig.width=10, fig.height=(2.5*num_country_for_plot)}
+### plotting
+merged_with_diff_ocv1 %>% 
+  ggplot(aes(fill = age, y = dalys_value, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(source, levels=c('Campaign, ocv1-Default', 'No vaccination', 'Two scenarios difference')), scales = 'free') + 
+  labs(x = 'calendar year', y = 'dalys')
+
+merged_with_diff_ocv2 %>% 
+  ggplot(aes(fill = age, y = dalys_value, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(source, levels=c('Campaign, ocv1-ocv2-Default', 'No vaccination', 'Two scenarios difference')), scales = 'free') + 
+  labs(x = 'calendar year', y = 'dalys')
+
+merged_with_diff_ocv2_to_ocv1 %>% 
+  ggplot(aes(fill = age, y = dalys_value, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(source, levels=c("Campaign, ocv1-ocv2-Default", "Campaign, ocv1-Default", "Two scenarios difference")), scales = 'free') + 
+  labs(x = 'calendar year', y = 'dalys')
+#rm(pop_plot_all_countries)
+
+```
+
+# Figure 14. Yll Estimates for Each Country across Scenarios
+This figure shows every single simulated countries' estimated yll values and differences 2000-2100. 
+```{r echo=FALSE, fig.width=10, fig.height=(2.5*num_country_for_plot)}
+### plotting
+merged_with_diff_ocv1 %>% 
+  ggplot(aes(fill = age, y = yll_value, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(source, levels=c('Campaign, ocv1-Default', 'No vaccination', 'Two scenarios difference')), scales = 'free') + 
+  labs(x = 'calendar year', y = 'yll')
+
+merged_with_diff_ocv2 %>% 
+  ggplot(aes(fill = age, y = yll_value, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(source, levels=c('Campaign, ocv1-ocv2-Default', 'No vaccination', 'Two scenarios difference')), scales = 'free') + 
+  labs(x = 'calendar year', y = 'yll')
+
+merged_with_diff_ocv2_to_ocv1 %>% 
+  ggplot(aes(fill = age, y = yll_value, x = year)) +
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_minimal() +
+  facet_grid(country~factor(source, levels=c("Campaign, ocv1-Default", "Campaign, ocv1-ocv2-Default", "Two scenarios difference")), scales = 'free') + 
+  labs(x = 'calendar year', y = 'yll')
+#rm(pop_plot_all_countries)
+
+```
+
+
+# Table 7. Summary Table for ocv1-default scenario -- Long Form
+```{r echo=FALSE}
+### The long form summary table - ocv1
+merged_table_ocv1 <- merged_pro %>% 
+  group_by(country, year) %>%
+  summarise(
+    cases_pro = (sum(cases) - sum(cases_camp_ocv1))/sum(cases),
+    deaths_pro = (sum(deaths) - sum(deaths_camp_ocv1))/sum(deaths), 
+    dalys_pro = (sum(dalys) - sum(dalys_camp_ocv1))/sum(dalys),
+    yll_pro = (sum(yll) - sum(yll_camp_ocv1))/sum(yll)
+    ) %>% 
+  filter(cases_pro != 0 | deaths_pro != 0 | dalys_pro != 0 | yll_pro != 0) %>% 
+  mutate(id = paste0(country, year))
+
+cov_camp_table_ocv1 <- cov_camp_ocv1 %>% 
+  mutate(id = paste0(country_code, year), 
+         fvp = target * coverage) %>% 
+  select(id, country_code, year, target, coverage, fvp)
+
+merged_table_ocv1 <- left_join(merged_table_ocv1, cov_camp_table_ocv1, by = 'id') %>% 
+  mutate(year = year.x) %>% 
+  select(country, year, target, coverage, fvp, cases_pro, deaths_pro, dalys_pro, yll_pro) %>% 
+  replace(is.na(.), 0)
+names(merged_table_ocv1) <- c('Country', 'Year', 'TargetedPopulation', 
+                         'CoverageProportion', 'FVPs',
+                         'AvertedCasesProportion', 'AvertedDeathsProportion',
+                         'AvertedDalysProportion', 'AvertedYllProportion')
+
+kbl(merged_table_ocv1) %>%
+  kable_styling(fixed_thead = T)
+
+```
+
+# Table 8. Summary Table for ocv1-ocv2-default scenario -- Long Form
+```{r echo=FALSE}
+### The long form summary table
+merged_table_ocv2 <- merged_pro %>% 
+  group_by(country, year) %>%
+  summarise(
+    cases_pro = (sum(cases) - sum(cases_camp_ocv2))/sum(cases),
+    deaths_pro = (sum(deaths) - sum(deaths_camp_ocv2))/sum(deaths), 
+    dalys_pro = (sum(dalys) - sum(dalys_camp_ocv2))/sum(dalys),
+    yll_pro = (sum(yll) - sum(yll_camp_ocv2))/sum(yll)
+    ) %>% 
+  filter(cases_pro != 0 | deaths_pro != 0 | dalys_pro != 0 | yll_pro != 0) %>% 
+  mutate(id = paste0(country, year))
+
+cov_camp_table_ocv2 <- cov_camp_ocv2 %>% 
+  mutate(id = paste0(country_code, year), 
+         fvp = target * coverage) %>% 
+  select(id, country_code, year, target, coverage, fvp)
+
+merged_table_ocv2 <- left_join(merged_table_ocv2, cov_camp_table_ocv2, by = 'id') %>% 
+  mutate(year = year.x) %>% 
+  select(country, year, target, coverage, fvp, cases_pro, deaths_pro, dalys_pro, yll_pro) %>% 
+  replace(is.na(.), 0)
+names(merged_table_ocv2) <- c('Country', 'Year', 'TargetedPopulation', 
+                         'CoverageProportion', 'FVPs',
+                         'AvertedCasesProportion', 'AvertedDeathsProportion',
+                         'AvertedDalysProportion', 'AvertedYllProportion')
+
+kbl(merged_table_ocv2) %>%
+  kable_styling(fixed_thead = T)
+
+```
+
+# Table 9. Summary Table for ocv1-default scenario -- Wide Form
+```{r echo=FALSE}
+merged_table_target_ocv1 <- merged_table_ocv1 %>% 
+  select(Country, Year, TargetedPopulation) %>% 
+  spread(Year, TargetedPopulation) %>% 
+  mutate(ComparedItem = 'Targeted Population')
+merged_table_cover_ocv1 <- merged_table_ocv1 %>% 
+  select(Country, Year, CoverageProportion) %>% 
+  spread(Year, CoverageProportion) %>% 
+  mutate(ComparedItem = 'Coverage Proportion')
+merged_table_fvps_ocv1 <- merged_table_ocv1 %>% 
+  select(Country, Year, FVPs) %>% 
+  spread(Year, FVPs) %>% 
+  mutate(ComparedItem = 'FVPs')
+merged_table_cases_ocv1 <- merged_table_ocv1 %>% 
+  select(Country, Year, AvertedCasesProportion) %>% 
+  spread(Year, AvertedCasesProportion) %>% 
+  mutate(ComparedItem = 'Averted Cases Proportion')
+merged_table_deaths_ocv1 <- merged_table_ocv1 %>% 
+  select(Country, Year, AvertedDeathsProportion) %>% 
+  spread(Year, AvertedDeathsProportion) %>% 
+  mutate(ComparedItem = 'Averted Deaths Proportion')
+merged_table_dalys_ocv1 <- merged_table_ocv1 %>% 
+  select(Country, Year, AvertedDalysProportion) %>% 
+  spread(Year, AvertedDalysProportion) %>% 
+  mutate(ComparedItem = 'Averted Dalys Proportion')
+merged_table_yll_ocv1 <- merged_table_ocv1 %>% 
+  select(Country, Year, AvertedYllProportion) %>% 
+  spread(Year, AvertedYllProportion) %>% 
+  mutate(ComparedItem = 'Averted Yll Proportion')
+
+merged_table_wide_ocv1 <- rbind(merged_table_target_ocv1, merged_table_cover_ocv1, 
+                           merged_table_fvps_ocv1, merged_table_cases_ocv1,
+                           merged_table_deaths_ocv1, merged_table_dalys_ocv1,
+                           merged_table_yll_ocv1) 
+YearList <- names(merged_table_wide_ocv1)
+YearList <- YearList[YearList!= 'Country']
+YearList <- YearList[YearList!= 'ComparedItem']
+
+merged_table_wide_ocv1 <- merged_table_wide_ocv1 %>% 
+  select(Country, ComparedItem, all_of(YearList)) %>% 
+  arrange(Country)
+
+kbl(merged_table_wide_ocv1) %>%
+  kable_styling(fixed_thead = T)
+
+```
+
+# Table 10. Summary Table for ocv1-ocv2-default scenario -- Wide Form
+```{r echo=FALSE}
+merged_table_target_ocv2 <- merged_table_ocv2 %>% 
+  select(Country, Year, TargetedPopulation) %>% 
+  unique() %>%
+  spread(Year, TargetedPopulation) %>% 
+  mutate(ComparedItem = 'Targeted Population')
+#merged_table_cover_ocv2 <- merged_table_ocv2 %>% 
+  #select(Country, Year, CoverageProportion) %>% 
+  #unique() %>%
+  #spread(Year, CoverageProportion) %>% 
+  #mutate(ComparedItem = 'Coverage Proportion')
+#merged_table_fvps_ocv2 <- merged_table_ocv2 %>% 
+  #select(Country, Year, FVPs) %>% 
+  #unique() %>%
+  #spread(Year, FVPs) %>% 
+  #mutate(ComparedItem = 'FVPs')
+merged_table_cases_ocv2 <- merged_table_ocv2 %>% 
+  select(Country, Year, AvertedCasesProportion) %>% 
+  unique() %>%
+  spread(Year, AvertedCasesProportion) %>% 
+  mutate(ComparedItem = 'Averted Cases Proportion')
+merged_table_deaths_ocv2 <- merged_table_ocv2 %>% 
+  select(Country, Year, AvertedDeathsProportion) %>% 
+  unique() %>%
+  spread(Year, AvertedDeathsProportion) %>% 
+  mutate(ComparedItem = 'Averted Deaths Proportion')
+merged_table_dalys_ocv2 <- merged_table_ocv2 %>% 
+  select(Country, Year, AvertedDalysProportion) %>%
+  unique() %>%
+  spread(Year, AvertedDalysProportion) %>% 
+  mutate(ComparedItem = 'Averted Dalys Proportion')
+merged_table_yll_ocv2 <- merged_table_ocv2 %>% 
+  select(Country, Year, AvertedYllProportion) %>% 
+  unique() %>%
+  spread(Year, AvertedYllProportion) %>% 
+  mutate(ComparedItem = 'Averted Yll Proportion')
+
+merged_table_wide_ocv2 <- rbind(merged_table_target_ocv2, 
+                           merged_table_cases_ocv2,
+                           merged_table_deaths_ocv2, merged_table_dalys_ocv2,
+                           merged_table_yll_ocv2) 
+YearList <- names(merged_table_wide_ocv1)
+YearList <- YearList[YearList!= 'Country']
+YearList <- YearList[YearList!= 'ComparedItem']
+
+merged_table_wide_ocv2 <- merged_table_wide_ocv2 %>% 
+  select(Country, ComparedItem, all_of(YearList)) %>% 
+  arrange(Country)
+
+kbl(merged_table_wide_ocv2) %>%
+  kable_styling(fixed_thead = T)
+
+```
+
+# Figure 16. Visualization of the Summary Table for ocv1-default scenario
+```{r fig.width=20, fig.height=(2.5*num_country_for_plot), echo=FALSE}
+###Prepare the dataset
+merged_table_plot_ocv1 <- merged_table_ocv1 %>% 
+  select(-TargetedPopulation, -FVPs) %>% 
+  gather(ComparedItem, Value, CoverageProportion:AvertedYllProportion)
+
+###Plot
+merged_table_plot_ocv1 %>%
+      ggplot(aes(x = Year, y = Value*100)) +
+      geom_bar(stat="identity", fill="skyblue", alpha=1.0) + 
+      theme_minimal() + 
+      scale_x_continuous(breaks = scales::pretty_breaks(n = 10), 
+                         limits=c(2000, 2100)) +
+      facet_rep_grid(Country ~ factor(ComparedItem, 
+                                  levels=c('CoverageProportion', 
+                                           'AvertedCasesProportion', 
+                                           'AvertedDeathsProportion', 
+                                           'AvertedDalysProportion',
+                                           'AvertedYllProportion')), 
+                 repeat.tick.labels = TRUE) +
+      labs(y = 'Proportion (%)')
+
+```
+
+
+
+
+
+```{r , include=FALSE}
+### For loop
+merged_pro_ocv1 <- merged_pro %>% 
+  mutate(cohort_size_pro = (cohort_size - cohort_size_camp_ocv1)/cohort_size ) %>% 
+  mutate(cases_pro = (cases - cases_camp_ocv1)/cases ) %>%
+  mutate(deaths_pro = (deaths - deaths_camp_ocv1)/deaths ) %>%
+  mutate(dalys_pro = (dalys - dalys_camp_ocv1)/dalys ) %>%
+  mutate(yll_pro = (yll - yll_camp_ocv1)/yll )
+
+country_full_list <- unique(cen_camp_ocv1$country)
+par(mfrow=c(num_country_for_plot, 2))
+
+CoverYLimit <- max(cov_camp_ocv1$coverage)
+CaseYLimit <- max(merged_pro_ocv1$cases_pro)
+DeathYLimit <- max(merged_pro_ocv1$deaths_pro)
+DalyYLimit <- max(merged_pro_ocv1$dalys_pro)
+YllYLimit <- max(merged_pro_ocv1$yll_pro)
+
+
+
+for (country_for_plot in country_full_list) {
+  ##the coverage plot
+  print(
+    cov_camp_ocv1 %>%
+      filter(country_code == country_for_plot) %>% 
+      ggplot(aes(x=year, y=coverage)) + 
+      geom_bar(stat="identity", fill="skyblue", alpha=1.0) + 
+      theme_minimal() +
+      scale_x_continuous(breaks = scales::pretty_breaks(n = 10), limits=c(2000, 2100)) + 
+      ylim(0, CoverYLimit))
+  ##the output plot
+  print(
+    merged_pro_ocv1 %>%
+      filter(country == country_for_plot) %>% 
+      ggplot(aes(fill = age, y = cases_pro, x = year)) +
+      geom_bar(position="stack", stat="identity") +
+      scale_fill_distiller(palette = "RdPu") +
+      theme_minimal() + 
+      scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+      labs(y = 'Proportion of cases averted by the campaign') +
+      ylim(0, CaseYLimit))
+  ##the table
+  print(
+  kable(merged_table_ocv1[which(merged_table_ocv1$country == country_for_plot), ]))
+
+}
+
+
+```
+
+# Figure 17. Visualization of the Summary Table for ocv1-ocv2-default scenario
+```{r fig.width=20, fig.height=(2.5*num_country_for_plot), echo=FALSE }
+###Prepare the dataset
+merged_table_plot_ocv2 <- merged_table_ocv2 %>% 
+  select(-TargetedPopulation, -FVPs) %>% 
+  gather(ComparedItem, Value, CoverageProportion:AvertedYllProportion)
+
+###Plot
+merged_table_plot_ocv2 %>%
+      ggplot(aes(x = Year, y = Value*100)) +
+      geom_bar(stat="identity", fill="skyblue", alpha=1.0) + 
+      theme_minimal() + 
+      scale_x_continuous(breaks = scales::pretty_breaks(n = 10), 
+                         limits=c(2000, 2100)) +
+      facet_rep_grid(Country ~ factor(ComparedItem, 
+                                  levels=c('AvertedCasesProportion', 
+                                           'AvertedDeathsProportion', 
+                                           'AvertedDalysProportion',
+                                           'AvertedYllProportion')), 
+                 repeat.tick.labels = TRUE) +
+      labs(y = 'Proportion (%)')
+
+```
+
+
+
+
+
+```{r include=FALSE}
+### For loop
+merged_pro_ocv2 <- merged_pro %>% 
+  mutate(cohort_size_pro = (cohort_size - cohort_size_camp_ocv2)/cohort_size ) %>% 
+  mutate(cases_pro = (cases - cases_camp_ocv2)/cases ) %>%
+  mutate(deaths_pro = (deaths - deaths_camp_ocv2)/deaths ) %>%
+  mutate(dalys_pro = (dalys - dalys_camp_ocv2)/dalys ) %>%
+  mutate(yll_pro = (yll - yll_camp_ocv2)/yll )
+
+country_full_list <- unique(cen_camp_ocv2$country)
+par(mfrow=c(num_country_for_plot, 2))
+
+CoverYLimit <- max(cov_camp_ocv2$coverage)
+CaseYLimit <- max(merged_pro_ocv2$cases_pro)
+DeathYLimit <- max(merged_pro_ocv2$deaths_pro)
+DalyYLimit <- max(merged_pro_ocv2$dalys_pro)
+YllYLimit <- max(merged_pro_ocv2$yll_pro)
+
+
+
+for (country_for_plot in country_full_list) {
+  ##the coverage plot
+  print(
+    cov_camp_ocv2 %>%
+      filter(country_code == country_for_plot) %>% 
+      ggplot(aes(x=year, y=coverage, fill = vaccine)) + 
+      geom_bar(stat="identity", position ="dodge", alpha=1.0) + 
+      theme_minimal() +
+      scale_x_continuous(breaks = scales::pretty_breaks(n = 10), limits=c(2000, 2100)) + 
+      ylim(0, CoverYLimit))
+  ##the output plot
+  print(
+    merged_pro_ocv2 %>%
+      filter(country == country_for_plot) %>% 
+      ggplot(aes(fill = age, y = cases_pro, x = year)) +
+      geom_bar(position="stack", stat="identity") +
+      scale_fill_distiller(palette = "RdPu") +
+      theme_minimal() + 
+      scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+      labs(y = 'Proportion of cases averted by the campaign') +
+      ylim(0, CaseYLimit))
+  ##the table
+  print(
+  kable(merged_table_ocv2[which(merged_table_ocv2$country == country_for_plot), ]))
+
+}
+
+
+```
+
