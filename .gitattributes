@@ -5,3 +5,4 @@ diagnostics/201910gavi-5/current_simu/data_from_montagu/montagu_interpolated_pop
 diagnostics/201910gavi-5/previous_simu/previous_outputs/stochastic-burden-template.201910gavi-5.Cholera_no-vaccination.csv filter=lfs diff=lfs merge=lfs -text
 diagnostics/201910gavi-5/previous_simu/previous_outputs/stochastic-burden-template.201910gavi-5.Cholera_campaign-default.csv filter=lfs diff=lfs merge=lfs -text
 *.zip filter=lfs diff=lfs merge=lfs -text
+*.csv filter=lfs diff=lfs merge=lfs -text
