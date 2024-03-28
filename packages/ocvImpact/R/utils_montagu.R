@@ -116,6 +116,13 @@ import_centralburden_template <- function(modelpath, country, cache, redownload 
     rc <- readr::read_csv(paste0(modelpath, "/", fname)) %>%
       dplyr::filter(country == !!country) %>%
       dplyr::distinct(disease, country, country_name, year, age)
+    
+    ## if we are not using montagu coverage, only keep output years specified by the config -- this applies to the DRC Case study
+    if (as.logical(config$use_montagu_coverage) == FALSE & !is.null(config$use_montagu_coverage)){
+      rc <- rc %>%
+        dplyr::filter(year >= config$outputyears[1]) %>%  #TL
+        dplyr::filter(year <= config$outputyears[2]) #TR
+    }
   }
 
   return(rc)
