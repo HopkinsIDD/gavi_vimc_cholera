@@ -59,7 +59,12 @@ run_country_scenario <- function(
   montagu_cache[["country_agePop"]] <- import_country_agePop(modelpath, country, montagu_cache, redownload = FALSE)
   montagu_cache[["country_lifeExpectancy"]] <- import_country_lifeExpectancy(modelpath, country, montagu_cache, redownload = FALSE)
 
-  vacc_alloc <- allocate_vaccine(datapath, modelpath, country, scenario, montagu_cache, ...) #the changes start from here
+  if (config$vacc$targeting == "custom"){
+    ## use the custom-made targeting table for the 'custom' targeting strategy
+    vacc_alloc <- readr::read_csv(paste0(datapath,"/custom_targeting.csv")) ##if the custom targeting table is inside /input_data
+  } else {
+    vacc_alloc <- allocate_vaccine(datapath, modelpath, country, scenario, montagu_cache, ...) #the changes start from here
+  }
 
   ## write proportion vaccinated to file and export total population raster stack
   dummy <- create_static_modelInputs(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, montagu_cache, clean)
