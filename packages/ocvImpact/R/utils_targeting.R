@@ -291,6 +291,16 @@ run_targeting_strategy <- function(targets_df, targeting_strat){
     }
     rc <- dplyr::arrange(targets_df, desc(incidence))
 
+  } else if (targeting_strat == "random") {   ##order targets randomly for the 'random' targeting strategy
+    
+    ## vector with random numbers for sorting
+    random_id <- sample(1:nrow(targets_df), nrow(targets_df), replace = FALSE)
+    targets_df <- targets_df %>%
+      dplyr::mutate(sort_id = random_id)
+    
+    ##order randomly using the random_id column
+    rc <- dplyr::arrange(targets_df, sort_id)
+    
   } else if (targeting_strat == "affected_pop"){
     if(!all(c("incidence", "pop_prop") %in% names(targets_df))){
       stop("Cannot target by affected_pop when `incidence` and `pop_prop` are not column names.")
