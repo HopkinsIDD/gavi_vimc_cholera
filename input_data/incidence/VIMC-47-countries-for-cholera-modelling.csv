@@ -1,3 +1,48 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:980868ec78d30d249ed2b689457571d492ba6310bb835055782b50d985fc1fcb
-size 2294
+"country","country_code","singular_estimate","is_num_case","year_list","data_source","num_case","incid_rate_100k"
+"Afghanistan","AFG",11755.2,1,"2019-2018-2017-2016-2015","WHO",11755.2,32.4180462156048
+"Angola","AGO",NA,NA,NA,NA,NA,NA
+"Burundi","BDI",NA,NA,NA,NA,NA,NA
+"Benin","BEN",NA,NA,NA,NA,NA,NA
+"Burkina Faso","BFA",NA,NA,NA,NA,NA,NA
+"Bangladesh","BGD",NA,NA,NA,NA,NA,NA
+"Central African Republic","CAF",NA,NA,NA,NA,NA,NA
+"Cote d'Ivoire","CIV",NA,NA,NA,NA,NA,NA
+"Cameroon","CMR",NA,NA,NA,NA,NA,NA
+"Congo, DR","COD",NA,NA,NA,NA,NA,NA
+"Congo, Rep.","COG",NA,NA,NA,NA,NA,NA
+"Algeria","DZA",67,1,"2019-2018-2006-2005-1994","WHO",67,0.185815909504923
+"Ethiopia","ETH",NA,NA,NA,NA,NA,NA
+"Ghana","GHA",NA,NA,NA,NA,NA,NA
+"Guinea","GIN",NA,NA,NA,NA,NA,NA
+"Guinea-Bissau","GNB",NA,NA,NA,NA,NA,NA
+"Haiti","HTI",11919.8,1,"2020-2019-2018-2017-2016","WHO",11919.8,107.171013767948
+"India","IND",1368.6,1,"2018-2017-2016-2015-2014","WHO",1368.6,0.103343766800521
+"Iran, Islamic Rep.","IRN",146.8,1,"2019-2018-2017-2016-2015","WHO",146.8,0.18193347049415
+"Iraq","IRQ",1939.4,1,"2018-2016-2015-2013-2012","WHO",1939.4,5.52021166553422
+"Kenya","KEN",NA,NA,NA,NA,NA,NA
+"Liberia","LBR",NA,NA,NA,NA,NA,NA
+"Madagascar","MDG",NA,NA,NA,NA,NA,NA
+"Mali","MLI",NA,NA,NA,NA,NA,NA
+"Mozambique","MOZ",NA,NA,NA,NA,NA,NA
+"Mauritania","MRT",NA,NA,NA,NA,NA,NA
+"Malawi","MWI",NA,NA,NA,NA,NA,NA
+"Namibia","NAM",NA,NA,NA,NA,NA,NA
+"Niger","NER",NA,NA,NA,NA,NA,NA
+"Nigeria","NGA",NA,NA,NA,NA,NA,NA
+"Nepal","NPL",239.2,1,"2018-2017-2016-2015-2014","WHO",239.2,0.873548475224423
+"Pakistan","PAK",624.4,1,"2014-2013-2012-2011-2010","WHO",624.4,0.333329502855606
+"Philippines","PHL",2479.6,1,"2019-2018-2017-2016-2014","WHO",2479.6,2.36549833334062
+"Rwanda","RWA",NA,NA,NA,NA,NA,NA
+"Senegal","SEN",NA,NA,NA,NA,NA,NA
+"Sierra Leone","SLE",NA,NA,NA,NA,NA,NA
+"Somalia","SOM",NA,NA,NA,NA,NA,NA
+"Sudan: South","SSD",NA,NA,NA,NA,NA,NA
+"Chad","TCD",NA,NA,NA,NA,NA,NA
+"Togo","TGO",NA,NA,NA,NA,NA,NA
+"Thailand","THA",40.6,1,"2019-2018-2017-2016-2015","WHO",40.6,0.0586790568468365
+"Tanzania","TZA",NA,NA,NA,NA,NA,NA
+"Uganda","UGA",NA,NA,NA,NA,NA,NA
+"Yemen","YEM",501487.4,1,"2020-2019-2018-2017-2016","WHO",501487.4,1759.73339134178
+"South Africa","ZAF",NA,NA,NA,NA,NA,NA
+"Zambia","ZMB",NA,NA,NA,NA,NA,NA
+"Zimbabwe","ZWE",NA,NA,NA,NA,NA,NA
