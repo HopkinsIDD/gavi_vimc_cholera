@@ -1,3 +1,619 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:adaf97e916d7866ad568f7c0d8ed481b0ecca621cdc1146e174a6a6d0344e300
-size 106202
+scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage,gender,proportion_risk
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,AFG,Afghanistan,2025,1,100,default age groups,43090677.5,0.561536457085638929243,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,AFG,Afghanistan,2028,1,100,default age groups,46535039,0.561536457085639040265,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,AFG,Afghanistan,2031,1,100,default age groups,50028077,0.561536457085638929243,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,AFG,Afghanistan,2034,1,100,default age groups,53550586,0.561536457085638929243,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,AFG,Afghanistan,2037,1,100,default age groups,57077641.5,0.561536457085638929243,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,AFG,Afghanistan,2040,1,100,default age groups,60633538.5,0.561536457085638929243,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,AGO,Angola,2025,1,100,default age groups,37579274.5,0.025083478201492401954,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,AGO,Angola,2028,1,100,default age groups,41034171,0.025083478201492405424,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,AGO,Angola,2031,1,100,default age groups,44654622.5,0.025083478201492401954,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,AGO,Angola,2034,1,100,default age groups,48434834.5,0.025083478201492401954,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,AGO,Angola,2037,1,100,default age groups,52357786.5,0.025083478201492401954,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,AGO,Angola,2040,1,100,default age groups,56407158,0.025083478201492401954,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BDI,Burundi,2025,1,100,default age groups,13513143.5,0.056759912400634007779,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BDI,Burundi,2028,1,100,default age groups,14589098,0.05675991240063400084,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BDI,Burundi,2031,1,100,default age groups,15710549.5,0.056759912400634007779,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BDI,Burundi,2034,1,100,default age groups,16883203.5,0.056759912400634007779,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BDI,Burundi,2037,1,100,default age groups,18113671,0.056759912400634007779,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BDI,Burundi,2040,1,100,default age groups,19384761.5,0.056759912400634007779,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BEN,Benin,2025,1,100,default age groups,13978635,0.026994228648118807207,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BEN,Benin,2028,1,100,default age groups,15108644.5,0.026994228648118803737,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BEN,Benin,2031,1,100,default age groups,16280062,0.026994228648118803737,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BEN,Benin,2034,1,100,default age groups,17493021.5,0.026994228648118803737,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BEN,Benin,2037,1,100,default age groups,18745717.5,0.026994228648118807207,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BEN,Benin,2040,1,100,default age groups,20039122,0.026994228648118807207,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BFA,Burkina Faso,2025,1,100,default age groups,23653603.5,0.024027342135254540351,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BFA,Burkina Faso,2028,1,100,default age groups,25456210.5,0.024027342135254533412,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BFA,Burkina Faso,2031,1,100,default age groups,27319398,0.024027342135254536881,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BFA,Burkina Faso,2034,1,100,default age groups,29236659,0.024027342135254536881,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BFA,Burkina Faso,2037,1,100,default age groups,31190262,0.024027342135254540351,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BFA,Burkina Faso,2040,1,100,default age groups,33153969.5,0.024027342135254540351,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BGD,Bangladesh,2011,1,100,default age groups,147179293,0.000238627318314404448,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BGD,Bangladesh,2020,1,100,default age groups,164456840,0.007223779807516671203,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BGD,Bangladesh,2025,1,100,default age groups,173503172.5,0.372607583770451056271,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BGD,Bangladesh,2028,1,100,default age groups,178501298,0.372607583770451056271,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BGD,Bangladesh,2031,1,100,default age groups,183114410,0.372607583770451056271,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BGD,Bangladesh,2034,1,100,default age groups,187254005.5,0.37260758377045100076,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BGD,Bangladesh,2037,1,100,default age groups,190901043.5,0.372607583770451111782,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,BGD,Bangladesh,2040,1,100,default age groups,194037128.5,0.372607583770451111782,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CAF,Central African Republic,2025,1,100,default age groups,5855408,0.013159768782706266627,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CAF,Central African Republic,2028,1,100,default age groups,6424109.5,0.013159768782706266627,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CAF,Central African Republic,2031,1,100,default age groups,7043251,0.013159768782706264892,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CAF,Central African Republic,2034,1,100,default age groups,7691558,0.013159768782706266627,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CAF,Central African Republic,2037,1,100,default age groups,8356456.5,0.013159768782706266627,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CAF,Central African Republic,2040,1,100,default age groups,9023125.5,0.013159768782706266627,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CIV,Cote d'Ivoire,2025,1,100,default age groups,29402681.5,0.049652965302873004749,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CIV,Cote d'Ivoire,2028,1,100,default age groups,31642916.5,0.049652965302873004749,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CIV,Cote d'Ivoire,2031,1,100,default age groups,33981922,0.049652965302873004749,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CIV,Cote d'Ivoire,2034,1,100,default age groups,36411442.5,0.04965296530287299781,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CIV,Cote d'Ivoire,2037,1,100,default age groups,38905670.5,0.049652965302873004749,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CIV,Cote d'Ivoire,2040,1,100,default age groups,41442825.5,0.049652965302873004749,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CMR,Cameroon,2025,1,100,default age groups,29202773,0.332910406559485450018,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CMR,Cameroon,2028,1,100,default age groups,31483750,0.332910406559485450018,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CMR,Cameroon,2031,1,100,default age groups,33835608.5,0.332910406559485505529,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CMR,Cameroon,2034,1,100,default age groups,36250613,0.332910406559485505529,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CMR,Cameroon,2037,1,100,default age groups,38738000,0.332910406559485505529,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,CMR,Cameroon,2040,1,100,default age groups,41290607,0.332910406559485505529,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COD,"Congo, the Democratic Republic of the",2014,1,100,default age groups,72901346,0.000018490742269696914,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COD,"Congo, the Democratic Republic of the",2021,1,100,default age groups,92080802.5,0.035114289973743439965,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COD,"Congo, the Democratic Republic of the",2022,1,100,default age groups,95094161,0.019824308666017885494,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COD,"Congo, the Democratic Republic of the",2025,1,100,default age groups,104861468,0.29851713964600240514,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COD,"Congo, the Democratic Republic of the",2028,1,100,default age groups,115411644,0.298517139646002516162,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COD,"Congo, the Democratic Republic of the",2031,1,100,default age groups,126714270,0.298517139646002460651,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COD,"Congo, the Democratic Republic of the",2034,1,100,default age groups,138703014.5,0.298517139646002516162,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COD,"Congo, the Democratic Republic of the",2037,1,100,default age groups,151339862.5,0.298517139646002460651,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COD,"Congo, the Democratic Republic of the",2040,1,100,default age groups,164457897.5,0.298517139646002460651,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COG,Congo,2025,1,100,default age groups,6203951.5,0.183591331511663291565,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COG,Congo,2028,1,100,default age groups,6625331,0.183591331511663291565,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COG,Congo,2031,1,100,default age groups,7068634,0.183591331511663263809,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COG,Congo,2034,1,100,default age groups,7531029.5,0.183591331511663263809,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COG,Congo,2037,1,100,default age groups,8008622,0.183591331511663291565,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COG,Congo,2040,1,100,default age groups,8495826,0.183591331511663291565,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,DZA,Algeria,2025,1,100,default age groups,46076155.5,0.084999999999999992228,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,DZA,Algeria,2028,1,100,default age groups,47911402,0.084999999999999992228,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,DZA,Algeria,2031,1,100,default age groups,49550361,0.084999999999999992228,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,DZA,Algeria,2034,1,100,default age groups,51079481.5,0.084999999999999992228,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,DZA,Algeria,2037,1,100,default age groups,52580505,0.084999999999999992228,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,DZA,Algeria,2040,1,100,default age groups,54093271.5,0.084999999999999992228,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ETH,Ethiopia,2021,1,100,default age groups,116529023.5,0.008495737544732793328,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ETH,Ethiopia,2025,1,100,default age groups,129041076.5,0.082925859514711680598,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ETH,Ethiopia,2028,1,100,default age groups,138725487.5,0.082925859514711680598,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ETH,Ethiopia,2031,1,100,default age groups,148540248.5,0.082925859514711680598,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ETH,Ethiopia,2034,1,100,default age groups,158358230.5,0.082925859514711680598,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ETH,Ethiopia,2037,1,100,default age groups,168132811,0.082925859514711694476,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ETH,Ethiopia,2040,1,100,default age groups,177868196,0.082925859514711680598,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GHA,Ghana,2025,1,100,default age groups,34550181,0.343029928267688410948,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GHA,Ghana,2028,1,100,default age groups,36526098,0.343029928267688410948,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GHA,Ghana,2031,1,100,default age groups,38518360.5,0.343029928267688410948,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GHA,Ghana,2034,1,100,default age groups,40522592.5,0.343029928267688410948,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GHA,Ghana,2037,1,100,default age groups,42549910,0.343029928267688466459,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GHA,Ghana,2040,1,100,default age groups,44595836,0.343029928267688355437,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GIN,Guinea,2012,1,100,default age groups,10399335.5,0.000849477353625142689,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GIN,Guinea,2025,1,100,default age groups,14416784,0.224514670331159210681,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GIN,Guinea,2028,1,100,default age groups,15451837,0.224514670331159238437,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GIN,Guinea,2031,1,100,default age groups,16500097.5,0.224514670331159182926,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GIN,Guinea,2034,1,100,default age groups,17559336,0.224514670331159210681,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GIN,Guinea,2037,1,100,default age groups,18625150.5,0.224514670331159238437,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GIN,Guinea,2040,1,100,default age groups,19686391.5,0.224514670331159210681,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GNB,Guinea-Bissau,2025,1,100,default age groups,2181296.5,0.380530811286850845221,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GNB,Guinea-Bissau,2028,1,100,default age groups,2322969,0.380530811286850845221,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GNB,Guinea-Bissau,2031,1,100,default age groups,2467201.5,0.380530811286850845221,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GNB,Guinea-Bissau,2034,1,100,default age groups,2613153.5,0.380530811286850845221,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GNB,Guinea-Bissau,2037,1,100,default age groups,2760125.5,0.38053081128685078971,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,GNB,Guinea-Bissau,2040,1,100,default age groups,2906536.5,0.380530811286850845221,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,HTI,Haiti,2013,1,100,default age groups,10004894.5,0.000013093591341717797,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,HTI,Haiti,2025,1,100,default age groups,11753010,0.510000000000000008882,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,HTI,Haiti,2028,1,100,default age groups,12174444.5,0.510000000000000008882,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,HTI,Haiti,2031,1,100,default age groups,12582019.5,0.510000000000000008882,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,HTI,Haiti,2034,1,100,default age groups,12979250,0.510000000000000008882,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,HTI,Haiti,2037,1,100,default age groups,13367605,0.510000000000000008882,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,HTI,Haiti,2040,1,100,default age groups,13743463,0.510000000000000008882,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IND,India,2011,1,100,default age groups,1232087741.5,0.000025608565800344019,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IND,India,2025,1,100,default age groups,1432089617,0.222234376014819767775,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IND,India,2028,1,100,default age groups,1469367477,0.222234376014819767775,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IND,India,2031,1,100,default age groups,1504189534,0.222234376014819767775,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IND,India,2034,1,100,default age groups,1536254267,0.222234376014819767775,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IND,India,2037,1,100,default age groups,1565220827.5,0.222234376014819740019,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IND,India,2040,1,100,default age groups,1590929228.5,0.222234376014819740019,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IRN,"Iran, Islamic Republic of",2025,1,100,default age groups,89313488.5,0.001471818952857394721,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IRN,"Iran, Islamic Republic of",2028,1,100,default age groups,90971578.5,0.001471818952857394938,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IRN,"Iran, Islamic Republic of",2031,1,100,default age groups,92343507.5,0.001471818952857394721,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IRN,"Iran, Islamic Republic of",2034,1,100,default age groups,93507659.5,0.001471818952857394938,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IRN,"Iran, Islamic Republic of",2037,1,100,default age groups,94538686,0.001471818952857394721,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IRN,"Iran, Islamic Republic of",2040,1,100,default age groups,95482710,0.001471818952857394938,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IRQ,Iraq,2015,1,100,default age groups,36580052.5,0.000055413323754128507,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IRQ,Iraq,2025,1,100,default age groups,46337796,0.055638486534459324906,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IRQ,Iraq,2028,1,100,default age groups,49419800.5,0.055638486534459317967,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IRQ,Iraq,2031,1,100,default age groups,52577343,0.055638486534459324906,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IRQ,Iraq,2034,1,100,default age groups,55817145.5,0.055638486534459317967,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IRQ,Iraq,2037,1,100,default age groups,59107344.5,0.055638486534459324906,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,IRQ,Iraq,2040,1,100,default age groups,62401110,0.055638486534459324906,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,KEN,Kenya,2023,1,100,default age groups,53640111,0.000049135245078072273,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,KEN,Kenya,2025,1,100,default age groups,55829725,0.07701366488241147279,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,KEN,Kenya,2028,1,100,default age groups,59210291.5,0.077013664882411458912,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,KEN,Kenya,2031,1,100,default age groups,62685150,0.07701366488241147279,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,KEN,Kenya,2034,1,100,default age groups,66210349.5,0.07701366488241147279,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,KEN,Kenya,2037,1,100,default age groups,69712503,0.07701366488241147279,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,KEN,Kenya,2040,1,100,default age groups,73129686.5,0.07701366488241147279,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,LBR,Liberia,2025,1,100,default age groups,5494088.5,0.03614441330552806142,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,LBR,Liberia,2028,1,100,default age groups,5858366.5,0.03614441330552806142,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,LBR,Liberia,2031,1,100,default age groups,6235776,0.03614441330552806142,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,LBR,Liberia,2034,1,100,default age groups,6621846,0.03614441330552806142,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,LBR,Liberia,2037,1,100,default age groups,7013785,0.03614441330552806142,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,LBR,Liberia,2040,1,100,default age groups,7409019,0.03614441330552806142,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MDG,Madagascar,2025,1,100,default age groups,30889599,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MDG,Madagascar,2028,1,100,default age groups,33122145.5,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MDG,Madagascar,2031,1,100,default age groups,35415209,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MDG,Madagascar,2034,1,100,default age groups,37749808,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MDG,Madagascar,2037,1,100,default age groups,40109870.5,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MDG,Madagascar,2040,1,100,default age groups,42488709.5,0.849999999999999866773,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MLI,Mali,2025,1,100,default age groups,23816378.5,0.04671856422954739213,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MLI,Mali,2028,1,100,default age groups,26085077.5,0.04671856422954739213,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MLI,Mali,2031,1,100,default age groups,28495502.5,0.04671856422954739213,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MLI,Mali,2034,1,100,default age groups,31045943,0.04671856422954739213,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MLI,Mali,2037,1,100,default age groups,33721669.5,0.04671856422954739213,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MLI,Mali,2040,1,100,default age groups,36495336,0.04671856422954739213,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MOZ,Mozambique,2003,1,100,default age groups,18430394.5,0.002915510028827652134,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MOZ,Mozambique,2016,1,100,default age groups,26691094,0.000016897021905509004,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MOZ,Mozambique,2025,1,100,default age groups,34645935.5,0.057149906499413004324,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MOZ,Mozambique,2028,1,100,default age groups,37608510,0.057149906499413011263,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MOZ,Mozambique,2031,1,100,default age groups,40686711.5,0.057149906499413004324,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MOZ,Mozambique,2034,1,100,default age groups,43859924.5,0.057149906499413004324,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MOZ,Mozambique,2037,1,100,default age groups,47105152,0.057149906499412997385,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MOZ,Mozambique,2040,1,100,default age groups,50408559,0.057149906499412997385,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MRT,Mauritania,2025,1,100,default age groups,4971255.5,0.009370985179459997289,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MRT,Mauritania,2028,1,100,default age groups,5379134.5,0.009370985179459997289,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MRT,Mauritania,2031,1,100,default age groups,5804832.5,0.009370985179459995554,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MRT,Mauritania,2034,1,100,default age groups,6245457,0.009370985179459997289,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MRT,Mauritania,2037,1,100,default age groups,6700213,0.009370985179459995554,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MRT,Mauritania,2040,1,100,default age groups,7161240,0.009370985179459997289,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MWI,Malawi,2020,1,100,default age groups,18754096,0.015989627012680317913,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MWI,Malawi,2021,1,100,default age groups,19256582,0.014405048621816679902,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MWI,Malawi,2025,1,100,default age groups,21356692,0.050486649950006207144,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MWI,Malawi,2028,1,100,default age groups,23051238,0.050486649950006214083,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MWI,Malawi,2031,1,100,default age groups,24812408.5,0.050486649950006207144,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MWI,Malawi,2034,1,100,default age groups,26615866,0.050486649950006200205,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MWI,Malawi,2037,1,100,default age groups,28440560,0.050486649950006207144,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,MWI,Malawi,2040,1,100,default age groups,30284218.5,0.050486649950006200205,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NAM,Namibia,2025,1,100,default age groups,2622946.5,0.20728698473716128392,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NAM,Namibia,2028,1,100,default age groups,2755071.5,0.207286984737161256165,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NAM,Namibia,2031,1,100,default age groups,2885734.5,0.207286984737161228409,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NAM,Namibia,2034,1,100,default age groups,3015241.5,0.207286984737161228409,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NAM,Namibia,2037,1,100,default age groups,3145229.5,0.207286984737161256165,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NAM,Namibia,2040,1,100,default age groups,3276033.5,0.207286984737161256165,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NER,Niger,2025,1,100,default age groups,28081433.5,0.081081963553833999447,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NER,Niger,2028,1,100,default age groups,31404993,0.081081963553834013325,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NER,Niger,2031,1,100,default age groups,35039013.5,0.081081963553833999447,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NER,Niger,2034,1,100,default age groups,38976518.5,0.081081963553834013325,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NER,Niger,2037,1,100,default age groups,43220668.5,0.081081963553834013325,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NER,Niger,2040,1,100,default age groups,47768679,0.081081963553833999447,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NGA,Nigeria,2022,1,100,default age groups,211007071,0.004131966696035508681,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NGA,Nigeria,2025,1,100,default age groups,226724849,0.062679650113768692332,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NGA,Nigeria,2028,1,100,default age groups,243070465,0.062679650113768692332,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NGA,Nigeria,2031,1,100,default age groups,259948347.5,0.062679650113768678454,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NGA,Nigeria,2034,1,100,default age groups,277186503,0.062679650113768692332,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NGA,Nigeria,2037,1,100,default age groups,294569334.5,0.062679650113768692332,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NGA,Nigeria,2040,1,100,default age groups,311988385.5,0.062679650113768692332,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NPL,Nepal,2025,1,100,default age groups,30982151.5,0.085000000000000019984,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NPL,Nepal,2028,1,100,default age groups,31964215.5,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NPL,Nepal,2031,1,100,default age groups,32863176.5,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NPL,Nepal,2034,1,100,default age groups,33672628,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NPL,Nepal,2037,1,100,default age groups,34404101.5,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,NPL,Nepal,2040,1,100,default age groups,35066835,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,PAK,Pakistan,2025,1,100,default age groups,243677365.5,0.117081284474770064286,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,PAK,Pakistan,2028,1,100,default age groups,257887540.5,0.117081284474770050408,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,PAK,Pakistan,2031,1,100,default age groups,272299210,0.117081284474770050408,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,PAK,Pakistan,2034,1,100,default age groups,286822140,0.117081284474770064286,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,PAK,Pakistan,2037,1,100,default age groups,301370544.5,0.117081284474770078163,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,PAK,Pakistan,2040,1,100,default age groups,315760048,0.117081284474770064286,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,PHL,Philippines,2025,1,100,default age groups,118399456.5,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,PHL,Philippines,2028,1,100,default age groups,123580559,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,PHL,Philippines,2031,1,100,default age groups,128630015.5,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,PHL,Philippines,2034,1,100,default age groups,133505371,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,PHL,Philippines,2037,1,100,default age groups,138149913,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,PHL,Philippines,2040,1,100,default age groups,142562365,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,RWA,Rwanda,2025,1,100,default age groups,14332257.5,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,RWA,Rwanda,2028,1,100,default age groups,15300757,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,RWA,Rwanda,2031,1,100,default age groups,16283398,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,RWA,Rwanda,2034,1,100,default age groups,17273160.5,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,RWA,Rwanda,2037,1,100,default age groups,18271722.5,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,RWA,Rwanda,2040,1,100,default age groups,19276509.5,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SEN,Senegal,2025,1,100,default age groups,18125147,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SEN,Senegal,2028,1,100,default age groups,19541722.5,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SEN,Senegal,2031,1,100,default age groups,21022628,0.850000000000000088818,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SEN,Senegal,2034,1,100,default age groups,22571123.5,0.849999999999999866773,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SEN,Senegal,2037,1,100,default age groups,24189895.5,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SEN,Senegal,2040,1,100,default age groups,25874141,0.849999999999999866773,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SLE,Sierra Leone,2025,1,100,default age groups,8911022.5,0.55639913770896765044,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SLE,Sierra Leone,2028,1,100,default age groups,9471074.5,0.556399137708967761462,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SLE,Sierra Leone,2031,1,100,default age groups,10031907.5,0.55639913770896765044,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SLE,Sierra Leone,2034,1,100,default age groups,10589306.5,0.55639913770896765044,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SLE,Sierra Leone,2037,1,100,default age groups,11139787.5,0.55639913770896765044,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SLE,Sierra Leone,2040,1,100,default age groups,11675957,0.55639913770896765044,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SOM,Somalia,2022,1,100,default age groups,16885790,0.105720727309767559277,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SOM,Somalia,2023,1,100,default age groups,17415892.5,0.091105810397026740222,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SOM,Somalia,2025,1,100,default age groups,18528007,0.386659667415143792901,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SOM,Somalia,2028,1,100,default age groups,20276274,0.386659667415143848412,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SOM,Somalia,2031,1,100,default age groups,22120164,0.386659667415143848412,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SOM,Somalia,2034,1,100,default age groups,24054776.5,0.386659667415143792901,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SOM,Somalia,2037,1,100,default age groups,26073571,0.386659667415143792901,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SOM,Somalia,2040,1,100,default age groups,28158391.5,0.386659667415143792901,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SSD,South Sudan,2014,1,100,default age groups,10800242,0.010496431468850420804,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SSD,South Sudan,2021,1,100,default age groups,10452485.5,0.08113850050306216366,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SSD,South Sudan,2022,1,100,default age groups,10614405,0.004126320787646598279,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SSD,South Sudan,2025,1,100,default age groups,11158654.5,0.118213487910973774619,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SSD,South Sudan,2028,1,100,default age groups,11769327,0.118213487910973774619,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SSD,South Sudan,2031,1,100,default age groups,12454072,0.118213487910973774619,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SSD,South Sudan,2034,1,100,default age groups,13207732,0.118213487910973788497,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SSD,South Sudan,2037,1,100,default age groups,13986948.5,0.118213487910973774619,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,SSD,South Sudan,2040,1,100,default age groups,14752605.5,0.118213487910973788497,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TCD,Chad,2025,1,100,default age groups,18664796.5,0.302398091651370992672,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TCD,Chad,2028,1,100,default age groups,20415574,0.302398091651371048183,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TCD,Chad,2031,1,100,default age groups,22252259,0.302398091651370992672,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TCD,Chad,2034,1,100,default age groups,24173505.5,0.302398091651370992672,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TCD,Chad,2037,1,100,default age groups,26172439.5,0.302398091651371048183,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TCD,Chad,2040,1,100,default age groups,28242308,0.302398091651370992672,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TGO,Togo,2025,1,100,default age groups,9193556,0.06861941730270179618,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TGO,Togo,2028,1,100,default age groups,9825617.5,0.068619417302701810057,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TGO,Togo,2031,1,100,default age groups,10483477,0.06861941730270179618,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TGO,Togo,2034,1,100,default age groups,11167874.5,0.068619417302701810057,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TGO,Togo,2037,1,100,default age groups,11876623.5,0.068619417302701810057,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TGO,Togo,2040,1,100,default age groups,12604846.5,0.068619417302701810057,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,THA,Thailand,2025,1,100,default age groups,71342648.5,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,THA,Thailand,2028,1,100,default age groups,71464601,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,THA,Thailand,2031,1,100,default age groups,71444461,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,THA,Thailand,2034,1,100,default age groups,71270067.5,0.084999999999999992228,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,THA,Thailand,2037,1,100,default age groups,70917221.5,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,THA,Thailand,2040,1,100,default age groups,70382698.5,0.085000000000000006106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TZA,"Tanzania, United Republic of",2021,1,100,default age groups,61372207,0.004820569675781744175,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TZA,"Tanzania, United Republic of",2025,1,100,default age groups,69057561,0.18887860995519986651,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TZA,"Tanzania, United Republic of",2028,1,100,default age groups,75144277,0.18887860995519986651,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TZA,"Tanzania, United Republic of",2031,1,100,default age groups,81480479.5,0.18887860995519986651,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TZA,"Tanzania, United Republic of",2034,1,100,default age groups,88080074.5,0.18887860995519986651,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TZA,"Tanzania, United Republic of",2037,1,100,default age groups,94957099.5,0.18887860995519986651,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,TZA,"Tanzania, United Republic of",2040,1,100,default age groups,102052636,0.188878609955199894266,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,UGA,Uganda,1997,1,100,default age groups,20869908.5,0.001706428181033951353,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,UGA,Uganda,2020,1,100,default age groups,42813034,0.021937057766099932882,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,UGA,Uganda,2025,1,100,default age groups,49586031.5,0.047261046992769964459,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,UGA,Uganda,2028,1,100,default age groups,53766714,0.04726104699276995752,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,UGA,Uganda,2031,1,100,default age groups,58067221,0.047261046992769964459,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,UGA,Uganda,2034,1,100,default age groups,62402928,0.047261046992769964459,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,UGA,Uganda,2037,1,100,default age groups,66772847.5,0.04726104699276995752,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,UGA,Uganda,2040,1,100,default age groups,71171731.5,0.04726104699276995752,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,YEM,Yemen,2021,1,100,default age groups,32011762.5,0.021616491750493269791,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,YEM,Yemen,2025,1,100,default age groups,35019379.5,0.163342051909875884963,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,YEM,Yemen,2028,1,100,default age groups,37357503.5,0.163342051909875912719,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,YEM,Yemen,2031,1,100,default age groups,39705113,0.163342051909875884963,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,YEM,Yemen,2034,1,100,default age groups,42058696.5,0.163342051909875884963,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,YEM,Yemen,2037,1,100,default age groups,44409815.5,0.163342051909875912719,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,YEM,Yemen,2040,1,100,default age groups,46749998.5,0.163342051909875884963,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZAF,South Africa,2025,1,100,default age groups,60571901.5,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZAF,South Africa,2028,1,100,default age groups,62439559.5,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZAF,South Africa,2031,1,100,default age groups,64147621,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZAF,South Africa,2034,1,100,default age groups,65738925,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZAF,South Africa,2037,1,100,default age groups,67236749.5,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZAF,South Africa,2040,1,100,default age groups,68642978,0.849999999999999977796,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZMB,Zambia,2021,1,100,default age groups,18828729,0.027786368373563626738,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZMB,Zambia,2022,1,100,default age groups,19361809,0.074420370534592092393,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZMB,Zambia,2025,1,100,default age groups,21020328.5,0.162789262400274248321,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZMB,Zambia,2028,1,100,default age groups,22750449.5,0.162789262400274248321,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZMB,Zambia,2031,1,100,default age groups,24542354.5,0.162789262400274248321,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZMB,Zambia,2034,1,100,default age groups,26382604,0.162789262400274248321,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZMB,Zambia,2037,1,100,default age groups,28254739.5,0.162789262400274248321,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZMB,Zambia,2040,1,100,default age groups,30158246.5,0.162789262400274248321,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZWE,Zimbabwe,2025,1,100,default age groups,16892512.5,0.026461443203237854788,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZWE,Zimbabwe,2028,1,100,default age groups,17955689,0.026461443203237851318,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZWE,Zimbabwe,2031,1,100,default age groups,19036977.5,0.026461443203237851318,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZWE,Zimbabwe,2034,1,100,default age groups,20142614,0.026461443203237854788,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZWE,Zimbabwe,2037,1,100,default age groups,21261055.5,0.026461443203237854788,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,ZWE,Zimbabwe,2040,1,100,default age groups,22373253.5,0.026461443203237847849,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,AFG,Afghanistan,2025,1,100,default age groups,43090677.5,0.462441788188173275032,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,AFG,Afghanistan,2028,1,100,default age groups,46535039,0.46244178818817321952,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,AFG,Afghanistan,2031,1,100,default age groups,50028077,0.462441788188173275032,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,AFG,Afghanistan,2034,1,100,default age groups,53550586,0.46244178818817321952,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,AFG,Afghanistan,2037,1,100,default age groups,57077641.5,0.462441788188173275032,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,AFG,Afghanistan,2040,1,100,default age groups,60633538.5,0.46244178818817321952,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,AGO,Angola,2025,1,100,default age groups,37579274.5,0.020656982048287860637,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,AGO,Angola,2028,1,100,default age groups,41034171,0.020656982048287860637,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,AGO,Angola,2031,1,100,default age groups,44654622.5,0.020656982048287860637,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,AGO,Angola,2034,1,100,default age groups,48434834.5,0.020656982048287860637,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,AGO,Angola,2037,1,100,default age groups,52357786.5,0.020656982048287860637,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,AGO,Angola,2040,1,100,default age groups,56407158,0.020656982048287860637,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BDI,Burundi,2025,1,100,default age groups,13513143.5,0.046743457271110351592,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BDI,Burundi,2028,1,100,default age groups,14589098,0.046743457271110351592,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BDI,Burundi,2031,1,100,default age groups,15710549.5,0.046743457271110358531,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BDI,Burundi,2034,1,100,default age groups,16883203.5,0.046743457271110358531,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BDI,Burundi,2037,1,100,default age groups,18113671,0.046743457271110358531,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BDI,Burundi,2040,1,100,default age groups,19384761.5,0.046743457271110358531,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BEN,Benin,2025,1,100,default age groups,13978635,0.022230541239627248096,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BEN,Benin,2028,1,100,default age groups,15108644.5,0.022230541239627248096,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BEN,Benin,2031,1,100,default age groups,16280062,0.022230541239627251565,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BEN,Benin,2034,1,100,default age groups,17493021.5,0.022230541239627248096,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BEN,Benin,2037,1,100,default age groups,18745717.5,0.022230541239627251565,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BEN,Benin,2040,1,100,default age groups,20039122,0.022230541239627251565,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BFA,Burkina Faso,2025,1,100,default age groups,23653603.5,0.019787222934915502798,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BFA,Burkina Faso,2028,1,100,default age groups,25456210.5,0.019787222934915499328,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BFA,Burkina Faso,2031,1,100,default age groups,27319398,0.019787222934915502798,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BFA,Burkina Faso,2034,1,100,default age groups,29236659,0.019787222934915502798,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BFA,Burkina Faso,2037,1,100,default age groups,31190262,0.019787222934915499328,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BFA,Burkina Faso,2040,1,100,default age groups,33153969.5,0.019787222934915502798,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BGD,Bangladesh,2011,1,100,default age groups,147179293,0.001054428220415490162,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BGD,Bangladesh,2021,1,100,default age groups,166398607,0.006490438949407791383,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BGD,Bangladesh,2025,1,100,default age groups,173503172.5,0.306853304281547889509,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BGD,Bangladesh,2028,1,100,default age groups,178501298,0.30685330428154794502,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BGD,Bangladesh,2031,1,100,default age groups,183114410,0.306853304281547889509,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BGD,Bangladesh,2034,1,100,default age groups,187254005.5,0.30685330428154794502,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BGD,Bangladesh,2037,1,100,default age groups,190901043.5,0.30685330428154794502,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,BGD,Bangladesh,2040,1,100,default age groups,194037128.5,0.306853304281547889509,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CAF,Central African Republic,2025,1,100,default age groups,5855408,0.010837456644581631646,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CAF,Central African Republic,2028,1,100,default age groups,6424109.5,0.010837456644581629911,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CAF,Central African Republic,2031,1,100,default age groups,7043251,0.010837456644581629911,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CAF,Central African Republic,2034,1,100,default age groups,7691558,0.010837456644581629911,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CAF,Central African Republic,2037,1,100,default age groups,8356456.5,0.010837456644581631646,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CAF,Central African Republic,2040,1,100,default age groups,9023125.5,0.010837456644581631646,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CIV,Cote d'Ivoire,2025,1,100,default age groups,29402681.5,0.040890677308248357669,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CIV,Cote d'Ivoire,2028,1,100,default age groups,31642916.5,0.04089067730824835073,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CIV,Cote d'Ivoire,2031,1,100,default age groups,33981922,0.04089067730824835073,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CIV,Cote d'Ivoire,2034,1,100,default age groups,36411442.5,0.040890677308248357669,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CIV,Cote d'Ivoire,2037,1,100,default age groups,38905670.5,0.040890677308248357669,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CIV,Cote d'Ivoire,2040,1,100,default age groups,41442825.5,0.040890677308248357669,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CMR,Cameroon,2025,1,100,default age groups,29202773,0.274161511284282177758,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CMR,Cameroon,2028,1,100,default age groups,31483750,0.274161511284282122247,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CMR,Cameroon,2031,1,100,default age groups,33835608.5,0.274161511284282122247,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CMR,Cameroon,2034,1,100,default age groups,36250613,0.274161511284282122247,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CMR,Cameroon,2037,1,100,default age groups,38738000,0.274161511284282177758,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,CMR,Cameroon,2040,1,100,default age groups,41290607,0.274161511284282177758,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COD,"Congo, the Democratic Republic of the",2014,1,100,default age groups,72901346,0.000011248077641803763,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COD,"Congo, the Democratic Republic of the",2021,1,100,default age groups,92080802.5,0.010184153206093093588,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COD,"Congo, the Democratic Republic of the",2022,1,100,default age groups,95094161,0.019824308666017885494,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COD,"Congo, the Democratic Republic of the",2025,1,100,default age groups,104861468,0.245837644414354933309,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COD,"Congo, the Democratic Republic of the",2028,1,100,default age groups,115411644,0.245837644414354961064,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COD,"Congo, the Democratic Republic of the",2031,1,100,default age groups,126714270,0.24583764441435498882,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COD,"Congo, the Democratic Republic of the",2034,1,100,default age groups,138703014.5,0.245837644414354961064,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COD,"Congo, the Democratic Republic of the",2037,1,100,default age groups,151339862.5,0.245837644414354961064,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COD,"Congo, the Democratic Republic of the",2040,1,100,default age groups,164457897.5,0.24583764441435498882,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COG,Congo,2025,1,100,default age groups,6203951.5,0.151192861244899168227,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COG,Congo,2028,1,100,default age groups,6625331,0.151192861244899168227,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COG,Congo,2031,1,100,default age groups,7068634,0.151192861244899168227,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COG,Congo,2034,1,100,default age groups,7531029.5,0.151192861244899168227,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COG,Congo,2037,1,100,default age groups,8008622,0.151192861244899168227,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COG,Congo,2040,1,100,default age groups,8495826,0.151192861244899168227,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,DZA,Algeria,2025,1,100,default age groups,46076155.5,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,DZA,Algeria,2028,1,100,default age groups,47911402,0.069999999999999978906,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,DZA,Algeria,2031,1,100,default age groups,49550361,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,DZA,Algeria,2034,1,100,default age groups,51079481.5,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,DZA,Algeria,2037,1,100,default age groups,52580505,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,DZA,Algeria,2040,1,100,default age groups,54093271.5,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ETH,Ethiopia,2021,1,100,default age groups,116529023.5,0.008495737544732793328,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ETH,Ethiopia,2025,1,100,default age groups,129041076.5,0.068291884306233147095,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ETH,Ethiopia,2028,1,100,default age groups,138725487.5,0.068291884306233147095,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ETH,Ethiopia,2031,1,100,default age groups,148540248.5,0.068291884306233147095,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ETH,Ethiopia,2034,1,100,default age groups,158358230.5,0.068291884306233147095,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ETH,Ethiopia,2037,1,100,default age groups,168132811,0.068291884306233147095,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ETH,Ethiopia,2040,1,100,default age groups,177868196,0.068291884306233147095,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GHA,Ghana,2025,1,100,default age groups,34550181,0.282495235043978720757,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GHA,Ghana,2028,1,100,default age groups,36526098,0.282495235043978720757,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GHA,Ghana,2031,1,100,default age groups,38518360.5,0.282495235043978720757,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GHA,Ghana,2034,1,100,default age groups,40522592.5,0.282495235043978665246,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GHA,Ghana,2037,1,100,default age groups,42549910,0.282495235043978720757,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GHA,Ghana,2040,1,100,default age groups,44595836,0.282495235043978665246,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GIN,Guinea,2012,1,100,default age groups,10399335.5,0.000350407004370615802,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GIN,Guinea,2025,1,100,default age groups,14416784,0.18489443439036637451,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GIN,Guinea,2028,1,100,default age groups,15451837,0.184894434390366402265,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GIN,Guinea,2031,1,100,default age groups,16500097.5,0.184894434390366402265,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GIN,Guinea,2034,1,100,default age groups,17559336,0.184894434390366430021,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GIN,Guinea,2037,1,100,default age groups,18625150.5,0.184894434390366430021,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GIN,Guinea,2040,1,100,default age groups,19686391.5,0.184894434390366402265,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GNB,Guinea-Bissau,2025,1,100,default age groups,2181296.5,0.313378315177406607805,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GNB,Guinea-Bissau,2028,1,100,default age groups,2322969,0.313378315177406552294,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GNB,Guinea-Bissau,2031,1,100,default age groups,2467201.5,0.313378315177406552294,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GNB,Guinea-Bissau,2034,1,100,default age groups,2613153.5,0.313378315177406607805,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GNB,Guinea-Bissau,2037,1,100,default age groups,2760125.5,0.313378315177406607805,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,GNB,Guinea-Bissau,2040,1,100,default age groups,2906536.5,0.313378315177406552294,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,HTI,Haiti,2013,1,100,default age groups,10004894.5,0.000131935424206622076,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,HTI,Haiti,2025,1,100,default age groups,11753010,0.419999999999999928946,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,HTI,Haiti,2028,1,100,default age groups,12174444.5,0.419999999999999984457,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,HTI,Haiti,2031,1,100,default age groups,12582019.5,0.419999999999999984457,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,HTI,Haiti,2034,1,100,default age groups,12979250,0.419999999999999984457,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,HTI,Haiti,2037,1,100,default age groups,13367605,0.419999999999999984457,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,HTI,Haiti,2040,1,100,default age groups,13743463,0.419999999999999984457,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IND,India,2011,1,100,default age groups,1232087741.5,0.000019277036204486907,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IND,India,2025,1,100,default age groups,1432089617,0.183016544953380988492,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IND,India,2028,1,100,default age groups,1469367477,0.183016544953380988492,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IND,India,2031,1,100,default age groups,1504189534,0.183016544953380960736,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IND,India,2034,1,100,default age groups,1536254267,0.183016544953380960736,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IND,India,2037,1,100,default age groups,1565220827.5,0.183016544953380960736,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IND,India,2040,1,100,default age groups,1590929228.5,0.183016544953380988492,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IRN,"Iran, Islamic Republic of",2025,1,100,default age groups,89313488.5,0.001212086196470795602,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IRN,"Iran, Islamic Republic of",2028,1,100,default age groups,90971578.5,0.001212086196470795818,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IRN,"Iran, Islamic Republic of",2031,1,100,default age groups,92343507.5,0.001212086196470795818,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IRN,"Iran, Islamic Republic of",2034,1,100,default age groups,93507659.5,0.001212086196470795602,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IRN,"Iran, Islamic Republic of",2037,1,100,default age groups,94538686,0.001212086196470795818,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IRN,"Iran, Islamic Republic of",2040,1,100,default age groups,95482710,0.001212086196470795818,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IRQ,Iraq,2015,1,100,default age groups,36580052.5,0.000136877879002497319,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IRQ,Iraq,2025,1,100,default age groups,46337796,0.045819930087201796165,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IRQ,Iraq,2028,1,100,default age groups,49419800.5,0.045819930087201789226,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IRQ,Iraq,2031,1,100,default age groups,52577343,0.045819930087201796165,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IRQ,Iraq,2034,1,100,default age groups,55817145.5,0.045819930087201789226,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IRQ,Iraq,2037,1,100,default age groups,59107344.5,0.045819930087201796165,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,IRQ,Iraq,2040,1,100,default age groups,62401110,0.045819930087201796165,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,KEN,Kenya,2023,1,100,default age groups,53640111,0.000049135245078072273,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,KEN,Kenya,2025,1,100,default age groups,55829725,0.063423018138456493942,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,KEN,Kenya,2028,1,100,default age groups,59210291.5,0.063423018138456493942,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,KEN,Kenya,2031,1,100,default age groups,62685150,0.06342301813845650782,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,KEN,Kenya,2034,1,100,default age groups,66210349.5,0.06342301813845650782,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,KEN,Kenya,2037,1,100,default age groups,69712503,0.06342301813845650782,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,KEN,Kenya,2040,1,100,default age groups,73129686.5,0.06342301813845650782,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,LBR,Liberia,2025,1,100,default age groups,5494088.5,0.029765987428081931709,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,LBR,Liberia,2028,1,100,default age groups,5858366.5,0.029765987428081931709,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,LBR,Liberia,2031,1,100,default age groups,6235776,0.029765987428081935179,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,LBR,Liberia,2034,1,100,default age groups,6621846,0.029765987428081931709,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,LBR,Liberia,2037,1,100,default age groups,7013785,0.02976598742808192824,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,LBR,Liberia,2040,1,100,default age groups,7409019,0.029765987428081931709,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MDG,Madagascar,2025,1,100,default age groups,30889599,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MDG,Madagascar,2028,1,100,default age groups,33122145.5,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MDG,Madagascar,2031,1,100,default age groups,35415209,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MDG,Madagascar,2034,1,100,default age groups,37749808,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MDG,Madagascar,2037,1,100,default age groups,40109870.5,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MDG,Madagascar,2040,1,100,default age groups,42488709.5,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MLI,Mali,2025,1,100,default age groups,23816378.5,0.038474111718450790254,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MLI,Mali,2028,1,100,default age groups,26085077.5,0.038474111718450790254,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MLI,Mali,2031,1,100,default age groups,28495502.5,0.038474111718450790254,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MLI,Mali,2034,1,100,default age groups,31045943,0.038474111718450790254,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MLI,Mali,2037,1,100,default age groups,33721669.5,0.038474111718450790254,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MLI,Mali,2040,1,100,default age groups,36495336,0.038474111718450790254,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MOZ,Mozambique,2003,1,100,default age groups,18430394.5,0.002395825005265079903,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MOZ,Mozambique,2016,1,100,default age groups,26691094,0.00001243860592600663,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MOZ,Mozambique,2025,1,100,default age groups,34645935.5,0.047064628881869526034,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MOZ,Mozambique,2028,1,100,default age groups,37608510,0.047064628881869532973,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MOZ,Mozambique,2031,1,100,default age groups,40686711.5,0.047064628881869532973,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MOZ,Mozambique,2034,1,100,default age groups,43859924.5,0.047064628881869532973,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MOZ,Mozambique,2037,1,100,default age groups,47105152,0.047064628881869526034,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MOZ,Mozambique,2040,1,100,default age groups,50408559,0.047064628881869526034,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MRT,Mauritania,2025,1,100,default age groups,4971255.5,0.007717281912496466723,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MRT,Mauritania,2028,1,100,default age groups,5379134.5,0.007717281912496466723,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MRT,Mauritania,2031,1,100,default age groups,5804832.5,0.00771728191249646759,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MRT,Mauritania,2034,1,100,default age groups,6245457,0.00771728191249646759,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MRT,Mauritania,2037,1,100,default age groups,6700213,0.00771728191249646759,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MRT,Mauritania,2040,1,100,default age groups,7161240,0.007717281912496468457,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MWI,Malawi,2020,1,100,default age groups,18754096,0.01134493499446734277,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MWI,Malawi,2022,1,100,default age groups,19761375.5,0.00853493219639493185,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MWI,Malawi,2025,1,100,default age groups,21356692,0.041577241135299224106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MWI,Malawi,2028,1,100,default age groups,23051238,0.041577241135299231045,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MWI,Malawi,2031,1,100,default age groups,24812408.5,0.041577241135299224106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MWI,Malawi,2034,1,100,default age groups,26615866,0.041577241135299224106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MWI,Malawi,2037,1,100,default age groups,28440560,0.041577241135299224106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,MWI,Malawi,2040,1,100,default age groups,30284218.5,0.041577241135299224106,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NAM,Namibia,2025,1,100,default age groups,2622946.5,0.170706928607073982196,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NAM,Namibia,2028,1,100,default age groups,2755071.5,0.17070692860707395444,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NAM,Namibia,2031,1,100,default age groups,2885734.5,0.170706928607073982196,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NAM,Namibia,2034,1,100,default age groups,3015241.5,0.17070692860707395444,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NAM,Namibia,2037,1,100,default age groups,3145229.5,0.170706928607073982196,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NAM,Namibia,2040,1,100,default age groups,3276033.5,0.17070692860707395444,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NER,Niger,2025,1,100,default age groups,28081433.5,0.066773381750216243002,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NER,Niger,2028,1,100,default age groups,31404993,0.066773381750216243002,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NER,Niger,2031,1,100,default age groups,35039013.5,0.066773381750216243002,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NER,Niger,2034,1,100,default age groups,38976518.5,0.066773381750216243002,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NER,Niger,2037,1,100,default age groups,43220668.5,0.066773381750216243002,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NER,Niger,2040,1,100,default age groups,47768679,0.066773381750216243002,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NGA,Nigeria,2022,1,100,default age groups,211007071,0.004131966696035508681,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NGA,Nigeria,2025,1,100,default age groups,226724849,0.051618535387809506843,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NGA,Nigeria,2028,1,100,default age groups,243070465,0.051618535387809506843,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NGA,Nigeria,2031,1,100,default age groups,259948347.5,0.051618535387809506843,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NGA,Nigeria,2034,1,100,default age groups,277186503,0.051618535387809513781,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NGA,Nigeria,2037,1,100,default age groups,294569334.5,0.051618535387809506843,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NGA,Nigeria,2040,1,100,default age groups,311988385.5,0.051618535387809506843,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NPL,Nepal,2025,1,100,default age groups,30982151.5,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NPL,Nepal,2028,1,100,default age groups,31964215.5,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NPL,Nepal,2031,1,100,default age groups,32863176.5,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NPL,Nepal,2034,1,100,default age groups,33672628,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NPL,Nepal,2037,1,100,default age groups,34404101.5,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,NPL,Nepal,2040,1,100,default age groups,35066835,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,PAK,Pakistan,2025,1,100,default age groups,243677365.5,0.096419881332163587251,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,PAK,Pakistan,2028,1,100,default age groups,257887540.5,0.096419881332163573373,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,PAK,Pakistan,2031,1,100,default age groups,272299210,0.096419881332163573373,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,PAK,Pakistan,2034,1,100,default age groups,286822140,0.096419881332163573373,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,PAK,Pakistan,2037,1,100,default age groups,301370544.5,0.096419881332163573373,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,PAK,Pakistan,2040,1,100,default age groups,315760048,0.096419881332163573373,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,PHL,Philippines,2025,1,100,default age groups,118399456.5,0.070000000000000006661,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,PHL,Philippines,2028,1,100,default age groups,123580559,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,PHL,Philippines,2031,1,100,default age groups,128630015.5,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,PHL,Philippines,2034,1,100,default age groups,133505371,0.070000000000000006661,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,PHL,Philippines,2037,1,100,default age groups,138149913,0.070000000000000006661,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,PHL,Philippines,2040,1,100,default age groups,142562365,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,RWA,Rwanda,2025,1,100,default age groups,14332257.5,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,RWA,Rwanda,2028,1,100,default age groups,15300757,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,RWA,Rwanda,2031,1,100,default age groups,16283398,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,RWA,Rwanda,2034,1,100,default age groups,17273160.5,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,RWA,Rwanda,2037,1,100,default age groups,18271722.5,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,RWA,Rwanda,2040,1,100,default age groups,19276509.5,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SEN,Senegal,2025,1,100,default age groups,18125147,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SEN,Senegal,2028,1,100,default age groups,19541722.5,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SEN,Senegal,2031,1,100,default age groups,21022628,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SEN,Senegal,2034,1,100,default age groups,22571123.5,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SEN,Senegal,2037,1,100,default age groups,24189895.5,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SEN,Senegal,2040,1,100,default age groups,25874141,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SLE,Sierra Leone,2025,1,100,default age groups,8911022.5,0.458211054583855692535,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SLE,Sierra Leone,2028,1,100,default age groups,9471074.5,0.458211054583855692535,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SLE,Sierra Leone,2031,1,100,default age groups,10031907.5,0.458211054583855748046,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SLE,Sierra Leone,2034,1,100,default age groups,10589306.5,0.458211054583855692535,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SLE,Sierra Leone,2037,1,100,default age groups,11139787.5,0.458211054583855692535,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SLE,Sierra Leone,2040,1,100,default age groups,11675957,0.458211054583855692535,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SOM,Somalia,2022,1,100,default age groups,16885790,0.105720727309767559277,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SOM,Somalia,2023,1,100,default age groups,17415892.5,0.091105810397026740222,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SOM,Somalia,2025,1,100,default age groups,18528007,0.318425608459530162797,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SOM,Somalia,2028,1,100,default age groups,20276274,0.318425608459530218308,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SOM,Somalia,2031,1,100,default age groups,22120164,0.318425608459530218308,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SOM,Somalia,2034,1,100,default age groups,24054776.5,0.318425608459530162797,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SOM,Somalia,2037,1,100,default age groups,26073571,0.318425608459530162797,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SOM,Somalia,2040,1,100,default age groups,28158391.5,0.318425608459530162797,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SSD,South Sudan,2014,1,100,default age groups,10800242,0.008987020846384738415,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SSD,South Sudan,2021,1,100,default age groups,10452485.5,0.08113850050306216366,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SSD,South Sudan,2022,1,100,default age groups,10614405,0.074366014863762971987,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SSD,South Sudan,2025,1,100,default age groups,11158654.5,0.097352284161978414057,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SSD,South Sudan,2028,1,100,default age groups,11769327,0.097352284161978414057,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SSD,South Sudan,2031,1,100,default age groups,12454072,0.097352284161978414057,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SSD,South Sudan,2034,1,100,default age groups,13207732,0.097352284161978414057,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SSD,South Sudan,2037,1,100,default age groups,13986948.5,0.097352284161978400179,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,SSD,South Sudan,2040,1,100,default age groups,14752605.5,0.097352284161978400179,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TCD,Chad,2025,1,100,default age groups,18664796.5,0.249033722536423168803,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TCD,Chad,2028,1,100,default age groups,20415574,0.249033722536423196559,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TCD,Chad,2031,1,100,default age groups,22252259,0.249033722536423168803,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TCD,Chad,2034,1,100,default age groups,24173505.5,0.249033722536423168803,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TCD,Chad,2037,1,100,default age groups,26172439.5,0.249033722536423196559,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TCD,Chad,2040,1,100,default age groups,28242308,0.249033722536423168803,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TGO,Togo,2025,1,100,default age groups,9193556,0.056510108366930898727,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TGO,Togo,2028,1,100,default age groups,9825617.5,0.056510108366930898727,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TGO,Togo,2031,1,100,default age groups,10483477,0.056510108366930891788,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TGO,Togo,2034,1,100,default age groups,11167874.5,0.056510108366930898727,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TGO,Togo,2037,1,100,default age groups,11876623.5,0.056510108366930898727,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TGO,Togo,2040,1,100,default age groups,12604846.5,0.056510108366930898727,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,THA,Thailand,2025,1,100,default age groups,71342648.5,0.070000000000000006661,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,THA,Thailand,2028,1,100,default age groups,71464601,0.070000000000000006661,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,THA,Thailand,2031,1,100,default age groups,71444461,0.070000000000000006661,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,THA,Thailand,2034,1,100,default age groups,71270067.5,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,THA,Thailand,2037,1,100,default age groups,70917221.5,0.069999999999999992784,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,THA,Thailand,2040,1,100,default age groups,70382698.5,0.070000000000000006661,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TZA,"Tanzania, United Republic of",2021,1,100,default age groups,61372207,0.002739707079460251393,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TZA,"Tanzania, United Republic of",2025,1,100,default age groups,69057561,0.155547090551341055109,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TZA,"Tanzania, United Republic of",2028,1,100,default age groups,75144277,0.155547090551341055109,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TZA,"Tanzania, United Republic of",2031,1,100,default age groups,81480479.5,0.155547090551341055109,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TZA,"Tanzania, United Republic of",2034,1,100,default age groups,88080074.5,0.155547090551341055109,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TZA,"Tanzania, United Republic of",2037,1,100,default age groups,94957099.5,0.155547090551341082865,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,TZA,"Tanzania, United Republic of",2040,1,100,default age groups,102052636,0.155547090551341055109,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,UGA,Uganda,1997,1,100,default age groups,20869908.5,0.001322813657759927411,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,UGA,Uganda,2021,1,100,default age groups,44226848,0.017210812762419785971,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,UGA,Uganda,2025,1,100,default age groups,49586031.5,0.0389208622293399642,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,UGA,Uganda,2028,1,100,default age groups,53766714,0.0389208622293399642,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,UGA,Uganda,2031,1,100,default age groups,58067221,0.038920862229339971139,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,UGA,Uganda,2034,1,100,default age groups,62402928,0.0389208622293399642,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,UGA,Uganda,2037,1,100,default age groups,66772847.5,0.038920862229339971139,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,UGA,Uganda,2040,1,100,default age groups,71171731.5,0.0389208622293399642,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,YEM,Yemen,2022,1,100,default age groups,32727416.5,0.01900067486231307029,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,YEM,Yemen,2025,1,100,default age groups,35019379.5,0.134516983925780125864,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,YEM,Yemen,2028,1,100,default age groups,37357503.5,0.134516983925780125864,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,YEM,Yemen,2031,1,100,default age groups,39705113,0.134516983925780125864,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,YEM,Yemen,2034,1,100,default age groups,42058696.5,0.134516983925780125864,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,YEM,Yemen,2037,1,100,default age groups,44409815.5,0.134516983925780153619,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,YEM,Yemen,2040,1,100,default age groups,46749998.5,0.134516983925780125864,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZAF,South Africa,2025,1,100,default age groups,60571901.5,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZAF,South Africa,2028,1,100,default age groups,62439559.5,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZAF,South Africa,2031,1,100,default age groups,64147621,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZAF,South Africa,2034,1,100,default age groups,65738925,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZAF,South Africa,2037,1,100,default age groups,67236749.5,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZAF,South Africa,2040,1,100,default age groups,68642978,0.699999999999999955591,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZMB,Zambia,2021,1,100,default age groups,18828729,0.049086533668841900169,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZMB,Zambia,2022,1,100,default age groups,19361809,0.074420370534592092393,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZMB,Zambia,2025,1,100,default age groups,21020328.5,0.134061745506108193071,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZMB,Zambia,2028,1,100,default age groups,22750449.5,0.134061745506108220827,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZMB,Zambia,2031,1,100,default age groups,24542354.5,0.134061745506108193071,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZMB,Zambia,2034,1,100,default age groups,26382604,0.134061745506108220827,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZMB,Zambia,2037,1,100,default age groups,28254739.5,0.134061745506108193071,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZMB,Zambia,2040,1,100,default age groups,30158246.5,0.134061745506108193071,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZWE,Zimbabwe,2025,1,100,default age groups,16892512.5,0.021791776755607644711,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZWE,Zimbabwe,2028,1,100,default age groups,17955689,0.021791776755607641242,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZWE,Zimbabwe,2031,1,100,default age groups,19036977.5,0.021791776755607641242,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZWE,Zimbabwe,2034,1,100,default age groups,20142614,0.021791776755607644711,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZWE,Zimbabwe,2037,1,100,default age groups,21261055.5,0.021791776755607641242,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,ZWE,Zimbabwe,2040,1,100,default age groups,22373253.5,0.021791776755607641242,both,<NA>

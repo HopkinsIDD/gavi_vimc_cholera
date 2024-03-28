@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5113ac3913d3b3228c5028fdbfadfcf66765c3912634e62d391d694c45607a98
-size 156
+scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage,gender,proportion_risk
