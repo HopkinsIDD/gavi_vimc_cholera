@@ -117,6 +117,7 @@ import_centralburden_template <- function(modelpath, country, cache, redownload 
       dplyr::filter(country == !!country) %>%
       dplyr::distinct(disease, country, country_name, year, age)
     
+    ## for VIMC Core model runs, we are using the central burden template file from montagu and the output years are determined from that file 
     ## if we are not using montagu coverage, only keep output years specified by the config -- this applies to the DRC Case study
     if (as.logical(config$use_montagu_coverage) == FALSE & !is.null(config$use_montagu_coverage)){
       rc <- rc %>%
