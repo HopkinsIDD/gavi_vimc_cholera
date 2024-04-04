@@ -61,7 +61,8 @@ run_country_scenario <- function(
 
   if (config$vacc$targeting == "custom"){
     ## use the custom-made targeting table for the 'custom' targeting strategy
-    vacc_alloc <- readr::read_csv(paste0(datapath,"/custom_targeting.csv")) ##if the custom targeting table is inside /input_data
+    custom_targeting_filename <- config$vacc$targeting$filename ##get filename from the config
+    vacc_alloc <- readr::read_csv(custom_targeting_filename)
   } else {
     vacc_alloc <- allocate_vaccine(datapath, modelpath, country, scenario, montagu_cache, ...) #the changes start from here
   }
