@@ -52,7 +52,12 @@ run_country_scenario <- function(
   
   ## avoid reading montagu files multiple times
   montagu_cache <- new.env()
-  montagu_cache[["coverage_scenario"]] <- import_coverage_scenario(modelpath, country, scenario, montagu_cache, filter0 = FALSE, redownload = FALSE)
+  ## for the DRC Case study, use the custom coverage 
+  if (config$use_montagu_cache == FALSE) {
+    montagu_cache[["coverage_scenario"]] <- import_coverage_scenario_custom(datapath, country, scenario, montagu_cache, filter0 = FALSE)
+  } else {
+    montagu_cache[["coverage_scenario"]] <- import_coverage_scenario(modelpath, country, scenario, montagu_cache, filter0 = FALSE, redownload = FALSE)
+  }
   montagu_cache[["centralburden_template"]] <- import_centralburden_template(modelpath, country, montagu_cache, redownload = FALSE)
   montagu_cache[["country_population"]] <- import_country_population(modelpath, country, montagu_cache, redownload = FALSE)
   montagu_cache[["int_country_population"]] <- import_int_country_population(modelpath, country, montagu_cache, redownload = FALSE)
