@@ -1,13 +1,14 @@
 #====== The Basics ======#
-targeting_strategy <- "affected_pop" #c("threshold_unconstrained", "affected_pop", "incidence"), "threshold_unconstrained" means it's for the surveillance project
+targeting_strategy <- "custom" #c("threshold_unconstrained", "affected_pop", "incidence", "random", "custom"), "threshold_unconstrained" means it's for the surveillance project
 #runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202110gavi-3") ### Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
 runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202310gavi-4") ### for 2023 VIMC core:Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
 
 
 #====== Shared parameters ======#
+##for the DRC Case study, only use scenario "ocv1-ocv2-default"
 scenarios <- c("ocv1-default","ocv1-ocv2-default", "no-vaccination")
 num_skip_years <- 3   #district-level skipped years, relevant to both projects
-num_samples <- 1  #shared by both projects
+num_samples <- 100  #shared by both projects
 use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity
 
 if (runname == "202310gavi-4"){
@@ -83,4 +84,14 @@ if(use_random_seed & is.null(self_random_seed)){
   random_seed <- self_random_seed
 }else if(!use_random_seed){
   random_seed <- sample(1:10000, 1) #let loose on random seed 
+}
+
+#====== Parameters specific to the DRC Case Study --  ======#
+## for the DRC Case study, set montagu_coverage to FALSE
+## for the VIMC Core Model runs and the Surveillance Project, set use_montagu_coverage to TRUE
+use_montagu_coverage <- FALSE 
+
+if(use_montagu_coverage == FALSE){
+  output_years <- list(c(2020, 2050))
+  custom_targeting_filename <- "input_data/custom_targeting.csv" #specify filename for the custom targeting table in the config
 }

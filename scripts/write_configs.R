@@ -94,6 +94,7 @@ for(scn in scenarios){
         pars$incidence_rate_trend <- incidence_rate_trend
         pars$outbreak_multiplier <- outbreak_multiplier          
         pars$random_seed <- random_seed
+        pars$use_montagu_coverage <- use_montagu_coverage
         
         if(targeting_strategy != "threshold_unconstrained" & runname != "202310gavi-4"){
           scnpathname <- file.path(cpathname, scn)
@@ -113,6 +114,13 @@ for(scn in scenarios){
         } else {
           pars$ndoses <- "zero"
         }
+        
+        #parameters needed for the DRC Case study (202310gavi-4 touchstone)
+        if(use_montagu_coverage == FALSE){
+          pars$output_years <- output_years
+          pars$custom_targeting_filename <- custom_targeting_filename
+        }
+        
         # the followings are specific to the surveillance project
         pars$save_intermediate_raster <- save_intermediate_raster
         pars$save_final_output_raster <- save_final_output_raster

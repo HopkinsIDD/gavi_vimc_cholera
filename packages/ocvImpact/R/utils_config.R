@@ -33,29 +33,61 @@ prepare_config <- function(p, configpath){
     sink()
 
   } else if(!p$targeting == "threshold_unconstrained" & p$runname == "202310gavi-4"){
-    config_name <- paste0(configpath, "/", paste(p$country, p$scenario, p$nsamples, p$ndoses, sep = "_"), ".yml")
-    sink(file = config_name)
-    
-    cat(paste0(
-      "runname: '", p$runname, "'\n",
-      "country: '", p$country, "'\n",
-      "scenario: '", p$scenario, "'\n",
-      "clean: ", p$clean, "\n",
-      "incid:\n",
-      "  num_samples: ", p$nsamples, "\n",
-      "  redraw: ", p$redrawIncid, "\n",
-      "  use_country_incid_trend: ", p$use_country_incid_trend, "\n",
-      "vacc:\n",
-      "  targeting_strategy: ", p$targeting, "\n",
-      "  num_skip_years: ", p$nskipyear, "\n",
-      "  ndoses: ", p$ndoses, "\n",
-      "setting:\n",
-      "  incidence_rate_trend: ", p$incidence_rate_trend, "\n",
-      "  outbreak_multiplier: ", p$outbreak_multiplier, "\n", 
-      "  random_seed: ", p$random_seed, "\n"
-    ))
-    
-    sink()
+    ## for the DRC Case Study
+     if (p$use_montagu_coverage == FALSE){
+      
+       config_name <- paste0(configpath, "/", paste(p$country, p$scenario, p$nsamples, p$ndoses, p$use_montagu_coverage, p$targeting, sep = "_"), ".yml")
+       sink(file = config_name)
+      
+       cat(paste0(
+        "runname: '", p$runname, "'\n",
+        "country: '", p$country, "'\n",
+        "scenario: '", p$scenario, "'\n",
+        "clean: ", p$clean, "\n",
+        "output_years: ", p$output_years, "\n",
+        "use_montagu_coverage: ", p$use_montagu_coverage, "\n",
+        "incid:\n",
+        "  num_samples: ", p$nsamples, "\n",
+        "  redraw: ", p$redrawIncid, "\n",
+        "  use_country_incid_trend: ", p$use_country_incid_trend, "\n",
+        "vacc:\n",
+        "  targeting_strategy: ", p$targeting, "\n",
+        "  num_skip_years: ", p$nskipyear, "\n",
+        "  ndoses: ", p$ndoses, "\n",
+        "  filename: ", p$custom_targeting_filename, "\n",
+        "setting:\n",
+        "  incidence_rate_trend: ", p$incidence_rate_trend, "\n",
+        "  outbreak_multiplier: ", p$outbreak_multiplier, "\n", 
+        "  random_seed: ", p$random_seed, "\n"
+       ))
+      
+       sink()  
+     } else {
+      config_name <- paste0(configpath, "/", paste(p$country, p$scenario, p$nsamples, p$ndoses, sep = "_"), ".yml")
+      sink(file = config_name)
+     
+      cat(paste0(
+       "runname: '", p$runname, "'\n",
+       "country: '", p$country, "'\n",
+       "scenario: '", p$scenario, "'\n",
+       "clean: ", p$clean, "\n",
+       "incid:\n",
+       "  num_samples: ", p$nsamples, "\n",
+       "  redraw: ", p$redrawIncid, "\n",
+       "  use_country_incid_trend: ", p$use_country_incid_trend, "\n",
+       "vacc:\n",
+       "  targeting_strategy: ", p$targeting, "\n",
+       "  num_skip_years: ", p$nskipyear, "\n",
+       "  ndoses: ", p$ndoses, "\n",
+       "setting:\n",
+       "  incidence_rate_trend: ", p$incidence_rate_trend, "\n",
+       "  outbreak_multiplier: ", p$outbreak_multiplier, "\n", 
+       "  random_seed: ", p$random_seed, "\n"
+     ))
+     
+     sink()
+     
+     }
     
   }else if(p$targeting == "threshold_unconstrained"){
     config_name <- paste0(configpath, "/", paste(p$country, p$scenario, p$surveillance_scenario, p$nsamples, sep = "_"), ".yml") #for now 
