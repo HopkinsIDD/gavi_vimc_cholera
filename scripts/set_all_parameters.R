@@ -93,5 +93,13 @@ use_montagu_coverage <- FALSE
 
 if(use_montagu_coverage == FALSE){
   output_years <- list(c(2020, 2050))
-  custom_targeting_filename <- "input_data/custom_targeting.csv" #specify filename for the custom targeting table in the config
+  custom_targeting_filename <- "input_data/custom_targeting.csv" # modify to specify filename for the custom targeting table in the config
+  custom_coverage_filename <- "input_data/coverage.csv" # modify to specify filename for the custom coverage table in the config
+}
+
+## for the DRC Case study, set use_custom_shapefile to TRUE to use the shapefile with DRC Health zones
+use_custom_shapefile <- TRUE
+
+if(use_custom_shapefile == TRUE){
+  custom_shapefile_filename <- "input_data/custom_shapefile.shp" # modify to specify filename for the custom shapefile in the config
 }
