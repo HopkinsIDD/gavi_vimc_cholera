@@ -199,8 +199,8 @@ import_centralburden_template <- function(modelpath, country, cache, redownload 
     ## if we are not using montagu coverage, only keep output years specified by the config -- this applies to the DRC Case study
     if (as.logical(config$use_montagu_coverage) == FALSE & !is.null(config$use_montagu_coverage)){
       rc <- rc %>%
-        dplyr::filter(year >= config$outputyears[1]) %>%  #TL
-        dplyr::filter(year <= config$outputyears[2]) #TR
+        dplyr::filter(year >= eval(parse(text = config$output_years))[1]) %>%  #TL
+        dplyr::filter(year <= eval(parse(text = config$output_years))[2]) #TR
     }
   }
 
