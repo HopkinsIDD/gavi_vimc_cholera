@@ -95,6 +95,7 @@ for(scn in scenarios){
         pars$outbreak_multiplier <- outbreak_multiplier          
         pars$random_seed <- random_seed
         pars$use_montagu_coverage <- use_montagu_coverage
+        pars$use_custom_shapefile <- use_custom_shapefile
         
         if(targeting_strategy != "threshold_unconstrained" & runname != "202310gavi-4"){
           scnpathname <- file.path(cpathname, scn)
@@ -119,6 +120,11 @@ for(scn in scenarios){
         if(use_montagu_coverage == FALSE){
           pars$output_years <- output_years
           pars$custom_targeting_filename <- custom_targeting_filename
+          pars$custom_coverage_filename <- custom_coverage_filename
+        }
+        
+        if(use_custom_shapefile == TRUE){
+          pars$custom_shapefile_filename <- custom_shapefile_filename
         }
         
         # the followings are specific to the surveillance project
