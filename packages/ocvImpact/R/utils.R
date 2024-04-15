@@ -65,7 +65,7 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...)
     vacc_coverage <- NULL
   } else{
     vacc_years <- sort(unique(vacc_targets$vacc_year))
-    if (as.logical(config$use_custom_shapefile == TRUE)){
+    if (as.logical(config$use_custom_shapefile) == TRUE){
       shp <- load_custom_shapefile_by_country(datapath, country)
     } else {
       shp <- load_shapefile_by_country(datapath, country)
