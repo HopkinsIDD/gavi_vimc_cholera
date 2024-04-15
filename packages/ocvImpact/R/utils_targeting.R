@@ -137,13 +137,22 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, cache
   message(paste("Now assigning vaccine by incidence:", country, scenario))
   ptargets <- load_targets_by_country(datapath, modelpath, country)
   ###########add a little check point for the situation when the coverage data exists but is just 0
-  coverage <- import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)
+  if (as.logical(config$use_montagu_coverage) == TRUE){  ##the VIMC Core Model
+    coverage <- import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)
+  } else {  ## the DRC Case Study
+    coverage <- import_coverage_scenario_custom(datapath, country, scenario, cache, filter0 = FALSE)
+  }
 
   coverage_as_all_0_for_campaign <- (sum(coverage$OCV1) == 0) & (sum(coverage$OCV2) == 0)
 
   if (!coverage_as_all_0_for_campaign){
     ## this seems to be a catch-all filtering step, in case montagu starts including no-vaccination years in its coverage sheets
-    coverage <- import_coverage_scenario(modelpath, country, scenario, cache, filter0 = TRUE, redownload = FALSE)
+    
+    if (as.logical(config$use_montagu_coverage) == TRUE){  ##the VIMC Core Model
+      coverage <- import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)
+    } else {  ## the DRC Case Study
+      coverage <- import_coverage_scenario_custom(datapath, country, scenario, cache, filter0 = FALSE)
+    }
 
   }
 
