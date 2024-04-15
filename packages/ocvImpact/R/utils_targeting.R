@@ -62,7 +62,13 @@ load_targets_by_country <- function(datapath, modelpath, country){
     ## WorldPop population data ##
     pop <- load_worldpop_by_country(datapath, country)
     ## admin unit shapefile ##
-    shp <- load_shapefile_by_country(datapath, country)
+    
+    ##The VIMC Core Model
+    if (as.logical(config$use_custom_shapefile) == FALSE){ 
+      shp <- load_shapefile_by_country(datapath, country)
+    } else { ## The DRC Case Study, which uses a custom shapefile for health zones
+      shp <- load_custom_shapefile_by_country(datapath, country)
+    }
 
     ## summarize rasters to admin level (BGD, non-raster, and african raster countries)
     if (country == "BGD"){
