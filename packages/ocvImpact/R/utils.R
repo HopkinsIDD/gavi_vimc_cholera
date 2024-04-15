@@ -523,3 +523,34 @@ generate_aoi <- function(country){
 generate_infectionDuration <- function(){
   return(4/365)
 }
+
+
+#' @name load_custom_shapefile_by_country
+#' @title load_custom_shapefile_by_country
+#' @description Load a custom shapefile for DRC health zones (for the DRC case study) or download or admin0 (simple) level shapefile for a country from GADM, if not already in shapefiles folder, and return sf object
+#' @param datapath path to data 
+#' @param country country code
+#' @param simple logical indicating whether simple (full country) shapefile should be used (default: FALSE)
+#' @return shapefile in sf format
+#' @export 
+load_custom_shapefile_by_country <- function(datapath, country, simple = FALSE){
+  
+  
+  tryCatch(
+    {
+      if (simple){
+        country_pattern <- paste(country, "0", sep = "_")
+        shp <- GADMTools::gadm_sf_loadCountries(c(country), level = 0, basefile = file.path(datapath, "shapefiles/"))$sf
+        message(paste0("Loading ", datapath, "/shapefiles/", country_pattern, "_sf.rds"))
+      } else{ 
+        shp <- readRDS(config$shapefile_filename)
+        message(paste0("Loading ", datapath, "/shapefiles/", config$shapefile_filename))
+      }
+    },
+    error = function(e) {
+      print(paste("Unable to get shapefile for", country, ".", e))
+    }
+  )
+  
+  return(shp)
+}
