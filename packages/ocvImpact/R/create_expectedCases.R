@@ -93,8 +93,13 @@ create_expectedCases <- function(
 
   ## apply outbreak multiplier only to the campaign years for now
   if (!scenario == "no-vaccination"){  ##using the following lines for the no-vaccination scenario creates inf values and leads to error
-    first_year <- min(ocvImpact::import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)$year)
-    last_year  <- max(ocvImpact::import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)$year) + 10 ## potential impact could extend 10 years beyond last campaign ## COULD CHANGE TO MATCH TRUNC_YEAR
+    if (as.logical(config$use_montagu_coverage) == FALSE){ ## For the DRC Case Study
+      first_year <- min(ocvImpact::import_coverage_scenario_custom(modelpath, country, scenario, cache, filter0 = FALSE)$year)
+      last_year  <- max(ocvImpact::import_coverage_scenario_custom(modelpath, country, scenario, cache, filter0 = FALSE)$year) + 10 ## potential impact could extend 10 years beyond last campaign ## COULD CHANGE TO MATCH TRUNC_YEAR
+    } else { ## the VIMC Core Model
+      first_year <- min(ocvImpact::import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)$year)
+      last_year  <- max(ocvImpact::import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)$year) + 10 ## potential impact could extend 10 years beyond last campaign ## COULD CHANGE TO MATCH TRUNC_YEAR
+    }
     campaign_years <- first_year:last_year
   }
 
