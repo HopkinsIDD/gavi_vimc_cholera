@@ -299,7 +299,8 @@ run_targeting_strategy <- function(targets_df, targeting_strat){
       dplyr::mutate(sort_id = random_id)
     
     ##order randomly using the random_id column
-    rc <- dplyr::arrange(targets_df, sort_id)
+    rc <- dplyr::arrange(targets_df, sort_id) %>%
+      dplyr::select(-sort_id)  ## remove sort_id 
     
   } else if (targeting_strat == "affected_pop"){
     if(!all(c("incidence", "pop_prop") %in% names(targets_df))){
