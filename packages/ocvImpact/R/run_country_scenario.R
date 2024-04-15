@@ -53,7 +53,7 @@ run_country_scenario <- function(
   ## avoid reading montagu files multiple times
   montagu_cache <- new.env()
   ## for the DRC Case study, use the custom coverage 
-  if (config$use_montagu_cache == FALSE) {
+  if (config$use_montagu_coverage == FALSE) {
     montagu_cache[["coverage_scenario"]] <- import_coverage_scenario_custom(datapath, country, scenario, montagu_cache, filter0 = FALSE)
   } else {
     montagu_cache[["coverage_scenario"]] <- import_coverage_scenario(modelpath, country, scenario, montagu_cache, filter0 = FALSE, redownload = FALSE)
