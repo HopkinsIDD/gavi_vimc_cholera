@@ -101,5 +101,5 @@ if(use_montagu_coverage == FALSE){
 use_custom_shapefile <- TRUE
 
 if(use_custom_shapefile == TRUE){
-  custom_shapefile_filename <- "input_data/custom_shapefile.rds" # modify to specify filename for the custom shapefile in the config
+  custom_shapefile_filename <- "input_data/shapefiles/DRC_custom_shapefile/custom_shapefile.rds" # modify to specify filename for the custom shapefile in the config
 }
