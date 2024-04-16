@@ -1,0 +1,14 @@
+Field,Label,Value
+created,Created,2020-06-30T22:15:07.883902
+description,Description,"Zones de santé de la République Démocratique du Congo, export OSM au format geopackage, version du 12 décembre 2021."
+format,File Format,Geopackage
+download_url,Download URL,https://data.humdata.org/dataset/edbd7a16-55e8-4288-8454-f682066af270/resource/8417072d-e942-4ba3-ab99-9994aeb42b3e/download/osm_rdc_sante_zones_211212.gpkg
+id,Resource ID,8417072d-e942-4ba3-ab99-9994aeb42b3e
+last_modified,Updated,2021-12-12T18:46:58.111101
+metadata_modified,Metadata Updated,2022-10-17T17:42:10.315323
+microdata,Microdata,False
+dataset_id,Dataset ID,edbd7a16-55e8-4288-8454-f682066af270
+resource_type,Resource Type,file.upload
+name,Resource Name,OSM_RDC_sante_zones_211212.gpkg
+mimetype,MIME Type,application/octet-stream
+size,Size,38.9M
