@@ -67,7 +67,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
     if (as.logical(config$use_custom_shapefile) == FALSE){ 
       shp <- load_shapefile_by_country(datapath, country)
     } else { ## The DRC Case Study, which uses a custom shapefile for health zones
-      shp <- load_custom_shapefile_by_country(datapath, country)
+      shp <- load_custom_shapefile_by_country(country)
     }
 
     ## summarize rasters to admin level (BGD, non-raster, and african raster countries)

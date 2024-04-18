@@ -68,7 +68,7 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...)
     if (as.logical(config$use_custom_shapefile) == TRUE){
       shp <- load_custom_shapefile_by_country(datapath, country)
     } else {
-      shp <- load_shapefile_by_country(datapath, country)
+      shp <- load_shapefile_by_country(country)
     }
 
     ### a little play on the dataframe -- 7/2021
