@@ -25,7 +25,13 @@ load_worldpop_by_country <- function(datapath, country){
       while((as.numeric(Sys.time()) - as.numeric(date_time))<3.0){}
     }
     # pop_world <- raster::raster(paste0(datapath, "/worldpop/", pop_fn))
-    shp <- load_shapefile_by_country(datapath, country, simple=TRUE)
+    
+    ## if we are using the custom shapefile with health zones (for the DRC case study), specified in the config
+    if(as.logical(config$use_custom_shapefile) == TRUE){
+      shp <- load_custom_shapefile_by_country(country)
+    } else {
+      shp <- load_shapefile_by_country(datapath, country, simple=TRUE) ## if we are using the GADM shapefile (VIMC Core model)
+    }
     cropped <- raster::crop(pop_world, shp, snap = "out")
     pop <- raster::mask(cropped, shp, updatevalue = NA)
     
