@@ -1,0 +1,19 @@
+,TL,TR,StudyType,Continent,Location,Paper,Mean.VE,VE.l,VE.u,yearid,Dose,fPaper,uid,fuid,se,yi,source
+1,0,4,Efficacy ,America,Peru,"Sanchez et al, 1994",86,37,97,1,2,"Sanchez et al, 1994",9,9,0.776678159,-1.966112856,original
+2,0.5,12,Efficacy ,America,Peru,"Taylor et al, 2000",-30,-383,65,1,2,"Taylor et al, 2000",51,51,0.669570618,0.262364264,original
+3,0,12,Efficacy ,Asia,India,"Bhattacharya et al, 2013",40,-10,67,1,2,"Bhattacharya et al, 2013",1,1,0.307141563,-0.510825624,original
+4,8,10,Efficacy ,Asia,Vietnam,"Trach et al, 1997",66,46,79,1,2,"Trach et al, 1997",10,10,0.240938511,-1.078809661,original
+5,1,12,Efficacy ,Asia,Bangladesh,"van Loon et al, 1996b",62,50,NA,1,2,"van Loon et al, 1996b",20,20,-0.166845755,-0.967584026,original
+6,1,12,Efficacy ,Asia,Bangladesh,"van Loon et al, 1996a",53,38,NA,1,2,"van Loon et al, 1996a",25,25,-0.168396007,-0.755022584,original
+7,0,12,Efficacy ,Asia,Bangladesh,"Qadri et al, 2015",49,10,71,1,2,"Qadri et al, 2015",49,49,0.288911901,-0.673344553,original
+8,12,24,Efficacy ,Asia,India,"Bhattacharya et al, 2013",72,42,87,2,2,"Bhattacharya et al, 2013",2,2,0.381510493,-1.272965676,original
+9,12,24,Efficacy ,Asia,Bangladesh,"van Loon et al, 1996b",58,44,NA,2,2,"van Loon et al, 1996b",21,21,-0.174898281,-0.867500568,original
+10,12,24,Efficacy ,Asia,Bangladesh,"van Loon et al, 1996a",57,42,NA,2,2,"van Loon et al, 1996a",26,26,-0.181926762,-0.84397007,original
+11,12,24,Efficacy ,Asia,Bangladesh,"Qadri et al, 2015",60,23,79,2,2,"Qadri et al, 2015",50,50,0.331455831,-0.916290732,original
+12,24,36,Efficacy ,Asia,India,"Bhattacharya et al, 2013",57,26,75,3,2,"Bhattacharya et al, 2013",3,3,0.276839084,-0.84397007,original
+13,24,36,Efficacy ,Asia,Bangladesh,"van Loon et al, 1996b",18,-14,NA,3,2,"van Loon et al, 1996b",22,22,-0.200309131,-0.198450939,original
+14,24,36,Efficacy ,Asia,Bangladesh,"van Loon et al, 1996a",42,18,NA,3,2,"van Loon et al, 1996a",27,27,-0.210521004,-0.544727175,original
+15,36,48,Efficacy ,Asia,India,"Bhattacharya et al, 2013",60,33,76,4,2,"Bhattacharya et al, 2013",4,4,0.261902463,-0.916290732,original
+16,36,48,Efficacy ,Asia,Bangladesh,"van Loon et al, 1996b",16,-49,NA,4,2,"van Loon et al, 1996b",23,23,-0.348437999,-0.174353387,original
+17,36,48,Efficacy ,Asia,Bangladesh,"van Loon et al, 1996a",-28,-114,NA,4,2,"van Loon et al, 1996a",28,28,-0.312456831,0.246860078,original
+18,48,60,Efficacy ,Asia,India,"Bhattacharya et al, 2013",81,42,94,5,2,"Bhattacharya et al, 2013",5,5,0.578756436,-1.660731207,original

@@ -1,0 +1,6 @@
+﻿PublicationYear,Paper,StudyDesign,MainEstimate,Continent,Country,Dose,VacPeriod,#VacPeriod,StudyPeriod,#StudyPeriod
+2021,"Mohanmmad et al, 2021",Cluster-randomised trial (further follow-up),Effectiveness,Asia,Bangladesh,2,2011/2/17-2011/4/6,1,2011/4/17-2015/11/1,4
+2018,"Youyi et al, 2018",Cluster-randomised trial (re-analysis),Effectiveness,Asia,India,2,2006/7/27-2006/9/20,1,2006-2011,1
+2017,"Molly et al, 2017",Case-control,Effectiveness,America,Haiti,2,2012/4/15-2012/6/19; 2014/8/25-2014/9/19,2,2012/10-2016/11; 2014/11-2016/11,1
+2019,"Francesco et al, 2019",Case-control,Effectiveness,Africa,Malawi,2,2016/2/16-2016/3/11,1,2016/3/7-2016/6/11,1
+2018,"Molly et al, 2018",Case-control (extended),Effectiveness,America,Haiti,2,2012/4/15-2012/6/19; 2014/8/25-2014/9/19,2,2012/10-2016/11; 2014/11-2016/11,4
