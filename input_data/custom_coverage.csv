@@ -1,0 +1,7 @@
+scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage,gender,proportion_risk
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COD,"Congo, The Democratic Republic of the",2024,1,100,<NA>,9053939,0,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COD,"Congo, The Democratic Republic of the",2026,1,100,<NA>,3355555,0,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV1,campaign,with:default",OCV1,total,campaign,COD,"Congo, The Democratic Republic of the",2025,1,100,<NA>,8070629,0,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COD,"Congo, The Democratic Republic of the",2024,1,100,<NA>,9053939,0.9650013104793395,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COD,"Congo, The Democratic Republic of the",2026,1,100,<NA>,3355555,0.9650022127487107,both,<NA>
+cholera-ocv1-ocv2-default,"Cholera:OCV2,campaign,with:default",OCV2,total,campaign,COD,"Congo, The Democratic Republic of the",2025,1,100,<NA>,8070629,0.9650011170133084,both,<NA>
