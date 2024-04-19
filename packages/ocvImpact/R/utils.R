@@ -66,8 +66,10 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...)
   } else{
     vacc_years <- sort(unique(vacc_targets$vacc_year))
     if (as.logical(config$use_custom_shapefile) == TRUE){
+      message("Using custom shapefile to allocate vaccine")
       shp <- load_custom_shapefile_by_country(datapath, country)
     } else {
+      message("using GADM admin 2 shapefile to allocate vaccine")
       shp <- load_shapefile_by_country(country)
     }
 

@@ -65,8 +65,10 @@ load_targets_by_country <- function(datapath, modelpath, country){
     
     ##The VIMC Core Model
     if (as.logical(config$use_custom_shapefile) == FALSE){ 
+      message("load vaccine targets using the GADM admin 2 shapefile")
       shp <- load_shapefile_by_country(datapath, country)
     } else { ## The DRC Case Study, which uses a custom shapefile for health zones
+      message("load vaccine targets using the custom health zone shapefile")
       shp <- load_custom_shapefile_by_country(country)
     }
 
@@ -311,7 +313,7 @@ run_targeting_strategy <- function(targets_df, targeting_strat){
     rc <- dplyr::arrange(targets_df, desc(incidence))
 
   } else if (targeting_strat == "random") {   ##order targets randomly for the 'random' targeting strategy
-    
+    message("Using random targeting strategy")
     ## vector with random numbers for sorting
     random_id <- sample(1:nrow(targets_df), nrow(targets_df), replace = FALSE)
     targets_df <- targets_df %>%
