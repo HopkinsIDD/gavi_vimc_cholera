@@ -102,6 +102,10 @@ if (all(colnames(gadm_vector) %in% colnames(custom_vector_final))){
   stop("The custom vector and the gadm admin 2 vector do not have the same column names")
 }
 
+## assign to GID_2 values from NAME_2 (needed for the left_join in allocate_vaccine)
+custom_vector_final <- custom_vector_final %>%
+  dplyr::mutate(GID_2 = NAME_2)
+
 ## write custom vector to file
 
 saveRDS(custom_vector_final, "custom_shapefile.rds")
