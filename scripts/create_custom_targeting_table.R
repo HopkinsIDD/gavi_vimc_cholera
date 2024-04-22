@@ -82,4 +82,4 @@ custom_targeting_table_final <- custom_targeting_table_final %>%
 
 ## write custom targeting table to file
 
-readr::write_csv(custom_targeting_table_final, file = "input_data/custom_targeting.csv")
+saveRDS(custom_targeting_table_final, file = "input_data/drc_custom_targeting_2024_2026.rds")
