@@ -91,6 +91,11 @@ if(use_random_seed & is.null(self_random_seed)){
 ## for the VIMC Core Model runs and the Surveillance Project, set use_montagu_coverage to TRUE
 use_montagu_coverage <- FALSE 
 
+##only generate a config for DRC ("COD") if this is for the DRC case study (use_montagu_coverage == FALSE)
+if(use_montagu_coverage == FALSE){
+  countries <- c("COD")
+}
+
 if(use_montagu_coverage == FALSE){
   output_years <- list(c(2020, 2050))
   custom_targeting_filename <- "input_data/custom_targeting.csv" # modify to specify filename for the custom targeting table in the config
