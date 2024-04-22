@@ -66,7 +66,7 @@ run_country_scenario <- function(
   montagu_cache[["country_agePop"]] <- import_country_agePop(modelpath, country, montagu_cache, redownload = FALSE)
   montagu_cache[["country_lifeExpectancy"]] <- import_country_lifeExpectancy(modelpath, country, montagu_cache, redownload = FALSE)
 
-  if (config$vacc$targeting == "custom"){
+  if (config$vacc$targeting_strategy == "custom"){
     ## use the custom-made targeting table for the 'custom' targeting strategy (DRC case study)
     message("Loading custom targeting table for the custom targeting strategy")
     custom_targeting_filename <- config$vacc$targeting_filename ##get filename from the config
