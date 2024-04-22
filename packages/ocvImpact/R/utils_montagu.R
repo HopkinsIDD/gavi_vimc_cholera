@@ -102,20 +102,20 @@ import_coverage_scenario_custom <- function(datapath, country, scenario, cache, 
     
   } else{
     #First check, then retrieve
-    CoverageFiles <- list.files(datapath, pattern = "custom_coverage")
-    if (length(CoverageFiles) == 1){ #there should be 1 coverage data file, so the default should be 1
-      message(paste0("The custom coverage data file has been under the directory: ", datapath, '. No new download was made. '))
-    } else{
-      stop(paste0("The custom coverage data file was not found in directory: ", datapath, '. Run the custom_targeting_to_coverage.R script to generate the coverage data file. '))
-    }
+    #CoverageFiles <- list.files(datapath, pattern = "custom_coverage")
+    #if (length(CoverageFiles) == 1){ #there should be 1 coverage data file, so the default should be 1
+      #message(paste0("The custom coverage data file has been under the directory: ", datapath, '. No new download was made. '))
+    #} else{
+      #stop(paste0("The custom coverage data file was not found in directory: ", datapath, '. Run the custom_targeting_to_coverage.R script to generate the coverage data file. '))
+    #}
     
     #Start importing
-    cov_fname <- list.files(datapath, pattern = "custom_coverage")
-    cov_fname <- paste0(datapath, "/", cov_fname)
+    #cov_fname <- list.files(datapath, pattern = "custom_coverage")
+    #cov_fname <- paste0(datapath, "/", cov_fname)
     
     
     message(paste("Loading custom coverage scenario:", country, scenario))
-    cov_dat <- readr::read_csv(cov_fname) %>%
+    cov_dat <- readr::read_csv(config$vacc$coverage_filename) %>%
       dplyr::filter(country_code == !!country)
     
     print(cov_dat)
