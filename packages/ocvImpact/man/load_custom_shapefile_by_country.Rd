@@ -8,8 +8,6 @@ load_custom_shapefile_by_country(country)
 }
 \arguments{
 \item{country}{country code}
-
-\item{datapath}{path to data}
 }
 \value{
 shapefile in sf format

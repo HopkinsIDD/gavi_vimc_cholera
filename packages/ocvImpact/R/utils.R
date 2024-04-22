@@ -538,7 +538,6 @@ generate_infectionDuration <- function(){
 #' @name load_custom_shapefile_by_country
 #' @title load_custom_shapefile_by_country
 #' @description Load a custom shapefile for DRC health zones (for the DRC case study) or download or admin0 (simple) level shapefile for a country from GADM, if not already in shapefiles folder, and return sf object
-#' @param datapath path to data 
 #' @param country country code
 #' @return shapefile in sf format
 #' @export 
@@ -552,7 +551,7 @@ load_custom_shapefile_by_country <- function(country){
 
     },
     error = function(e) {
-      print(paste("Unable to get shapefile for", country, ".", e))
+      print(paste("Unable to get custom shapefile for", country, ".", e))
     }
   )
   
