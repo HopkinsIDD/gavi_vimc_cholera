@@ -20,7 +20,8 @@ library(dplyr)
 
 ## modify the filepath below to specify the name of the custom targeting table and the directory it's in
 
-targeting_table <- readr::read_csv("input_data/custom_targeting.csv")  %>%
+targeting_table <- readRDS("input_data/drc_custom_targeting_2024_2026.rds")  %>%
+  as.data.frame() %>%
   dplyr::group_by(vacc_year) %>%
   dplyr::mutate(total_vaccinated_one_dose = sum(actual_ocv1_fvp)) %>% ## VP with one dose admin 0
   dplyr::mutate(total_vaccinated_two_dose = sum(actual_ocv2_fvp)) %>% ## VP with two dose admin 0
@@ -55,4 +56,4 @@ coverage <- targeting_table %>%
   dplyr::arrange(vaccine) ##arrange rows by vaccine as in the montagu coverage template
 
 ##write to file
-readr::write_csv(coverage, "input_data/custom_coverage.csv")
+readr::write_csv(coverage, "input_data/drc_custom_coverage_2024_2026.csv")
