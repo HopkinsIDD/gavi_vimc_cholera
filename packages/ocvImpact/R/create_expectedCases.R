@@ -272,10 +272,14 @@ create_expectedCases <- function(
     message(paste0("country class is ", class(country)))
     message(paste0("oy class is ", class(oy)))
     message(paste0("ec_yr class is ", class(ec_yr)))
+    print(ec_yr)
     message(paste0("mean_incid class is ", class(mean_incid)))
+    print(mean_incid)
     
     ec_vec <- as.numeric(ec_yr)
     mean_incid_vec <- as.numeric(mean_incid)
+    
+    print("Use tibble")
   
     rc <- tibble::tibble(country = country, year = oy, run_id = seq_along(ec_vec), ec = ec_vec, incid_rate = mean_incid_vec)
     print('Tibble was used successfully')
