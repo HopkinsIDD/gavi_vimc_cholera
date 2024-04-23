@@ -272,12 +272,13 @@ create_expectedCases <- function(
     message(paste0("country class is ", class(country)))
     message(paste0("oy class is ", class(oy)))
     message(paste0("ec_yr class is ", class(ec_yr)))
-    print(ec_yr)
     message(paste0("mean_incid class is ", class(mean_incid)))
-    print(mean_incid)
-    
-    ec_vec <- as.numeric(ec_yr)
-    mean_incid_vec <- as.numeric(mean_incid)
+
+    ## 23 Apr 2024 debug
+    #ec_vec <- as.numeric(ec_yr)  toggle on later
+    ec_vec <- as.numeric(unlist(ec_yr)) ## try for debugging
+    #mean_incid_vec <- as.numeric(mean_incid) toggle on later
+    mean_incid_vec <- as.numeric(unlist(mean_incid)) toggle on later
     
     print("Use tibble")
   
