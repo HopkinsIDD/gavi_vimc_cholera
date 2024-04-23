@@ -267,16 +267,15 @@ create_expectedCases <- function(
       weights = pop_rasterLayer,
       stack_apply = TRUE)
     print('The second exact_extract function got passed. ')
-
-    ec_vec <- as.numeric(ec_yr)
-    mean_incid_vec <- as.numeric(mean_incid)
     
     ##calam1 23 Apr 2024 print column class for debugging
     message(paste0("country class is ", class(country)))
     message(paste0("oy class is ", class(oy)))
-    message(paste0("run_id class is ", class(seq_along(ec_vec))))
-    message(paste0("ec_vec class is ", class(ec_vec)))
-    message(paste0("mean_incid_vec class is ", class(mean_incid_vec)))
+    message(paste0("ec_yr class is ", class(ec_vec)))
+    message(paste0("mean_incid class is ", class(mean_incid)))
+    
+    ec_vec <- as.numeric(ec_yr)
+    mean_incid_vec <- as.numeric(mean_incid)
   
     rc <- tibble::tibble(country = country, year = oy, run_id = seq_along(ec_vec), ec = ec_vec, incid_rate = mean_incid_vec)
     print('Tibble was used successfully')
