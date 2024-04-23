@@ -271,7 +271,7 @@ create_expectedCases <- function(
     ##calam1 23 Apr 2024 print column class for debugging
     message(paste0("country class is ", class(country)))
     message(paste0("oy class is ", class(oy)))
-    message(paste0("ec_yr class is ", class(ec_vec)))
+    message(paste0("ec_yr class is ", class(ec_yr)))
     message(paste0("mean_incid class is ", class(mean_incid)))
     
     ec_vec <- as.numeric(ec_yr)
