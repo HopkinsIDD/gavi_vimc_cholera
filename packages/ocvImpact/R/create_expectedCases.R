@@ -271,12 +271,13 @@ create_expectedCases <- function(
     ec_vec <- as.numeric(ec_yr)
     mean_incid_vec <- as.numeric(mean_incid)
     rc <- tibble::tibble(country = country, year = oy, run_id = seq_along(ec_vec), ec = ec_vec, incid_rate = mean_incid_vec)
-
+    print('Tibble was used successfully')
     return(rc)
 
   })
 
   ec_final <- data.table::rbindlist(ec_ls)
+  print('rbind list was used successfully')
 
   rm(lambda, sus_rasterStack, vacc_rasterStack, pop_rasterStack, ec_ls)
   gc()
