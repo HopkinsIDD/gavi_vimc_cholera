@@ -93,6 +93,7 @@ import_coverage_scenario <- function(modelpath, country, scenario, cache, filter
 #' @param filter0 logical for whether 0 vaccination years should be filtered out (default = FALSE)
 #' @importFrom magrittr %>%
 #' @return Dataframe with vaccination coverage for a single scenario and country. Years without vaccination are excluded from the returned dataframe. Countries without vaccination in any year return a null dataframe.
+#' @export
 import_coverage_scenario_custom <- function(datapath, country, scenario, cache, filter0 = FALSE){
   
   ## look for whether the custom coverage scenario was already read in
