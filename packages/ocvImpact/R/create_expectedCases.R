@@ -252,7 +252,8 @@ create_expectedCases <- function(
       pop_rasterLayer <- raster::setExtent(pop_rasterLayer, raster::extent(shp0), keepres=FALSE, snap=FALSE)
     }
 
-
+    ## calam1 23 Apr 2024 debug attempt for DRC Case study
+    sf::st_crs(shp0) <- 4326
 
     ec_yr <- exactextractr::exact_extract(ec_rasterStack, shp0, fun = "sum", stack_apply = TRUE)
     print('The first exact_extract function got passed. ')
