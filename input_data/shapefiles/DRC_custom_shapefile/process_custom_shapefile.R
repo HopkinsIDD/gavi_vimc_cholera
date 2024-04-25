@@ -109,3 +109,8 @@ custom_vector_final <- custom_vector_final %>%
 ## write custom vector to file
 
 saveRDS(custom_vector_final, "custom_shapefile.rds")
+
+## create country level boundary (admin 0)
+
+country_shapefile <- sf::st_union(custom_vector_final)
+saveRDS(country_shapefile, file = "country_shapefile.rds")

@@ -540,7 +540,6 @@ generate_infectionDuration <- function(){
 #' @title load_custom_shapefile_by_country
 #' @description Load a custom shapefile for DRC health zones (for the DRC case study) or a generated admin0 level shapefile for a country and return sf object
 #' @param admin0 whether to return an admin0 level sf (default = FALSE)
-#' @importFrom magrittr %>%
 #' @return shapefile in sf format
 #' @export 
 load_custom_shapefile_by_country <- function(admin0 = FALSE){
@@ -548,12 +547,13 @@ load_custom_shapefile_by_country <- function(admin0 = FALSE){
   
   tryCatch(
     {
-      shp <- readRDS(config$vacc$shapefile_filename)
-      message(paste0("Loading ", config$vacc$shapefile_filename))
-      if (admin0 == TRUE){
-        shp <- shp %>%
-          sf::st_make_valid() %>%   ## in case there are invalid geometries
-          sf::st_union() ## get admin0 level shapefile
+      if (admin0 == FALSE){
+        shp <- readRDS(config$vacc$shapefile_filename)
+        message(paste0("Loading ", config$vacc$shapefile_filename))
+      } else {
+        ## temporarily hardcoding country level shapefile name for testing, will be included as config option
+        shp <- readRDS("input_data/shapefiles/DRC_custom_shapefile/country_shapefile.rds")
+        message("Loading custom admin 0 shapefile ")
       }
 
     },
