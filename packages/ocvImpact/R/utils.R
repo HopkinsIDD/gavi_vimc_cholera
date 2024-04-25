@@ -68,6 +68,7 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...)
     if (as.logical(config$use_custom_shapefile) == TRUE){
       message("Using custom shapefile to allocate vaccine")
       shp <- load_custom_shapefile_by_country(admin0 = FALSE)
+      sf::st_crs(shp) <- 4326 ## for some reason crs needs to be re-set after loading the custom shapefile (to investigate)
     } else {
       message("using GADM admin 2 shapefile to allocate vaccine")
       shp <- load_shapefile_by_country(country)
