@@ -4,14 +4,14 @@
 \alias{load_custom_shapefile_by_country}
 \title{load_custom_shapefile_by_country}
 \usage{
-load_custom_shapefile_by_country(country)
+load_custom_shapefile_by_country(admin0 = FALSE)
 }
 \arguments{
-\item{country}{country code}
+\item{admin0}{whether to return an admin0 level sf (default = FALSE)}
 }
 \value{
 shapefile in sf format
 }
 \description{
-Load a custom shapefile for DRC health zones (for the DRC case study) or download or admin0 (simple) level shapefile for a country from GADM, if not already in shapefiles folder, and return sf object
+Load a custom shapefile for DRC health zones (for the DRC case study) or a generated admin0 level shapefile for a country and return sf object
 }

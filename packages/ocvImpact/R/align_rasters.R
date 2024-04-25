@@ -12,7 +12,7 @@ align_rasters <- function(datapath, country, orig_raster){
   ## if we are using the custom shapefile with health zones (for the DRC case study), specified in the config
   if(as.logical(config$use_custom_shapefile) == TRUE){
     message(paste("Aligning rasters using custom shapefile: ", config$vacc$shapefile_filename))
-    shp <- load_custom_shapefile_by_country(country)
+    shp <- load_custom_shapefile_by_country(admin0 = TRUE)
   } else {
     shp <- load_shapefile_by_country(datapath, country, simple=TRUE) ## if we are using the GADM shapefile (VIMC Core model)
     message("Aligning rasters using gadm admin 0 shapefile.")

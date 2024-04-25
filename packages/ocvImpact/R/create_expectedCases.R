@@ -58,7 +58,7 @@ create_expectedCases <- function(
   ## if we are using the custom shapefile with health zones (for the DRC case study), specified in the config
   if(as.logical(config$use_custom_shapefile) == TRUE){
     message(paste("Create expected cases using custom shapefile: ", config$vacc$shapefile_filename))
-    shp0 <- load_custom_shapefile_by_country(country)
+    shp0 <- load_custom_shapefile_by_country(admin0 = TRUE)
   } else {
     shp0 <- load_shapefile_by_country(datapath, country, simple=TRUE) ## if we are using the GADM shapefile (VIMC Core model)
     message("Create expected cases using gadm admin 0 shapefile.")
@@ -252,7 +252,7 @@ create_expectedCases <- function(
       pop_rasterLayer <- raster::setExtent(pop_rasterLayer, raster::extent(shp0), keepres=FALSE, snap=FALSE)
     }
 
-    ## calam1 23 Apr 2024 debug attempt for DRC Case study
+    ## calam1 23 Apr 2024 added to re-set crs for DRC Case study
     sf::st_crs(shp0) <- 4326
 
     ec_yr <- exactextractr::exact_extract(ec_rasterStack, shp0, fun = "sum", stack_apply = TRUE)
@@ -267,19 +267,10 @@ create_expectedCases <- function(
       weights = pop_rasterLayer,
       stack_apply = TRUE)
     print('The second exact_extract function got passed. ')
-    
-    ##calam1 23 Apr 2024 print column class for debugging
-    message(paste0("country class is ", class(country)))
-    message(paste0("oy class is ", class(oy)))
-    message(paste0("ec_yr class is ", class(ec_yr)))
-    message(paste0("mean_incid class is ", class(mean_incid)))
 
-    ## 23 Apr 2024 debug
-    #ec_vec <- as.numeric(ec_yr)  toggle on later
-    ec_vec <- as.numeric(unlist(ec_yr)) ## try for debugging
-    #mean_incid_vec <- as.numeric(mean_incid) toggle on later
-    mean_incid_vec <- as.numeric(unlist(mean_incid)) toggle on later
-    
+    ec_vec <- as.numeric(ec_yr)  
+    mean_incid_vec <- as.numeric(mean_incid)
+
     print("Use tibble")
   
     rc <- tibble::tibble(country = country, year = oy, run_id = seq_along(ec_vec), ec = ec_vec, incid_rate = mean_incid_vec)
@@ -289,7 +280,7 @@ create_expectedCases <- function(
   })
 
   ec_final <- data.table::rbindlist(ec_ls)
-  print('rbind list was used successfully')
+  print('rbindlist was used successfully')
 
   rm(lambda, sus_rasterStack, vacc_rasterStack, pop_rasterStack, ec_ls)
   gc()

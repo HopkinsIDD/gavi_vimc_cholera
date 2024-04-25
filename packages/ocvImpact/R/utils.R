@@ -67,7 +67,7 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...)
     vacc_years <- sort(unique(vacc_targets$vacc_year))
     if (as.logical(config$use_custom_shapefile) == TRUE){
       message("Using custom shapefile to allocate vaccine")
-      shp <- load_custom_shapefile_by_country(country)
+      shp <- load_custom_shapefile_by_country(admin0 = FALSE)
     } else {
       message("using GADM admin 2 shapefile to allocate vaccine")
       shp <- load_shapefile_by_country(country)
@@ -537,21 +537,24 @@ generate_infectionDuration <- function(){
 
 #' @name load_custom_shapefile_by_country
 #' @title load_custom_shapefile_by_country
-#' @description Load a custom shapefile for DRC health zones (for the DRC case study) or download or admin0 (simple) level shapefile for a country from GADM, if not already in shapefiles folder, and return sf object
-#' @param country country code
+#' @description Load a custom shapefile for DRC health zones (for the DRC case study) or a generated admin0 level shapefile for a country and return sf object
+#' @param admin0 whether to return an admin0 level sf (default = FALSE)
 #' @return shapefile in sf format
 #' @export 
-load_custom_shapefile_by_country <- function(country){
+load_custom_shapefile_by_country <- function(admin0 = FALSE){
   
   
   tryCatch(
     {
       shp <- readRDS(config$vacc$shapefile_filename)
       message(paste0("Loading ", config$vacc$shapefile_filename))
+      if (admin0 == TRUE){
+        shp <- sf::st_union(shp) ##get admin0 level shapefile
+      }
 
     },
     error = function(e) {
-      print(paste("Unable to get custom shapefile for", country, ".", e))
+      print(paste("Unable to get custom shapefile.", e))
     }
   )
   
