@@ -553,7 +553,7 @@ load_custom_shapefile_by_country <- function(admin0 = FALSE){
       if (admin0 == TRUE){
         shp <- shp %>%
           sf::st_make_valid() %>%   ## in case there are invalid geometries
-          sf::st_union ## get admin0 level shapefile
+          sf::st_union() ## get admin0 level shapefile
       }
 
     },
