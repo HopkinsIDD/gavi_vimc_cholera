@@ -29,7 +29,7 @@ load_worldpop_by_country <- function(datapath, country){
     ## if we are using the custom shapefile with health zones (DRC case study), specified in config
     if(as.logical(config$use_custom_shapefile) == TRUE){
       message("Use custom shapefile to load worldpop population")
-      shp <- load_custom_shapefile_by_country(admin0 = TRUE)
+      shp <- load_custom_shapefile_by_country(admin0 = FALSE)
     } else {
       message("Use GADM admin 0 shapefile to load worldpop population")
       shp <- load_shapefile_by_country(datapath, country, simple=TRUE) ## if we are using the GADM shapefile (VIMC Core model)

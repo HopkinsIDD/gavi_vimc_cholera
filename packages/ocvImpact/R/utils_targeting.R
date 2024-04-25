@@ -70,6 +70,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
     } else { ## The DRC Case Study, which uses a custom shapefile for health zones
       message("load vaccine targets using the custom health zone shapefile")
       shp <- load_custom_shapefile_by_country(admin0 = FALSE)
+      sf::st_crs(shp) <- 4326 ## for some reason crs needs to be re-set after loading the custom shapefile (to investigate)
     }
 
     ## summarize rasters to admin level (BGD, non-raster, and african raster countries)
