@@ -99,6 +99,8 @@ run_country_scenario <- function(
       message(paste("Write modelled coverage and prop immune:", country, scenario, "\n", cov_out_fn))
       readr::write_csv(vacc_alloc, cov_out_fn)
       readr::write_csv(track_prop_immune, imm_out_fn)
+      ## save targeting table as rds
+      saveRDS(vacc_alloc, paste0(rawoutpath, "/", scenario, "/", setting, "/", country,"_",num_doses,"_coverage.rds"))
     }
 
 
