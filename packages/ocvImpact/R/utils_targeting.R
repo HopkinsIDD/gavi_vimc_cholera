@@ -112,7 +112,15 @@ load_targets_by_country <- function(datapath, modelpath, country){
                         pop_prop = pop2/total_pop) %>%
       sf::st_drop_geometry() %>%
       dplyr::select(GID_0, GID_2, NAME_1, NAME_2, incidence, pop_prop) %>%
-      tibble::as_tibble()
+      tibble::as_tibble() 
+    
+    ## 30 Apr 2024: test for DRC Case study: filter out health zones with NA incidence
+    if(any(is.na(rc$incidence))){
+      print("NA values found in loaded targets' incidence, removing units with NA incidence")
+      rc <- rc %>%
+        dplyr::filter(!is.na(incidence))      
+    }
+
 
     if (sum(rc$pop_prop)!=1){
       stop(paste("The population proportion calculation is incorrect for", country))
