@@ -92,6 +92,17 @@ load_targets_by_country <- function(datapath, modelpath, country){
     } else {
       incid2 <- exactextractr::exact_extract(afr, shp, 'mean') ## could add population weight here for better incidence estimate but need to project population to the incidence grid
     }
+    
+    
+    ## 30 Apr 2024: test for DRC Case study: filter out health zones with NA incidence
+    
+    if(any(is.na(incid2))){
+      print("NA values found in loaded targets' incidence, removing units with NA incidence")
+      shp <- shp[-which(is.na(incid2)),] ## remove rows with NA incidence (units that fall outside the incidence raster)
+      message(paste0("removed units: ", shp$NAME_2[which(is.na(incid2))]))
+    }
+    
+    
     pop2 <- get_admin_population(pop, shp)
     total_pop <- sum(pop2)
 
@@ -114,13 +125,6 @@ load_targets_by_country <- function(datapath, modelpath, country){
       dplyr::select(GID_0, GID_2, NAME_1, NAME_2, incidence, pop_prop) %>%
       tibble::as_tibble() 
     
-    ## 30 Apr 2024: test for DRC Case study: filter out health zones with NA incidence
-    if(any(is.na(rc$incidence))){
-      print("NA values found in loaded targets' incidence, removing units with NA incidence")
-      rc <- rc %>%
-        dplyr::filter(!is.na(incidence))      
-    }
-
 
     if (sum(rc$pop_prop)!=1){
       stop(paste("The population proportion calculation is incorrect for", country))
