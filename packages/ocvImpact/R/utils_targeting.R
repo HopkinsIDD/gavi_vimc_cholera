@@ -108,7 +108,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
     total_pop <- sum(pop2)
     
     ## 30 Apr 2024 debugging - check number of rows for population per admin unit
-    message(paste0("the population per health zone table has ", nrow(pop2), " rows"))
+    message(paste0("the population per health zone table has ", length(pop2), " elements"))
 
     ### do a little thing to the dataframe -- 7/2021
     ## This is only necessary when using the GADM admin 2 shapefile, since the custom DRC shapefile already has the required columns from shp_sp
