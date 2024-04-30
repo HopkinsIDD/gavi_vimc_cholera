@@ -100,7 +100,8 @@ load_targets_by_country <- function(datapath, modelpath, country){
   ##    print("NA values found in loaded targets' incidence, removing units with NA incidence")
       print(incid2)
       shp <- shp[-which(is.na(incid2)),] ## remove rows with NA incidence (units that fall outside the incidence raster)
-      message(paste0("removed units with NA incidence from shapefile: ", shp$NAME_2[which(is.na(incid2))]))
+      message(paste0(" removed units with NA incidence from shapefile: ", shp$NAME_2[which(is.na(incid2))]))
+      incid2 <- na.omit(incid2) ## remove NAs from health zone/admin2 incidence
   ##  }
     
     
