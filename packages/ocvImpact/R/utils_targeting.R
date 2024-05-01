@@ -96,14 +96,14 @@ load_targets_by_country <- function(datapath, modelpath, country){
     
     ## 30 Apr 2024: test for DRC Case study: filter out health zones with NA incidence
     
-  ##  if(any(is.na(incid2))){
-  ##    print("NA values found in loaded targets' incidence, removing units with NA incidence")
-      print(incid2)
+    if(any(is.na(incid2))){
+      print(" NA values found in loaded targets' incidence, removing units with NA incidence ")
       shp <- shp[-which(is.na(incid2)),] ## remove rows with NA incidence (units that fall outside the incidence raster)
       message(paste0(" removed units with NA incidence from shapefile: ", shp$NAME_2[which(is.na(incid2))]))
       incid2 <- na.omit(incid2) ## remove NAs from health zone/admin2 incidence
-  ##  }
+    }
     
+    ## end test
     
     pop2 <- get_admin_population(pop, shp)
     total_pop <- sum(pop2)
