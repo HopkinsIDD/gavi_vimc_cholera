@@ -96,12 +96,12 @@ load_targets_by_country <- function(datapath, modelpath, country){
     
     ## 30 Apr 2024: test for DRC Case study: filter out health zones with NA incidence
     
-    if(any(is.na(incid2))){
-      print(" NA values found in loaded targets' incidence, removing units with NA incidence ")
-      shp <- shp[-which(is.na(incid2)),] ## remove rows with NA incidence (units that fall outside the incidence raster)
-      message(paste0(" removed units with NA incidence from shapefile: ", shp$NAME_2[which(is.na(incid2))]))
-      incid2 <- na.omit(incid2) ## remove NAs from health zone/admin2 incidence
-    }
+    ## if(any(is.na(incid2))){
+      ##print(" NA values found in loaded targets' incidence, removing units with NA incidence ")
+      ##shp <- shp[-which(is.na(incid2)),] ## remove rows with NA incidence (units that fall outside the incidence raster)
+      ##message(paste0(" removed units with NA incidence from shapefile: ", shp$NAME_2[which(is.na(incid2))]))
+      ##incid2 <- na.omit(incid2) ## remove NAs from health zone/admin2 incidence
+    ##}
     
     ## end test
     
@@ -228,12 +228,12 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, cache
         
         ## filter out health zones with NA population
         
-        if(any(is.na(pop2))){
-          print(" NA values found in health zone population, removing units with NA population ")
-          shp <- shp[-which(is.na(pop2)),] ## remove rows with NA population
-          message(paste0(" removed units with NA population from shapefile: ", shp$NAME_2[which(is.na(model_pop_admin))]))
-          pop2 <- na.omit(pop2) ## remove NAs from health zone/admin2 incidence
-        }
+        ##if(any(is.na(pop2))){
+          ##print(" NA values found in health zone population, removing units with NA population ")
+          ##shp <- shp[-which(is.na(pop2)),] ## remove rows with NA population
+          ##message(paste0(" removed units with NA population from shapefile: ", shp$NAME_2[which(is.na(model_pop_admin))]))
+          ##pop2 <- na.omit(pop2) ## remove NAs from health zone/admin2 incidence
+        ##}
         
         goal_target_pop <- sum(pop2)
         rm(pop, pop2, shp)
