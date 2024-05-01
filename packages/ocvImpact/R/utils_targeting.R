@@ -206,9 +206,29 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, cache
     for (i in 1:length(coverage$year)){
 
       cov_year <- coverage[i,]
+      
+      ## Major modification 1 May 2024 for DRC case study - testing
+      
+      if(as.logical(config$use_montagu_coverage) == TRUE){
+        
+        ## montagu coverage tables have a target population that represents the country level population
+        
+        goal_target_pop <- cov_year$target ## target population for the vaccination campaign @ country level
+        
+      } else {
+        
+        ## if we are not using montagu coverage, target population needs to be explicitly made equal to country population
+        ## otherwise, as in the DRC case study, since the target population in the coverage table represents a small
+        ## subset of the country population, we get low numbers of possible vaccinated people in the calculation in lines 253-254
+        
+        pop <- load_worldpop_by_country(datapath, country) %>%
+        pop2 <- get_admin_population(pop, shp)
+        goal_target_pop <- sum(pop2)
+        rm(pop, pop2)
+      }
 
-      goal_target_pop <- cov_year$target ## target population for the vaccination campaign @ country level
-
+      ## end major modification
+      
       ##goal fvps with one dose and two doses of the vaccine
       goal_ocv1_fvp <- cov_year$fvp_ocv1
       goal_ocv2_fvp <- cov_year$fvp_ocv2
