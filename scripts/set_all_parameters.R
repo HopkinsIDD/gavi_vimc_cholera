@@ -1,5 +1,5 @@
 #====== The Basics ======#
-targeting_strategy <- "affected_pop" #c("threshold_unconstrained", "affected_pop", "incidence", "random", "custom"), "threshold_unconstrained" means it's for the surveillance project
+targeting_strategy <- "custom" #c("threshold_unconstrained", "affected_pop", "incidence", "random", "custom"), "threshold_unconstrained" means it's for the surveillance project
 #runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202110gavi-3") ### Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
 runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202310gavi-4") ### for 2023 VIMC core:Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
 
@@ -95,7 +95,7 @@ use_montagu_coverage <- FALSE
 
 
 if(use_montagu_coverage == FALSE){
-  output_years <- list(c(2020, 2050))
+  output_years <- list(c(2020, 2036))
   custom_targeting_filename <- "input_data/drc_custom_targeting_2024_2026.rds" # modify to specify filename for the custom targeting table in the config
   custom_coverage_filename <- "input_data/drc_custom_coverage_2024_2026.csv" # modify to specify filename for the custom coverage table in the config
 }
@@ -105,4 +105,5 @@ use_custom_shapefile <- TRUE
 
 if(use_custom_shapefile == TRUE){
   custom_shapefile_filename <- "input_data/shapefiles/DRC_custom_shapefile/custom_shapefile.rds" # modify to specify filename for the custom shapefile in the config
+  custom_country_shapefile_filename <- "input_data/shapefiles/DRC_custom_shapefile/country_shapefile.rds" # modify to specify filename for the custom country shapefile in the config
 }

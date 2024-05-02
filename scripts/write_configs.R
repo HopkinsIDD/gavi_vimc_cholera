@@ -61,7 +61,7 @@ source("scripts/montagu_handle.R")
 ###These a few lines can be deleted safely after the model can run smoothly on the server. 
 library(raster)
 #roxygen2::roxygenise("packages/ocvImpact")
-#install.packages("packages/ocvImpact", type = "source", repos = NULL)
+##install.packages("packages/ocvImpact", type = "source", repos = NULL)
 library('ocvImpact', character.only = T)
 
 ###########Comment completed###########
@@ -125,6 +125,7 @@ for(scn in scenarios){
         
         if(use_custom_shapefile == TRUE){
           pars$custom_shapefile_filename <- custom_shapefile_filename
+          pars$custom_country_shapefile_filename <- custom_country_shapefile_filename
         }
         
         # the followings are specific to the surveillance project
