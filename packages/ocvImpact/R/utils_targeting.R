@@ -221,22 +221,17 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, cache
         ## otherwise, as in the DRC case study, since the target population in the coverage table represents a small
         ## subset of the country population, we get low numbers of possible vaccinated people in the calculation in lines 253-254
         
-        pop <- load_worldpop_by_country(datapath, country) 
-        shp <- load_custom_shapefile_by_country(admin0 = FALSE)
-        sf::st_crs(shp) <- 4326 ## for some reason crs needs to be re-set after loading the custom shapefile (to investigate)
-        pop2 <- get_admin_population(pop, shp)
+        ## get country population from montagu excluding people under 1
         
-        ## filter out health zones with NA population
+        goal_target_pop <- import_int_country_population(modelpath, country, cache, redownload = FALSE) %>%
+          dplyr::filter(country_code == !!country) %>%
+          dplyr::filter(year == coverage$year[i]) %>%
+          dplyr::filter(!age_from %in% c(0)) %>%   ##this filters out the people aged 0
+          dplyr::rename(pop_age = value) %>%
+          dplyr::select(country_code, year, age_from, age_to, pop_age) %>%
+          dplyr::summarise(pop_tot = sum(pop_age))
+           
         
-        ##if(any(is.na(pop2))){
-          ##print(" NA values found in health zone population, removing units with NA population ")
-          ##shp <- shp[-which(is.na(pop2)),] ## remove rows with NA population
-          ##message(paste0(" removed units with NA population from shapefile: ", shp$NAME_2[which(is.na(model_pop_admin))]))
-          ##pop2 <- na.omit(pop2) ## remove NAs from health zone/admin2 incidence
-        ##}
-        
-        goal_target_pop <- sum(pop2)
-        rm(pop, pop2, shp)
       }
 
       ## end major modification
