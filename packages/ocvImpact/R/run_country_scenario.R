@@ -53,7 +53,7 @@ run_country_scenario <- function(
   ## avoid reading montagu files multiple times
   montagu_cache <- new.env()
   ## for the DRC Case study, use the custom coverage 
-  if (as.logical(config$use_montagu_coverage) == FALSE) {
+  if (as.logical(config$custom$use_montagu_coverage) == FALSE) {
     message("Use custom coverage in run country scenario")
     montagu_cache[["coverage_scenario"]] <- import_coverage_scenario_custom(datapath, country, scenario, montagu_cache, filter0 = FALSE)
   } else {
@@ -69,7 +69,7 @@ run_country_scenario <- function(
   if (config$vacc$targeting_strategy == "custom"){
     ## use the custom-made targeting table for the 'custom' targeting strategy (DRC case study)
     message("Loading custom targeting table for the custom targeting strategy")
-    custom_targeting_filename <- config$vacc$targeting_filename ##get filename from the config
+    custom_targeting_filename <- config$custom$targeting_filename ##get filename from the config
     vacc_alloc <- readRDS(custom_targeting_filename) 
   } else {
     vacc_alloc <- allocate_vaccine(datapath, modelpath, country, scenario, montagu_cache, ...) #the changes start from here

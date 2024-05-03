@@ -56,8 +56,8 @@ create_expectedCases <- function(
   pop_rasterStack <- raster::brick(pop_out_fn)
   
   ## if we are using the custom shapefile with health zones (for the DRC case study), specified in the config
-  if(as.logical(config$use_custom_shapefile) == TRUE){
-    message(paste("Create expected cases using custom shapefile: ", config$vacc$shapefile_filename))
+  if(as.logical(config$custom$use_custom_shapefile) == TRUE){
+    message(paste("Create expected cases using custom shapefile: ", config$custom$shapefile_filename))
     shp0 <- load_custom_shapefile_by_country(admin0 = TRUE)
   } else {
     shp0 <- load_shapefile_by_country(datapath, country, simple=TRUE) ## if we are using the GADM shapefile (VIMC Core model)
@@ -101,7 +101,7 @@ create_expectedCases <- function(
 
   ## apply outbreak multiplier only to the campaign years for now
   if (!scenario == "no-vaccination"){  ##using the following lines for the no-vaccination scenario creates inf values and leads to error
-    if (as.logical(config$use_montagu_coverage) == FALSE){ ## For the DRC Case Study
+    if (as.logical(config$custom$use_montagu_coverage) == FALSE){ ## For the DRC Case Study
       message("Use custom coverage scenario for outbreak multiplier in create expected cases")
       first_year <- min(ocvImpact::import_coverage_scenario_custom(modelpath, country, scenario, cache, filter0 = FALSE)$year)
       last_year  <- max(ocvImpact::import_coverage_scenario_custom(modelpath, country, scenario, cache, filter0 = FALSE)$year) + 10 ## potential impact could extend 10 years beyond last campaign ## COULD CHANGE TO MATCH TRUNC_YEAR

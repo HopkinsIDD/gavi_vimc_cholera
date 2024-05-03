@@ -27,7 +27,7 @@ load_worldpop_by_country <- function(datapath, country){
     # pop_world <- raster::raster(paste0(datapath, "/worldpop/", pop_fn))
     
     ## if we are using the custom shapefile with health zones (DRC case study), specified in config
-    if(as.logical(config$use_custom_shapefile) == TRUE){
+    if(as.logical(config$custom$use_custom_shapefile) == TRUE){
       message("Use custom shapefile to load worldpop population")
       shp <- load_custom_shapefile_by_country(admin0 = FALSE)
     } else {

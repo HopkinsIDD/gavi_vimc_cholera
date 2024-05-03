@@ -65,7 +65,7 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...)
     vacc_coverage <- NULL
   } else{
     vacc_years <- sort(unique(vacc_targets$vacc_year))
-    if (as.logical(config$use_custom_shapefile) == TRUE){
+    if (as.logical(config$custom$use_custom_shapefile) == TRUE){
       message("Using custom shapefile to allocate vaccine")
       shp <- load_custom_shapefile_by_country(admin0 = FALSE)
       sf::st_crs(shp) <- 4326 ## for some reason crs needs to be re-set after loading the custom shapefile (to investigate)
@@ -77,7 +77,7 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...)
     ### a little play on the dataframe -- 7/2021
     ## This is only necessary when using the GADM admin 2 shapefile, since the custom DRC shapefile already has the required columns from shp_sp
     
-    if(as.logical(config$use_custom_shapefile) == FALSE){
+    if(as.logical(config$custom$use_custom_shapefile) == FALSE){
       shp <- shp %>%
         dplyr::mutate(genID = paste0(NAME_0, '-', NAME_1, '-', NAME_2))
       shp_sp <- GADMTools::gadm_sp_loadCountries(c(country), level = 2, basefile = file.path(datapath, "shapefiles/"))$spdf
@@ -560,11 +560,11 @@ load_custom_shapefile_by_country <- function(admin0 = FALSE){
   tryCatch(
     {
       if (admin0 == FALSE){
-        shp <- readRDS(config$vacc$shapefile_filename)
-        message(paste0("Loading ", config$vacc$shapefile_filename))
+        shp <- readRDS(config$custom$shapefile_filename)
+        message(paste0("Loading ", config$custom$shapefile_filename))
       } else {
-        ## temporarily hardcoding country level shapefile name for testing, will be included as config option
-        shp <- readRDS("input_data/shapefiles/DRC_custom_shapefile/country_shapefile.rds")
+        ## country level shapefile
+        shp <- readRDS(config$custom$country_shapefile_filename)
         message("Loading custom admin 0 shapefile ")
       }
 

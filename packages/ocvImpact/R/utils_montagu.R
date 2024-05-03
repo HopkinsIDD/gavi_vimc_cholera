@@ -116,7 +116,7 @@ import_coverage_scenario_custom <- function(datapath, country, scenario, cache, 
     
     
     message(paste("Loading custom coverage scenario:", country, scenario))
-    cov_dat <- readr::read_csv(config$vacc$coverage_filename) %>%
+    cov_dat <- readr::read_csv(config$custom$coverage_filename) %>%
       dplyr::filter(country_code == !!country)
     
     print(cov_dat)
@@ -198,11 +198,11 @@ import_centralburden_template <- function(modelpath, country, cache, redownload 
     
     ## for VIMC Core model runs, we are using the central burden template file from montagu and the output years are determined from that file 
     ## if we are not using montagu coverage, only keep output years specified by the config -- this applies to the DRC Case study
-    if (as.logical(config$use_montagu_coverage) == FALSE & !is.null(config$use_montagu_coverage)){
+    if (as.logical(config$custom$use_montagu_coverage) == FALSE & !is.null(config$custom$use_montagu_coverage)){
       message("Only keep model years used for the DRC case study in the central burden template")
       rc <- rc %>%
-        dplyr::filter(year >= eval(parse(text = config$output_years))[1]) %>%  #TL
-        dplyr::filter(year <= eval(parse(text = config$output_years))[2]) #TR
+        dplyr::filter(year >= eval(parse(text = config$custom$output_years))[1]) %>%  #TL
+        dplyr::filter(year <= eval(parse(text = config$custom$output_years))[2]) #TR
     }
   }
 

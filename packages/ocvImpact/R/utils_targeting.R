@@ -64,7 +64,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
     ## admin unit shapefile ##
     
     ##The VIMC Core Model
-    if (as.logical(config$use_custom_shapefile) == FALSE){ 
+    if (as.logical(config$custom$use_custom_shapefile) == FALSE){ 
       message("load vaccine targets using the GADM admin 2 shapefile")
       shp <- load_shapefile_by_country(datapath, country)
     } else { ## The DRC Case Study, which uses a custom shapefile for health zones
@@ -114,7 +114,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
     ### do a little thing to the dataframe -- 7/2021
     ## This is only necessary when using the GADM admin 2 shapefile, since the custom DRC shapefile already has the required columns from shp_sp
     
-    if(as.logical(config$use_custom_shapefile) == FALSE){
+    if(as.logical(config$custom$use_custom_shapefile) == FALSE){
       shp <- shp %>%
         dplyr::mutate(genID = paste0(NAME_0, '-', NAME_1, '-', NAME_2))
       shp_sp <- GADMTools::gadm_sp_loadCountries(c(country), level = 2, basefile = file.path(datapath, "shapefiles/"))$spdf
@@ -167,7 +167,7 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, cache
   message(paste("Now assigning vaccine by incidence:", country, scenario))
   ptargets <- load_targets_by_country(datapath, modelpath, country)
   ###########add a little check point for the situation when the coverage data exists but is just 0
-  if (as.logical(config$use_montagu_coverage) == TRUE){  ##the VIMC Core Model
+  if (as.logical(config$custom$use_montagu_coverage) == TRUE){  ##the VIMC Core Model
     coverage <- import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)
   } else {  ## the DRC Case Study
     coverage <- import_coverage_scenario_custom(datapath, country, scenario, cache, filter0 = FALSE)
@@ -178,7 +178,7 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, cache
   if (!coverage_as_all_0_for_campaign){
     ## this seems to be a catch-all filtering step, in case montagu starts including no-vaccination years in its coverage sheets
     
-    if (as.logical(config$use_montagu_coverage) == TRUE){  ##the VIMC Core Model
+    if (as.logical(config$custom$use_montagu_coverage) == TRUE){  ##the VIMC Core Model
       coverage <- import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)
     } else {  ## the DRC Case Study
       coverage <- import_coverage_scenario_custom(datapath, country, scenario, cache, filter0 = FALSE)
@@ -209,7 +209,7 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, cache
       
       ## Major modification 1 May 2024 for DRC case study - testing
       
-      if(as.logical(config$use_montagu_coverage) == TRUE){
+      if(as.logical(config$custom$use_montagu_coverage) == TRUE){
         
         ## montagu coverage tables have a target population that represents the country level population
         
