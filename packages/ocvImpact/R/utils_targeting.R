@@ -170,7 +170,11 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, cache
   if (as.logical(config$custom$use_montagu_coverage) == TRUE){  ##the VIMC Core Model
     coverage <- import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)
   } else {  ## the DRC Case Study
-    coverage <- import_coverage_scenario_custom(datapath, country, scenario, cache, filter0 = FALSE)
+    if (config$scenario == "no-vaccination"){
+      coverage <- NULL
+    } else {
+      coverage <- import_coverage_scenario_custom(datapath, country, scenario, cache, filter0 = FALSE)
+    }
   }
 
   coverage_as_all_0_for_campaign <- (sum(coverage$OCV1) == 0) & (sum(coverage$OCV2) == 0)
