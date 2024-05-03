@@ -230,6 +230,9 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, cache
           dplyr::rename(pop_age = value) %>%
           dplyr::select(country_code, year, age_from, age_to, pop_age) %>%
           dplyr::summarise(pop_tot = sum(pop_age))
+        
+        ##debugging
+        str(goal_target_pop)
            
         
       }
