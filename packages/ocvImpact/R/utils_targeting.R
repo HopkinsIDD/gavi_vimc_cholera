@@ -235,7 +235,13 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, cache
         str(goal_target_pop)
         
         ## keep only the numeric value
-        goal_target_pop <- goal_target_pop[1,1]
+        goal_target_pop <- as.numeric(goal_target_pop[1,1])
+        
+        message("turned goal_target_pop to numeric")
+        
+        ##debugging
+        str(goal_target_pop)
+        
            
         
       }
