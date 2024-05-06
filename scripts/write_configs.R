@@ -94,6 +94,7 @@ for(scn in scenarios){
         pars$incidence_rate_trend <- incidence_rate_trend
         pars$outbreak_multiplier <- outbreak_multiplier          
         pars$random_seed <- random_seed
+        pars$campaign_cov <- campaign_cov
         pars$use_montagu_coverage <- use_montagu_coverage
         pars$use_custom_shapefile <- use_custom_shapefile
         

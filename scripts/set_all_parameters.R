@@ -1,15 +1,16 @@
 #====== The Basics ======#
-targeting_strategy <- "custom" #c("threshold_unconstrained", "affected_pop", "incidence", "random", "custom"), "threshold_unconstrained" means it's for the surveillance project
+targeting_strategy <- "random" #c("threshold_unconstrained", "affected_pop", "incidence", "random", "custom"), "threshold_unconstrained" means it's for the surveillance project
 #runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202110gavi-3") ### Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
 runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202310gavi-4") ### for 2023 VIMC core:Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
 
 
 #====== Shared parameters ======#
-##for the DRC Case study, only use scenario "ocv1-ocv2-default"
+##for the DRC Case study, only use scenarios "ocv1-ocv2-default" and "no-vaccination"
 scenarios <- c("ocv1-default","ocv1-ocv2-default", "no-vaccination")
-num_skip_years <- 3   #district-level skipped years, relevant to both projects
+num_skip_years <- 5   #district-level skipped years, relevant to both projects
 num_samples <- 100  #shared by both projects
 use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity
+campaign_cov <- 0.965 # assumed coverage at the district/health zone level, for the VIMC Core model set to 0.8
 
 if (runname == "202310gavi-4"){
   self_random_seed <- 103  #use the same random seed for all settings and scenarios for the 202310gavi-4 touchstone
