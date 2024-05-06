@@ -58,7 +58,7 @@ create_model_pop_raster <- function(datapath, modelpath, country, year, cache){
 #' @include utils_targeting.R load_shapefile_by_country.R utils.R
 allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...){
 
-  vacc_targets <- assign_vaccine_targets(datapath, modelpath, country, scenario, cache, campaign_cov = as.numeric(config$campaign_cov)...)
+  vacc_targets <- assign_vaccine_targets(datapath, modelpath, country, scenario, cache, campaign_cov = as.numeric(config$campaign_cov), ...)
 
   ## skip if no vaccination
   if (is.null(vacc_targets)){
