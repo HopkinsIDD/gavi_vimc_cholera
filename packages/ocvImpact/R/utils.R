@@ -89,16 +89,7 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...)
       model_pop_raster <- create_model_pop_raster(datapath, modelpath, country, yr, cache)
       model_pop_admin <- get_admin_population(model_pop_raster, shp)
       
-      ## 1 May 2024: test for DRC Case study: filter out health zones with NA population
-      
-      ##if(any(is.na(model_pop_admin))){
-        ##print(" NA values found in health zone population, removing units with NA population ")
-        ##shp <- shp[-which(is.na(model_pop_admin)),] ## remove rows with NA population
-        ##message(paste0(" removed units with NA population from shapefile: ", shp$NAME_2[which(is.na(model_pop_admin))]))
-        ##model_pop_admin <- na.omit(model_pop_admin) ## remove NAs from health zone/admin2 incidence
-      ##}
-      
-      ## end test
+      ## Note that this part of the code may be affected by some districts/health zones having NA incidence
       
       rc <- shp %>%
         dplyr::mutate(vacc_year = yr,
