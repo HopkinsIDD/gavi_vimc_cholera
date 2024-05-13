@@ -14,8 +14,11 @@ If you have any questions about how to access the restricted data or how to run 
   <br />
 
 
-## Project 1 -- the GAVI-VIMC Core Project
+## Project 1a. -- the GAVI-VIMC Core Project
 After the whole model is set up following the Wiki page instructions, change the "targeting_strategy" to either "affected_pop" or "incidence" in `scripts/set_all_parameters.R` and then other parameter values that should be user-specified to generate the formal configuration files. Then, submit the Shell script in `sbatch_scripts/gavi_vimc_project/gen_incid/` to generate country-level incidence rate raster files. Next, submit a Shell script that's applicable in the `sbatch_scripts/gavi_vimc_project/` to run the formal simulation. Finally, you'll be able to find all the necessary model outputs inside both `output_raw` folder and `output_final` folder. 
+
+## Project 1b. -- the DRC Case study
+After the whole model is set up following the Wiki page instructions, change the "targeting_strategy" to either "affected_pop", "custom", or "random" in `scripts/set_all_parameters.R` and then other parameter values that should be user-specified to generate the formal configuration files. They correspond to three targeting scenarios that are evaluated in the context of the DRC Case study.  
 
 ## Project 2 -- the Surveillance Value Study
 The process to run the surveillance project is very similar to the steps described above but has some key differences: all the configuration files have already been generated and stored in `configs/202302_survms/` to ensure the replicability of the study results; if you want to make new configurations files, the "targeting_strategy" parameter can only be "threshold_unconstrained" for the model to run a set of different procedures for the study; the Shell scripts are stored within `/sbatch_scripts/surveillance_project/`; upon the completion of the simulations, all the intermediate files (if you choose to save them for future references, which is governed by the "save_final_output_raster" parameter in the configuration) and final model outputs will be saved under the `output_raw` folder, the `output_final` folder however, will still be empty. 
