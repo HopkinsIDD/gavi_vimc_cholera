@@ -58,25 +58,39 @@ create_model_pop_raster <- function(datapath, modelpath, country, year, cache){
 #' @include utils_targeting.R load_shapefile_by_country.R utils.R
 allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...){
 
-  vacc_targets <- assign_vaccine_targets(datapath, modelpath, country, scenario, cache, ...)
+  vacc_targets <- assign_vaccine_targets(datapath, modelpath, country, scenario, cache, campaign_cov = as.numeric(config$campaign_cov), ...)
 
   ## skip if no vaccination
   if (is.null(vacc_targets)){
     vacc_coverage <- NULL
   } else{
     vacc_years <- sort(unique(vacc_targets$vacc_year))
-    shp <- load_shapefile_by_country(datapath, country)
+    if (as.logical(config$custom$use_custom_shapefile) == TRUE){
+      message("Using custom shapefile to allocate vaccine")
+      shp <- load_custom_shapefile_by_country(admin0 = FALSE)
+      sf::st_crs(shp) <- 4326 ## for some reason crs needs to be re-set after loading the custom shapefile (to investigate)
+    } else {
+      message("using GADM admin 2 shapefile to allocate vaccine")
+      shp <- load_shapefile_by_country(datapath, country)
+    }
 
     ### a little play on the dataframe -- 7/2021
-    shp <- shp %>%
-      dplyr::mutate(genID = paste0(NAME_0, '-', NAME_1, '-', NAME_2))
-    shp_sp <- GADMTools::gadm_sp_loadCountries(c(country), level = 2, basefile = file.path(datapath, "shapefiles/"))$spdf
-    shp_sp$genID <- paste0(shp_sp$NAME_0, '-', shp_sp$NAME_1, '-', shp_sp$NAME_2)
-    shp <- merge(shp, shp_sp, id = 'genID')
-
+    ## This is only necessary when using the GADM admin 2 shapefile, since the custom DRC shapefile already has the required columns from shp_sp
+    
+    if(as.logical(config$custom$use_custom_shapefile) == FALSE){
+      shp <- shp %>%
+        dplyr::mutate(genID = paste0(NAME_0, '-', NAME_1, '-', NAME_2))
+      shp_sp <- GADMTools::gadm_sp_loadCountries(c(country), level = 2, basefile = file.path(datapath, "shapefiles/"))$spdf
+      shp_sp$genID <- paste0(shp_sp$NAME_0, '-', shp_sp$NAME_1, '-', shp_sp$NAME_2)
+      shp <- merge(shp, shp_sp, id = 'genID')
+    }
+    
     vacc_pop <- lapply(vacc_years, function(yr){
       model_pop_raster <- create_model_pop_raster(datapath, modelpath, country, yr, cache)
       model_pop_admin <- get_admin_population(model_pop_raster, shp)
+      
+      ## Note that this part of the code may be affected by some districts/health zones having NA incidence
+      
       rc <- shp %>%
         dplyr::mutate(vacc_year = yr,
                       pop_model = model_pop_admin) %>%
@@ -522,4 +536,34 @@ generate_aoi <- function(country){
 #' @export
 generate_infectionDuration <- function(){
   return(4/365)
+}
+
+
+#' @name load_custom_shapefile_by_country
+#' @title load_custom_shapefile_by_country
+#' @description Load a custom shapefile for DRC health zones (for the DRC case study) or a generated admin0 level shapefile for a country and return sf object
+#' @param admin0 whether to return an admin0 level sf (default = FALSE)
+#' @return shapefile in sf format
+#' @export 
+load_custom_shapefile_by_country <- function(admin0 = FALSE){
+  
+  
+  tryCatch(
+    {
+      if (admin0 == FALSE){
+        shp <- readRDS(config$custom$shapefile_filename)
+        message(paste0("Loading ", config$custom$shapefile_filename))
+      } else {
+        ## country level shapefile
+        shp <- readRDS(config$custom$country_shapefile_filename)
+        message("Loading custom admin 0 shapefile ")
+      }
+
+    },
+    error = function(e) {
+      print(paste("Unable to get custom shapefile.", e))
+    }
+  )
+  
+  return(shp)
 }

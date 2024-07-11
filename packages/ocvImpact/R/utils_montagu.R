@@ -83,6 +83,85 @@ import_coverage_scenario <- function(modelpath, country, scenario, cache, filter
   return(cov_dat)
 }
 
+#' @name import_coverage_scenario_custom
+#' @title import_coverage_scenario_custom
+#' @description Imports a CSV file with vaccination coverage values for the DRC Case study
+#' @param datapath Path to input files
+#' @param country country code
+#' @param scenario Unique string that identifies the coverage scenario name
+#' @param cache montagu cache object
+#' @param filter0 logical for whether 0 vaccination years should be filtered out (default = FALSE)
+#' @importFrom magrittr %>%
+#' @return Dataframe with vaccination coverage for a single scenario and country. Years without vaccination are excluded from the returned dataframe. Countries without vaccination in any year return a null dataframe.
+#' @export
+import_coverage_scenario_custom <- function(datapath, country, scenario, cache, filter0 = FALSE){
+  
+  ## look for whether the custom coverage scenario was already read in
+  if(!is.null(cache[["coverage_scenario"]])){
+    message("Loading custom coverage cache: coverage_scenario")
+    cov_dat <- cache[["coverage_scenario"]]
+    
+  } else{
+    #First check, then retrieve
+    #CoverageFiles <- list.files(datapath, pattern = "custom_coverage")
+    #if (length(CoverageFiles) == 1){ #there should be 1 coverage data file, so the default should be 1
+      #message(paste0("The custom coverage data file has been under the directory: ", datapath, '. No new download was made. '))
+    #} else{
+      #stop(paste0("The custom coverage data file was not found in directory: ", datapath, '. Run the custom_targeting_to_coverage.R script to generate the coverage data file. '))
+    #}
+    
+    #Start importing
+    #cov_fname <- list.files(datapath, pattern = "custom_coverage")
+    #cov_fname <- paste0(datapath, "/", cov_fname)
+    
+    
+    message(paste("Loading custom coverage scenario:", country, scenario))
+    cov_dat <- readr::read_csv(config$custom$coverage_filename) %>%
+      dplyr::filter(country_code == !!country)
+    
+    print(cov_dat)
+    
+    if (nrow(cov_dat)==0){
+      message("**** N.B. This is a no-vaccination scenario. Returning NULL.")
+      cov_dat <- NULL
+    } else{
+      cov_dat <- dplyr::arrange(cov_dat, year) %>%
+        dplyr::mutate(fvp = round(target*coverage, 0))
+      
+      ##added procedure to add ocv2 rows for the coverage for the ocv1 scenario to ensure implementation is consistent across scenarios
+      if (scenario == "ocv1-default"){
+        coverage_copy <- cov_dat
+        coverage_copy$vaccine <- 'OCV2'
+        coverage_copy$coverage <- 0 ##ocv2 rows get 0 coverage for the ocv1-default scenario
+        cov_dat <- rbind(cov_dat, coverage_copy)
+        rm(coverage_copy) ##coverage_copy was just a template, remove to save memory
+      }
+      
+      ##procedure to make coverage dataframe 'wider' (get new columns for ocv1 and ocv2 coverage)
+      
+      wide_coverage <- cov_dat %>% tidyr::pivot_wider(names_from = vaccine, values_from = coverage)
+      ocv2_coverage <- wide_coverage$OCV2[!is.na(wide_coverage$OCV2)]
+      wide_coverage <- subset(wide_coverage, (!is.na(wide_coverage$OCV1)))
+      wide_coverage$OCV2 <- ocv2_coverage
+      cov_dat <- wide_coverage
+      rm(wide_coverage) ##wide_coverage was just a template, remove to save memory
+      
+      ##get columns with the vps vaccinated with one dose and two doses of the vaccine, and the proportion of vaccinated people who received one dose
+      cov_dat <- dplyr::arrange(cov_dat, year) %>%
+        dplyr::mutate(fvp_ocv1 = round(target*OCV1, 0)) %>% ## add number of 1-dose vaccinees
+        dplyr::mutate(fvp_ocv2 = round(target*OCV2, 0)) %>% ## add number of 2-dose vaccinees
+        dplyr::mutate(prop_ocv1 = fvp_ocv1/(fvp_ocv1+fvp_ocv2)) ## calculate proportion of people receiving at least 1 dose that received exactly 1 dose
+      
+      ## 1/23/2024 calam moved the filter0 utility at the end of the function
+      if (filter0){
+        cov_dat <- dplyr::filter(cov_dat, OCV1 != 0 | OCV2 != 0)
+      }
+    }
+  }
+  
+  return(cov_dat)
+}
+
 #' @name import_centralburden_template
 #' @title import_centralburden_template
 #' @description Imports a CSV template file for the central burden estimates static columns indicating the burden estimates that need to be generated for each scenario
@@ -116,6 +195,15 @@ import_centralburden_template <- function(modelpath, country, cache, redownload 
     rc <- readr::read_csv(paste0(modelpath, "/", fname)) %>%
       dplyr::filter(country == !!country) %>%
       dplyr::distinct(disease, country, country_name, year, age)
+    
+    ## for VIMC Core model runs, we are using the central burden template file from montagu and the output years are determined from that file 
+    ## if we are not using montagu coverage, only keep output years specified by the config -- this applies to the DRC Case study
+    if (as.logical(config$custom$use_montagu_coverage) == FALSE & !is.null(config$custom$use_montagu_coverage)){
+      message("Only keep model years used for the DRC case study in the central burden template")
+      rc <- rc %>%
+        dplyr::filter(year >= eval(parse(text = config$custom$output_years))[1]) %>%  #TL
+        dplyr::filter(year <= eval(parse(text = config$custom$output_years))[2]) #TR
+    }
   }
 
   return(rc)

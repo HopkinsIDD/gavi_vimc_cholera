@@ -198,6 +198,7 @@ incid <- ocvImpact::create_incid_raster(
     country,
     nsamples,
     clean <- TRUE, 
+    redraw = as.logical(config$incid$redraw),
     random_seed = as.numeric(config$setting$random_seed) #updated from "=" to "<-"
     )
 

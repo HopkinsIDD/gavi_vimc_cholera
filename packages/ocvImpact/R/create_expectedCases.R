@@ -54,7 +54,15 @@ create_expectedCases <- function(
   sus_rasterStack <- raster::brick(sus_out_fn)
   vacc_rasterStack <- raster::brick(vacc_out_fn)
   pop_rasterStack <- raster::brick(pop_out_fn)
-  shp0 <- load_shapefile_by_country(datapath, country, simple = TRUE)
+  
+  ## if we are using the custom shapefile with health zones (for the DRC case study), specified in the config
+  if(as.logical(config$custom$use_custom_shapefile) == TRUE){
+    message(paste("Create expected cases using custom shapefile: ", config$custom$shapefile_filename))
+    shp0 <- load_custom_shapefile_by_country(admin0 = TRUE)
+  } else {
+    shp0 <- load_shapefile_by_country(datapath, country, simple=TRUE) ## if we are using the GADM shapefile (VIMC Core model)
+    message("Create expected cases using gadm admin 0 shapefile.")
+  }
 
   #fixing the BGD issue
   if(country == 'BGD'){
@@ -93,8 +101,15 @@ create_expectedCases <- function(
 
   ## apply outbreak multiplier only to the campaign years for now
   if (!scenario == "no-vaccination"){  ##using the following lines for the no-vaccination scenario creates inf values and leads to error
-    first_year <- min(ocvImpact::import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)$year)
-    last_year  <- max(ocvImpact::import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)$year) + 10 ## potential impact could extend 10 years beyond last campaign ## COULD CHANGE TO MATCH TRUNC_YEAR
+    if (as.logical(config$custom$use_montagu_coverage) == FALSE){ ## For the DRC Case Study
+      message("Use custom coverage scenario for outbreak multiplier in create expected cases")
+      first_year <- min(ocvImpact::import_coverage_scenario_custom(modelpath, country, scenario, cache, filter0 = FALSE)$year)
+      last_year  <- max(ocvImpact::import_coverage_scenario_custom(modelpath, country, scenario, cache, filter0 = FALSE)$year) + 10 ## potential impact could extend 10 years beyond last campaign ## COULD CHANGE TO MATCH TRUNC_YEAR
+    } else { ## the VIMC Core Model
+      message("Use montagu coverage scenario for outbreak multiplier in create expected cases")
+      first_year <- min(ocvImpact::import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)$year)
+      last_year  <- max(ocvImpact::import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)$year) + 10 ## potential impact could extend 10 years beyond last campaign ## COULD CHANGE TO MATCH TRUNC_YEAR
+    }
     campaign_years <- first_year:last_year
   }
 
@@ -237,7 +252,8 @@ create_expectedCases <- function(
       pop_rasterLayer <- raster::setExtent(pop_rasterLayer, raster::extent(shp0), keepres=FALSE, snap=FALSE)
     }
 
-
+    ## calam1 23 Apr 2024 added to re-set crs for DRC Case study
+    sf::st_crs(shp0) <- 4326
 
     ec_yr <- exactextractr::exact_extract(ec_rasterStack, shp0, fun = "sum", stack_apply = TRUE)
     print('The first exact_extract function got passed. ')
@@ -252,15 +268,19 @@ create_expectedCases <- function(
       stack_apply = TRUE)
     print('The second exact_extract function got passed. ')
 
-    ec_vec <- as.numeric(ec_yr)
+    ec_vec <- as.numeric(ec_yr)  
     mean_incid_vec <- as.numeric(mean_incid)
-    rc <- tibble::tibble(country = country, year = oy, run_id = seq_along(ec_vec), ec = ec_vec, incid_rate = mean_incid_vec)
 
+    print("Use tibble")
+  
+    rc <- tibble::tibble(country = country, year = oy, run_id = seq_along(ec_vec), ec = ec_vec, incid_rate = mean_incid_vec)
+    print('Tibble was used successfully')
     return(rc)
 
   })
 
   ec_final <- data.table::rbindlist(ec_ls)
+  print('rbindlist was used successfully')
 
   rm(lambda, sus_rasterStack, vacc_rasterStack, pop_rasterStack, ec_ls)
   gc()

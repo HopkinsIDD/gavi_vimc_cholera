@@ -62,7 +62,16 @@ load_targets_by_country <- function(datapath, modelpath, country){
     ## WorldPop population data ##
     pop <- load_worldpop_by_country(datapath, country)
     ## admin unit shapefile ##
-    shp <- load_shapefile_by_country(datapath, country)
+    
+    ##The VIMC Core Model
+    if (as.logical(config$custom$use_custom_shapefile) == FALSE){ 
+      message("load vaccine targets using the GADM admin 2 shapefile")
+      shp <- load_shapefile_by_country(datapath, country)
+    } else { ## The DRC Case Study, which uses a custom shapefile for health zones
+      message("load vaccine targets using the custom health zone shapefile")
+      shp <- load_custom_shapefile_by_country(admin0 = FALSE)
+      sf::st_crs(shp) <- 4326 ## for some reason crs needs to be re-set after loading the custom shapefile (to investigate)
+    }
 
     ## summarize rasters to admin level (BGD, non-raster, and african raster countries)
     if (country == "BGD"){
@@ -83,15 +92,25 @@ load_targets_by_country <- function(datapath, modelpath, country){
     } else {
       incid2 <- exactextractr::exact_extract(afr, shp, 'mean') ## could add population weight here for better incidence estimate but need to project population to the incidence grid
     }
+    
+    ## Note that this part of the code may be affected by some districts/health zones having NA incidence
+    
     pop2 <- get_admin_population(pop, shp)
     total_pop <- sum(pop2)
+    
+    ## 30 Apr 2024 debugging - check number of rows for population per admin unit
+    message(paste0("the population per health zone table has ", length(pop2), " elements"))
 
     ### do a little thing to the dataframe -- 7/2021
-    shp <- shp %>%
-      dplyr::mutate(genID = paste0(NAME_0, '-', NAME_1, '-', NAME_2))
-    shp_sp <- GADMTools::gadm_sp_loadCountries(c(country), level = 2, basefile = file.path(datapath, "shapefiles/"))$spdf
-    shp_sp$genID <- paste0(shp_sp$NAME_0, '-', shp_sp$NAME_1, '-', shp_sp$NAME_2)
-    shp <- merge(shp, shp_sp, id = 'genID')
+    ## This is only necessary when using the GADM admin 2 shapefile, since the custom DRC shapefile already has the required columns from shp_sp
+    
+    if(as.logical(config$custom$use_custom_shapefile) == FALSE){
+      shp <- shp %>%
+        dplyr::mutate(genID = paste0(NAME_0, '-', NAME_1, '-', NAME_2))
+      shp_sp <- GADMTools::gadm_sp_loadCountries(c(country), level = 2, basefile = file.path(datapath, "shapefiles/"))$spdf
+      shp_sp$genID <- paste0(shp_sp$NAME_0, '-', shp_sp$NAME_1, '-', shp_sp$NAME_2)
+      shp <- merge(shp, shp_sp, id = 'genID')      
+    }
 
     rc <- dplyr::mutate(shp,
                         incidence = incid2,
@@ -99,7 +118,8 @@ load_targets_by_country <- function(datapath, modelpath, country){
                         pop_prop = pop2/total_pop) %>%
       sf::st_drop_geometry() %>%
       dplyr::select(GID_0, GID_2, NAME_1, NAME_2, incidence, pop_prop) %>%
-      tibble::as_tibble()
+      tibble::as_tibble() 
+    
 
     if (sum(rc$pop_prop)!=1){
       stop(paste("The population proportion calculation is incorrect for", country))
@@ -137,13 +157,26 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, cache
   message(paste("Now assigning vaccine by incidence:", country, scenario))
   ptargets <- load_targets_by_country(datapath, modelpath, country)
   ###########add a little check point for the situation when the coverage data exists but is just 0
-  coverage <- import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)
+  if (as.logical(config$custom$use_montagu_coverage) == TRUE){  ##the VIMC Core Model
+    coverage <- import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)
+  } else {  ## the DRC Case Study
+    if (config$scenario == "no-vaccination"){
+      coverage <- NULL
+    } else {
+      coverage <- import_coverage_scenario_custom(datapath, country, scenario, cache, filter0 = FALSE)
+    }
+  }
 
   coverage_as_all_0_for_campaign <- (sum(coverage$OCV1) == 0) & (sum(coverage$OCV2) == 0)
 
   if (!coverage_as_all_0_for_campaign){
     ## this seems to be a catch-all filtering step, in case montagu starts including no-vaccination years in its coverage sheets
-    coverage <- import_coverage_scenario(modelpath, country, scenario, cache, filter0 = TRUE, redownload = FALSE)
+    
+    if (as.logical(config$custom$use_montagu_coverage) == TRUE){  ##the VIMC Core Model
+      coverage <- import_coverage_scenario(modelpath, country, scenario, cache, filter0 = FALSE, redownload = FALSE)
+    } else {  ## the DRC Case Study
+      coverage <- import_coverage_scenario_custom(datapath, country, scenario, cache, filter0 = FALSE)
+    }
 
   }
 
@@ -167,9 +200,48 @@ assign_vaccine_targets <- function(datapath, modelpath, country, scenario, cache
     for (i in 1:length(coverage$year)){
 
       cov_year <- coverage[i,]
+      
+      ## Major modification 1 May 2024 for DRC case study - testing
+      
+      if(as.logical(config$custom$use_montagu_coverage) == TRUE){
+        
+        ## montagu coverage tables have a target population that represents the country level population
+        
+        goal_target_pop <- cov_year$target ## target population for the vaccination campaign @ country level
+        
+      } else {
+        
+        ## if we are not using montagu coverage, target population needs to be made equal to country population
+        ## otherwise, as in the DRC case study, since the target population in the coverage table represents a small
+        ## subset of the country population, we get low numbers of possible vaccinated people in the calculation in lines 253-254
+        
+        ## get country population from montagu excluding people under 1
+        
+        goal_target_pop <- import_int_country_population(modelpath, country, cache, redownload = FALSE) %>%
+          dplyr::filter(country_code == !!country) %>%
+          dplyr::filter(year == coverage$year[i]) %>%
+          dplyr::filter(!age_from %in% c(0)) %>%   ##this filters out the people aged 0
+          dplyr::rename(pop_age = value) %>%
+          dplyr::select(country_code, year, age_from, age_to, pop_age) %>%
+          dplyr::summarise(pop_tot = sum(pop_age))
+        
+        ##debugging
+        str(goal_target_pop)
+        
+        ## keep only the numeric value
+        goal_target_pop <- as.numeric(goal_target_pop[1,1])
+        
+        message("turned goal_target_pop to numeric")
+        
+        ##debugging
+        str(goal_target_pop)
+        
+           
+        
+      }
 
-      goal_target_pop <- cov_year$target ## target population for the vaccination campaign @ country level
-
+      ## end major modification
+      
       ##goal fvps with one dose and two doses of the vaccine
       goal_ocv1_fvp <- cov_year$fvp_ocv1
       goal_ocv2_fvp <- cov_year$fvp_ocv2
@@ -291,6 +363,17 @@ run_targeting_strategy <- function(targets_df, targeting_strat){
     }
     rc <- dplyr::arrange(targets_df, desc(incidence))
 
+  } else if (targeting_strat == "random") {   ##order targets randomly for the 'random' targeting strategy
+    message("Using random targeting strategy")
+    ## vector with random numbers for sorting
+    random_id <- sample(1:nrow(targets_df), nrow(targets_df), replace = FALSE)
+    targets_df <- targets_df %>%
+      dplyr::mutate(sort_id = random_id)
+    
+    ##order randomly using the random_id column
+    rc <- dplyr::arrange(targets_df, sort_id) %>%
+      dplyr::select(-sort_id)  ## remove sort_id 
+    
   } else if (targeting_strat == "affected_pop"){
     if(!all(c("incidence", "pop_prop") %in% names(targets_df))){
       stop("Cannot target by affected_pop when `incidence` and `pop_prop` are not column names.")

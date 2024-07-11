@@ -51,17 +51,17 @@ if (!require('montagu', character.only = T)) {
 source("scripts/montagu_handle.R")
 
 #======Use the ocvImpact package======#
-if (!require('ocvImpact', character.only = T)) {
-  roxygen2::roxygenise("packages/ocvImpact")
-  install.packages("packages/ocvImpact", type = "source", repos = NULL)
-  library('ocvImpact', character.only = T)
-}
+#if (!require('ocvImpact', character.only = T)) {
+  #roxygen2::roxygenise("packages/ocvImpact")
+  #install.packages("packages/ocvImpact", type = "source", repos = NULL)
+  #library('ocvImpact', character.only = T)
+#}
 
 #======For the convenience of debugging======#
 ###These a few lines can be deleted safely after the model can run smoothly on the server. 
 library(raster)
-roxygen2::roxygenise("packages/ocvImpact")
-install.packages("packages/ocvImpact", type = "source", repos = NULL)
+#roxygen2::roxygenise("packages/ocvImpact")
+##install.packages("packages/ocvImpact", type = "source", repos = NULL)
 library('ocvImpact', character.only = T)
 
 ###########Comment completed###########
@@ -94,6 +94,9 @@ for(scn in scenarios){
         pars$incidence_rate_trend <- incidence_rate_trend
         pars$outbreak_multiplier <- outbreak_multiplier          
         pars$random_seed <- random_seed
+        pars$campaign_cov <- campaign_cov
+        pars$use_montagu_coverage <- use_montagu_coverage
+        pars$use_custom_shapefile <- use_custom_shapefile
         
         if(targeting_strategy != "threshold_unconstrained" & runname != "202310gavi-4"){
           scnpathname <- file.path(cpathname, scn)
@@ -113,6 +116,19 @@ for(scn in scenarios){
         } else {
           pars$ndoses <- "zero"
         }
+        
+        #parameters needed for the DRC Case study (202310gavi-4 touchstone)
+        if(use_montagu_coverage == FALSE){
+          pars$output_years <- output_years
+          pars$custom_targeting_filename <- custom_targeting_filename
+          pars$custom_coverage_filename <- custom_coverage_filename
+        }
+        
+        if(use_custom_shapefile == TRUE){
+          pars$custom_shapefile_filename <- custom_shapefile_filename
+          pars$custom_country_shapefile_filename <- custom_country_shapefile_filename
+        }
+        
         # the followings are specific to the surveillance project
         pars$save_intermediate_raster <- save_intermediate_raster
         pars$save_final_output_raster <- save_final_output_raster
