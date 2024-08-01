@@ -77,6 +77,7 @@ prepare_config <- function(p, configpath){
        "country: '", p$country, "'\n",
        "scenario: '", p$scenario, "'\n",
        "clean: ", p$clean, "\n",
+       "campaign_cov: ", p$campaign_cov, "\n",
        "incid:\n",
        "  num_samples: ", p$nsamples, "\n",
        "  redraw: ", p$redrawIncid, "\n",
