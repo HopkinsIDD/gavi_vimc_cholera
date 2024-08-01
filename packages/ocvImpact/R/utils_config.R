@@ -86,6 +86,8 @@ prepare_config <- function(p, configpath){
        "  targeting_strategy: ", p$targeting, "\n",
        "  num_skip_years: ", p$nskipyear, "\n",
        "  ndoses: ", p$ndoses, "\n",
+       "custom:\n",
+       "  use_montagu_coverage: ", p$use_montagu_coverage, "\n",
        "setting:\n",
        "  incidence_rate_trend: ", p$incidence_rate_trend, "\n",
        "  outbreak_multiplier: ", p$outbreak_multiplier, "\n", 
