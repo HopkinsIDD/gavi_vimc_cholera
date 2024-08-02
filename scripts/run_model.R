@@ -120,7 +120,7 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
     "purrr",
     "raster",
     "readr",
-    "sf",
+#   "sf",
     "stringr",
     "readxl",
     "tibble",
@@ -162,6 +162,7 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   library('ocvImpact', character.only = T)
   library(raster)
   library(dplyr)
+  library(sf)
 }
 
 
