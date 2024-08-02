@@ -88,6 +88,7 @@ prepare_config <- function(p, configpath){
        "  ndoses: ", p$ndoses, "\n",
        "custom:\n",
        "  use_montagu_coverage: ", p$use_montagu_coverage, "\n",
+       "  use_custom_shapefile: ", p$use_custom_shapefile, "\n",
        "setting:\n",
        "  incidence_rate_trend: ", p$incidence_rate_trend, "\n",
        "  outbreak_multiplier: ", p$outbreak_multiplier, "\n", 
