@@ -21,7 +21,10 @@ load_shapefile_by_country <- function(datapath, country, simple = FALSE){
           #shp <- GADMTools::gadm_sf_loadCountries(c(country), level = 2, basefile = file.path(datapath, "shapefiles/"))$sf
           shp <- geodata::gadm(c(country), level = 2, path =  file.path(datapath, "shapefiles/")) ## new implementation 1 Aug 2024
       }
-      shp <- sf::st_as_sf(shp) ## new implementation 1 Aug 2024
+      ## new implementation 1 Aug 2024
+      shp <- sf::st_as_sf(shp, crs = sf::st_crs(4326)) 
+      shp <- sf::st_cast(shp, "POLYGON") ## to ensure all rows are of the same geometry and avoid fasterize errors
+      shp <- sf::st_make_valid(shp)
       message(paste0("Loading ", datapath, "/shapefiles/", country_pattern, "_sf.rds"))
     },
     error = function(e) {
