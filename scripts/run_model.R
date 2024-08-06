@@ -108,7 +108,7 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   chooseCRANmirror(ind = 77) #specify the mirror so that the packages can be successfully installed in the non-interactive way
 
   package_list <- c(
-    "GADMTools",
+    "geodata",
     "rgdal",
     "drat",
     "roxygen2",
@@ -162,6 +162,7 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   library('ocvImpact', character.only = T)
   library(raster)
   library(dplyr)
+
 }
 
 
