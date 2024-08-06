@@ -109,7 +109,6 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
 
   package_list <- c(
     "geodata",
-    "rgdal",
     "drat",
     "roxygen2",
     "data.table",
