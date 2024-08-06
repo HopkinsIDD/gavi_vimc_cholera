@@ -74,6 +74,7 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...)
       shp <- load_shapefile_by_country(datapath, country)
     }
 
+    ### This is leftover code from when we were using GADMTools to load the country shapefiles, no longer needed now that we use geodata
     ### a little play on the dataframe -- 7/2021
     ## This is only necessary when using the GADM admin 2 shapefile, since the custom DRC shapefile already has the required columns from shp_sp
     
