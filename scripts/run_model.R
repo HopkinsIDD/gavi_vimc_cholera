@@ -113,7 +113,7 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
     "roxygen2",
     "data.table",
     "dplyr",
-    "exactextractr",
+#   "exactextractr",
     "fasterize",
     "optparse",
     "purrr",
