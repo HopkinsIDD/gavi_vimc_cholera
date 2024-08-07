@@ -30,7 +30,7 @@ load_shapefile_by_country <- function(datapath, country, simple = FALSE){
       print(paste("Unable to get shapefile for", country, ".", e))
     }
   )
-  ## make shapefile valid, may fail and throw error on idmodeling
+  ## make shapefile valid, this may fail and throw error on idmodeling because lwgeom is not installed there
   shp <- sf::st_make_valid(shp)
   return(shp)
 }
