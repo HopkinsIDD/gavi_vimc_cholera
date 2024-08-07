@@ -114,7 +114,7 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
     "data.table",
     "dplyr",
 #   "exactextractr",
-    "fasterize",
+#  "fasterize",
     "optparse",
     "purrr",
     "raster",
