@@ -161,6 +161,9 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   library('ocvImpact', character.only = T)
   library(raster)
   library(dplyr)
+  
+  ## added 7 Aug 2024 to test rgdal replacement and make sure raster is >= 3.6-3
+  message(paste("Raster version: ", packageVersion('raster')))
 
 }
 
