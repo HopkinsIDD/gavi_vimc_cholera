@@ -129,13 +129,13 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
     "MCMCglmm"
   )
 
-#  for (package in package_list) {
-#    if (!require(package = package, character.only = T)) {
-#      install.packages(pkgs = package)
-#      library(package = package, character.only = T)
-#    }
-#    detach(pos = which(grepl(package, search())))
-#  }
+  for (package in package_list) {
+    if (!require(package = package, character.only = T)) {
+      install.packages(pkgs = package)
+      library(package = package, character.only = T)
+    }
+    detach(pos = which(grepl(package, search())))
+  }
 
   #======Initialize Montagu package======#
   if (!require('montagu', character.only = T)) {
