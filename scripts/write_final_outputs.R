@@ -75,9 +75,9 @@ for (i in 1:length(scenarios)){
   ## if you want to generate central and stochastic estimates for a single setting set single_setting to TRUE
   ## and specify whether the incidence_rate_trend is TRUE or FALSE
   ## otherwise just set single_setting to FALSE
-  incidence_rate_trend <-TRUE # user-specified
+  incidence_rate_trend <-FALSE # user-specified
   outbreak_multiplier <- FALSE # user-specified
-  single_setting <- FALSE # user-specified
+  single_setting <- TRUE # user-specified
   if(single_setting){
     suffix <- paste0(".*", "_incid_trend_", incidence_rate_trend, "_outb_layer_", outbreak_multiplier, "_stoch.csv")
   }else{
