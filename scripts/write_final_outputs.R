@@ -128,7 +128,7 @@ for (i in 1:length(scenarios)){
   ## otherwise just set single_setting to FALSE
   incidence_rate_trend <- FALSE # user-specified
   outbreak_multiplier <- FALSE # user-specified
-  single_setting <- FALSE # user-specified
+  single_setting <- TRUE # user-specified
   if(single_setting){
     print("single setting is true")  
     suffix <- paste0(".*", "_incid_trend_", incidence_rate_trend, "_outb_layer_", outbreak_multiplier, "_pars.csv")
