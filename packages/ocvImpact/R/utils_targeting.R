@@ -101,18 +101,6 @@ load_targets_by_country <- function(datapath, modelpath, country){
     ## 30 Apr 2024 debugging - check number of rows for population per admin unit
     message(paste0("the population per health zone table has ", length(pop2), " elements"))
 
-    ### This is leftover code from when we were using GADMTools to load the country shapefiles, no longer needed now that we use geodata
-    ### do a little thing to the dataframe -- 7/2021
-    ## This is only necessary when using the GADM admin 2 shapefile, since the custom DRC shapefile already has the required columns from shp_sp
-    
-    #if(as.logical(config$custom$use_custom_shapefile) == FALSE){
-      #shp <- shp %>%
-       # dplyr::mutate(genID = paste0(NAME_0, '-', NAME_1, '-', NAME_2))
-      #shp_sp <- GADMTools::gadm_sp_loadCountries(c(country), level = 2, basefile = file.path(datapath, "shapefiles/"))$spdf
-      #shp_sp$genID <- paste0(shp_sp$NAME_0, '-', shp_sp$NAME_1, '-', shp_sp$NAME_2)
-      #shp <- merge(shp, shp_sp, id = 'genID')      
-    #}
-
     rc <- dplyr::mutate(shp,
                         incidence = incid2,
                         pop_wp = pop2,
