@@ -10,7 +10,7 @@ scenarios <- c("ocv1-default","ocv1-ocv2-default", "no-vaccination")
 num_skip_years <- 5   #district-level skipped years, relevant to both projects
 num_samples <- 100  #shared by both projects
 use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity
-campaign_cov <- 0.965 # assumed coverage at the district/health zone level, for the VIMC Core model set to 0.8
+campaign_cov <- 0.8 # assumed coverage at the district/health zone level, for the VIMC Core model set to 0.8
 
 if (runname == "202310gavi-4"){
   self_random_seed <- 103  #use the same random seed for all settings and scenarios for the 202310gavi-4 touchstone
@@ -34,8 +34,6 @@ countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZ
 # countries simulated in the surveillance project              
 #countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
               #"MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE") # now only includes the countries in Africa
-##countries simulated in the DRC case study
-#countries <- ("COD")
 
 
 
