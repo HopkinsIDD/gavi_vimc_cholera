@@ -14,11 +14,9 @@ load_shapefile_by_country <- function(datapath, country, simple = FALSE){
     {
       if (simple){
           country_pattern <- paste(country, "0", sep = "_")
-          #shp <- GADMTools::gadm_sf_loadCountries(c(country), level = 0, basefile = file.path(datapath, "shapefiles/"))$sf
           shp <- geodata::gadm(c(country), level = 0, path = file.path(datapath, "shapefiles/")) ## new implementation 1 Aug 2024
       } else{
           country_pattern <- paste(country, "2", sep = "_")
-          #shp <- GADMTools::gadm_sf_loadCountries(c(country), level = 2, basefile = file.path(datapath, "shapefiles/"))$sf
           shp <- geodata::gadm(c(country), level = 2, path =  file.path(datapath, "shapefiles/")) ## new implementation 1 Aug 2024
       }
       ## new implementation 1 Aug 2024
