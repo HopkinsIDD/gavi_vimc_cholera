@@ -108,8 +108,7 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   chooseCRANmirror(ind = 77) #specify the mirror so that the packages can be successfully installed in the non-interactive way
 
   package_list <- c(
-    "GADMTools",
-    "rgdal",
+   "geodata",
     "drat",
     "roxygen2",
     "data.table",
@@ -162,6 +161,10 @@ if (Sys.getenv("RUN_ON_MARCC", FALSE)) {
   library('ocvImpact', character.only = T)
   library(raster)
   library(dplyr)
+  
+  ## added 7 Aug 2024 to test rgdal replacement and make sure raster is >= 3.6-3
+  message(paste("Raster version: ", packageVersion('raster')))
+
 }
 
 

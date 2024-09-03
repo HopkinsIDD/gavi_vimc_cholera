@@ -73,17 +73,6 @@ allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...)
       message("using GADM admin 2 shapefile to allocate vaccine")
       shp <- load_shapefile_by_country(datapath, country)
     }
-
-    ### a little play on the dataframe -- 7/2021
-    ## This is only necessary when using the GADM admin 2 shapefile, since the custom DRC shapefile already has the required columns from shp_sp
-    
-    if(as.logical(config$custom$use_custom_shapefile) == FALSE){
-      shp <- shp %>%
-        dplyr::mutate(genID = paste0(NAME_0, '-', NAME_1, '-', NAME_2))
-      shp_sp <- GADMTools::gadm_sp_loadCountries(c(country), level = 2, basefile = file.path(datapath, "shapefiles/"))$spdf
-      shp_sp$genID <- paste0(shp_sp$NAME_0, '-', shp_sp$NAME_1, '-', shp_sp$NAME_2)
-      shp <- merge(shp, shp_sp, id = 'genID')
-    }
     
     vacc_pop <- lapply(vacc_years, function(yr){
       model_pop_raster <- create_model_pop_raster(datapath, modelpath, country, yr, cache)
