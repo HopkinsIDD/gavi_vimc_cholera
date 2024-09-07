@@ -50,3 +50,5 @@ Collate:
     'utils_config.R'
     'utils_cost.R'
     'utils_process_rawoutput.R'
+Depends: 
+    R (>= 2.10)
