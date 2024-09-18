@@ -134,6 +134,23 @@
 #'   ...
 #' }
 
+#'  Custom targeting table (sf dataframe with geometry) used for the 2024 DRC vaccine impact case study in the custom targeting scenario
+#'  This represents an example file for scenarios with a "custom" targeting strategy (custom$targeting_filename)
+#'  
+#' @format ## `drc_custom_targeting_2024_2026`
+#' An sf data frame with 1560 rows and 8 columns:
+#' \describe{
+#'   \item{NAME_2}{name of admin 2 unit/health zone}
+#'   \item{vacc_year}{vaccination year}
+#'   \item{actual_prop_atleast_1dose_vaccinated}{proportion of population that is vaccinated with at least one dose}
+#'   \item{actual_ocv1_fvp}{number of people who received one dose of the vaccine}
+#'   \item{actual_ocv2_fvp}{number of people who received two doses of the vaccine}
+#'   \item{pop_model}{admin unit population}
+#'   \item{GID_0}{country code}
+#'   \item{geometry}{geometry column}
+#'   ...
+#' }
+
 
 
 
