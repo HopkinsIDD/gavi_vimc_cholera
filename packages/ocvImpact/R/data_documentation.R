@@ -110,5 +110,30 @@
 #'   ...
 #' }
 
+#' ## Custom coverage table used for the 2024 DRC vaccine impact case study using the format used by VIMC
+#' This represents an example file for scenarios with "custom" coverage settings (when custom$use_montagu_coverage: FALSE, custom$coverage_filename)
+#'
+#' @format ## `drc_custom_coverage_2024_2026`
+#' A data frame with 6 rows and 15 columns:
+#' \describe{
+#'   \item{scenario}{vaccination scenario}
+#'   \item{set_name}{one dose, two dose vaccination set name}
+#'   \item{vaccine}{either OCV1 or OCV2}
+#'   \item{gavi_support}{how much of this campaign is supported by GAVI}
+#'   \item{activity_type}{type of vaccination, campaign for cholera}
+#'   \item{country_code}{country code}
+#'   \item{country}{country name}
+#'   \item{year}{year campaign will take place}
+#'   \item{age_first}{age of youngest vaccinee}
+#'   \item{age_last}{age of oldest vaccinee}
+#'   \item{age_range_verbatim}{age range}
+#'   \item{target}{target population size}
+#'   \item{coverage}{proportion of the target population covered by vaccine}
+#'   \item{gender}{which gender is vaccinated}
+#'   \item{proportion_risk}{proportion at risk}
+#'   ...
+#' }
+
+
 
 
