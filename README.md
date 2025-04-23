@@ -5,6 +5,7 @@
 This repo has all the code necessary to estimate the impact of preventive OCV campaigns for two projects: [1] the core Vaccine Impact Modelling Consortium (VIMC) model, which targets second-level administrative units according to mean annual incidence of suspected cases, and [2] an analysis to investigate how enhancing cholera surveillance with systematic bacteriologic confirmation could improve geographic targeting and vaccination campaign efficiency and cost-effectiveness. 
 
 [1] Lee EC, Azman AS, Kaminsky J, Moore SM, McKay HS, Lessler J (2019) The projected impact of geographic targeting of oral cholera vaccination in sub-Saharan Africa: A modeling study. PLoS Med 16(12): e1003003. https://doi.org/10.1371/journal.pmed.1003003
+
 [2] Xu, H., Zou, K., Dent, J. et al. Enhanced cholera surveillance to improve vaccination campaign efficiency. Nat Med 30, 1104–1110 (2024). https://doi.org/10.1038/s41591-024-02852-8
 
 Currently, only the surveillance project has been enabled to run on [ARCH](https://www.arch.jhu.edu/) (will be referred to as "Rockfish" hereafter), but both projects can be run on local machines. We recommend running one project at a time because these two individual projects share folders that have the exactly same names and running both of them at the same time may cause some output files to be overwritten. However, running multiple countries simultaneously within the same project is enabled and encouraged. 
