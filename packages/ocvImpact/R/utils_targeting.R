@@ -50,10 +50,10 @@ load_targets_by_country <- function(datapath, modelpath, country){
     runname <- config$runname
     if(runname == "202310gavi-4"){
       message(paste0("Loading ", datapath, "/incidence/afro_2016-2020_lambda_5k_mean.tif"))
-      afr <- raster::raster(paste0(datapath, "/incidence/afro_2016-2020_lambda_5k_mean.tif"))
+      afr <- terra::rast(paste0(datapath, "/incidence/afro_2016-2020_lambda_5k.tif"))
     } else {
       message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
-      afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
+      afr <- terra::rast(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
     }
     
 
@@ -75,7 +75,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
 
     ## summarize rasters to admin level (BGD, non-raster, and african raster countries)
     if (country == "BGD"){
-      bgd <- raster::raster(paste0(datapath, "/incidence/BGD_incid_5k_100.tif"))
+      bgd <- terra::rast(paste0(datapath, "/incidence/BGD_incid_5k_100.tif"))
       incid2 <- exactextractr::exact_extract(bgd, shp, 'mean') ## to use BGD incidence raster for targeting
     } else if (country %in% c("AFG", "HTI", "IRN", "IRQ", "NPL", "PAK", "PHL", "THA", "YEM", "IND")) { #for non-raster countries
        number_samples <- config$incid$num_samples
@@ -84,7 +84,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
        message(paste0("Loading ", file_path))
        ##check that the incidence rate raster is cropped and exists 
        if (file.exists(file_path)){
-         non_rast <- raster::raster(file_path)
+         non_rast <- terra::rast(file_path)
          incid2 <- exactextractr::exact_extract(non_rast, shp, 'mean') ## to use incidence raster for targeting for non-raster countries
        } else {
           stop(paste("Run the run_country_incid_crop script first for ", country))

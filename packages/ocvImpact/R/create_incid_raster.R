@@ -75,7 +75,7 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, r
         random_seed <- as.numeric(config$setting$random_seed)
       }
       setting_num <- random_seed #for the current design
-      BGD_raster <- raster::stack(paste0(datapath, "/incidence/BGD_incid_5k_50_setting", setting_num, ".tif"))
+      BGD_raster <- terra::rast(paste0(datapath, "/incidence/BGD_incid_5k_50_setting", setting_num, ".tif"))
       return(BGD_raster)
     }
 
@@ -99,15 +99,15 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, r
       runname <- config$runname
       if (runname == "202310gavi-4"){
         message(paste0("Loading ", datapath, "/incidence/afro_2016-2020_lambda_5k.tif"))
-        afr <- raster::stack(paste0(datapath, "/incidence/afro_2016-2020_lambda_5k.tif"))
+        afr <- terra::rast(paste0(datapath, "/incidence/afro_2016-2020_lambda_5k.tif"))
       } else {
         message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
-        afr <- raster::stack(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
+        afr <- terra::rast(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k.tif"))
       }
       ##end addition
       ###########this is following line is just for temp use before we figure out how to transfer raster files without corruptions###########
       #afr <- raster::stack(paste0("/home/kaiyuezou/montagu_try_7_5/gavi_vimc_cholera/input_data/incidence/afro_2010-2016_lambda_5k.tif"))
-      afr_sample <- raster::subset(afr, layer_indexes, drop = FALSE)
+      afr_sample <- afr[[layer_indexes]]
       rm(afr)
       gc()
 
@@ -116,7 +116,7 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, r
       gc()
 
       message(paste("Write", incid_out_fn))
-      raster::writeRaster(raster::stack(lambda), filename = incid_out_fn)
+      raster::writeRaster(lambda, filename = incid_out_fn)
 
       #######Kaiyue Added on 7/12/2021####### -- this is to use singular incidence to represent the whole country incidence
    }else if(country %in% NonRasterCountry){
@@ -131,7 +131,7 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, r
       rm(CountryPopRaster)
       rm(CountryIRRaster)
 
-      nrc <- raster::stack(StochasticLayers)
+      nrc <- terra::rast(StochasticLayers)
       nrc_sample <- nrc #we already have "nsample" samples
       #raster::plot(nrc_sample) ###################just for testing
 
@@ -143,7 +143,7 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, r
       rm(nrc_sample)
       gc()
       message(paste("Write", incid_out_fn))
-      raster::writeRaster(raster::stack(lambda), filename = incid_out_fn)
+      raster::writeRaster(lambda, filename = incid_out_fn)
       ###########Comment completed###########
 
    }else {
@@ -152,7 +152,7 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, r
 
  }else {
     message(paste("Skip creation", incid_out_fn))
-    lambda <- raster::stack(incid_out_fn)
+    lambda <- terra::rast(incid_out_fn)
  }
 
   return(lambda)

@@ -72,7 +72,7 @@ run_country_scenario <- function(
     custom_targeting_filename <- config$custom$targeting_filename ##get filename from the config
     vacc_alloc <- readRDS(custom_targeting_filename) 
   } else {
-    vacc_alloc <- allocate_vaccine(datapath, modelpath, country, scenario, montagu_cache, ...) #the changes start from here
+    vacc_alloc <- allocate_vaccine(datapath, modelpath, country, scenario, montagu_cache) #the changes start from here
   }
 
   ## write proportion vaccinated to file and export total population raster stack

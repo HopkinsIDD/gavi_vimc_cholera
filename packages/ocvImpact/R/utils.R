@@ -9,10 +9,10 @@
 create_relative_worldpop_weights <- function(datapath, country){
 
   pop <- load_worldpop_by_country(datapath, country)
-  total_pop <- sum(raster::getValues(pop), na.rm = TRUE)
-
-  wts <- raster::calc(pop, fun=function(x) x/total_pop)
-
+  total_pop <- terra::global(pop, fun = "sum", na.rm = TRUE)[1, 1]
+  
+  wts <- terra::app(pop, fun = function(x) x / total_pop)
+  
   if(round(sum(raster::values(wts), na.rm = TRUE),10) != 1){
     warning(paste("Relative population weights do not sum to 1 in", country))
   }
@@ -37,7 +37,7 @@ create_model_pop_raster <- function(datapath, modelpath, country, year, cache){
   wts <- create_relative_worldpop_weights(datapath, country)
   year_pop <- import_country_population_1yr(modelpath, country, year, cache)
 
-  rc <- raster::calc(wts, fun=function(x) x*year_pop)
+  rc <- terra::app(wts, fun = function(x) x*year_pop)
 
   return(rc)
 }
