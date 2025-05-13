@@ -20,11 +20,11 @@ load_worldpop_by_country <- function(datapath, country){
     message(paste0("Loading ", datapath, "/worldpop/", pop_fn))
     
     while(!exists('pop_world')){
-      try(pop_world <- raster::raster(paste0(datapath, "/worldpop/", pop_fn)))
+      try(pop_world <- terra::rast(paste0(datapath, "/worldpop/", pop_fn)))
       date_time<-Sys.time()
       while((as.numeric(Sys.time()) - as.numeric(date_time))<3.0){}
     }
-    # pop_world <- raster::raster(paste0(datapath, "/worldpop/", pop_fn))
+    # pop_world <- terra::rast(paste0(datapath, "/worldpop/", pop_fn))
     
     ## if we are using the custom shapefile with health zones (DRC case study), specified in config
     if(as.logical(config$custom$use_custom_shapefile) == TRUE){
