@@ -50,7 +50,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
     runname <- config$runname
     if(runname == "202310gavi-4"){
       message(paste0("Loading ", datapath, "/incidence/afro_2016-2020_lambda_5k_mean.tif"))
-      afr <- terra::rast(paste0(datapath, "/incidence/afro_2016-2020_lambda_5k.tif"))
+      afr <- terra::rast(paste0(datapath, "/incidence/afro_2016-2020_lambda_5k_mean.tif"))
     } else {
       message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
       afr <- terra::rast(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
