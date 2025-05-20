@@ -51,9 +51,9 @@ create_expectedCases <- function(
 
   ## write to file and import cholera incidence estimates
   lambda <- create_incid_raster(modelpath, datapath, country, nsamples, cache, redraw)
-  sus_rasterStack <- raster::brick(sus_out_fn)
-  vacc_rasterStack <- raster::brick(vacc_out_fn)
-  pop_rasterStack <- raster::brick(pop_out_fn)
+  sus_rasterStack <- terra::rast(sus_out_fn)
+  vacc_rasterStack <- terra::rast(vacc_out_fn)
+  pop_rasterStack <- terra::rast(pop_out_fn)
   
   ## if we are using the custom shapefile with health zones (for the DRC case study), specified in the config
   if(as.logical(config$custom$use_custom_shapefile) == TRUE){
@@ -66,7 +66,7 @@ create_expectedCases <- function(
 
   #fixing the BGD issue
   if(country == 'BGD'){
-    lambda <- raster::resample(lambda, pop_rasterStack, method = "ngb")
+    lambda <- terra::resample(lambda, pop_rasterStack, method = "near")
   }
 
   ### new tries -- 11/03/2021
@@ -142,9 +142,9 @@ create_expectedCases <- function(
     }
 
     yr_index <- which(oy == output_years)
-    pop_rasterLayer <- raster::subset(pop_rasterStack, yr_index, drop = FALSE)
-    vacc_rasterLayer <- raster::subset(vacc_rasterStack, yr_index, drop = FALSE)
-    sus_rasterLayer <- raster::subset(sus_rasterStack, yr_index, drop = FALSE)
+    pop_rasterLayer <- pop_rasterStack[[yr_index]]
+    vacc_rasterLayer <- vacc_rasterStack[[yr_index]]
+    sus_rasterLayer <- sus_rasterStack[[yr_index]]
 
     incid_trend_multiplier <- incid_trend_function(year = as.numeric(output_years[yr_index]))
     outbreak_ic_multiplier <- outbreak_trend_function(yr_index = 1) ### the returned list only has one element to use anyways
@@ -255,18 +255,39 @@ create_expectedCases <- function(
     ## calam1 23 Apr 2024 added to re-set crs for DRC Case study
     sf::st_crs(shp0) <- 4326
 
-    ec_yr <- exactextractr::exact_extract(ec_rasterStack, shp0, fun = "sum", stack_apply = TRUE)
-    print('The first exact_extract function got passed. ')
-
-    mean_incid <- exactextractr::exact_extract(
-      lambda,
-      shp0,
-      function(values, coverage_frac, weights){
-        weighted.mean(values, ifelse(is.na(coverage_frac*weights), 0, coverage_frac*weights), na.rm = TRUE)
-      },
-      weights = pop_rasterLayer,
-      stack_apply = TRUE)
-    print('The second exact_extract function got passed. ')
+    layer_names <- names(ec_rasterStack)
+    
+    ec_yr_list <- vector("list", length = nlyr(ec_rasterStack))
+    
+    for (i in seq_along(ec_yr_list)) {
+      ec_yr_list[[i]] <- exactextractr::exact_extract(ec_rasterStack[[i]], shp0, fun = "sum")
+      names(ec_yr_list)[i] <- layer_names[i]
+    }
+    
+    ec_yr <- do.call(cbind, ec_yr_list)
+    colnames(ec_yr) <- layer_names
+    
+    print('The first exactextractr::exact_extract function got passed. ')
+    mean_incid_list <- lapply(seq_len(nlyr(lambda)), function(i) {
+      exactextractr::exact_extract(
+        lambda[[i]],
+        shp0,
+        fun = function(values, coverage_frac, weights) {
+          weighted.mean(
+            values,
+            ifelse(is.na(coverage_frac * weights), 0, coverage_frac * weights),
+            na.rm = TRUE
+          )
+        },
+        weights = pop_rasterLayer
+      )
+    })
+    
+    # Combine into a data frame
+    mean_incid <- do.call(cbind, mean_incid_list)
+    colnames(mean_incid) <- names(lambda)
+    
+    print('The second exactextractr::exact_extract function got passed. ')
 
     ec_vec <- as.numeric(ec_yr)  
     mean_incid_vec <- as.numeric(mean_incid)
