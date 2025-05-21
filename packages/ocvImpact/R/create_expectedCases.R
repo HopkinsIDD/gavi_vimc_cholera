@@ -198,15 +198,16 @@ create_expectedCases <- function(
     } else {
 
       ec_rasterStack <- tryCatch(
-        if(!is.numeric(overall_multiplier) & class(overall_multiplier) == 'raster'){
-          raster::overlay(
+        if(!is.numeric(overall_multiplier) & inherits(overall_multiplier, 'SpatRaster')){
+          terra::overlay(
             pop_rasterLayer,
             lambda,
             overall_multiplier,
-            fun = function(x, y, z){
-              return(x*y*z)
+            fun = function(x, y, z) {
+              return(x * y * z)
             },
-            recycle = TRUE, unstack = TRUE)
+            filename = tempfile(), overwrite = TRUE
+          )
 
         }else{
           lambda * pop_rasterLayer * overall_multiplier
@@ -220,13 +221,13 @@ create_expectedCases <- function(
           print(class(lambda))
           print(class(overall_multiplier))
           print('The following is the nlayers/value for each object: pop_rasterLayer, lambda, and overall_multiplier: ')
-          if(!is.numeric(overall_multiplier) & class(overall_multiplier) == 'raster'){
-            print(list(lambda = raster::nlayers(lambda),
-                       pop = raster::nlayers(pop_rasterLayer),
-                       overall_multiplier = raster::nlayers(overall_multiplier)))
+          if(!is.numeric(overall_multiplier) & inherits(overall_multiplier, 'SpatRaster')){
+            print(list(lambda = terra::nlyr(lambda),
+                       pop = terra::nlyr(pop_rasterLayer),
+                       overall_multiplier = terra::nlyr(overall_multiplier)))
           }else{
-            print(list(lambda = raster::extent(lambda),
-                       pop = raster::extent(pop_rasterLayer),
+            print(list(lambda = terra::ext(lambda),
+                       pop = terra::ext(pop_rasterLayer),
                        overall_multiplier = overall_multiplier))
           }
 
