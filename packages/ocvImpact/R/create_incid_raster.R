@@ -18,7 +18,7 @@
 ###We also include modelpath as input
 ###########Comment completed###########
 
-create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, redraw, random_seed = NULL){
+create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, redraw, use_mean_incid_raster, random_seed = NULL){
 
   #######Kaiyue Added on 7/15/2021#######
   ######Kaiyue editted on 1/30/2022######
@@ -91,13 +91,21 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, r
         random_seed <- as.numeric(config$setting$random_seed)
       }
       set.seed(random_seed)
-      layer_indexes <- sort(sample(1:1000, nsamples, replace=TRUE))
-      print(layer_indexes)
+      if(!use_mean_incid_raster){
+        layer_indexes <- sort(sample(1:1000, nsamples, replace=TRUE))
+        print(layer_indexes)        
+      } else {
+        layer_indexes <- 1 # mean raster layer
+      }
+
 
       ## incidence data ##
       ##addition to use new mai rate raster for 2016-2020 for new touchstone
       runname <- config$runname
-      if (runname == "202310gavi-4"){
+      if (runname == "202505gavi-6"){
+        message(paste0("Loading ", datapath, "/incidence/afro_2016-2020_lambda_5k_mean.tif"))
+        afr <- terra::rast(paste0(datapath, "/incidence/afro_2016-2020_lambda_5k_mean.tif"))
+      } else if (runname == "202310gavi-4"){
         message(paste0("Loading ", datapath, "/incidence/afro_2016-2020_lambda_5k.tif"))
         afr <- terra::rast(paste0(datapath, "/incidence/afro_2016-2020_lambda_5k.tif"))
       } else {
