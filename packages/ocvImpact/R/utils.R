@@ -50,15 +50,16 @@ create_model_pop_raster <- function(datapath, modelpath, country, year, cache){
 #' @param modelpath path to montagu files
 #' @param country country code
 #' @param scenario Unique string that identifies the coverage scenario name
+#' @param targeting_strat vaccine targetting strategy
 #' @param cache montagu cache
 #' @param ... Optional parameters to pass to [`assign_vaccine_targets()`]. See [`assign_vaccine_targets()`] for defaults.
 #' @importFrom magrittr %>%
 #' @return dataframe with proportion of total population allocated with vaccines in admin units in a given country and year
 #' @export
 #' @include utils_targeting.R load_shapefile_by_country.R utils.R
-allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...){
+allocate_vaccine <- function(datapath, modelpath, country, scenario, targeting_strat, cache, ...){
 
-  vacc_targets <- assign_vaccine_targets(datapath, modelpath, country, scenario, cache, campaign_cov = as.numeric(config$campaign_cov))
+  vacc_targets <- assign_vaccine_targets(datapath, modelpath, country, scenario, cache, targeting_strat, campaign_cov = as.numeric(config$campaign_cov))
 
   ## skip if no vaccination
   if (is.null(vacc_targets)){
