@@ -102,8 +102,8 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, r
       ## incidence data ##
       ##addition to use new mai rate raster for 2016-2020 for new touchstone
       runname <- config$runname
-      if (runname == "202505gavi-6"){
-        message(paste0("Loading ", datapath, "/incidence/afro_2016-2020_lambda_5k_mean.tif"))
+      if (runname == "202310gavi-4" & use_mean_incid_raster){
+        message(paste0("Loading Mean Incidence Raster:", datapath, "/incidence/afro_2016-2020_lambda_5k_mean.tif"))
         afr <- terra::rast(paste0(datapath, "/incidence/afro_2016-2020_lambda_5k_mean.tif"))
       } else if (runname == "202310gavi-4"){
         message(paste0("Loading ", datapath, "/incidence/afro_2016-2020_lambda_5k.tif"))
