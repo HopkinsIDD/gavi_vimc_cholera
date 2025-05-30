@@ -133,7 +133,6 @@ for(scn in scenarios){
         pars$use_mean_ir <- use_mean_ir
         pars$mean_ir_span <- mean_ir_span       
 
-        # parameters that applies to 2025 ocv investment case (202505gavi-6)
         pars$use_mean_incid_raster = use_mean_incid_raster
         
         lapply(1:nrow(pars), function(i){
@@ -145,3 +144,4 @@ for(scn in scenarios){
     }  
  # }
 }
+
