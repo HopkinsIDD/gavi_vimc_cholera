@@ -1,16 +1,15 @@
 #====== The Basics ======#
-targeting_strategy <- "affected_pop" #c("threshold_unconstrained", "affected_pop", "incidence", "random", "custom"), "threshold_unconstrained" means it's for the surveillance project
+targeting_strategy <- "custom" #c("threshold_unconstrained", "affected_pop", "incidence", "random", "custom"), "threshold_unconstrained" means it's for the surveillance project
 #runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202110gavi-3") ### Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
-#runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202310gavi-4") ### for 2023 VIMC core:Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
-runname <- "202505gavi-6" ### this is for 2025 OCV investment case
+runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202310gavi-4") ### for 2023 VIMC core:Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
 
 #====== Shared parameters ======#
 ##for the DRC Case study, only use scenarios "ocv1-ocv2-default" and "no-vaccination"
 scenarios <- c("ocv1-default","ocv1-ocv2-default", "no-vaccination")
 num_skip_years <- 5   #district-level skipped years, relevant to both projects
-#num_samples <- 100  #shared by both projects
+num_samples <- 1  #shared by both projects
 use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity
-campaign_cov <- 0.8 # assumed coverage at the district/health zone level, for the VIMC Core model set to 0.8
+campaign_cov <- 0.965 # assumed coverage at the district/health zone level, for the VIMC Core model set to 0.8
 
 if (runname == "202310gavi-4"){
   self_random_seed <- 103  #use the same random seed for all settings and scenarios for the 202310gavi-4 touchstone
@@ -27,12 +26,12 @@ countries <- readr::read_csv("input_data/default_modeled_countries.csv") %>%
 # countries simulated in ocv investment case
 countries <- c("YEM")
 # countries simulated in the VIMC core project
-# countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
-#               "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE",
-#               "AFG", "HTI", "IRN", "IRQ", "NPL", "PAK", "PHL", "THA", "YEM", "IND", "BGD") #will likely to only include the countries in sub-Saharan Africa
+countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
+              "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE",
+              "AFG", "HTI", "IRN", "IRQ", "NPL", "PAK", "PHL", "THA", "YEM", "IND", "BGD") #will likely to only include the countries in sub-Saharan Africa
 # countries simulated in the surveillance project              
-#countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
-              #"MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE") # now only includes the countries in Africa
+countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
+"MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE") # now only includes the countries in Africa
 
 
 
@@ -90,7 +89,7 @@ if(use_random_seed & is.null(self_random_seed)){
 #====== Parameters specific to the DRC Case Study --  ======#
 ## for the DRC Case study, set montagu_coverage to FALSE
 ## for the VIMC Core Model runs and the Surveillance Project, set use_montagu_coverage to TRUE
-use_montagu_coverage <- TRUE 
+use_montagu_coverage <- FALSE 
 
 
 if(use_montagu_coverage == FALSE){
@@ -100,7 +99,7 @@ if(use_montagu_coverage == FALSE){
 }
 
 ## for the DRC Case study, set use_custom_shapefile to TRUE to use the shapefile with DRC Health zones
-use_custom_shapefile <- FALSE
+use_custom_shapefile <- TRUE
 
 if(use_custom_shapefile == TRUE){
   custom_shapefile_filename <- "input_data/shapefiles/DRC_custom_shapefile/custom_shapefile.rds" # modify to specify filename for the custom shapefile in the config
@@ -109,4 +108,3 @@ if(use_custom_shapefile == TRUE){
 
 #====== Parameters specific to the OCV Investment Case  --  ======#
 use_mean_incid_raster <- TRUE # use only mean raster (one layer)
-num_samples <- "mean"
