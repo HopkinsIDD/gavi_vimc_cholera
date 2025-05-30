@@ -1,5 +1,5 @@
 #====== The Basics ======#
-targeting_strategy <- "custom" #c("threshold_unconstrained", "affected_pop", "incidence", "random", "custom"), "threshold_unconstrained" means it's for the surveillance project
+targeting_strategy <- "affected_pop" #c("threshold_unconstrained", "affected_pop", "incidence", "random", "custom"), "threshold_unconstrained" means it's for the surveillance project
 #runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202110gavi-3") ### Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
 runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survms", "202310gavi-4") ### for 2023 VIMC core:Most important -- this is borrowed for the new surveillance project to pull demo data easily from Montagu
 
@@ -24,10 +24,8 @@ clean_incid <- FALSE
 countries <- readr::read_csv("input_data/default_modeled_countries.csv") %>%
   dplyr::distinct(country) %>% unlist %>% unname
 # countries simulated in ocv investment case
-countries <- c("YEM")
 # countries simulated in the VIMC core project
-countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
-              "MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE",
+countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI","MOZ", "MRT", "MWI", "NAM", "NER", "NGA", "RWA", "SEN", "SLE", "SOM", "SSD", "TCD", "TGO", "TZA", "UGA", "ZAF", "ZMB", "ZWE",
               "AFG", "HTI", "IRN", "IRQ", "NPL", "PAK", "PHL", "THA", "YEM", "IND", "BGD") #will likely to only include the countries in sub-Saharan Africa
 # countries simulated in the surveillance project              
 countries <-c("AGO", "BDI", "BEN", "BFA", "CAF", "CIV", "CMR", "COD", "COG", "DZA", "ETH", "GHA", "GIN", "GNB", "KEN", "LBR", "MDG", "MLI",
