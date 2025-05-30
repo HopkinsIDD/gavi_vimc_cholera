@@ -49,6 +49,7 @@ prepare_config <- function(p, configpath){
         "  num_samples: ", p$nsamples, "\n",
         "  redraw: ", p$redrawIncid, "\n",
         "  use_country_incid_trend: ", p$use_country_incid_trend, "\n",
+        "  use_mean_incid_raster: ", p$use_mean_incid_raster, "\n",
         "vacc:\n",
         "  targeting_strategy: ", p$targeting, "\n",
         "  num_skip_years: ", p$nskipyear, "\n",

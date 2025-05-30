@@ -28,15 +28,15 @@ create_static_modelInputs <- function(
   first_output_year <- output_years[1]
 
   startpop_raster <- create_model_pop_raster(datapath, modelpath, country, first_output_year, cache)
-  raster0_template <- raster::calc(startpop_raster, fun = function(x){x*0})
+  raster0_template <- terra::app(startpop_raster, fun = function(x){x*0})
 
   #### CREATE proportion vaccinated AND total population RASTERS FOR MODELING ####
 
   ## create rasterStack for
   ## 1. proportion of population vaccinated in each grid cell
   ## 2. population
-  vacc_rasterStack <- raster::stack(raster0_template)
-  pop_rasterStack <- raster::stack(startpop_raster)
+  vacc_rasterStack <- terra::rast(raster0_template)
+  pop_rasterStack <- terra::rast(startpop_raster)
   dir.create(file.path(rawoutpath, scenario), showWarnings = FALSE)
   vacc_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_vacc.tif")
   pop_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_pop.tif")
@@ -68,33 +68,37 @@ create_static_modelInputs <- function(
       message(paste("In", year, "of static_modelInputs"))
 
       if (year %in% unique(vacc_alloc$vacc_year)){
-        new_layer <- fasterize::fasterize(
-          dplyr::filter(vacc_alloc, vacc_year == year),
+
+        vacc_alloc_year <- dplyr::filter(vacc_alloc, vacc_year == year)
+        vacc_vect <- terra::vect(vacc_alloc_year)
+        
+        new_layer <- terra::rasterize(
+          vacc_vect,
           raster0_template,
           field = "actual_prop_atleast_1dose_vaccinated",
-          fun = "last",
           background = 0
-          )
+        )
         new_vacc_layer <- raster::mask(new_layer, raster0_template, updatevalue = NA)
+        
       } else{
         ## add 0 layer if there was no vaccination that year
         new_vacc_layer <- raster0_template
       } #endifelse
 
-      vacc_rasterStack <- raster::addLayer(vacc_rasterStack, new_vacc_layer)
-
+      vacc_rasterStack <- c(vacc_rasterStack, new_vacc_layer)
+      
       new_pop_layer <- create_model_pop_raster(datapath, modelpath, country, year, cache)
-      pop_rasterStack <- raster::addLayer(pop_rasterStack, new_pop_layer)
+      pop_rasterStack <- c(pop_rasterStack, new_pop_layer)
 
       rm(new_vacc_layer, new_pop_layer)
       gc()
 
     } #endfor model_years
 
-    ## drop initial vacc & pop rast layers, which were dummies
-    vacc_rs <- raster::dropLayer(vacc_rasterStack, 1)
-    pop_rs <- raster::dropLayer(pop_rasterStack, 1)
-
+    ## drop initial vacc & pop rast layers, which were dummies (we're using terra, the first layer is removed automatically)
+    vacc_rs <- vacc_rasterStack
+    pop_rs  <- pop_rasterStack
+    
     if ((dim(vacc_rs)[3] != length(output_years)) &
         (dim(pop_rs)[3] != length(output_years))){
 
