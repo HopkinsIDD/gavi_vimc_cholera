@@ -106,7 +106,8 @@ load_targets_by_country <- function(datapath, modelpath, country){
                         pop_wp = pop2,
                         pop_prop = pop2/total_pop) %>%
       sf::st_drop_geometry() %>%
-      dplyr::select(GID_0, GID_2, NAME_1, NAME_2, incidence, pop_prop) %>%
+      #dplyr::select(GID_0, GID_2, NAME_1, NAME_2, incidence, pop_prop) %>%
+      dplyr::select(GID_0, GID_2, incidence, pop_prop) %>% # for investment case study
       tibble::as_tibble() 
     
 
