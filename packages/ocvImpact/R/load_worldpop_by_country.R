@@ -34,8 +34,8 @@ load_worldpop_by_country <- function(datapath, country){
       message("Use GADM admin 0 shapefile to load worldpop population")
       shp <- load_shapefile_by_country(datapath, country, simple=TRUE) ## if we are using the GADM shapefile (VIMC Core model)
     }
-    cropped <- raster::crop(pop_world, shp, snap = "out")
-    pop <- raster::mask(cropped, shp, updatevalue = NA)
+    cropped <- terra::crop(pop_world, shp, snap = "out")
+    pop <- terra::mask(cropped, vect(shp))
     
     rm(pop_world)
     gc()
