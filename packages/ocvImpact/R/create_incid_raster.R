@@ -124,8 +124,8 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, r
       gc()
 
       message(paste("Write", incid_out_fn))
-      raster::writeRaster(lambda, filename = incid_out_fn)
-
+      terra::writeRaster(lambda, filename = incid_out_fn, overwrite = TRUE)
+      
       #######Kaiyue Added on 7/12/2021####### -- this is to use singular incidence to represent the whole country incidence
    }else if(country %in% NonRasterCountry){
       ###Calculate the number of cases for each grid cell and stack
@@ -151,7 +151,7 @@ create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, r
       rm(nrc_sample)
       gc()
       message(paste("Write", incid_out_fn))
-      raster::writeRaster(lambda, filename = incid_out_fn)
+      terra::writeRaster(lambda, filename = incid_out_fn, overwrite = TRUE)
       ###########Comment completed###########
 
    }else {
