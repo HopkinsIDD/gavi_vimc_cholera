@@ -30,6 +30,7 @@ create_expectedCases <- function(
   is_cf,
   redraw
   ){
+  library(terra)
 
   ############# Use the configs (might not work) -- 11/18/2021 #############
   incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
@@ -133,7 +134,7 @@ create_expectedCases <- function(
                                               output_years = c(oy),
                                               use_country_incid_trend = use_country_incid_trend)
       }else{
-        outbreak_multiplier_raster <- raster::stack(outbreak_out_fn) #please note that the raster here is RasterStack, not RasterBrick
+        outbreak_multiplier_raster <- terra::rast(outbreak_out_fn)
         outbreak_trend_function <- function(yr_index){return(outbreak_multiplier_raster)}
       }
 
@@ -158,21 +159,20 @@ create_expectedCases <- function(
 
       ## make new indirect effects template
       indirect_rasterLayer <- pop_rasterLayer
-      raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer)))
-
+      values(indirect_rasterLayer) <- indirect_mult * (1 - as.numeric(values(sus_rasterLayer)))
+      
       ec_rasterStack <- tryCatch(
-        if(!is.numeric(overall_multiplier) & class(overall_multiplier) == 'raster'){
-          raster::overlay(
+        if (!is.numeric(overall_multiplier) && inherits(overall_multiplier, "SpatRaster")) {
+          result <- terra::overlay(
             sus_rasterLayer,
             pop_rasterLayer,
             lambda,
             indirect_rasterLayer,
             overall_multiplier,
-            fun = function(x, y, z, a, b){
-              x*y*z*a*b
-            },
-            recycle = TRUE, unstack = TRUE)
-
+            fun = function(x, y, z, a, b) {
+              x * y * z * a * b
+            }
+          )
         }else {
           lambda * sus_rasterLayer * pop_rasterLayer  * indirect_rasterLayer * overall_multiplier
         },
@@ -187,10 +187,10 @@ create_expectedCases <- function(
           print(class(indirect_rasterLayer))
           print(class(overall_multiplier))
           print('The following is the nlayers for each object: sus_rasterLayer, pop_rasterLayer, lambda, and indirect_rasterLayer: ')
-          print(raster::nlayers(sus_rasterLayer))
-          print(raster::nlayers(pop_rasterLayer))
-          print(raster::nlayers(lambda))
-          print(raster::nlayers(indirect_rasterLayer))
+          print(terra::nlyr(sus_rasterLayer))
+          print(terra::nlyr(pop_rasterLayer))
+          print(terra::nlyr(lambda))
+          print(terra::nlyr(indirect_rasterLayer))
 
         }
       )
@@ -249,8 +249,9 @@ create_expectedCases <- function(
 
     ### fixing the MRT issue
     if(country == 'MRT'){
-      lambda <- raster::setExtent(lambda, raster::extent(shp0), keepres=FALSE, snap=FALSE)
-      pop_rasterLayer <- raster::setExtent(pop_rasterLayer, raster::extent(shp0), keepres=FALSE, snap=FALSE)
+      ext_shp0 <- terra::ext(shp0)
+      ext(lambda) <- ext_shp0
+      ext(pop_rasterLayer) <- ext_shp0
     }
 
     ## calam1 23 Apr 2024 added to re-set crs for DRC Case study
