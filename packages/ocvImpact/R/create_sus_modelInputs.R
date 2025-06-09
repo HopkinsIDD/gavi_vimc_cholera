@@ -152,8 +152,8 @@ create_sus_modelInputs <- function(
 
     message(paste("Write", sus_out_fn))
     sus_rs <- align_rasters(datapath, country, sus_rasterStack)
-    raster::writeRaster(sus_rs, filename = sus_out_fn)
-
+    terra::writeRaster(sus_rs, filename = sus_out_fn, overwrite = TRUE)
+    
     rm(startpop_raster, raster1_template, sus_rasterStack, sus_rs)
     gc()
 
