@@ -62,13 +62,13 @@ surveillance_create_expectedCases <- function(
     sus_rasterLayer1 <- sus_list[[1]]$sus_rasterStack_admin1
     if(!is.null(sus_rasterLayer1)){
       for(layer_idx in 2:nsamples){
-        sus_rasterLayer1 <- raster::stack(sus_rasterLayer1, sus_list[[layer_idx]]$sus_rasterStack_admin1)
+        sus_rasterLayer1 <- c(sus_rasterLayer1, sus_list[[layer_idx]]$sus_rasterStack_admin1)
       }
     }
     sus_rasterLayer2 <- sus_list[[1]]$sus_rasterStack_admin2
     if(!is.null(sus_rasterLayer2)){
       for(layer_idx in 2:nsamples){
-        sus_rasterLayer2 <- raster::stack(sus_rasterLayer2, sus_list[[layer_idx]]$sus_rasterStack_admin2)
+        sus_rasterLayer2 <- c(sus_rasterLayer2, sus_list[[layer_idx]]$sus_rasterStack_admin2)
       }
     }
     rm(sus_list)
@@ -78,8 +78,8 @@ surveillance_create_expectedCases <- function(
       sus_admin1_fn <- paste0("intermediate_raster/", country, "_sus_admin1_", model_year, ".tif")
       sus_admin2_fn <- paste0("intermediate_raster/", country, "_sus_admin2_", model_year, ".tif")
     
-      if("rc1" %in% rc_targeted){sus_rasterLayer1 <- raster::stack(sus_admin1_fn)}else{sus_rasterLayer1 <- NULL}
-      if("rc2" %in% rc_targeted){sus_rasterLayer2 <- raster::stack(sus_admin2_fn)}else{sus_rasterLayer2 <- NULL}
+      if("rc1" %in% rc_targeted){sus_rasterLayer1 <- c(sus_admin1_fn)}else{sus_rasterLayer1 <- NULL}
+      if("rc2" %in% rc_targeted){sus_rasterLayer2 <- c(sus_admin2_fn)}else{sus_rasterLayer2 <- NULL}
     }else{
       sus_rasterLayer1 <- sus_list$sus_rasterStack_admin1 
       sus_rasterLayer2 <- sus_list$sus_rasterStack_admin2
@@ -133,7 +133,7 @@ surveillance_create_expectedCases <- function(
                                             output_years = c(oy), 
                                             use_country_incid_trend = use_country_incid_trend)
     }else{
-      outbreak_multiplier_raster <- raster::stack(outbreak_out_fn) #please note that the raster here is RasterStack, not RasterBrick
+      outbreak_multiplier_raster <- c(outbreak_out_fn) #please note that the raster here is RasterStack, not RasterBrick
       outbreak_trend_function <- function(yr_index){return(outbreak_multiplier_raster)}
     }
     
@@ -157,11 +157,11 @@ surveillance_create_expectedCases <- function(
   # make new indirect effects template
   if("rc1" %in% rc_targeted){
     indirect_rasterLayer <- sus_rasterLayer1
-    raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer1)))
+    terra::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(terra::values(sus_rasterLayer1)))
 
     ec_rasterStack1 <- tryCatch(
-      if(!is.numeric(overall_multiplier) & class(overall_multiplier) %in% c('raster', 'RasterBrick', 'RasterLayer', 'RasterStack')){
-        raster::overlay(
+      if(!is.numeric(overall_multiplier) & inherits(overall_multiplier, "SpatRaster")){
+        terra::overlay(
           sus_rasterLayer1,
           pop_rasterLayer,
           lambda,
@@ -169,8 +169,8 @@ surveillance_create_expectedCases <- function(
           overall_multiplier, 
           fun = function(x, y, z, a, b){
             x*y*z*a*b
-          },
-          recycle = TRUE, unstack = TRUE) 
+          }
+        ) 
           
       }else{
         lambda * sus_rasterLayer1 * indirect_rasterLayer * pop_rasterLayer * overall_multiplier
@@ -180,18 +180,18 @@ surveillance_create_expectedCases <- function(
         print(paste0('The year when it goes wrong is ', oy))
       }
     )
-    ec_rasterStack1 <- raster::stack(ec_rasterStack1)
+    ec_rasterStack1 <- c(ec_rasterStack1)
   }else{ec_rasterStack1 <- NULL}
 
   ## admin2 then 
   # make new indirect effects template
   if("rc2" %in% rc_targeted){
     indirect_rasterLayer <- sus_rasterLayer2
-    raster::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(raster::values(sus_rasterLayer2)))
+    terra::values(indirect_rasterLayer) <- indirect_mult(1-as.numeric(terra::values(sus_rasterLayer2)))
 
     ec_rasterStack2 <- tryCatch(
-      if(!is.numeric(overall_multiplier) & class(overall_multiplier) %in% c('raster', 'RasterBrick', 'RasterLayer', 'RasterStack')){
-        raster::overlay(
+      if(!is.numeric(overall_multiplier) & inherits(overall_multiplier, "SpatRaster")){
+        terra::overlay(
           sus_rasterLayer2,
           pop_rasterLayer,
           lambda,
@@ -199,8 +199,8 @@ surveillance_create_expectedCases <- function(
           overall_multiplier, 
           fun = function(x, y, z, a, b){
             x*y*z*a*b
-          },
-          recycle = TRUE, unstack = TRUE) 
+          }
+        ) 
           
       }else{
         lambda * sus_rasterLayer2 * indirect_rasterLayer * pop_rasterLayer * overall_multiplier
@@ -210,7 +210,7 @@ surveillance_create_expectedCases <- function(
         print(paste0('The year when it goes wrong is ', oy))
       }
     )
-    ec_rasterStack2 <- raster::stack(ec_rasterStack2)
+    ec_rasterStack2 <- c(ec_rasterStack2)
   }else{ec_rasterStack2 <- NULL}
 
 
@@ -224,9 +224,9 @@ surveillance_create_expectedCases <- function(
     message(paste("Writing expected true cases rasterStack for", country))
     dir.create(paste0(rawoutpath, "/", scenario, "/"), showWarnings = FALSE)
     if( !file.exists(ec1_out_fn) | (file.exists(ec1_out_fn)&clean) ){
-      if(!is.null(ec_rasterStack1)){raster::writeRaster(ec_rasterStack1, filename = ec1_out_fn, overwrite = TRUE)}}
+      if(!is.null(ec_rasterStack1)){terra::writeRaster(ec_rasterStack1, filename = ec1_out_fn, overwrite = TRUE)}}
     if( !file.exists(ec2_out_fn) | (file.exists(ec2_out_fn)&clean) ){
-      if(!is.null(ec_rasterStack2)){raster::writeRaster(ec_rasterStack2, filename = ec2_out_fn, overwrite = TRUE)}}
+      if(!is.null(ec_rasterStack2)){terra::writeRaster(ec_rasterStack2, filename = ec2_out_fn, overwrite = TRUE)}}
   
   }
 
