@@ -122,8 +122,8 @@ load_baseline_incidence <- function(datapath,
   pop_baseline <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, baseline_year)
   
   ## mask the incidence raster to population raster first 
-  country_baseline <- raster::mask(country_baseline, pop_baseline)
-  pop_baseline <- raster::mask(pop_baseline, country_baseline)[[1]]
+  country_baseline <- terra::mask(country_baseline, pop_baseline)
+  pop_baseline <- terra::mask(pop_baseline, country_baseline)[[1]]
 
   ## if the incidence rate trend should be implemented 
   if(incidence_rate_trend){
@@ -152,8 +152,8 @@ load_baseline_incidence <- function(datapath,
   
   if(file.exists(confirm_rate_fn)){
     message("The true confirm rate rasters have already been in place, they will not be replaced. ")
-    confirm_rate_raster <- raster::stack(confirm_rate_fn)
-    if(raster::nlayers(confirm_rate_raster) != nsamples){
+    confirm_rate_raster <- c(confirm_rate_fn)
+    if(terra::nlyr(confirm_rate_raster) != nsamples){
       stop("The number of layers of the true confirm rate raster in the intermediate folder is wrong, run killed, please delete the wrong raster. ")
     }
   }else{
@@ -161,7 +161,7 @@ load_baseline_incidence <- function(datapath,
   }
     
   omicron_dataset <- readr::read_csv(paste0(datapath, "/confirmation_rate/parameters.csv"))
-  raster1_template <- raster::calc(country_baseline[[1]], fun = function(x){ifelse(!is.na(x), 1, NA)})
+  raster1_template <- terra::app(country_baseline[[1]], fun = function(x){ifelse(!is.na(x), 1, NA)})
   # prepare to generate the true confirm rate and set the random seed here to make sure they are consistent across different runs/scenarios 
   set.seed(random_seed) #******************************************************************************** IMPORTANT ********************************************************************************
   
@@ -196,8 +196,8 @@ load_baseline_incidence <- function(datapath,
           fun = "last",
           background = 1
       )
-      confirm_rate_raster <- raster::mask(confirm_rate_raster, raster1_template, updatevalue = NA)
-      confirm_rate_raster <- raster::mask(confirm_rate_raster, pop_baseline, updatevalue = NA)
+      confirm_rate_raster <- terra::mask(confirm_rate_raster, raster1_template)
+      confirm_rate_raster <- terra::mask(confirm_rate_raster, pop_baseline)
       confirm_rate_raster_one_layer <- confirm_rate_raster
     }else{
       confirm_rate_raster_one_layer <- confirm_rate_raster[[layer_idx]]
@@ -210,7 +210,7 @@ load_baseline_incidence <- function(datapath,
         fun = "last",
         background = 1
     )
-    observed_case_raster <- raster::mask(observed_case_raster, raster1_template, updatevalue = NA)
+    observed_case_raster <- terra::mask(observed_case_raster, raster1_template)
     confirm_rate_value_for_admin1 <- pop_weighted_admin_mean_incid(datapath, modelpath, confirm_rate_raster_one_layer, observed_case_raster, country, admin_shp = shp1)
     
 
@@ -274,10 +274,10 @@ load_baseline_incidence <- function(datapath,
       if(layer_idx == 1){
         tmp <- confirm_rate_raster
       }else if(layer_idx < nsamples){
-        tmp <- raster::stack(tmp, confirm_rate_raster)
+        tmp <- c(tmp, confirm_rate_raster)
       }else{
-        tmp <- raster::stack(tmp, confirm_rate_raster)
-        if(!file.exists(confirm_rate_fn)){ raster::writeRaster(tmp, filename = confirm_rate_fn, overwrite = FALSE) }
+        tmp <- c(tmp, confirm_rate_raster)
+        if(!file.exists(confirm_rate_fn)){ terra::writeRaster(tmp, filename = confirm_rate_fn, overwrite = FALSE) }
         rm(tmp, confirm_rate_raster)
       }
     }
