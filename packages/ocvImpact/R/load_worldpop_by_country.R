@@ -20,11 +20,11 @@ load_worldpop_by_country <- function(datapath, country){
     message(paste0("Loading ", datapath, "/worldpop/", pop_fn))
     
     while(!exists('pop_world')){
-      try(pop_world <- raster::raster(paste0(datapath, "/worldpop/", pop_fn)))
+      try(pop_world <- terra::rast(paste0(datapath, "/worldpop/", pop_fn)))
       date_time<-Sys.time()
       while((as.numeric(Sys.time()) - as.numeric(date_time))<3.0){}
     }
-    # pop_world <- raster::raster(paste0(datapath, "/worldpop/", pop_fn))
+    # pop_world <- terra::rast(paste0(datapath, "/worldpop/", pop_fn))
     
     ## if we are using the custom shapefile with health zones (DRC case study), specified in config
     if(as.logical(config$custom$use_custom_shapefile) == TRUE){
@@ -34,8 +34,8 @@ load_worldpop_by_country <- function(datapath, country){
       message("Use GADM admin 0 shapefile to load worldpop population")
       shp <- load_shapefile_by_country(datapath, country, simple=TRUE) ## if we are using the GADM shapefile (VIMC Core model)
     }
-    cropped <- raster::crop(pop_world, shp, snap = "out")
-    pop <- raster::mask(cropped, shp, updatevalue = NA)
+    cropped <- terra::crop(pop_world, shp, snap = "out")
+    pop <- terra::mask(cropped, vect(shp))
     
     rm(pop_world)
     gc()

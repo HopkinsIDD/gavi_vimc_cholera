@@ -8,9 +8,9 @@ runname <- ifelse(targeting_strategy == "threshold_unconstrained", "202302_survm
 ##for the DRC Case study, only use scenarios "ocv1-ocv2-default" and "no-vaccination"
 scenarios <- c("ocv1-default","ocv1-ocv2-default", "no-vaccination")
 num_skip_years <- 5   #district-level skipped years, relevant to both projects
-num_samples <- 100  #shared by both projects
+num_samples <- 1  #shared by both projects
 use_random_seed <- TRUE   #whether or not to have a random seed that governs the stochasticity
-campaign_cov <- 0.8 # assumed coverage at the district/health zone level, for the VIMC Core model set to 0.8
+campaign_cov <- 0.965 # assumed coverage at the district/health zone level, for the VIMC Core model set to 0.8
 
 if (runname == "202310gavi-4"){
   self_random_seed <- 103  #use the same random seed for all settings and scenarios for the 202310gavi-4 touchstone
@@ -88,7 +88,7 @@ if(use_random_seed & is.null(self_random_seed)){
 #====== Parameters specific to the DRC Case Study --  ======#
 ## for the DRC Case study, set montagu_coverage to FALSE
 ## for the VIMC Core Model runs and the Surveillance Project, set use_montagu_coverage to TRUE
-use_montagu_coverage <- TRUE 
+use_montagu_coverage <- FALSE 
 
 
 if(use_montagu_coverage == FALSE){
@@ -98,9 +98,12 @@ if(use_montagu_coverage == FALSE){
 }
 
 ## for the DRC Case study, set use_custom_shapefile to TRUE to use the shapefile with DRC Health zones
-use_custom_shapefile <- FALSE
+use_custom_shapefile <- TRUE
 
 if(use_custom_shapefile == TRUE){
   custom_shapefile_filename <- "input_data/shapefiles/DRC_custom_shapefile/custom_shapefile.rds" # modify to specify filename for the custom shapefile in the config
   custom_country_shapefile_filename <- "input_data/shapefiles/DRC_custom_shapefile/country_shapefile.rds" # modify to specify filename for the custom country shapefile in the config
 }
+
+#====== Parameters specific to the OCV Investment Case  --  ======#
+use_mean_incid_raster <- TRUE # use only mean raster (one layer)

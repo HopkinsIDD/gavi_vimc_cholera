@@ -13,12 +13,14 @@ load_baseline_incidence(
   first_vacc_year,
   incidence_rate_trend,
   use_country_incid_trend,
+  use_mean_incid_raster,
   shp0,
   shp1,
   shp2,
   random_seed,
   nsamples,
-  redraw
+  redraw,
+  cache
 )
 }
 \arguments{

@@ -21,9 +21,13 @@ prepare_config <- function(p, configpath){
       "  num_samples: ", p$nsamples, "\n",
       "  redraw: ", p$redrawIncid, "\n",
       "  use_country_incid_trend: ", p$use_country_incid_trend, "\n",
+      "  use_mean_incid_raster: ", p$use_mean_incid_raster, "\n",
       "vacc:\n",
       "  targeting_strategy: ", p$targeting, "\n",
       "  num_skip_years: ", p$nskipyear, "\n",
+      "custom:\n",
+      "  use_montagu_coverage: ", p$use_montagu_coverage, "\n",
+      "  use_custom_shapefile: ", p$use_custom_shapefile, "\n",
       "setting:\n",
       "  incidence_rate_trend: ", p$incidence_rate_trend, "\n",
       "  outbreak_multiplier: ", p$outbreak_multiplier, "\n", 
@@ -49,6 +53,7 @@ prepare_config <- function(p, configpath){
         "  num_samples: ", p$nsamples, "\n",
         "  redraw: ", p$redrawIncid, "\n",
         "  use_country_incid_trend: ", p$use_country_incid_trend, "\n",
+        "  use_mean_incid_raster: ", p$use_mean_incid_raster, "\n",
         "vacc:\n",
         "  targeting_strategy: ", p$targeting, "\n",
         "  num_skip_years: ", p$nskipyear, "\n",
@@ -82,6 +87,7 @@ prepare_config <- function(p, configpath){
        "  num_samples: ", p$nsamples, "\n",
        "  redraw: ", p$redrawIncid, "\n",
        "  use_country_incid_trend: ", p$use_country_incid_trend, "\n",
+       "  use_mean_incid_raster: ", p$use_mean_incid_raster, "\n",
        "vacc:\n",
        "  targeting_strategy: ", p$targeting, "\n",
        "  num_skip_years: ", p$nskipyear, "\n",
@@ -101,6 +107,7 @@ prepare_config <- function(p, configpath){
     
   }else if(p$targeting == "threshold_unconstrained"){
     config_name <- paste0(configpath, "/", paste(p$country, p$scenario, p$surveillance_scenario, p$nsamples, sep = "_"), ".yml") #for now 
+    dir.create(dirname(config_name), recursive = TRUE, showWarnings = FALSE)
     sink(file = config_name)
 
     cat(paste0(
@@ -112,6 +119,7 @@ prepare_config <- function(p, configpath){
       "  num_samples: ", p$nsamples, "\n",
       "  redraw: ", p$redrawIncid, "\n",
       "  use_country_incid_trend: ", p$use_country_incid_trend, "\n",
+      "  use_mean_incid_raster: ", p$use_mean_incid_raster, "\n",
       "vacc:\n",
       "  targeting_strategy: '", p$targeting, "'\n",
       "  vac_incid_threshold: ", p$vac_incid_threshold, "\n",
@@ -127,6 +135,9 @@ prepare_config <- function(p, configpath){
       "  sim_end_year: ", p$sim_end_year, "\n",
       "  use_mean_ir: ", p$use_mean_ir, "\n",
       "  mean_ir_span: ", p$mean_ir_span, "\n",
+      "custom:\n",
+      "  use_montagu_coverage: ", p$use_montagu_coverage, "\n",
+      "  use_custom_shapefile: ", p$use_custom_shapefile, "\n",
       "surveillance_scenario:\n",
       "  surveillance_scenario: '", p$surveillance_scenario, "'\n",
       "  testing_sensitivity: ", p$testing_sensitivity, "\n",
