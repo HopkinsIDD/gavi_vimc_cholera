@@ -49,7 +49,7 @@ update_sus_rasterStack_optimized <- function( datapath,
     popj <- pop
 
     ### get life expectancy data from file       
-    mu <- 1/(import_country_lifeExpectancy_1yr(modelpath, country, model_year))
+    mu <- 1/(import_country_lifeExpectancy_1yr(modelpath, country, model_year,cache))
     message(paste("Modeling campaign scenario susceptibility:", country, model_year, 1/mu, "life expectancy"))
 
     ### loop through the previous years 
@@ -137,9 +137,11 @@ save_sus_raster <- function(datapath, modelpath, country, nsamples, model_year, 
     sus_admin1 <- sus_list[[1]]$sus_rasterStack_admin1
     sus_admin2 <- sus_list[[1]]$sus_rasterStack_admin2
     
-    for(layer_idx in 2:nsamples){
-      if(!is.null(sus_admin1)){sus_admin1 <- terra::rast(sus_admin1, sus_list[[layer_idx]]$sus_rasterStack_admin1)}
-      if(!is.null(sus_admin2)){sus_admin2 <- terra::rast(sus_admin2, sus_list[[layer_idx]]$sus_rasterStack_admin2)}
+    if(nsamples != 1){
+      for(layer_idx in 2:nsamples){
+        if(!is.null(sus_admin1)){sus_admin1 <- terra::rast(sus_admin1, sus_list[[layer_idx]]$sus_rasterStack_admin1)}
+        if(!is.null(sus_admin2)){sus_admin2 <- terra::rast(sus_admin2, sus_list[[layer_idx]]$sus_rasterStack_admin2)}
+      }  
     }
 
     message(paste("Writing proportion susceptible rasterStack for", country))
