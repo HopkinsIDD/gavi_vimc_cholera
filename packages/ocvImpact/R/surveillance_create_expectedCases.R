@@ -61,14 +61,18 @@ surveillance_create_expectedCases <- function(
   if(!save_intermediate_raster){
     sus_rasterLayer1 <- sus_list[[1]]$sus_rasterStack_admin1
     if(!is.null(sus_rasterLayer1)){
-      for(layer_idx in 2:nsamples){
-        sus_rasterLayer1 <- c(sus_rasterLayer1, sus_list[[layer_idx]]$sus_rasterStack_admin1)
+      if(nsamples != 1){
+        for(layer_idx in 2:nsamples){
+          sus_rasterLayer1 <- c(sus_rasterLayer1, sus_list[[layer_idx]]$sus_rasterStack_admin1)
+        }        
       }
     }
     sus_rasterLayer2 <- sus_list[[1]]$sus_rasterStack_admin2
     if(!is.null(sus_rasterLayer2)){
-      for(layer_idx in 2:nsamples){
-        sus_rasterLayer2 <- c(sus_rasterLayer2, sus_list[[layer_idx]]$sus_rasterStack_admin2)
+      if(nsamples != 1){
+        for(layer_idx in 2:nsamples){
+          sus_rasterLayer2 <- c(sus_rasterLayer2, sus_list[[layer_idx]]$sus_rasterStack_admin2)
+        } 
       }
     }
     rm(sus_list)
