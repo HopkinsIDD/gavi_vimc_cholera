@@ -41,8 +41,8 @@ update_vac_raster <- function(datapath,
 
   }else{
     # use the table to guide vaccination 
-    if("rc1" %in% rc_targeted){shp1_targeted <- rc_list[[1]][rc_list[[1]]$year == model_year & rc_list[[1]]$is_target == 1, ]} else {shp1_targeted <- NULL}
-    if("rc2" %in% rc_targeted){shp2_targeted <- rc_list[[2]][rc_list[[2]]$year == model_year & rc_list[[2]]$is_target == 1, ]} else {shp2_targeted <- NULL}
+    if("rc1" %in% rc_targeted){shp1_targeted <- rc_list[1]$rc1[rc_list[1]$rc1$year == model_year & rc_list[1]$rc1$is_target == 1, ]} else {shp1_targeted <- NULL}
+    if("rc2" %in% rc_targeted){shp2_targeted <- rc_list[2]$rc2[rc_list[2]$rc2$year == model_year & rc_list[2]$rc2$is_target == 1, ]} else {shp2_targeted <- NULL}
     
     # check point: if there is not a single place targeted this year.
     if(!is.null(shp1_targeted)){
@@ -51,11 +51,11 @@ update_vac_raster <- function(datapath,
         message(paste("There is no admin 1 level areas vaccinated in", model_year, "in", country, "."))
         new_vacc_layer_admin1 <- raster0_template
       }else{
-        new_vacc_layer_admin1 <- terra::fasterize(
+        new_vacc_layer_admin1 <- terra::rasterize(
           terra::vect(shp1_targeted),
           raster0_template,
           field = "actual_prop_vaccinated",
-          fun = "last",
+          fun = "mean", # there's one layer which has the same function as "last" in fasterize
           background = 0
         )
         new_vacc_layer_admin1 <- terra::mask(new_vacc_layer_admin1, raster0_template)
@@ -72,11 +72,11 @@ update_vac_raster <- function(datapath,
         message(paste("There is no admin 2 level areas vaccinated in", model_year, "in", country, "."))
         new_vacc_layer_admin2 <- raster0_template
       }else{
-        new_vacc_layer_admin2 <- terra::fasterize(
+        new_vacc_layer_admin2 <- terra::rasterize(
           terra::vect(shp2_targeted),
           raster0_template,
           field = "actual_prop_vaccinated",
-          fun = "last",
+          fun = "mean", # there's one layer which has the same function as "last" in fasterize
           background = 0
         )
         new_vacc_layer_admin2 <- terra::mask(new_vacc_layer_admin2, raster0_template)
@@ -163,9 +163,11 @@ save_vac_raster <- function(datapath,
     vac_admin2 <- input_list[[1]]$vacc_rasterStack_admin2
     vac_pop <- input_list[[1]]$pop_rasterStack #one layer is enough for population 
 
-    for(layer_idx in 2:nsamples){
-      if(!is.null(vac_admin1)){vac_admin1 <- terra::rast(vac_admin1, input_list[[layer_idx]]$vacc_rasterStack_admin1)}
-      if(!is.null(vac_admin2)){vac_admin2 <- terra::rast(vac_admin2, input_list[[layer_idx]]$vacc_rasterStack_admin2)}
+    if(nsamples !=1){
+      for(layer_idx in 2:nsamples){
+        if(!is.null(vac_admin1)){vac_admin1 <- terra::rast(vac_admin1, input_list[[layer_idx]]$vacc_rasterStack_admin1)}
+        if(!is.null(vac_admin2)){vac_admin2 <- terra::rast(vac_admin2, input_list[[layer_idx]]$vacc_rasterStack_admin2)}
+      }      
     }
 
   }else if(!is.null(rawoutpath)){ #this condition applies to when all the vac rasters have been saved in the intermediate folder waiting to be saved in the final output folder
