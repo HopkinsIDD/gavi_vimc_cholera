@@ -128,7 +128,7 @@ run_surveillance_scenario <- function(
 
     #### Update the vaccinated proportion raster 
     ### Read in pop raster for this year
-    pop <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, model_year)
+    pop <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, model_year,cache)
     
     ### Calculate/update pop and vacc raster input
     start.time <- Sys.time()
