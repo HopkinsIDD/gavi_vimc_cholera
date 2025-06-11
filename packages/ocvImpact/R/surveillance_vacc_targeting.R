@@ -11,6 +11,9 @@ load_shp0_by_country <- function(datapath, country){
     {
       country_pattern <- paste(country, "0", sep = "_")
       shp <- geodata::gadm(c(country), level = 0, path = file.path(datapath, "shapefiles/"))
+      shp <- sf::st_as_sf(shp, crs = sf::st_crs(4326)) 
+      shp <- sf::st_cast(shp, "POLYGON")
+      shp <- sf::st_make_valid(shp)
       
       message(paste0("Loading ", datapath, "/shapefiles/", country_pattern, "_sf.rds"))
     },
@@ -37,9 +40,15 @@ load_shp1_by_country <- function(datapath, country, simple = FALSE){
       if (simple){
         country_pattern <- paste(country, "0", sep = "_")
         shp <- geodata::gadm(c(country), level = 0, path = file.path(datapath, "shapefiles/"))
+        shp <- sf::st_as_sf(shp, crs = sf::st_crs(4326)) 
+        shp <- sf::st_cast(shp, "POLYGON")
+        shp <- sf::st_make_valid(shp)
       } else{
         country_pattern <- paste(country, "1", sep = "_")
         shp <- geodata::gadm(c(country), level = 1, path = file.path(datapath, "shapefiles/"))
+        shp <- sf::st_as_sf(shp, crs = sf::st_crs(4326)) 
+        shp <- sf::st_cast(shp, "POLYGON")
+        shp <- sf::st_make_valid(shp)
       }
       message(paste0("Loading ", datapath, "/shapefiles/", country_pattern, "_sf.rds"))
     },
@@ -66,9 +75,15 @@ load_shp2_by_country <- function(datapath, country, simple = FALSE){
       if (simple){
         country_pattern <- paste(country, "0", sep = "_")
         shp <- geodata::gadm(c(country), level = 1, path = file.path(datapath, "shapefiles/"))
+        shp <- sf::st_as_sf(shp, crs = sf::st_crs(4326)) 
+        shp <- sf::st_cast(shp, "POLYGON")
+        shp <- sf::st_make_valid(shp)
       } else{
         country_pattern <- paste(country, "2", sep = "_")
         shp <- geodata::gadm(c(country), level = 2, path = file.path(datapath, "shapefiles/"))
+        shp <- sf::st_as_sf(shp, crs = sf::st_crs(4326)) 
+        shp <- sf::st_cast(shp, "POLYGON")
+        shp <- sf::st_make_valid(shp)
       }
       message(paste0("Loading ", datapath, "/shapefiles/", country_pattern, "_sf.rds"))
     },
@@ -191,11 +206,11 @@ load_baseline_incidence <- function(datapath,
     
     ## rasterize
     if(!file.exists(confirm_rate_fn)){
-      confirm_rate_raster <- fasterize::fasterize(
-          confirm_rate_df,
+      confirm_rate_raster <- terra::rasterize(
+          vect(confirm_rate_df),
           raster1_template,
           field = "true_confirm_rate",
-          fun = "last",
+          fun = "mean", # each admin unit has only one confirm rate, therefore mean has the same result as "last" in fasterize
           background = 1
       )
       confirm_rate_raster <- terra::mask(confirm_rate_raster, raster1_template)
@@ -205,11 +220,11 @@ load_baseline_incidence <- function(datapath,
       confirm_rate_raster_one_layer <- confirm_rate_raster[[layer_idx]]
     }
     
-    observed_case_raster <- fasterize::fasterize(
-        confirm_rate_df,
+    observed_case_raster <- terra::rasterize(
+        vect(confirm_rate_df),
         raster1_template,
         field = "observed_case",
-        fun = "last",
+        fun = "mean",# each admin unit has only one confirm rate, therefore mean has the same result as "last" in fasterize
         background = 1
     )
     observed_case_raster <- terra::mask(observed_case_raster, raster1_template)
@@ -243,10 +258,10 @@ load_baseline_incidence <- function(datapath,
       dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
                       true_case = NA, 
                       mean_true_incidence_rate = true_incidence_rate ) %>% 
-      dplyr::select(ISO, NAME_0, NAME_1, true_confirm_rate, true_incidence_rate, mean_true_incidence_rate, 
+      dplyr::select(GID_0, COUNTRY, GID_1, true_confirm_rate, true_incidence_rate, mean_true_incidence_rate, 
                     confirmation_lens, confirmation_rate, confirmed_incidence_rate, mean_confirmed_incidence_rate, 
                     pop_model, pop_prop, year, latest_target_year, is_target,
-                    actual_prop_vaccinated, actual_fvp, true_case)
+                    actual_prop_vaccinated, actual_fvp, true_case) # column names changed
     
     # get incidence and pop table (admin 2 level)
     rc2 <- dplyr::mutate(shp2, 
@@ -266,7 +281,7 @@ load_baseline_incidence <- function(datapath,
       dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
                       true_case = NA, 
                       mean_true_incidence_rate = true_incidence_rate ) %>% 
-      dplyr::select(ISO, NAME_0, NAME_1, NAME_2, true_confirm_rate, true_incidence_rate, mean_true_incidence_rate, 
+      dplyr::select(GID_0, COUNTRY, GID_1, GID_2, true_confirm_rate, true_incidence_rate, mean_true_incidence_rate, 
                     confirmation_lens, confirmation_rate, confirmed_incidence_rate, mean_confirmed_incidence_rate, 
                     pop_model, pop_prop, year, latest_target_year, is_target,
                     actual_prop_vaccinated, actual_fvp, true_case)
@@ -474,7 +489,7 @@ update_vacc_year <- function( datapath, modelpath, country, rc_list, model_year,
   ### Only targeting the population above 1 year old
   if(!"pop_by_age" %in% names(cache)){
     source(paste0("scripts/montagu_handle.R"))
-    pop_by_age <- ocvImpact::import_country_agePop(modelpath, country, redownload = FALSE)
+    pop_by_age <- ocvImpact::import_country_agePop(modelpath, country, cache, redownload = FALSE)
     cache$pop_by_age <- pop_by_age
   }else{
     pop_by_age <- cache$pop_by_age
