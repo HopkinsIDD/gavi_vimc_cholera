@@ -58,7 +58,7 @@ run_surveillance_scenario <- function(
   outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)  
   random_seed <- as.numeric(config$setting$random_seed)
 
-
+  use_mean_incid_raster <- as.logical(config$incid$use_mean_incid_raster)
 
   ##### Initialize the table that records elapsed time
   time_table <- tibble::tibble(year = as.numeric(), load_baseline_incidence = as.numeric(), update_targets_list = as.numeric(), 
@@ -81,8 +81,8 @@ run_surveillance_scenario <- function(
   shp2 <- load_shp2_by_country(datapath, country)
   start.time <- Sys.time()
   rc_list <- load_baseline_incidence(datapath, modelpath, country, campaign_cov = vac_coverage, baseline_year = sim_start_year, first_vacc_year = vac_start_year, 
-                                     incidence_rate_trend, use_country_incid_trend, shp0 = shp0, shp1 = shp1, shp2 = shp2, 
-                                     random_seed = random_seed, nsamples = nsamples, redraw = redraw)
+                                     incidence_rate_trend, use_country_incid_trend, use_mean_incid_raster, shp0 = shp0, shp1 = shp1, shp2 = shp2, 
+                                     random_seed = random_seed, nsamples = nsamples, redraw = redraw,cache)
   end.time <- Sys.time()
   elapsed_time <- abs(as.numeric(difftime(start.time, end.time, units = "mins")))
   time_table[1, ]$load_baseline_incidence <- elapsed_time
