@@ -10,7 +10,7 @@ load_shp0_by_country <- function(datapath, country){
   tryCatch(
     {
       country_pattern <- paste(country, "0", sep = "_")
-      shp <- GADMTools::gadm_sf_loadCountries(c(country), level = 0, basefile = file.path(datapath, "shapefiles/"))$sf
+      shp <- geodata::gadm(c(country), level = 0, path = file.path(datapath, "shapefiles/"))
       
       message(paste0("Loading ", datapath, "/shapefiles/", country_pattern, "_sf.rds"))
     },
@@ -36,10 +36,10 @@ load_shp1_by_country <- function(datapath, country, simple = FALSE){
     {
       if (simple){
         country_pattern <- paste(country, "0", sep = "_")
-        shp <- GADMTools::gadm_sf_loadCountries(c(country), level = 0, basefile = file.path(datapath, "shapefiles/"))$sf
+        shp <- geodata::gadm(c(country), level = 0, path = file.path(datapath, "shapefiles/"))
       } else{
         country_pattern <- paste(country, "1", sep = "_")
-        shp <- GADMTools::gadm_sf_loadCountries(c(country), level = 1, basefile = file.path(datapath, "shapefiles/"))$sf
+        shp <- geodata::gadm(c(country), level = 1, path = file.path(datapath, "shapefiles/"))
       }
       message(paste0("Loading ", datapath, "/shapefiles/", country_pattern, "_sf.rds"))
     },
@@ -65,10 +65,10 @@ load_shp2_by_country <- function(datapath, country, simple = FALSE){
     {
       if (simple){
         country_pattern <- paste(country, "0", sep = "_")
-        shp <- GADMTools::gadm_sf_loadCountries(c(country), level = 0, basefile = file.path(datapath, "shapefiles/"))$sf
+        shp <- geodata::gadm(c(country), level = 1, path = file.path(datapath, "shapefiles/"))
       } else{
         country_pattern <- paste(country, "2", sep = "_")
-        shp <- GADMTools::gadm_sf_loadCountries(c(country), level = 2, basefile = file.path(datapath, "shapefiles/"))$sf
+        shp <- geodata::gadm(c(country), level = 2, path = file.path(datapath, "shapefiles/"))
       }
       message(paste0("Loading ", datapath, "/shapefiles/", country_pattern, "_sf.rds"))
     },
@@ -106,20 +106,22 @@ load_baseline_incidence <- function(datapath,
                                     baseline_year, 
                                     first_vacc_year, 
                                     incidence_rate_trend, 
-                                    use_country_incid_trend, 
+                                    use_country_incid_trend,
+                                    use_mean_incid_raster,
                                     shp0, 
                                     shp1, 
                                     shp2, 
                                     random_seed, 
                                     nsamples, 
-                                    redraw){
+                                    redraw,
+                                    cache){
   
   ## load the incidence rate raster and initialize the rc_list 
-  country_baseline <- create_incid_raster(modelpath, datapath, country, nsamples, redraw, random_seed)
+  country_baseline <- create_incid_raster(modelpath, datapath, country, nsamples, redraw, random_seed,use_mean_incid_raster)
   rc_list <- NULL
 
   ## load population data of the first year 
-  pop_baseline <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, baseline_year)
+  pop_baseline <- ocvImpact::create_model_pop_raster(datapath, modelpath, country, baseline_year,cache)
   
   ## mask the incidence raster to population raster first 
   country_baseline <- terra::mask(country_baseline, pop_baseline)
