@@ -53,7 +53,7 @@ surveillance_create_expectedCases <- function(
   
   
   ### Get the rasters and shapefile ready 
-  lambda <- create_incid_raster(modelpath, datapath, country, nsamples, redraw, random_seed = config$setting$random_seed)
+  lambda <- create_incid_raster(modelpath, datapath, country, nsamples, redraw = redraw, random_seed = config$setting$random_seed)
   pop_rasterLayer <- pop
   rm(pop)
   shp0 <- load_shapefile_by_country(datapath, country, simple = TRUE)
@@ -82,8 +82,8 @@ surveillance_create_expectedCases <- function(
       sus_admin1_fn <- paste0("intermediate_raster/", country, "_sus_admin1_", model_year, ".tif")
       sus_admin2_fn <- paste0("intermediate_raster/", country, "_sus_admin2_", model_year, ".tif")
     
-      if("rc1" %in% rc_targeted){sus_rasterLayer1 <- c(sus_admin1_fn)}else{sus_rasterLayer1 <- NULL}
-      if("rc2" %in% rc_targeted){sus_rasterLayer2 <- c(sus_admin2_fn)}else{sus_rasterLayer2 <- NULL}
+      if("rc1" %in% rc_targeted){sus_rasterLayer1 <- terra::rast(sus_admin1_fn)}else{sus_rasterLayer1 <- NULL}
+      if("rc2" %in% rc_targeted){sus_rasterLayer2 <- terra::rast(sus_admin2_fn)}else{sus_rasterLayer2 <- NULL}
     }else{
       sus_rasterLayer1 <- sus_list$sus_rasterStack_admin1 
       sus_rasterLayer2 <- sus_list$sus_rasterStack_admin2
@@ -165,17 +165,7 @@ surveillance_create_expectedCases <- function(
 
     ec_rasterStack1 <- tryCatch(
       if(!is.numeric(overall_multiplier) & inherits(overall_multiplier, "SpatRaster")){
-        terra::overlay(
-          sus_rasterLayer1,
-          pop_rasterLayer,
-          lambda,
-          indirect_rasterLayer,
-          overall_multiplier, 
-          fun = function(x, y, z, a, b){
-            x*y*z*a*b
-          }
-        ) 
-          
+        lambda * sus_rasterLayer1 * indirect_rasterLayer * pop_rasterLayer * overall_multiplier # SpatRaster could be multiplied directly
       }else{
         lambda * sus_rasterLayer1 * indirect_rasterLayer * pop_rasterLayer * overall_multiplier
       },
@@ -195,17 +185,7 @@ surveillance_create_expectedCases <- function(
 
     ec_rasterStack2 <- tryCatch(
       if(!is.numeric(overall_multiplier) & inherits(overall_multiplier, "SpatRaster")){
-        terra::overlay(
-          sus_rasterLayer2,
-          pop_rasterLayer,
-          lambda,
-          indirect_rasterLayer,
-          overall_multiplier, 
-          fun = function(x, y, z, a, b){
-            x*y*z*a*b
-          }
-        ) 
-          
+        lambda * sus_rasterLayer2 * indirect_rasterLayer * pop_rasterLayer * overall_multiplier # SpatRaster could be multiplied directly
       }else{
         lambda * sus_rasterLayer2 * indirect_rasterLayer * pop_rasterLayer * overall_multiplier
       },
