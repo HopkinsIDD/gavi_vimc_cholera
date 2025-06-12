@@ -75,8 +75,8 @@ update_sus_rasterStack_optimized <- function( datapath,
       if("rc2" %in% rc_targeted)(prob_still_protected_admin2 <- terra::lapp(c(vacck_admin2, pkj), fun = function(x, y){x * y * ve_j_k}))
       
       # get the new sus raster layer -- from protected to still susceptible 
-      if("rc1" %in% rc_targeted){tmp1 <- terra::rast(terra::lapp(c(tmp1, prob_still_protected_admin1), fun = function(x, y){x * (1 - y)}))}else{tmp1 <- NULL}
-      if("rc2" %in% rc_targeted){tmp2 <- terra::rast(terra::lapp(c(tmp2, prob_still_protected_admin2), fun = function(x, y){x * (1 - y)}))}else{tmp2 <- NULL}
+      if("rc1" %in% rc_targeted){tmp1 <- terra::lapp(c(tmp1, prob_still_protected_admin1), fun = function(x, y){x * (1 - y)})}else{tmp1 <- NULL}
+      if("rc2" %in% rc_targeted){tmp2 <- terra::lapp(c(tmp2, prob_still_protected_admin2), fun = function(x, y){x * (1 - y)})}else{tmp2 <- NULL}
       
       rm(popk, vacck_admin1, vacck_admin2, pkj, prob_still_protected_admin1, prob_still_protected_admin2)
       gc()
