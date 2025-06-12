@@ -169,7 +169,7 @@ load_baseline_incidence <- function(datapath,
   
   if(file.exists(confirm_rate_fn)){
     message("The true confirm rate rasters have already been in place, they will not be replaced. ")
-    confirm_rate_raster <- c(confirm_rate_fn)
+    confirm_rate_raster <- terra::rast(confirm_rate_fn)
     if(terra::nlyr(confirm_rate_raster) != nsamples){
       stop("The number of layers of the true confirm rate raster in the intermediate folder is wrong, run killed, please delete the wrong raster. ")
     }
@@ -258,7 +258,7 @@ load_baseline_incidence <- function(datapath,
       dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
                       true_case = NA, 
                       mean_true_incidence_rate = true_incidence_rate ) %>% 
-      dplyr::select(GID_0, COUNTRY, GID_1, true_confirm_rate, true_incidence_rate, mean_true_incidence_rate, 
+      dplyr::select(GID_0, COUNTRY, GID_1, NAME_1, true_confirm_rate, true_incidence_rate, mean_true_incidence_rate, 
                     confirmation_lens, confirmation_rate, confirmed_incidence_rate, mean_confirmed_incidence_rate, 
                     pop_model, pop_prop, year, latest_target_year, is_target,
                     actual_prop_vaccinated, actual_fvp, true_case) # column names changed
@@ -281,7 +281,7 @@ load_baseline_incidence <- function(datapath,
       dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
                       true_case = NA, 
                       mean_true_incidence_rate = true_incidence_rate ) %>% 
-      dplyr::select(GID_0, COUNTRY, GID_1, GID_2, true_confirm_rate, true_incidence_rate, mean_true_incidence_rate, 
+      dplyr::select(GID_0, COUNTRY, GID_1, GID_2, NAME_1, NAME_2, true_confirm_rate, true_incidence_rate, mean_true_incidence_rate, 
                     confirmation_lens, confirmation_rate, confirmed_incidence_rate, mean_confirmed_incidence_rate, 
                     pop_model, pop_prop, year, latest_target_year, is_target,
                     actual_prop_vaccinated, actual_fvp, true_case)
@@ -290,6 +290,8 @@ load_baseline_incidence <- function(datapath,
     if(!file.exists(confirm_rate_fn)){
       if(layer_idx == 1){
         tmp <- confirm_rate_raster
+        if(!file.exists(confirm_rate_fn)){ terra::writeRaster(tmp, filename = confirm_rate_fn, overwrite = FALSE) }
+        rm(tmp, confirm_rate_raster)
       }else if(layer_idx < nsamples){
         tmp <- c(tmp, confirm_rate_raster)
       }else{
@@ -536,8 +538,9 @@ update_vacc_year <- function( datapath, modelpath, country, rc_list, model_year,
       rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$latest_target_year <- ifelse(rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$is_target, model_year, NA)
     }else{
       rc_list[[rcs]][rc_list[[rcs]]$year == model_year, ]$latest_target_year <- rc_list[[rcs]][rc_list[[rcs]]$year == model_year-1, ]$latest_target_year
-      if(any(rc_list[[rcs]]$year == model_year & rc_list[[rcs]]$is_target)){
-        rc_list[[rcs]][rc_list[[rcs]]$year == model_year & rc_list[[rcs]]$is_target, ]$latest_target_year <- model_year}
+      if(any(rc_list[[rcs]]$year == model_year & rc_list[[rcs]]$is_target, na.rm = T)){
+        rc_list[[rcs]][rc_list[[rcs]]$year == model_year & rc_list[[rcs]]$is_target & !is.na(rc_list[[rcs]]$year == model_year & rc_list[[rcs]]$is_target), ]$latest_target_year <- model_year
+        }
     }
   }
 
@@ -697,7 +700,7 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
                           true_confirm_rate = true_confirm_rate_admin1) %>% # fully vaccinated population
         dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
                         true_case = NA ) %>% 
-        dplyr::select(ISO, NAME_0, NAME_1, true_confirm_rate, true_incidence_rate, 
+        dplyr::select(GID_0, COUNTRY, GID_1, NAME_1, true_confirm_rate, true_incidence_rate, 
                       confirmation_lens, confirmation_rate, confirmed_incidence_rate, mean_confirmed_incidence_rate,  
                       pop_model, pop_prop, year, latest_target_year, is_target,
                       actual_prop_vaccinated, actual_fvp, true_case)
@@ -716,7 +719,7 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
       rc1$mean_true_incidence_rate <- mean_true_incidence_rate_tmp 
       rm(mean_true_incidence_rate_tmp)
       rc1 %>%
-        dplyr::select(ISO, NAME_0, NAME_1, true_confirm_rate, true_incidence_rate, mean_true_incidence_rate, 
+        dplyr::select(GID_0, COUNTRY, GID_1, NAME_1, true_confirm_rate, true_incidence_rate, mean_true_incidence_rate, 
                       confirmation_lens, confirmation_rate, confirmed_incidence_rate, mean_confirmed_incidence_rate,  
                       pop_model, pop_prop, year, latest_target_year, is_target,
                       actual_prop_vaccinated, actual_fvp, true_case)
@@ -745,7 +748,7 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
                           true_confirm_rate = true_confirm_rate_admin2) %>% # fully vaccinated population
         dplyr::mutate(  true_incidence_rate = ifelse(is.na(true_incidence_rate), 0, true_incidence_rate), 
                         true_case = NA ) %>% 
-        dplyr::select(ISO, NAME_0, NAME_1, NAME_2, true_confirm_rate, true_incidence_rate, 
+        dplyr::select(GID_0, COUNTRY, GID_1, GID_2, NAME_1, NAME_2, true_confirm_rate, true_incidence_rate, 
                       confirmation_lens, confirmation_rate, confirmed_incidence_rate, mean_confirmed_incidence_rate,  
                       pop_model, pop_prop, year, latest_target_year, is_target,
                       actual_prop_vaccinated, actual_fvp, true_case)
@@ -764,7 +767,7 @@ surveillance_add_rc_new_row <- function(rc_list, ec_list, pop, model_year, sim_s
       rc2$mean_true_incidence_rate <- mean_true_incidence_rate_tmp 
       rm(mean_true_incidence_rate_tmp)
       rc2 %>%
-        dplyr::select(ISO, NAME_0, NAME_1, true_confirm_rate, true_incidence_rate, mean_true_incidence_rate, 
+        dplyr::select(GID_0, COUNTRY, GID_1, GID_2, NAME_1, NAME_2, true_confirm_rate, true_incidence_rate, mean_true_incidence_rate, 
                       confirmation_lens, confirmation_rate, confirmed_incidence_rate, mean_confirmed_incidence_rate,  
                       pop_model, pop_prop, year, latest_target_year, is_target,
                       actual_prop_vaccinated, actual_fvp, true_case)
