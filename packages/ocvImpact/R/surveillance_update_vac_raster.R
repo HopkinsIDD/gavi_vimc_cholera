@@ -41,8 +41,8 @@ update_vac_raster <- function(datapath,
 
   }else{
     # use the table to guide vaccination 
-    if("rc1" %in% rc_targeted){shp1_targeted <- rc_list[1]$rc1[rc_list[1]$rc1$year == model_year & rc_list[1]$rc1$is_target == 1, ]} else {shp1_targeted <- NULL}
-    if("rc2" %in% rc_targeted){shp2_targeted <- rc_list[2]$rc2[rc_list[2]$rc2$year == model_year & rc_list[2]$rc2$is_target == 1, ]} else {shp2_targeted <- NULL}
+    if("rc1" %in% rc_targeted){shp1_targeted <- rc_list[1]$rc1[which(rc_list[1]$rc1$year == model_year & rc_list[1]$rc1$is_target == 1), ]} else {shp1_targeted <- NULL}
+    if("rc2" %in% rc_targeted){shp2_targeted <- rc_list[2]$rc2[which(rc_list[2]$rc2$year == model_year & rc_list[2]$rc2$is_target == 1), ]} else {shp2_targeted <- NULL}
     
     # check point: if there is not a single place targeted this year.
     if(!is.null(shp1_targeted)){
