@@ -106,7 +106,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
                         pop_wp = pop2,
                         pop_prop = pop2/total_pop) %>%
       sf::st_drop_geometry() %>%
-      dplyr::select(GID_0, GID_2, NAME_1, NAME_2, incidence, pop_prop) %>%
+      dplyr::select(GID_0, GID_2, NAME_1, NAME_2, incidence, pop_prop, pop_wp) %>%
       tibble::as_tibble() 
     
 
@@ -370,6 +370,15 @@ run_targeting_strategy <- function(targets_df, targeting_strat){
     rc <- dplyr::mutate(targets_df, aff_pop = incidence*pop_prop) %>%
       dplyr::arrange(desc(aff_pop))
 
+  } else if (targeting_strat == "MAI_adm2_pop"){
+    rc <- targets_df %>% 
+      dplyr::arrange(desc(incidence)) %>% # sort adm2 by decreasing MAI
+      dplyr::mutate(
+        pop_category = if_else(pop_wp >= 10000, ">=10k", "<10k")
+      ) %>%
+      dplyr::arrange(desc(pop_category), desc(incidence)) %>% # move the admin2 units with population greater than 10 K at the top of the targeting list
+      dplyr::select(!pop_category)
+    
   } else{
     stop(paste(targeting_strat, "is not a supported targeting strategy."))
   }
