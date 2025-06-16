@@ -12,7 +12,7 @@
 #' @include
 pop_weighted_admin_mean_incid <- function(datapath, modelpath, incidence_rate_raster, pop_raster, country, admin_shp){
   
-  pop_for_weights <- raster::resample(pop_raster, incidence_rate_raster)
+  pop_for_weights <- terra::resample(pop_raster, incidence_rate_raster)
   case_raster <- incidence_rate_raster * pop_for_weights
   
   # pop_for_weights <- pop_raster

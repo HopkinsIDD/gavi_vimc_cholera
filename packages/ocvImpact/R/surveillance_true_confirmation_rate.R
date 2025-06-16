@@ -8,7 +8,7 @@
 #' @include
 surveillance_true_confirmation_rate <- function(country, admin_level){
   confirm_rate_fn <- paste0("intermediate_raster/", country, "_trueconfirmrate_admin", admin_level, ".tif")
-  confirm_rate_raster <- raster::stack(confirm_rate_fn)
+  confirm_rate_raster <- terra::rast(confirm_rate_fn)
 
   return(confirm_rate_raster)
 }

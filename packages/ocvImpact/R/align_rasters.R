@@ -8,6 +8,7 @@
 #' @export
 #' @include load_shapefile_by_country.R load_worldpop_by_country.R
 align_rasters <- function(datapath, country, orig_raster){
+  library(terra)
   
   ## if we are using the custom shapefile with health zones (for the DRC case study), specified in the config
   if(as.logical(config$custom$use_custom_shapefile) == TRUE){
@@ -18,10 +19,9 @@ align_rasters <- function(datapath, country, orig_raster){
     message("Aligning rasters using gadm admin 0 shapefile.")
   }
   pop <- load_worldpop_by_country(datapath, country)
-  cropped <- raster::crop(orig_raster, shp, snap = "out")
-  masked <- raster::mask(cropped, shp, updatevalue = NA) #this is newly added 7/2021
-  aligned <- raster::resample(masked, pop, method = "ngb")
-
+  cropped <- crop(orig_raster, shp, snap = "out")
+  masked <- mask(cropped, vect(shp))
+  aligned <- resample(masked, rast(pop), method = "near")
   rm(orig_raster, shp, cropped, masked, pop)
   gc()
 

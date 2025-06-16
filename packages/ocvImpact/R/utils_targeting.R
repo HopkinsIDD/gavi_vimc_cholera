@@ -50,10 +50,10 @@ load_targets_by_country <- function(datapath, modelpath, country){
     runname <- config$runname
     if(runname == "202310gavi-4"){
       message(paste0("Loading ", datapath, "/incidence/afro_2016-2020_lambda_5k_mean.tif"))
-      afr <- raster::raster(paste0(datapath, "/incidence/afro_2016-2020_lambda_5k_mean.tif"))
+      afr <- terra::rast(paste0(datapath, "/incidence/afro_2016-2020_lambda_5k_mean.tif"))
     } else {
       message(paste0("Loading ", datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
-      afr <- raster::raster(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
+      afr <- terra::rast(paste0(datapath, "/incidence/afro_2010-2016_lambda_5k_mean.tif"))
     }
     
 
@@ -75,7 +75,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
 
     ## summarize rasters to admin level (BGD, non-raster, and african raster countries)
     if (country == "BGD"){
-      bgd <- raster::raster(paste0(datapath, "/incidence/BGD_incid_5k_100.tif"))
+      bgd <- terra::rast(paste0(datapath, "/incidence/BGD_incid_5k_100.tif"))
       incid2 <- exactextractr::exact_extract(bgd, shp, 'mean') ## to use BGD incidence raster for targeting
     } else if (country %in% c("AFG", "HTI", "IRN", "IRQ", "NPL", "PAK", "PHL", "THA", "YEM", "IND")) { #for non-raster countries
        number_samples <- config$incid$num_samples
@@ -84,7 +84,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
        message(paste0("Loading ", file_path))
        ##check that the incidence rate raster is cropped and exists 
        if (file.exists(file_path)){
-         non_rast <- raster::raster(file_path)
+         non_rast <- terra::rast(file_path)
          incid2 <- exactextractr::exact_extract(non_rast, shp, 'mean') ## to use incidence raster for targeting for non-raster countries
        } else {
           stop(paste("Run the run_country_incid_crop script first for ", country))
@@ -106,7 +106,7 @@ load_targets_by_country <- function(datapath, modelpath, country){
                         pop_wp = pop2,
                         pop_prop = pop2/total_pop) %>%
       sf::st_drop_geometry() %>%
-      dplyr::select(GID_0, GID_2, NAME_1, NAME_2, incidence, pop_prop) %>%
+      dplyr::select(GID_0, GID_2, NAME_1, NAME_2, incidence, pop_prop, pop_wp) %>%
       tibble::as_tibble() 
     
 
@@ -370,6 +370,15 @@ run_targeting_strategy <- function(targets_df, targeting_strat){
     rc <- dplyr::mutate(targets_df, aff_pop = incidence*pop_prop) %>%
       dplyr::arrange(desc(aff_pop))
 
+  } else if (targeting_strat == "MAI_adm2_pop"){
+    rc <- targets_df %>% 
+      dplyr::arrange(desc(incidence)) %>% # sort adm2 by decreasing MAI
+      dplyr::mutate(
+        pop_category = if_else(pop_wp >= 10000, ">=10k", "<10k")
+      ) %>%
+      dplyr::arrange(desc(pop_category), desc(incidence)) %>% # move the admin2 units with population greater than 10 K at the top of the targeting list
+      dplyr::select(!pop_category)
+    
   } else{
     stop(paste(targeting_strat, "is not a supported targeting strategy."))
   }

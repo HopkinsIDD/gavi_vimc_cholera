@@ -4,7 +4,15 @@
 \alias{allocate_vaccine}
 \title{allocate_vaccine}
 \usage{
-allocate_vaccine(datapath, modelpath, country, scenario, cache, ...)
+allocate_vaccine(
+  datapath,
+  modelpath,
+  country,
+  scenario,
+  targeting_strat,
+  cache,
+  ...
+)
 }
 \arguments{
 \item{datapath}{path to input data}
@@ -14,6 +22,8 @@ allocate_vaccine(datapath, modelpath, country, scenario, cache, ...)
 \item{country}{country code}
 
 \item{scenario}{Unique string that identifies the coverage scenario name}
+
+\item{targeting_strat}{vaccine targetting strategy}
 
 \item{cache}{montagu cache}
 

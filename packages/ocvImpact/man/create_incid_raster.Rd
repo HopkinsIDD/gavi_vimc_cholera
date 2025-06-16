@@ -11,6 +11,7 @@ create_incid_raster(
   nsamples,
   cache,
   redraw,
+  use_mean_incid_raster,
   random_seed = NULL
 )
 }

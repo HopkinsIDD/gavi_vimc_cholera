@@ -9,6 +9,7 @@ run_country_scenario(
   modelpath,
   country,
   scenario,
+  targeting_strat,
   rawoutpath,
   nsamples,
   num_doses = NULL,
