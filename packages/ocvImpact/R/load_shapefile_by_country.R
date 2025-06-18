@@ -21,7 +21,7 @@ load_shapefile_by_country <- function(datapath, country, simple = FALSE){
       }
       ## new implementation 1 Aug 2024
       shp <- sf::st_as_sf(shp, crs = sf::st_crs(4326)) 
-      shp <- sf::st_cast(shp, "POLYGON") ## to ensure all rows are of the same geometry and avoid fasterize errors
+      # shp <- sf::st_cast(shp, "POLYGON") ## to ensure all rows are of the same geometry and avoid fasterize errors ## 2025-06-18: terra::rasterize works well with multipolygon
       message(paste0("Loading ", datapath, "/shapefiles/", country_pattern, "_sf.rds"))
     },
     error = function(e) {
