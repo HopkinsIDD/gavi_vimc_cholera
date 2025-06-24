@@ -42,7 +42,7 @@ adjust_deaths <- function(df, use_stochastic = F, multiplier = 1) {
 #' @return a dataframe with adjusted DALYs(YLLs) (same format as the final model output file)
 #' @export
 adjust_DALYs <- function(df, cases_use_stochastic = F, deaths_use_stochastic = F, cases_multiplier = 1, deaths_multiplier = 1) {
-  cases_multiplier <- if (!cases_use_stochastic) cases_multiplier else stop("stochastic scaling for deaths is not implemented yet.")
+  cases_multiplier <- if (!cases_use_stochastic) cases_multiplier else stop("stochastic scaling for cases is not implemented yet.")
   deaths_multiplier <- if (!deaths_use_stochastic) deaths_multiplier else stop("stochastic scaling for deaths is not implemented yet.")
   
   df$yll <- df$yll * deaths_multiplier
