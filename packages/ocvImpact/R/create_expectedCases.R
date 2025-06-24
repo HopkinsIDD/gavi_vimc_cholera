@@ -51,7 +51,7 @@ create_expectedCases <- function(
   pop_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_pop.tif")
 
   ## write to file and import cholera incidence estimates
-  lambda <- create_incid_raster(modelpath, datapath, country, nsamples, cache, redraw)
+  lambda <- create_incid_raster(modelpath, datapath, country, nsamples, cache, redraw, use_mean_incid_raster)
   sus_rasterStack <- terra::rast(sus_out_fn)
   vacc_rasterStack <- terra::rast(vacc_out_fn)
   pop_rasterStack <- terra::rast(pop_out_fn)
@@ -159,7 +159,7 @@ create_expectedCases <- function(
 
       ## make new indirect effects template
       indirect_rasterLayer <- pop_rasterLayer
-      values(indirect_rasterLayer) <- indirect_mult * (1 - as.numeric(values(sus_rasterLayer)))
+      values(indirect_rasterLayer) <- indirect_mult(1 - as.numeric(values(sus_rasterLayer)))
       
       ec_rasterStack <- tryCatch(
         if (!is.numeric(overall_multiplier) && inherits(overall_multiplier, "SpatRaster")) {
