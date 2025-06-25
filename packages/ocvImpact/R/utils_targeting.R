@@ -379,6 +379,10 @@ run_targeting_strategy <- function(targets_df, targeting_strat){
       dplyr::arrange(desc(pop_category), desc(incidence)) %>% # move the admin2 units with population greater than 10 K at the top of the targeting list
       dplyr::select(!pop_category)
     
+  } else if (targeting_strat == "MAI"){
+    rc <- targets_df %>% 
+      dplyr::arrange(desc(incidence)) # sort adm2 by decreasing MAI
+
   } else{
     stop(paste(targeting_strat, "is not a supported targeting strategy."))
   }
