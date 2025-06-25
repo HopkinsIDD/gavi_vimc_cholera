@@ -66,11 +66,11 @@ new_filepath_vacc1 <- #<path to new ocv1 stochastic model output>
 new_filepath_vacc2 <- #<path to new ocv1-ocv2 stochastic model output>
 
 # Set parameters ----------------------------------------------------
-targeting_adjustment_on <- TRUE ## logical indicating whether to include adjustment for targeting strategy
+targeting_adjustment_on <- TRUE # logical indicating whether to include adjustment for targeting strategy
 
-case_mult_novacc <- 1/.328
-death_mult_novacc <- 3.87
-targeting_mult <- 1/1.7
+case_mult_novacc <- 1/.328 # multiplier for careseeking adjustment
+death_mult_novacc <- 3.87 # multiplier for community death to facility death ratio
+targeting_mult <- 1/1.7 # multiplier for changing from affected population to MAI-based targeting
 
 case_mult_vacc <- ifelse(targeting_adjustment_on, case_mult_novacc * targeting_mult, case_mult_novacc)
 death_mult_vacc <- ifelse(targeting_adjustment_on, death_mult_novacc * targeting_mult, death_mult_novacc)
