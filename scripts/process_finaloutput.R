@@ -96,6 +96,6 @@ vacc2_adj <- vacc2 %>%
   adjust_DALYs(., cases_multiplier = case_mult_vacc, deaths_multiplier = death_mult_vacc)
 
 # Write adjusted model outputs ----------------------------------------------------
-readr::write_csv(new_filepath_novacc)
-readr::write_csv(new_filepath_vacc1)
-readr::write_csv(new_filepath_vacc2)
+readr::write_csv(novacc_adj,new_filepath_novacc)
+readr::write_csv(vacc1_adj,new_filepath_vacc1)
+readr::write_csv(vacc2_adj,new_filepath_vacc2)
