@@ -34,6 +34,7 @@ run_country_scenario <- function(
 
   incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)
   outbreak_multiplier <- as.logical(config$setting$outbreak_multiplier)
+  use_mean_incid_raster <- as.logical(config$incid$use_mean_incid_raster)
   setting <- paste0('incid_trend_', incidence_rate_trend, '_outb_layer_',  outbreak_multiplier)
   dir.create(paste0(rawoutpath, "/", scenario, "/", setting), showWarnings = FALSE)
   
@@ -85,10 +86,10 @@ run_country_scenario <- function(
 
     if (is.null(vacc_alloc)){
       message("Calculate expected cases: no vaccination")
-      expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, montagu_cache, is_cf = TRUE, redraw)
+      expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, montagu_cache, is_cf = TRUE, redraw, use_mean_incid_raster)
     } else{
       message("Calculate expected cases: with vaccination")
-      expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, montagu_cache, is_cf = FALSE, redraw)
+      expCases <- create_expectedCases(datapath, modelpath, country, scenario, rawoutpath, vacc_alloc, indirect_mult, secular_trend_mult, nsamples, montagu_cache, is_cf = FALSE, redraw, use_mean_incid_raster)
     }
 
     ## Write to file
