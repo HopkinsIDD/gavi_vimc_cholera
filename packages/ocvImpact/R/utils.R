@@ -462,17 +462,20 @@ generate_cfr <- function(country){
     dplyr::select(-country_name)
 
   total_cfrs <- deaths_summary %>%
-    dplyr::filter(!is.na(cases), !is.na(deaths), cases>0) %>%
-    dplyr::filter(cfr <= 0.07)
-
+    dplyr::filter(!is.na(cases), !is.na(deaths), cases>0)
+  
   if (country %in% total_cfrs$cntry_code){
     calcs <- dplyr::filter(total_cfrs, cntry_code==country) %>%
       dplyr::summarise(cases = sum(cases), deaths = sum(deaths)) %>%
       dplyr::mutate(cfr = deaths/cases)
 
   } else {
-    calcs <- dplyr::summarise(total_cfrs, cases = sum(cases), deaths = sum(deaths)) %>%
-      dplyr::mutate(cfr = deaths/cases)
+    calcs <- total_cfrs %>% 
+      dplyr::group_by(cntry_code) %>% 
+      dplyr::summarise(cases = sum(cases), deaths = sum(deaths)) %>%
+      dplyr::mutate(cfr = deaths/cases) %>% 
+      ungroup() %>% 
+      summarize(cfr = mean(cfr)) # mean cfr across all countries
   }
 
   cfr <- calcs$cfr
