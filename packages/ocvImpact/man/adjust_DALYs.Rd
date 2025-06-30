@@ -6,8 +6,7 @@
 \usage{
 adjust_DALYs(
   df,
-  cases_use_stochastic = F,
-  deaths_use_stochastic = F,
+  use_stochastic = F,
   cases_multiplier = 1,
   deaths_multiplier = 1
 )
@@ -15,9 +14,7 @@ adjust_DALYs(
 \arguments{
 \item{df}{the final model output file}
 
-\item{cases_use_stochastic}{whether to adjust the cases in the model output in a stochastic way}
-
-\item{deaths_use_stochastic}{whether to adjust the deaths in the model output in a stochastic way}
+\item{use_stochastic}{whether to adjust the model output in a stochastic way}
 
 \item{cases_multiplier}{the single multiplier for cases, the default is 1 (un-adjusted)}
 
