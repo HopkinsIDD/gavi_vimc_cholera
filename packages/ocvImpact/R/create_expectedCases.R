@@ -28,7 +28,8 @@ create_expectedCases <- function(
   nsamples,
   cache,
   is_cf,
-  redraw
+  redraw,
+  use_mean_incid_raster
   ){
 
   ############# Use the configs (might not work) -- 11/18/2021 #############
