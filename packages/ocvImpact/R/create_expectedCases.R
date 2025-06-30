@@ -30,7 +30,6 @@ create_expectedCases <- function(
   is_cf,
   redraw
   ){
-  library(terra)
 
   ############# Use the configs (might not work) -- 11/18/2021 #############
   incidence_rate_trend <- as.logical(config$setting$incidence_rate_trend)

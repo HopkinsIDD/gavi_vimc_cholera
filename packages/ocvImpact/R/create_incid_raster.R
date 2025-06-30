@@ -18,7 +18,7 @@
 ###We also include modelpath as input
 ###########Comment completed###########
 
-create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, redraw, use_mean_incid_raster, random_seed = NULL){
+create_incid_raster <- function(modelpath, datapath, country, nsamples, cache, redraw, use_mean_incid_raster = FALSE, random_seed = NULL){
 
   #######Kaiyue Added on 7/15/2021#######
   ######Kaiyue editted on 1/30/2022######

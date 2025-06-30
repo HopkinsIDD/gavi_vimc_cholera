@@ -475,8 +475,8 @@ generate_cfr <- function(country){
       dplyr::group_by(cntry_code) %>% 
       dplyr::summarise(cases = sum(cases), deaths = sum(deaths)) %>%
       dplyr::mutate(cfr = deaths/cases) %>% 
-      ungroup() %>% 
-      summarize(cfr = mean(cfr)) # mean cfr across all countries
+      dplyr::ungroup() %>% 
+      dplyr::summarise(cfr = mean(cfr)) # mean cfr across all countries
   }
 
   cfr <- calcs$cfr

@@ -207,7 +207,7 @@ load_baseline_incidence <- function(datapath,
     ## rasterize
     if(!file.exists(confirm_rate_fn)){
       confirm_rate_raster <- terra::rasterize(
-          vect(confirm_rate_df),
+          terra::vect(confirm_rate_df),
           raster1_template,
           field = "true_confirm_rate",
           fun = "mean", # each admin unit has only one confirm rate, therefore mean has the same result as "last" in fasterize
@@ -221,7 +221,7 @@ load_baseline_incidence <- function(datapath,
     }
     
     observed_case_raster <- terra::rasterize(
-        vect(confirm_rate_df),
+        terra::vect(confirm_rate_df),
         raster1_template,
         field = "observed_case",
         fun = "mean",# each admin unit has only one confirm rate, therefore mean has the same result as "last" in fasterize
