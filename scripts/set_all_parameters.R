@@ -106,4 +106,4 @@ if(use_custom_shapefile == TRUE){
 }
 
 #====== Parameters specific to the OCV Investment Case  --  ======#
-use_mean_incid_raster <- TRUE # use only mean raster (one layer)
+use_mean_incid_raster <- FALSE # use only mean raster (one layer), the default is FALSE
