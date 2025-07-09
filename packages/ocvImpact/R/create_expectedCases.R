@@ -159,7 +159,7 @@ create_expectedCases <- function(
 
       ## make new indirect effects template
       indirect_rasterLayer <- pop_rasterLayer
-      values(indirect_rasterLayer) <- indirect_mult(1 - as.numeric(values(sus_rasterLayer)))
+      terra::values(indirect_rasterLayer) <- indirect_mult(1 - as.numeric(terra::values(sus_rasterLayer)))
       
       ec_rasterStack <- tryCatch(
         if (!is.numeric(overall_multiplier) && inherits(overall_multiplier, "SpatRaster")) {
