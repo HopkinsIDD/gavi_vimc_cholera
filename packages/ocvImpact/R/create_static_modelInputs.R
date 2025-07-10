@@ -78,7 +78,7 @@ create_static_modelInputs <- function(
           field = "actual_prop_atleast_1dose_vaccinated",
           background = 0
         )
-        new_vacc_layer <- raster::mask(new_layer, raster0_template, updatevalue = NA)
+        new_vacc_layer <- terra::mask(new_layer, raster0_template)
         
       } else{
         ## add 0 layer if there was no vaccination that year
