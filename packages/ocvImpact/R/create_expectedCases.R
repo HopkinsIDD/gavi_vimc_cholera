@@ -250,8 +250,8 @@ create_expectedCases <- function(
     ### fixing the MRT issue
     if(country == 'MRT'){
       ext_shp0 <- terra::ext(shp0)
-      ext(lambda) <- ext_shp0
-      ext(pop_rasterLayer) <- ext_shp0
+      terra::ext(lambda) <- ext_shp0
+      terra::ext(pop_rasterLayer) <- ext_shp0
     }
 
     ## calam1 23 Apr 2024 added to re-set crs for DRC Case study
@@ -259,7 +259,7 @@ create_expectedCases <- function(
 
     layer_names <- names(ec_rasterStack)
     
-    ec_yr_list <- vector("list", length = nlyr(ec_rasterStack))
+    ec_yr_list <- vector("list", length = terra::nlyr(ec_rasterStack))
     
     for (i in seq_along(ec_yr_list)) {
       ec_yr_list[[i]] <- exactextractr::exact_extract(ec_rasterStack[[i]], shp0, fun = "sum")
@@ -270,7 +270,7 @@ create_expectedCases <- function(
     colnames(ec_yr) <- layer_names
     
     print('The first exactextractr::exact_extract function got passed. ')
-    mean_incid_list <- lapply(seq_len(nlyr(lambda)), function(i) {
+    mean_incid_list <- lapply(seq_len(terra::nlyr(lambda)), function(i) {
       exactextractr::exact_extract(
         lambda[[i]],
         shp0,
