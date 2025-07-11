@@ -457,12 +457,13 @@ generate_flatline_multiplier <- function(trendtype,
 #' @return numeric value of cfr (deaths/cases)
 #' @export
 generate_cfr <- function(country){
+  load("data/who_cfrs.rda")
 
-  deaths_summary <- readr::read_csv("input_data/who_cfrs.csv") %>%
+  deaths_summary <-  who_cfrs %>%
     dplyr::select(-country_name)
 
   total_cfrs <- deaths_summary %>%
-    dplyr::filter(!is.na(cases), !is.na(deaths), cases>0)
+    dplyr::filter(!is.na(cases), !is.na(deaths), cases>0, year>2010)
   
   if (country %in% total_cfrs$cntry_code){
     calcs <- dplyr::filter(total_cfrs, cntry_code==country) %>%
@@ -474,8 +475,8 @@ generate_cfr <- function(country){
       dplyr::group_by(cntry_code) %>% 
       dplyr::summarise(cases = sum(cases), deaths = sum(deaths)) %>%
       dplyr::mutate(cfr = deaths/cases) %>% 
-      ungroup() %>% 
-      summarize(cfr = mean(cfr)) # mean cfr across all countries
+      dplyr::ungroup() %>% 
+      dplyr::summarize(cfr = mean(cfr)) # mean cfr across all countries
   }
 
   cfr <- calcs$cfr
