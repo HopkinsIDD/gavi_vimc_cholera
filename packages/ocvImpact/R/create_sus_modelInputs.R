@@ -34,8 +34,8 @@ create_sus_modelInputs <- function(
   first_output_year <- output_years[1]
 
   startpop_raster <- create_model_pop_raster(datapath, modelpath, country, first_output_year, cache)
-  raster1_template <- raster::calc(startpop_raster, fun = function(x){ifelse(x>0, x/x, 0)})
-
+  raster1_template <- terra::app(startpop_raster, fun = function(x){ifelse(x>0, x/x, 0)})
+  
   #### TRACK AND MODEL VACCINE EFFECTS AT GRID LEVEL ####
   ## create raster template for proportion susceptible
   ## assume full susceptibility at the start of the model
@@ -43,8 +43,8 @@ create_sus_modelInputs <- function(
   sus_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_sus.tif")
   vacc_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_vacc.tif")
   pop_out_fn <- paste0(rawoutpath, "/", scenario, "/", country, "_pop.tif")
-  vacc_rasterStack <- raster::stack(vacc_out_fn)
-  pop_rasterStack <- raster::stack(pop_out_fn)
+  vacc_rasterStack <- terra::rast(vacc_out_fn)
+  pop_rasterStack <- terra::rast(pop_out_fn)
 
   ##for debugging 1/23/2024
   message("raster templates created")
@@ -57,7 +57,7 @@ create_sus_modelInputs <- function(
   if (!file.exists(sus_out_fn)){
 
     ## create dummy to start stack (will be deleted later)
-    sus_rasterStack <- raster::stack(raster1_template)
+    sus_rasterStack <- terra::rast(raster1_template)
     track_prop_immune <- data.frame()
 
     ## add a new proportion suspectible layer to sus_rasterStack for each real model year
@@ -71,14 +71,14 @@ create_sus_modelInputs <- function(
 
         ## full susceptibility assumed before vaccination start and >10 years after vaccination ends (see get_model_years function)
         tmp <- raster1_template
-        sus_rasterStack <- raster::addLayer(sus_rasterStack, tmp)
+        sus_rasterStack <- c(sus_rasterStack, tmp)
 
       } else{
 
         ## calculate remaining susceptible pop after vacc starts (loss due to migration and waning VE)
         tmp <- raster1_template
-        popj <- raster::subset(pop_rasterStack, subset = j, drop = FALSE)
-
+        popj <- pop_rasterStack[[j]]
+        
         ## loop through pre-j years that could have had vaccination (identified by model_years object)
         if(min(which(output_years %in% model_years))>j){
             stop("Check immunity only in years prior to the current output year.")
@@ -93,13 +93,13 @@ create_sus_modelInputs <- function(
 
         for (k in min_loop_year:j){
 
-          popk <- raster::subset(pop_rasterStack, subset = k, drop = FALSE)
-          vacck <- raster::subset(vacc_rasterStack, subset = k, drop = FALSE)
+          popk <- pop_rasterStack[[k]]
+          vacck <- vacc_rasterStack[[k]]
 
           ## population retention (measures turnover rate due to death) from years k into year j
-          pkj <- raster::overlay(popk, popj,
-                                 fun = function(x, y){x*(1-((j-k)*mu))/y}
-          )
+          pkj <- terra::lapp(c(popk, popj), fun = function(x, y) {
+            x * (1 - ((j - k) * mu)) / y
+          })
 
           ## these proportions are referenced to k, which will be the year of the last vaccination campaign when applicable to ve_j_k calculations
           under5_proportion <- import_country_proportion_under5(modelpath, country, year = output_years[k], cache, redownload = FALSE) ## DEBUG add redownload arg
@@ -110,18 +110,20 @@ create_sus_modelInputs <- function(
 
           print(paste("j, k, vetot, prop_ocv1, under5prop", j, k, ve_j_k, prop_ocv1, under5_proportion))
 
-          prob_still_protected <- raster::overlay(vacck, pkj,
-                                                  fun = function(x, y){return(x*y*ve_j_k)}
-          )
-          tmp <- raster::overlay(tmp, prob_still_protected,
-                                 fun = function(x, y){x*(1-y)}
-          )
+          prob_still_protected <- terra::lapp(c(vacck, pkj), fun = function(x, y) {
+            x * y * ve_j_k
+          })
+          tmp <- terra::lapp(c(tmp, prob_still_protected), fun = function(x, y) {
+            x * (1 - y)
+          })
 
           ## track proportion of full pop immune for cases averted calculation
-          prop_protected <- raster::cellStats(
-            raster::overlay(prob_still_protected, popj,
-                            fun = function(x, y){x*y}
-            ), "sum")/raster::cellStats(popj, "sum")
+          weighted_protection <- terra::lapp(c(prob_still_protected, popj), fun = function(x, y) {
+            x * y
+          })
+          protected_sum <- terra::global(weighted_protection, "sum", na.rm = TRUE)[[1]]
+          popj_sum      <- terra::global(popj, "sum", na.rm = TRUE)[[1]]
+          prop_protected <- protected_sum / popj_sum
 
           track_prop_immune_row <- c(country = country,
                                  scenario = scenario,
@@ -135,7 +137,7 @@ create_sus_modelInputs <- function(
           gc()
         } #endkfor
 
-        sus_rasterStack <- raster::addLayer(sus_rasterStack, tmp)
+        sus_rasterStack <- c(sus_rasterStack, tmp)
         rm(tmp, popj)
         gc()
 
@@ -144,15 +146,14 @@ create_sus_modelInputs <- function(
     } #endjfor
 
     ## drop initial sus rast layer, which was a dummy
-    sus_rasterStack <- raster::dropLayer(sus_rasterStack, 1)
     if (dim(sus_rasterStack)[3] != length(output_years)){
       stop(paste("susceptibility rasterStack has", dim(sus_rasterStack)[3], "layers but there are", length(output_years), "model years."))
     }
 
     message(paste("Write", sus_out_fn))
     sus_rs <- align_rasters(datapath, country, sus_rasterStack)
-    raster::writeRaster(sus_rs, filename = sus_out_fn)
-
+    terra::writeRaster(sus_rs, filename = sus_out_fn, overwrite = TRUE)
+    
     rm(startpop_raster, raster1_template, sus_rasterStack, sus_rs)
     gc()
 

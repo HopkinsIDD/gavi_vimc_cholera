@@ -18,10 +18,9 @@ align_rasters <- function(datapath, country, orig_raster){
     message("Aligning rasters using gadm admin 0 shapefile.")
   }
   pop <- load_worldpop_by_country(datapath, country)
-  cropped <- raster::crop(orig_raster, shp, snap = "out")
-  masked <- raster::mask(cropped, shp, updatevalue = NA) #this is newly added 7/2021
-  aligned <- raster::resample(masked, pop, method = "ngb")
-
+  cropped <- terra::crop(orig_raster, shp, snap = "out")
+  masked <- terra::mask(cropped, terra::vect(shp))
+  aligned <- terra::resample(masked, terra::rast(pop), method = "near")
   rm(orig_raster, shp, cropped, masked, pop)
   gc()
 
