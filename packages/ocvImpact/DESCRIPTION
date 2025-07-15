@@ -9,7 +9,7 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Suggests: 
     knitr,
     rmarkdown
@@ -33,6 +33,7 @@ Collate:
     'create_expectedCases.R'
     'create_static_modelInputs.R'
     'create_sus_modelInputs.R'
+    'data_documentation.R'
     'export_central_template.R'
     'export_country_stoch_template.R'
     'outbreak_incidence_rate_multiplier.R'
@@ -51,3 +52,5 @@ Collate:
     'utils_cost.R'
     'utils_process_finaloutput.R'
     'utils_process_rawoutput.R'
+Depends: 
+    R (>= 2.10)

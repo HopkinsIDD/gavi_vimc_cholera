@@ -458,8 +458,9 @@ generate_flatline_multiplier <- function(trendtype,
 #' @return numeric value of cfr (deaths/cases)
 #' @export
 generate_cfr <- function(country){
+  load("data/who_cfrs.rda")
 
-  deaths_summary <- readr::read_csv("input_data/who_cfrs.csv") %>%
+  deaths_summary <-  who_cfrs %>%
     dplyr::select(-country_name)
 
   total_cfrs <- deaths_summary %>%
