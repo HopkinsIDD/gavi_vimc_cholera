@@ -191,6 +191,7 @@ incid <- ocvImpact::create_incid_raster(
     nsamples,
     clean <- TRUE, 
     redraw = as.logical(config$incid$redraw),
+    use_mean_incid_raster = as.logical(config$incid$use_mean_incid_raster),
     random_seed = as.numeric(config$setting$random_seed) #updated from "=" to "<-"
     )
 

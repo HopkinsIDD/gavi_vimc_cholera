@@ -9,10 +9,10 @@
 create_relative_worldpop_weights <- function(datapath, country){
 
   pop <- load_worldpop_by_country(datapath, country)
-  total_pop <- sum(raster::getValues(pop), na.rm = TRUE)
-
-  wts <- raster::calc(pop, fun=function(x) x/total_pop)
-
+  total_pop <- terra::global(pop, fun = "sum", na.rm = TRUE)[1, 1]
+  
+  wts <- terra::app(pop, fun = function(x) x / total_pop)
+  
   if(round(sum(raster::values(wts), na.rm = TRUE),10) != 1){
     warning(paste("Relative population weights do not sum to 1 in", country))
   }
@@ -37,7 +37,7 @@ create_model_pop_raster <- function(datapath, modelpath, country, year, cache){
   wts <- create_relative_worldpop_weights(datapath, country)
   year_pop <- import_country_population_1yr(modelpath, country, year, cache)
 
-  rc <- raster::calc(wts, fun=function(x) x*year_pop)
+  rc <- terra::app(wts, fun = function(x) x*year_pop)
 
   return(rc)
 }
@@ -50,15 +50,16 @@ create_model_pop_raster <- function(datapath, modelpath, country, year, cache){
 #' @param modelpath path to montagu files
 #' @param country country code
 #' @param scenario Unique string that identifies the coverage scenario name
+#' @param targeting_strat vaccine targetting strategy
 #' @param cache montagu cache
 #' @param ... Optional parameters to pass to [`assign_vaccine_targets()`]. See [`assign_vaccine_targets()`] for defaults.
 #' @importFrom magrittr %>%
 #' @return dataframe with proportion of total population allocated with vaccines in admin units in a given country and year
 #' @export
 #' @include utils_targeting.R load_shapefile_by_country.R utils.R
-allocate_vaccine <- function(datapath, modelpath, country, scenario, cache, ...){
+allocate_vaccine <- function(datapath, modelpath, country, scenario, targeting_strat, cache, ...){
 
-  vacc_targets <- assign_vaccine_targets(datapath, modelpath, country, scenario, cache, campaign_cov = as.numeric(config$campaign_cov), ...)
+  vacc_targets <- assign_vaccine_targets(datapath, modelpath, country, scenario, cache, targeting_strat, campaign_cov = as.numeric(config$campaign_cov))
 
   ## skip if no vaccination
   if (is.null(vacc_targets)){
@@ -451,7 +452,7 @@ generate_flatline_multiplier <- function(trendtype,
 
 #' @name generate_cfr
 #' @title generate_cfr
-#' @description Generate rough estimate of cholera case-fatality ratio based on previous WHO data
+#' @description Generate rough estimate of cholera case-fatality ratio based on WHO data since 2010
 #' @param country country code
 #' @importFrom magrittr %>%
 #' @return numeric value of cfr (deaths/cases)
@@ -464,7 +465,7 @@ generate_cfr <- function(country){
 
   total_cfrs <- deaths_summary %>%
     dplyr::filter(!is.na(cases), !is.na(deaths), cases>0, year>2010)
-  
+
   if (country %in% total_cfrs$cntry_code){
     calcs <- dplyr::filter(total_cfrs, cntry_code==country) %>%
       dplyr::summarise(cases = sum(cases), deaths = sum(deaths)) %>%
@@ -476,7 +477,7 @@ generate_cfr <- function(country){
       dplyr::summarise(cases = sum(cases), deaths = sum(deaths)) %>%
       dplyr::mutate(cfr = deaths/cases) %>% 
       dplyr::ungroup() %>% 
-      dplyr::summarize(cfr = mean(cfr)) # mean cfr across all countries
+      dplyr::summarise(cfr = mean(cfr)) # mean cfr across all countries
   }
 
   cfr <- calcs$cfr
