@@ -132,7 +132,6 @@ get_dose_eff_median <- function(rc){
 #' @param rc target table of one country at one admin level
 #' @return a table summarizing target population and ocv efficiency for one country at one admin_level (either admin1 or admin2)
 #' @export
-#' @include
 make_eff_table_median <- function(rc){
   
   country <- rc$ISO[1]
@@ -240,7 +239,6 @@ make_eff_table_median <- function(rc){
 #' @param admin_level admin level(s) selected for the diagnostic report
 #' @return a table summarizing target population and ocv efficiency for one or more countries (at country level)
 #' @export
-#' @include
 combine_eff_table_median <- function(countries, 
                               df_target,
                               admin_level){
@@ -276,7 +274,6 @@ combine_eff_table_median <- function(countries,
 #' @param rc target table all countries at one admin level
 #' @return a table summarizing target population and ocv efficiency for all countries at one admin_level (either admin1 or admin2)
 #' @export
-#' @include
 make_eff_table_allISOs <- function(rc){
   
     df_tp_cumu <- rc %>% 
@@ -357,7 +354,6 @@ make_eff_table_allISOs <- function(rc){
 #' @param admin_level admin level(s) selected for the diagnostic report
 #' @return a table summarizing target population and ocv efficiency for one or more countries (at country level)
 #' @export
-#' @include
 combine_eff_table_allISOs <- function(df_target,
                                       admin_level){
     
