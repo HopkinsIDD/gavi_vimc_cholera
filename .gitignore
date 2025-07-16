@@ -1,6 +1,4 @@
-packages/ocvImpact/DESCRIPTION
-packages/ocvImpact/NAMESPACE
-
+scripts/montagu_handle.R
 input_data/incidence/afro_2010-2016_lambda_5k.tif
 deleted/
 

@@ -13,5 +13,5 @@ generate_cfr(country)
 numeric value of cfr (deaths/cases)
 }
 \description{
-Generate rough estimate of cholera case-fatality ratio based on previous WHO data
+Generate rough estimate of cholera case-fatality ratio based on WHO data since 2010
 }

@@ -452,13 +452,12 @@ generate_flatline_multiplier <- function(trendtype,
 
 #' @name generate_cfr
 #' @title generate_cfr
-#' @description Generate rough estimate of cholera case-fatality ratio based on WHO data since 2010
+#' @description Generate rough estimate of cholera case-fatality ratio based on WHO data since 2010. 2010 filter is hard-coded
 #' @param country country code
 #' @importFrom magrittr %>%
 #' @return numeric value of cfr (deaths/cases)
 #' @export
 generate_cfr <- function(country){
-  load("data/who_cfrs.rda")
 
   deaths_summary <-  who_cfrs %>%
     dplyr::select(-country_name)
