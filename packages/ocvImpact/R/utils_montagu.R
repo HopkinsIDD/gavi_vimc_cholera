@@ -529,7 +529,7 @@ adjusted_montagu_coverage <- function(coverage_sheet, cntrycode){
       pair <- which(df$vaccine == 'OCV2' & df$year == df[i,]$year)
       ocv1_coverage <- df[i,]$coverage
       ocv2_coverage <- df[pair,]$coverage
-      df[i,]$new_coverage <- ocv1_coverage + ocv2_coverage - (ocv1_coverage*ocv2_coverage) ## elizabeth's formula for ocv1 coverage
+      df[i,]$new_coverage <- (ocv1_coverage + ocv2_coverage - 2 * (ocv1_coverage*ocv2_coverage)) ## elizabeth's formula for ocv1 coverage
       print(paste('ocv1 replaced', df[i,]$coverage, "with", df[i,]$new_coverage))
     } else if (df[i,]$vaccine == 'OCV2' & any(df$vaccine == 'OCV1' & df$year == df[i,]$year)){
       pair <- which(df$vaccine == 'OCV1' & df$year == df[i,]$year)
