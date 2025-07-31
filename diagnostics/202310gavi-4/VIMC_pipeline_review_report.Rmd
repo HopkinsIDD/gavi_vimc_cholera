@@ -1,0 +1,325 @@
+---
+title: "VIMC_pipeline_reivew_report"
+date: "`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+  pdf_document: default
+params:
+  previous_coverage_filepath: 'previous_version/BDI_two_coverage.rds'
+  revised_coverage_filepath: 'revised_version/BDI_two_coverage.rds'
+  montagu_coverage_filepath: 'montagu/202310gavi-4/coverage_202310gavi-4_cholera-ocv1-ocv2-default.csv'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+library(sf)
+library(ocvImpact)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(knitr)
+```
+
+```{r include=FALSE}
+#get the current coverage file
+previous_coverage <- readRDS(params$previous_coverage_filepath) %>% 
+  sf::st_drop_geometry() %>% 
+  group_by(vacc_year) %>% 
+  summarize(ocv1_total = sum(actual_ocv1_fvp),
+            ocv2_total = sum(actual_ocv2_fvp)) %>% 
+  rowwise() %>% 
+  mutate(
+    total_doses = ocv1_total + ocv2_total *2,
+    actual_only_ocv1_total = ocv1_total,
+    actual_ocv2_total = ocv2_total,
+    actual_atleast_ocv1_total = sum(ocv1_total,ocv2_total)) %>% 
+  dplyr::select(vacc_year, total_doses, actual_only_ocv1_total,actual_ocv2_total,actual_atleast_ocv1_total)
+
+# get the revised coverage file
+revised_coverage <- readRDS(params$revised_coverage_filepath) %>% 
+  sf::st_drop_geometry() %>% 
+  group_by(vacc_year) %>% 
+  summarize(ocv1_total = sum(actual_ocv1_fvp),
+            ocv2_total = sum(actual_ocv2_fvp)) %>% 
+  rowwise() %>% 
+  mutate(
+    total_doses = ocv1_total + ocv2_total *2,
+    actual_only_ocv1_total = ocv1_total,
+    actual_ocv2_total = ocv2_total,
+    actual_atleast_ocv1_total = sum(ocv1_total,ocv2_total)) %>% 
+  dplyr::select(vacc_year, total_doses, actual_only_ocv1_total,actual_ocv2_total,actual_atleast_ocv1_total)
+
+# get the montagu coverage
+montagu_coverage <- read.csv(params$montagu_coverage_filepath) %>% 
+  dplyr::filter(country_code == 'BDI') %>% 
+  dplyr::arrange(year) %>% 
+  dplyr::select(vaccine,country_code,year,target,coverage) %>% 
+  tidyr::pivot_wider(.,names_from = vaccine,values_from = coverage) %>% 
+  mutate(
+    total_doses = target * OCV1 + target * OCV2,
+    actual_only_ocv1_total = target*(OCV1+OCV2-2*OCV1*OCV2),
+    actual_ocv2_total = target*(OCV1*OCV2),
+    actual_atleast_ocv1_total = target*(OCV1+OCV2-OCV1*OCV2),
+         vacc_year = as.character(year)) %>% 
+  dplyr::select(vacc_year, total_doses,actual_only_ocv1_total,actual_ocv2_total,actual_atleast_ocv1_total)
+  
+```
+
+# total number of vaccine doses
+```{r include=TRUE,echo=F}
+previous_coverage$source <- "previous_cov(p1+p2-p1*p2)"
+revised_coverage$source <- "revised_cov(p1+p2-2*p1*p2)"
+montagu_coverage$source <- "montagu_cov(target * (ocv1+ocv2))"
+
+combined_df <- bind_rows(previous_coverage, revised_coverage, montagu_coverage) %>% 
+  mutate(
+    source = factor(source, levels = c("previous_cov(p1+p2-p1*p2)","revised_cov(p1+p2-2*p1*p2)","montagu_cov(target * (ocv1+ocv2))"))
+  )
+
+source_colors <- c(
+  "previous_cov(p1+p2-p1*p2)" = "#1b9e77",
+  "revised_cov(p1+p2-2*p1*p2)" = "#d95f02",
+  "montagu_cov(target * (ocv1+ocv2))" = "#e7298a"
+)
+
+ggplot(combined_df, aes(x = factor(vacc_year), y = total_doses, fill = source)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = source_colors) +
+  labs(
+    title = "Comparison of total vaccine doses by year\nassuming campaign coverage is 100%",
+    x = "Vaccination Year",
+    y = "Total number of vaccines"
+  ) +
+  theme_minimal()
+
+reference_df <- combined_df %>%
+  filter(source == "montagu_cov(target * (ocv1+ocv2))") %>%
+  select(vacc_year, ref_value = total_doses)
+
+pct_diff_df <- combined_df %>%
+  left_join(reference_df, by = "vacc_year") %>%
+  mutate(pct_diff_from_montagu = (total_doses - ref_value) / ref_value * 100)
+
+pct_diff_df %>%
+  filter(source != "montagu_cov(target * (ocv1+ocv2))") %>%
+  ggplot(aes(x = factor(vacc_year), y = pct_diff_from_montagu, fill = source)) +
+  geom_col(position = "dodge") +
+  geom_hline(yintercept = -1, linetype = "dashed", color = "red") +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "blue") +
+  scale_fill_manual(values = source_colors) +
+  labs(
+    title = "Percentage difference in total number of vaccine doses by Year\n(montagu_coverage as reference)",
+    x = "Vaccination Year",
+    y = "% Difference from Montagu"
+  ) +
+  theme_minimal()
+```
+
+
+# Population receiving only one dose
+```{r include=TRUE,echo=F}
+previous_coverage$source <- "previous_cov(p1+p2-p1*p2)"
+revised_coverage$source <- "revised_cov(p1+p2-2*p1*p2)"
+montagu_coverage$source <- "montagu_cov(target * (p1+p2-2*p1*p2))"
+
+combined_df <- bind_rows(previous_coverage, revised_coverage, montagu_coverage) %>% 
+  mutate(
+    source = factor(source, levels = c("previous_cov(p1+p2-p1*p2)","revised_cov(p1+p2-2*p1*p2)","montagu_cov(target * (p1+p2-2*p1*p2))"))
+  )
+
+source_colors <- c(
+  "previous_cov(p1+p2-p1*p2)" = "#1b9e77",
+  "revised_cov(p1+p2-2*p1*p2)" = "#d95f02",
+  "montagu_cov(target * (p1+p2-2*p1*p2))" = "#e7298a"
+)
+
+ggplot(combined_df, aes(x = factor(vacc_year), y = actual_only_ocv1_total, fill = source)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = source_colors) +
+  labs(
+    title = "Comparison of only receiving 1 dose pop by year\nassuming campaign coverage is 100%",
+    x = "Vaccination Year",
+    y = "Actual pop receiving only1 dose\nsum(actual_ocv1_fvp)"
+  ) +
+  theme_minimal()
+
+reference_df <- combined_df %>%
+  filter(source == "montagu_cov(target * (p1+p2-2*p1*p2))") %>%
+  select(vacc_year, ref_value = actual_only_ocv1_total)
+
+pct_diff_df <- combined_df %>%
+  left_join(reference_df, by = "vacc_year") %>%
+  mutate(pct_diff_from_montagu = (actual_only_ocv1_total - ref_value) / ref_value * 100)
+
+pct_diff_df %>%
+  filter(source != "montagu_cov(target * (p1+p2-2*p1*p2))") %>%
+  ggplot(aes(x = factor(vacc_year), y = pct_diff_from_montagu, fill = source)) +
+  geom_col(position = "dodge") +
+  geom_hline(yintercept = -1, linetype = "dashed", color = "red") +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "blue") +
+  scale_fill_manual(values = source_colors) +
+  labs(
+    title = "Percentage difference in pop receiving only 1 dose by Year\n(montagu_coverage as reference)",
+    x = "Vaccination Year",
+    y = "% Difference from Montagu"
+  ) +
+  theme_minimal()
+```
+
+# Population receiving two doses
+```{r include=TRUE,echo=F}
+previous_coverage$source <- "previous_cov(p1+p2-p1*p2)"
+revised_coverage$source <- "revised_cov(p1+p2-2*p1*p2)"
+montagu_coverage$source <- "montagu_cov(target * (p1*p2))"
+
+combined_df <- bind_rows(previous_coverage, revised_coverage, montagu_coverage) %>% 
+  mutate(
+    source = factor(source, levels = c("previous_cov(p1+p2-p1*p2)","revised_cov(p1+p2-2*p1*p2)","montagu_cov(target * (p1*p2))"))
+  )
+
+source_colors <- c(
+  "previous_cov(p1+p2-p1*p2)" = "#1b9e77",
+  "revised_cov(p1+p2-2*p1*p2)" = "#d95f02",
+  "montagu_cov(target * (p1*p2))" = "#e7298a"
+)
+
+ggplot(combined_df, aes(x = factor(vacc_year), y = actual_ocv2_total, fill = source)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = source_colors) +
+  labs(
+    title = "Comparison of receiving 2 doses pop by year\nassuming campaign coverage is 100%",
+    x = "Vaccination Year",
+    y = "Actual pop receiving only2 dose2\nsum(actual_ocv2_fvp)"
+  ) +
+  theme_minimal()
+
+reference_df <- combined_df %>%
+  filter(source == "montagu_cov(target * (p1*p2))") %>%
+  select(vacc_year, ref_value = actual_ocv2_total)
+
+pct_diff_df <- combined_df %>%
+  left_join(reference_df, by = "vacc_year") %>%
+  mutate(pct_diff_from_montagu = (actual_ocv2_total - ref_value) / ref_value * 100)
+
+pct_diff_df %>%
+  filter(source != "montagu_cov(target * (p1*p2))") %>%
+  ggplot(aes(x = factor(vacc_year), y = pct_diff_from_montagu, fill = source)) +
+  geom_col(position = "dodge") +
+  geom_hline(yintercept = -1, linetype = "dashed", color = "red") +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "blue") +
+  scale_fill_manual(values = source_colors) +
+  labs(
+    title = "Percentage difference in pop receiving 2 doses by year\n(montagu_coverage as reference)",
+    x = "Vaccination Year",
+    y = "% Difference from Montagu"
+  ) +
+  theme_minimal()
+```
+
+# Population receiving at least one dose
+```{r include=TRUE,echo=F}
+previous_coverage$source <- "previous_cov(p1+p2-p1*p2)"
+revised_coverage$source <- "revised_cov(p1+p2-2*p1*p2)"
+montagu_coverage$source <- "montagu_cov(target * (p1+p2-p1*p2))"
+
+combined_df <- bind_rows(previous_coverage, revised_coverage, montagu_coverage) %>% 
+  mutate(
+    source = factor(source, levels = c("previous_cov(p1+p2-p1*p2)","revised_cov(p1+p2-2*p1*p2)","montagu_cov(target * (p1+p2-p1*p2))"))
+  )
+
+source_colors <- c(
+  "previous_cov(p1+p2-p1*p2)" = "#1b9e77",
+  "revised_cov(p1+p2-2*p1*p2)" = "#d95f02",
+  "montagu_cov(target * (p1+p2-p1*p2))" = "#e7298a"
+)
+
+ggplot(combined_df, aes(x = factor(vacc_year), y = actual_atleast_ocv1_total, fill = source)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = source_colors) +
+  labs(
+    title = "Comparison of receiving at least 1 dose pop by year\nassuming campaign coverage is 100%",
+    x = "Vaccination Year",
+    y = "Actual pop receiving only2 dose2\nsum(actual_ocv2_fvp+actual_ocv1_fvp)"
+  ) +
+  theme_minimal()
+
+reference_df <- combined_df %>%
+  filter(source == "montagu_cov(target * (p1+p2-p1*p2))") %>%
+  select(vacc_year, ref_value = actual_atleast_ocv1_total)
+
+pct_diff_df <- combined_df %>%
+  left_join(reference_df, by = "vacc_year") %>%
+  mutate(pct_diff_from_montagu = (actual_atleast_ocv1_total - ref_value) / ref_value * 100)
+
+pct_diff_df %>%
+  filter(source != "montagu_cov(target * (p1+p2-p1*p2))") %>%
+  ggplot(aes(x = factor(vacc_year), y = pct_diff_from_montagu, fill = source)) +
+  geom_col(position = "dodge") +
+  geom_hline(yintercept = -1, linetype = "dashed", color = "red") +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "blue") +
+  scale_fill_manual(values = source_colors) +
+  labs(
+    title = "Percentage difference in pop receiving at least 1 dose by year\n(montagu_coverage as reference)",
+    x = "Vaccination Year",
+    y = "% Difference from Montagu"
+  ) +
+  theme_minimal()
+```
+
+# Table 1. Differences in the number of pop receiving at least 1 dose by year
+```{r include=TRUE,echo=F}
+reference_df <- combined_df %>%
+  filter(source == "montagu_cov(target * (p1+p2-p1*p2))") %>%
+  select(vacc_year, ref_value = actual_atleast_ocv1_total)
+
+pct_diff_df <- combined_df %>%
+  left_join(reference_df, by = "vacc_year") %>%
+  mutate(
+    diff_from_montagu = actual_atleast_ocv1_total - ref_value,
+    pct_diff_from_montagu = (actual_atleast_ocv1_total - ref_value) / ref_value * 100) %>%
+  select(vacc_year, source, diff_from_montagu, pct_diff_from_montagu)
+
+pct_diff_df %>%
+  filter(source != "montagu_cov(target * (p1+p2-p1*p2))") %>% 
+  transmute(
+    Year = vacc_year,
+    Source = source,
+    Difference = round(diff_from_montagu,2),
+    `% Difference` = sprintf("%.2f%%", pct_diff_from_montagu)
+  ) %>%
+  arrange(Year, Source) %>%
+  kable(
+    caption = "Percentage Difference in pop receiving at least 1 dose by year (Montagu as Reference)"
+  )
+```
+# Table 2. Differences in total number of doses by year
+```{r include=TRUE,echo=F}
+reference_df <- combined_df %>%
+  filter(source == "montagu_cov(target * (p1+p2-p1*p2))") %>%
+  select(vacc_year, ref_value = total_doses)
+
+pct_diff_df <- combined_df %>%
+  left_join(reference_df, by = "vacc_year") %>%
+  mutate(
+    diff_from_montagu = total_doses - ref_value,
+    pct_diff_from_montagu = (total_doses - ref_value) / ref_value * 100) %>%
+  select(vacc_year, source, diff_from_montagu, pct_diff_from_montagu)
+
+pct_diff_df %>%
+  filter(source != "montagu_cov(target * (p1+p2-p1*p2))") %>% 
+  transmute(
+    Year = vacc_year,
+    Source = source,
+    Difference = round(diff_from_montagu,2),
+    `% Difference` = sprintf("%.2f%%", pct_diff_from_montagu)
+  ) %>%
+  arrange(Year, Source) %>%
+  kable(
+    caption = "Percentage Difference in number of total doses by year (Montagu as Reference)"
+  )
+```
